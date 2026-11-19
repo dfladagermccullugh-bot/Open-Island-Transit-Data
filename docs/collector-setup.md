@@ -19,20 +19,18 @@ repository.
      encode(extensions.gen_random_bytes(32), 'hex'), 'collector_secret');
    ```
 
-4. **Set the function secret** `COLLECTOR_SECRET` to the same value as the
-   `collector_secret` Vault secret.
-
-5. **Deploy the function** in `supabase/functions/collect/` with JWT
-   verification off. The function checks the shared secret itself.
+4. **Deploy the function** in `supabase/functions/collect/` with JWT
+   verification off. The function checks the shared secret itself, by asking
+   the database, so there is no function secret to set.
 
    ```bash
    supabase functions deploy collect --no-verify-jwt
    ```
 
-6. **Apply** `supabase/migrations/0002_schedule.sql`. Collection starts
+5. **Apply** `supabase/migrations/0002_schedule.sql`. Collection starts
    within 20 seconds.
 
-7. **Check**:
+6. **Check**:
 
    ```sql
    select feed, last_ok_at, last_ok_age_s, last_entity_count, attempts_today, failed_today
@@ -47,6 +45,12 @@ repository.
 ```sql
 select cron.alter_job(jobid, active := false) from cron.job where jobname like 'collect-%';
 ```
+
+## The running collector
+
+- Project reference: `ekczqlmunyumtgtthppb` (region us-west-1)
+- Started: 2026-11-19 21:24:41 UTC
+- Public configuration: see `.env.example`
 
 ## What is public
 

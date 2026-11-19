@@ -12,7 +12,7 @@ import { encodeBase64 } from "jsr:@std/encoding@1/base64";
 import { summariseFeed } from "./protobuf.ts";
 import { scanZip } from "./zipscan.ts";
 
-const VERSION = "collect/0.1.0";
+const VERSION = "collect/0.1.1";
 const USER_AGENT =
   "OpenIslandTransitData/0.1 (+https://github.com/dfladagermccullugh-bot/Open-Island-Transit-Data)";
 
@@ -153,7 +153,7 @@ async function collectStatic(source: string): Promise<Json> {
   return row;
 }
 
-async function rpc(name: string, args: Json): Promise<void> {
+async function rpc(name: string, args: Json): Promise<unknown> {
   const base = Deno.env.get("SUPABASE_URL");
   const key = Deno.env.get("SUPABASE_SERVICE_ROLE_KEY");
   if (!base || !key) throw new Error("SUPABASE_URL / SUPABASE_SERVICE_ROLE_KEY not set");
@@ -167,7 +167,7 @@ async function rpc(name: string, args: Json): Promise<void> {
     body: JSON.stringify(args),
   });
   if (!res.ok) throw new Error(`rpc ${name} failed: HTTP ${res.status} ${await res.text()}`);
-  await res.body?.cancel();
+  return await res.json();
 }
 
 function sameSecret(a: string, b: string): boolean {
@@ -177,11 +177,28 @@ function sameSecret(a: string, b: string): boolean {
   return diff === 0;
 }
 
+// The shared secret lives only in the database (Vault). The scheduler sends
+// it with every tick; the function asks the database whether it is right and
+// remembers a confirmed value for as long as this worker stays warm.
+let confirmedSecret: string | null = null;
+
+async function authorised(given: string): Promise<boolean> {
+  if (given.length < 32) return false;
+  if (confirmedSecret !== null && sameSecret(confirmedSecret, given)) return true;
+  if ((await rpc("collector_secret_ok", { p_secret: given })) === true) {
+    confirmedSecret = given;
+    return true;
+  }
+  return false;
+}
+
 Deno.serve(async (req: Request) => {
-  const expected = Deno.env.get("COLLECTOR_SECRET") ?? "";
   const given = req.headers.get("x-collector-secret") ?? "";
-  if (!expected || !sameSecret(expected, given)) {
-    return new Response("forbidden", { status: 403 });
+  try {
+    if (!(await authorised(given))) return new Response("forbidden", { status: 403 });
+  } catch (err) {
+    console.error(err);
+    return new Response("auth check failed", { status: 500 });
   }
 
   let payload: { kind?: string; targets?: string[]; scheduled_at?: string };

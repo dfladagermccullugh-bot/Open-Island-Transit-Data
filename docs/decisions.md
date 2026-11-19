@@ -14,3 +14,6 @@
 | 2026-11-19 | Keep polling trip updates every 20 s although they refresh about once a minute | Cheap, and the refresh rate is itself something to measure; revisit after a week of data |
 | 2026-11-19 | Limit prediction-error figures to trips matched to a reporting vehicle | The trip-update feed also lists upcoming trips that have no bus yet |
 | 2026-11-19 | Use the feed's speed field to detect stationary buses | Present on every vehicle in the daytime check |
+| 2026-11-19 | The collector checks its shared secret by asking the database, not from a function environment variable | Setup needs no manual step, and the secret never leaves the database |
+| 2026-11-19 | Download the Passio static GTFS twice a day (2:15 AM and 8:30 AM Pacific) | The zip was incomplete at night and complete in the morning; sampling both times measures that |
+| 2026-11-19 | Collection started 21:24:41 UTC | First logged fetch |

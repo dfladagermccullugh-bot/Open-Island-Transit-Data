@@ -2,11 +2,28 @@
 --
 -- Requires two Vault secrets, created once at setup (never committed):
 --   collector_function_url  e.g. https://<project-ref>.supabase.co/functions/v1/collect
---   collector_secret        random string; the same value is set as the edge
---                           function secret COLLECTOR_SECRET
+--   collector_secret        random string, known only to the database
 --
 --   select vault.create_secret('<url>', 'collector_function_url');
 --   select vault.create_secret(encode(extensions.gen_random_bytes(32), 'hex'), 'collector_secret');
+
+-- collector_secret_ok: lets the edge function check the secret a caller sent
+-- without the secret ever leaving the database.
+create or replace function public.collector_secret_ok(p_secret text)
+returns boolean
+language sql
+stable
+security definer
+set search_path = ''
+as $$
+  select exists (
+    select 1 from vault.decrypted_secrets
+    where name = 'collector_secret' and decrypted_secret = p_secret
+  );
+$$;
+
+revoke all on function public.collector_secret_ok(text) from public, anon, authenticated;
+grant execute on function public.collector_secret_ok(text) to service_role;
 
 -- collector_tick: fired by pg_cron. Either asks the edge function to fetch,
 -- or, while backing off, logs the skipped tick so the gap is explained.
@@ -70,11 +87,17 @@ select cron.schedule(
   $$select public.collector_tick('realtime', array['serviceAlerts'])$$
 );
 
--- Static GTFS from Passio: daily at 10:15 UTC (2:15 AM PST / 3:15 AM PDT),
--- before the first trip of the day.
+-- Static GTFS from Passio, twice a day. The zip was incomplete late at night
+-- on 2026-11-18 and complete the next morning, so it is sampled at both times:
+-- 10:15 UTC (2:15 AM PST) and 16:30 UTC (8:30 AM PST).
 select cron.schedule(
-  'collect-static-passio',
+  'collect-static-passio-night',
   '15 10 * * *',
+  $$select public.collector_tick('static', array['passio'])$$
+);
+select cron.schedule(
+  'collect-static-passio-day',
+  '30 16 * * *',
   $$select public.collector_tick('static', array['passio'])$$
 );
 

@@ -4,11 +4,18 @@ A public archive of the real-time bus feeds published by Island Transit
 (Whidbey and Camano Islands, Washington), with daily measurements of how good
 that feed is as a source of data.
 
-**Status (2026-11-19): the feed has been checked and is usable; collection
-has not started yet.** A check during service hours found 20 buses reporting
-with trip, position, speed and timestamp, and every ID matching the published
-schedule ([report](docs/feed-check-daytime.md)). The collector code and its
-tests are in this repository; deployment is the next step.
+**Status: collecting since 2026-11-19, 1:24 PM Pacific.** Vehicle positions
+and trip updates are fetched every 20 seconds, alerts every 5 minutes, and
+the schedule twice a day. The nightly archive, the derived tables and the
+public site are being built; until the archive is running, the data is
+readable from the collector directly (below).
+
+Live status of the collector:
+
+```bash
+curl -s "https://ekczqlmunyumtgtthppb.supabase.co/rest/v1/status_now" \
+  -H "apikey: sb_publishable_AWlvBYVrlTz7dEaf7RwwzA_5zRN3af-"
+```
 
 ## What this is
 
@@ -48,7 +55,8 @@ flowchart LR
 
 - **Collector** (`supabase/`): a scheduled function fetches each feed, stores
   the exact bytes with a SHA-256 hash, and logs the attempt whether it
-  succeeded or not. It runs on a free hosted Postgres project.
+  succeeded or not. It runs on a free hosted Postgres project. Anyone can
+  read what it has stored; only the collector can write.
 - **Pipeline** (`pipeline/`): Python code that turns raw responses into
   tables, infers stop arrivals and computes the quality metrics.
 - **Raw data is the source of truth.** Every derived number can be rebuilt

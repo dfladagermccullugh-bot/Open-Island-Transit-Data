@@ -4,7 +4,7 @@
 -- GitHub pipeline.
 
 create extension if not exists pg_cron;
-create extension if not exists pg_net;
+create extension if not exists pg_net with schema extensions;
 
 -- ---------------------------------------------------------------------------
 -- fetch_log: one row per HTTP request attempt (the paradata). Kept forever.
