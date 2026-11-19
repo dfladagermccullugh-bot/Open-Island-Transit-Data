@@ -1,0 +1,13 @@
+# Decisions
+
+| Date | Decision | Reason |
+|---|---|---|
+| 2026-11-18 | Collect all routes | Collection cost is the same, and data not collected cannot be recovered later |
+| 2026-11-18 | Poll vehicle positions and trip updates every 20 s, alerts every 5 min, around the clock | About 0.1% of the host's stated rate limit; off-hours responses are part of the record |
+| 2026-11-18 | Collector on Supabase (scheduled edge function), pipeline and archive on GitHub | No server to run; sub-minute scheduling; no cost |
+| 2026-11-18 | Store raw responses before parsing; treat them as the source of truth | Parsing can be redone; collection cannot |
+| 2026-11-18 | Keep every field the feed sends, including `occupancy_status` | Full transparency; it is a per-vehicle category, not data about a person |
+| 2026-11-18 | Publish raw and derived data from the first day | Visibility; data sits in Releases so it can be withdrawn if the agency objects |
+| 2026-11-18 | Identify the collector by project name and repository URL in the User-Agent | Lets the host see who is polling and where to complain |
+| 2026-11-18 | On-time window: 1 minute early to 5 minutes late, at true timepoints only | Common agency convention; Passio schedule times at other stops are interpolated |
+| 2026-11-18 | One collector function for real-time and static downloads | Fewer parts to deploy than the two functions first planned |
