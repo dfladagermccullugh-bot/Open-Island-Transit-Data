@@ -45,7 +45,8 @@ jobs:
               "archived service day, its files in GitHub Releases, and their hashes;" \
               "\`manifest/parsed.json\` does the same for the parsed tables;" \
               "\`manifest/static.json\` lists static GTFS versions and the one" \
-              "pinned to each service day." > README.md
+              "pinned to each service day; \`crosswalk/\` links Passio and" \
+              "Trillium stops, routes and true timepoints for each version pair." > README.md
           fi
 
       - name: Archive pending days
@@ -71,7 +72,8 @@ jobs:
         run: |
           set +e
           python -m pipeline.gtfs --raw-manifest data-branch/manifest/raw.json \
-            --manifest data-branch/manifest/static.json --raw-dir work/files
+            --manifest data-branch/manifest/static.json --raw-dir work/files \
+            --crosswalk-dir data-branch/crosswalk
           echo "code=$?" >> "$GITHUB_OUTPUT"
 
       - name: Publish the manifest

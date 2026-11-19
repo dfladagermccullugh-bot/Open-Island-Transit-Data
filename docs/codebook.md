@@ -11,7 +11,8 @@ quality metrics, on-time measures) will be added here as they are published.
 - **`data` branch**, `manifest/raw.json` and `manifest/parsed.json`: every
   archived day, its row counts, and the size and SHA-256 of each file.
   `manifest/static.json`: static GTFS versions and the version pinned to each
-  service day.
+  service day. `crosswalk/`: links between the Passio and Trillium static
+  feeds.
 
 A service day is a calendar date in `America/Los_Angeles`. A row belongs to
 the day in which it was logged. All timestamps are UTC.
@@ -180,6 +181,20 @@ file; only complete downloads define versions.
 | `days.<date>.<source>.version` | The version pinned to that service day |
 | `days.<date>.<source>.basis` | Which rule chose it: `complete download that day` (the first one); `incomplete download that day, matched to a complete version` (every file it had was identical to that version's); `carried forward from <date>` (the latest earlier complete download); `no complete version yet` |
 | `days.<date>.<source>.changed_during_day` | True when downloads on that day disagree |
+| `days.<date>.crosswalk` | Folder under `crosswalk/` for that day's pair of versions |
+
+## `crosswalk/<passio version>__<trillium version>/`
+
+Built by `pipeline/gtfs/crosswalk.py`, once per pair of pinned versions. The
+real-time feed uses Passio ids; true timepoints come from Trillium.
+
+| File | One row per | Contents |
+|---|---|---|
+| `stops.csv` | Passio stop | Matched Trillium stop, `method` (`stop_code`: same code within 150 m; `distance`: nearest Trillium stop within 60 m; empty: unmatched), distance, and the nearest Trillium stop either way |
+| `routes.csv` | Passio route | Matched Trillium route, by short name. Passio's three NAS Whidbey routes have no short name and map to Trillium's single NAS route |
+| `timepoint_stops.csv` | Passio route and stop | `is_timepoint`: Trillium marks the matched stop as a timepoint on at least one trip of the matched route. Also the counts of Passio stop times, Trillium stop times and Trillium timepoint stop times behind that decision |
+| `schedule_agreement.csv` | Passio stop time at a true timepoint | `nearest_trillium_minus_passio_s`: seconds from the Passio time to the nearest Trillium timepoint time at that stop and route, on a day of the week both serve. Empty if Trillium has none |
+| `summary.json` | | Counts of the above |
 
 ## The collector's live tables
 

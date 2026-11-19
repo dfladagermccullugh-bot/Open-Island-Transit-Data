@@ -24,3 +24,5 @@
 | 2026-11-19 | Parsed tables go to their own `parsed-YYYY-MM` releases, rebuilt when the table code version changes | Raw files never change; derived files can be regenerated |
 | 2026-11-19 | Static GTFS versions are identified by the hash of every file except `feed_info.txt` | Passio rewrites its feed_info dates daily and Trillium stamps generation time; neither is a schedule change |
 | 2026-11-19 | Each service day is pinned to the first complete download that day, else a matching incomplete download, else the latest earlier complete download | Uses the schedule as published for that day where possible, and records which rule applied |
+| 2026-11-19 | Identify true timepoints by route and stop, not trip by trip | The Passio and Trillium schedules differ (route 1 weekdays: 68 trips from 03:35 in Passio, 43 from 03:45 in Trillium), so trips cannot be paired; how far they differ is reported as schedule agreement |
+| 2026-11-19 | Stop crosswalk: same `stop_code` within 150 m, else nearest stop within 60 m | Codes match for most stops; a few shared codes point to stops kilometres apart; many NAS Whidbey stops have no code in Passio |

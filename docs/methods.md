@@ -61,6 +61,7 @@ Computed per service day, and by route and hour where that applies.
 | ID match rate | Positions whose `trip_id`, `route_id` and `stop_id` exist in the static GTFS in effect |
 | Unassignable trips | Observed trips that cannot be tied to a scheduled trip on that day |
 | Static feed integrity | Each day: is the zip valid, and are the required files present |
+| Schedule agreement | Passio stop times at true timepoints whose time matches a Trillium timepoint time at the same stop and route (same time, within 60 s, within 300 s). The two published schedules are not the same |
 | Parser rejects | Entities dropped by validation, divided by entities read |
 
 ### Paradata
@@ -98,7 +99,7 @@ Known problems and how they are handled:
 | Trip label changes early or late at a layover | Positions accepted only within the trip's scheduled window ± 30 minutes and on its shape |
 | Detours | Events more than 100 m off the shape are flagged and excluded from on-time figures |
 | Gaps in positions | No interpolation across more than 120 s |
-| Interpolated schedule times | On-time figures use true timepoints only (identified from the Trillium feed) |
+| Interpolated schedule times | On-time figures use true timepoints only: Passio route and stop pairs that Trillium marks as a timepoint on that route (see `crosswalk/`). Scheduled times are Passio's, the schedule the real-time feed follows |
 | Schedule changes daily | Each service day is pinned to the static version in effect that day |
 
 ## 4. On-time performance

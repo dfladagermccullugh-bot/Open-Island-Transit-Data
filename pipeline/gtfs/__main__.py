@@ -8,11 +8,16 @@ registry is read (from ``--raw-dir`` if a copy with the right SHA-256 is
 there, otherwise from its release), fingerprinted and added. Then every
 archived day is pinned to one version per source. See
 ``pipeline/gtfs/versions.py`` for the rules.
+
+For each pair of pinned Passio and Trillium versions, the crosswalk
+(``pipeline/gtfs/crosswalk.py``) is written once to
+``<crosswalk-dir>/<passio version>__<trillium version>/``.
 """
 
 from __future__ import annotations
 
 import argparse
+import csv
 import json
 import os
 import sys
@@ -21,6 +26,7 @@ from typing import Any
 
 from pipeline import release
 from pipeline.config import REPO
+from pipeline.gtfs import crosswalk
 from pipeline.gtfs.versions import add_download, fingerprint, pin_days
 from pipeline.gtfs.zipread import read_zip
 
@@ -67,11 +73,44 @@ def update(registry: dict[str, Any], raw: dict[str, Any], raw_dir: Path, repo: s
     return added
 
 
+def _zip(registry: dict[str, Any], version: str, raw_dir: Path, repo: str):
+    ex = registry["versions"][version]["example"]
+    path = release.fetch(ex["release_tag"], repo, ex["file"], raw_dir, ex["sha256"])
+    return read_zip(path.read_bytes())
+
+
+def write_crosswalks(registry: dict[str, Any], out: Path, raw_dir: Path, repo: str) -> list[str]:
+    """Write the crosswalk for every pinned version pair that lacks one, and
+    record which crosswalk applies to each day. Returns the pairs written."""
+    written = []
+    for pins in registry["days"].values():
+        pv = (pins.get("passio") or {}).get("version")
+        tv = (pins.get("trillium") or {}).get("version")
+        pins["crosswalk"] = f"{pv}__{tv}" if pv and tv else None
+        if not pins["crosswalk"] or (out / pins["crosswalk"] / "summary.json").exists():
+            continue
+        passio, trillium = (_zip(registry, v, raw_dir, repo) for v in (pv, tv))
+        built = crosswalk.build(passio, trillium)
+        folder = out / pins["crosswalk"]
+        folder.mkdir(parents=True, exist_ok=True)
+        for name in ("stops", "routes", "timepoint_stops", "schedule_agreement"):
+            rows = built[name]
+            with (folder / f"{name}.csv").open("w", newline="") as fh:
+                writer = csv.DictWriter(fh, fieldnames=list(rows[0]) if rows else ["empty"])
+                writer.writeheader()
+                writer.writerows(rows)
+        summary = {"passio_version": pv, "trillium_version": tv, **built["summary"]}
+        (folder / "summary.json").write_text(json.dumps(summary, indent=1) + "\n")
+        written.append(pins["crosswalk"])
+    return written
+
+
 def main() -> int:
     ap = argparse.ArgumentParser(description="Update the static GTFS version registry.")
     ap.add_argument("--raw-manifest", type=Path, default=Path("work/manifest/raw.json"))
     ap.add_argument("--manifest", type=Path, default=Path("work/manifest/static.json"))
     ap.add_argument("--raw-dir", type=Path, default=Path("work/files"))
+    ap.add_argument("--crosswalk-dir", type=Path, default=Path("work/crosswalk"))
     ap.add_argument("--repo", default=os.environ.get("GITHUB_REPOSITORY", REPO))
     args = ap.parse_args()
 
@@ -81,9 +120,10 @@ def main() -> int:
     raw = json.loads(args.raw_manifest.read_text())
     registry = load(args.manifest)
     added = update(registry, raw, args.raw_dir, args.repo)
+    written = write_crosswalks(registry, args.crosswalk_dir, args.raw_dir, args.repo)
     save(args.manifest, registry)
     print(f"{added} downloads added; {len(registry['versions'])} versions; ", end="")
-    print(f"{len(registry['days'])} days pinned")
+    print(f"{len(registry['days'])} days pinned; crosswalks written: {written or 'none'}")
     return 0
 
 

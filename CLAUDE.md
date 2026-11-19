@@ -34,6 +34,7 @@ Full design, metric definitions and phases: `docs/methods.md`,
 - Trip updates are predicted clock times, refresh about once a minute, and include upcoming trips that have no bus yet.
 - Real-time IDs match the **Passio** static GTFS, which is regenerated daily. The Passio zip sometimes arrives without its calendar files and central directory (seen at night, not in the morning); `pipeline/gtfs/zipread.py` reads it anyway.
 - Passio marks every stop as a timepoint with interpolated times. True timepoints come from the **Trillium** static GTFS, which uses different IDs (386 of 410 stop codes overlap).
+- **The Passio and Trillium schedules differ** (checked 2026-11-19): route 1 weekdays has 68 Passio trips from 03:35 and 43 Trillium trips from 03:45, at different times. Of 5,224 Passio stop times at true timepoints, 52% match a Trillium time exactly, 63% within 5 minutes. Timepoints are therefore taken per route and stop. Which schedule the agency treats as official is unknown; ask Island Transit before publishing on-time figures.
 - No license or terms were found for the feeds. See `LICENSE-DATA.md`.
 - Service runs roughly 3:35 AM to 8:25 PM Pacific on weekdays. No trip crosses midnight, so a service day is a Pacific calendar date.
 
@@ -63,10 +64,10 @@ python scripts/verify_feed.py     # feed fields and ID match; run in service hou
 
 ## Next steps, in order
 
-1. **Verify the first nightly run** (service day 2026-11-19, first run 2026-11-20 08:35 UTC): the `Nightly archive` run succeeded; `manifest/raw.json`, `manifest/parsed.json` and `manifest/static.json` on the `data` branch list the day with a `release_tag`; releases `raw-2026-11` and `parsed-2026-11` hold the files at the recorded sizes. Neither upload step has run for real yet; fix them if they failed. Also compare the 10:15 UTC and 16:30 UTC Passio zips (`zip_has_directory`).
+1. **Verify the first nightly run** (service day 2026-11-19, first run 2026-11-20 08:35 UTC): the `Nightly archive` run succeeded; `manifest/raw.json`, `manifest/parsed.json` and `manifest/static.json` on the `data` branch list the day, and `crosswalk/` has one folder with a `release_tag`; releases `raw-2026-11` and `parsed-2026-11` hold the files at the recorded sizes. Neither upload step has run for real yet; fix them if they failed. Also compare the 10:15 UTC and 16:30 UTC Passio zips (`zip_has_directory`).
 2. ~~Parsed daily tables~~: done (`pipeline/tables/`, `TABLES_VERSION` `tables/0.1.0`). Rows are runs of unchanged values; see `docs/codebook.md`. Bumping `TABLES_VERSION` rebuilds every day on the next nightly run (7 days per run).
 3. ~~Static GTFS versioning~~: done (`pipeline/gtfs/versions.py`, `manifest/static.json`). Verify after the first nightly run that 2026-11-19 is pinned for both sources.
-4. **Passio to Trillium crosswalk** for stops and true timepoints (stop code first, then distance).
+4. ~~Passio to Trillium crosswalk~~: done (`pipeline/gtfs/crosswalk.py`, `crosswalk/` on the `data` branch, about 300 KB per version pair; watch growth if Passio content changes daily).
 5. **Quality metrics** per `docs/methods.md`, exported as small files to the `data` branch.
 6. **Site**: Quarto with Observable JS on GitHub Pages (status, quality, methods, data pages). Needs Davin to set Pages source to "GitHub Actions".
 7. **Arrival inference and on-time figures**, labelled experimental until field validation.
@@ -77,4 +78,5 @@ python scripts/verify_feed.py     # feed fields and ID match; run in service hou
 - Send the Island Transit notice email (drafted in his Gmail, to `info@islandtransit.org`).
 - Pages setting (step 6), optional Porkbun CNAME `transit` to `dfladagermccullugh-bot.github.io`.
 - About 40 timed field observations for validation (step 7).
+- Ask Island Transit which static GTFS (Passio or Trillium) holds the official schedule; they differ. Could go in the notice email.
 - Open question: move the repo from the `dfladagermccullugh-bot` account to his main account before announcing.
