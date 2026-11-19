@@ -22,7 +22,7 @@ Full design, metric definitions and phases: `docs/methods.md`,
 | Edge function | `collect`, version `collect/0.2.0`, JWT verification off; it checks a shared secret held in Supabase Vault (`collector_secret`) via `collector_secret_ok` |
 | pg_cron jobs | `collect-realtime` (20 s: vehiclePositions, tripUpdates), `collect-alerts` (5 min), `collect-static-passio-night` (10:15 UTC), `collect-static-passio-day` (16:30 UTC), `collect-static-trillium` (Mon 10:20 UTC), `prune-archived` (11:40 UTC), `prune-cron-history` |
 | Public read access | URL and publishable key in `.env.example` and `pipeline/config.py`. Not secrets |
-| GitHub workflows | `ci.yml`; `nightly.yml` (08:35 and 14:35 UTC: archive complete Pacific days to Releases `raw-YYYY-MM`, then parsed tables to `parsed-YYYY-MM`, then the static GTFS version registry; manifests `raw.json`, `parsed.json`, `static.json` on the `data` branch); `watchdog.yml` (every 30 min; opens an issue titled "Collector problem") |
+| GitHub workflows | `ci.yml`; `nightly.yml` (08:35 and 14:35 UTC: archive complete Pacific days to Releases `raw-YYYY-MM`, then parsed tables to `parsed-YYYY-MM`, then the static GTFS version registry and crosswalk, then quality metrics; all except Release files go to the `data` branch); `watchdog.yml` (every 30 min; opens an issue titled "Collector problem") |
 | Cloud environment | `open-island-transit-data`, allowed hosts: `passio3.com`, `data.trilliumtransit.com`, `ekczqlmunyumtgtthppb.supabase.co` |
 | Cost | $0. Keep it that way |
 
@@ -64,11 +64,11 @@ python scripts/verify_feed.py     # feed fields and ID match; run in service hou
 
 ## Next steps, in order
 
-1. **Verify the first nightly run** (service day 2026-11-19, first run 2026-11-20 08:35 UTC): the `Nightly archive` run succeeded; `manifest/raw.json`, `manifest/parsed.json` and `manifest/static.json` on the `data` branch list the day, and `crosswalk/` has one folder with a `release_tag`; releases `raw-2026-11` and `parsed-2026-11` hold the files at the recorded sizes. Neither upload step has run for real yet; fix them if they failed. Also compare the 10:15 UTC and 16:30 UTC Passio zips (`zip_has_directory`).
+1. **Verify the first nightly run** (service day 2026-11-19, first run 2026-11-20 08:35 UTC): the `Nightly archive` run succeeded; `manifest/raw.json`, `manifest/parsed.json` and `manifest/static.json` on the `data` branch list the day, `crosswalk/` has one folder, and `quality/days/2026-11-19.json` exists (a partial day: collection began 13:24 Pacific) with a `release_tag`; releases `raw-2026-11` and `parsed-2026-11` hold the files at the recorded sizes. Neither upload step has run for real yet; fix them if they failed. Also compare the 10:15 UTC and 16:30 UTC Passio zips (`zip_has_directory`).
 2. ~~Parsed daily tables~~: done (`pipeline/tables/`, `TABLES_VERSION` `tables/0.1.0`). Rows are runs of unchanged values; see `docs/codebook.md`. Bumping `TABLES_VERSION` rebuilds every day on the next nightly run (7 days per run).
 3. ~~Static GTFS versioning~~: done (`pipeline/gtfs/versions.py`, `manifest/static.json`). Verify after the first nightly run that 2026-11-19 is pinned for both sources.
 4. ~~Passio to Trillium crosswalk~~: done (`pipeline/gtfs/crosswalk.py`, `crosswalk/` on the `data` branch, about 300 KB per version pair; watch growth if Passio content changes daily).
-5. **Quality metrics** per `docs/methods.md`, exported as small files to the `data` branch.
+5. **Quality metrics**: first set done (`pipeline/quality/`, `QUALITY_VERSION` `quality/0.1.0`, output `quality/days/*.json` and `quality/daily.csv` on the `data` branch). Still to add once stop events and shapes exist: stop-level coverage, 30-day missing vehicles, randomness-of-gaps model, off-shape positions, jitter, prediction error, unassignable trips.
 6. **Site**: Quarto with Observable JS on GitHub Pages (status, quality, methods, data pages). Needs Davin to set Pages source to "GitHub Actions".
 7. **Arrival inference and on-time figures**, labelled experimental until field validation.
 8. **First monthly release and quality report** around day 30.

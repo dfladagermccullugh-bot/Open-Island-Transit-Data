@@ -24,6 +24,18 @@ the service calendar taken from the Trillium feed when Passio's is missing.
 
 Computed per service day, and by route and hour where that applies.
 
+Implemented in `pipeline/quality/metrics.py`. Notes on the implementation:
+
+- "Scheduled" uses the Passio calendar. It has no holiday exceptions; the
+  Trillium feed's holiday removals for the day are reported next to the
+  figures (`schedule.trillium_removes_service_today`).
+- On the first day of collection only trips that had not ended when
+  collection began count as scheduled.
+- Position age is measured at the first fetch that returned a position.
+- Not yet computed (they need stop events or shapes): stop-level coverage,
+  vehicles missing against the previous 30 days, randomness of gaps,
+  off-shape positions, jitter, prediction error, unassignable trips.
+
 ### Coverage
 
 | Metric | Definition |

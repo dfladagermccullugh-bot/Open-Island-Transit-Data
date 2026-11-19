@@ -26,3 +26,5 @@
 | 2026-11-19 | Each service day is pinned to the first complete download that day, else a matching incomplete download, else the latest earlier complete download | Uses the schedule as published for that day where possible, and records which rule applied |
 | 2026-11-19 | Identify true timepoints by route and stop, not trip by trip | The Passio and Trillium schedules differ (route 1 weekdays: 68 trips from 03:35 in Passio, 43 from 03:45 in Trillium), so trips cannot be paired; how far they differ is reported as schedule agreement |
 | 2026-11-19 | Stop crosswalk: same `stop_code` within 150 m, else nearest stop within 60 m | Codes match for most stops; a few shared codes point to stops kilometres apart; many NAS Whidbey stops have no code in Passio |
+| 2026-11-19 | Quality metrics are written to the `data` branch as one JSON file per day plus a headline CSV | Small, diffable, readable by the site without a server |
+| 2026-11-19 | Scheduled trips come from the Passio calendar even on holidays; Trillium's holiday removals are reported alongside | Passio is the schedule the real-time feed follows; mixing calendars would hide the disagreement |

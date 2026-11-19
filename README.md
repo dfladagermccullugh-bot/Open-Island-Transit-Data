@@ -9,8 +9,9 @@ and trip updates are fetched every 20 seconds, alerts every 5 minutes, and
 the schedule twice a day. Each complete day is copied to
 [GitHub Releases](https://github.com/dfladagermccullugh-bot/Open-Island-Transit-Data/releases)
 shortly after midnight Pacific, along with parsed daily tables of vehicle
-positions, trip updates and alerts ([codebook](docs/codebook.md)). Quality
-metrics, on-time figures and the public site are being built.
+positions, trip updates and alerts, and daily feed-quality metrics
+([codebook](docs/codebook.md)). On-time figures and the public site are being
+built.
 
 Live status of the collector:
 

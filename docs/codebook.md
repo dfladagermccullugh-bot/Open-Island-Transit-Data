@@ -12,7 +12,7 @@ quality metrics, on-time measures) will be added here as they are published.
   archived day, its row counts, and the size and SHA-256 of each file.
   `manifest/static.json`: static GTFS versions and the version pinned to each
   service day. `crosswalk/`: links between the Passio and Trillium static
-  feeds.
+  feeds. `quality/`: daily feed-quality metrics.
 
 A service day is a calendar date in `America/Los_Angeles`. A row belongs to
 the day in which it was logged. All timestamps are UTC.
@@ -133,6 +133,35 @@ One row per alert per run, keyed by the alert's `entity_id`.
 | `cause`, `effect` | As sent |
 | `header`, `description`, `url` | English text (or the first translation) |
 | `route_ids`, `stop_ids`, `trip_ids` | What the alert applies to |
+
+## `quality/`
+
+Computed by `pipeline/quality/metrics.py` for each service day once its raw
+file, parsed tables and pinned schedule exist. Definitions are in
+`docs/methods.md`, section 2.
+
+- `quality/days/YYYY-MM-DD.json`: every metric for the day, grouped as
+  `paradata`, `nonresponse`, `coverage`, `measurement`, `processing`, plus the
+  schedule used (`schedule`) and the SHA-256 of the input files (`inputs`).
+- `quality/daily.csv`: one row per day with the headline figures, rebuilt
+  from the day files.
+
+| `daily.csv` column | Meaning |
+|---|---|
+| `passio_version` | Static version the day was measured against |
+| `scheduled_trips` | Passio trips scheduled that day (on the first day, only those still running when collection began) |
+| `trip_coverage` | Share of those trips with at least one vehicle position |
+| `vehicle_uptime`, `trip_update_uptime` | Share of 20-second slots with a successful fetch |
+| `vehicle_fetch_failure_rate` | Share of vehicle-position fetches that failed |
+| `empty_in_service_rate` | Successful vehicle-position fetches with no vehicles, while a trip was scheduled |
+| `stale_in_service_rate` | Successful vehicle-position fetches whose newest vehicle timestamp was over 120 s old, while a trip was scheduled |
+| `longest_gap_s_median` | Median over observed trips of the longest interval between new position reports |
+| `position_age_s_median`, `position_age_s_p95` | Time from the vehicle's timestamp to the first fetch that returned it |
+| `impossible_jumps` | Consecutive reports of one vehicle implying more than 130 km/h |
+| `trip_id_match_rate` | Positions whose `trip_id` exists in the static version |
+| `over_coverage_share` | Positions with no trip, an unknown trip, or a trip not scheduled that day |
+| `vehicle_latency_ms_median` | Median response time of the vehicle-position feed |
+| `vehicles_seen` | Distinct vehicles reporting |
 
 ## `manifest/raw.json`
 

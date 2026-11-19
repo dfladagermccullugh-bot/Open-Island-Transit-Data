@@ -2,7 +2,8 @@ name: Nightly archive
 
 # Copies every complete service day from the collector to GitHub Releases,
 # builds the parsed daily tables from those files, updates the static GTFS
-# version registry, and records all three in manifests on the `data` branch. Runs after midnight Pacific
+# version registry and crosswalk, and computes the daily quality metrics. All
+# outputs except the Release files are committed to the `data` branch. Runs after midnight Pacific
 # (08:35 UTC) with a second attempt later in the morning.
 on:
   schedule:
@@ -46,7 +47,8 @@ jobs:
               "\`manifest/parsed.json\` does the same for the parsed tables;" \
               "\`manifest/static.json\` lists static GTFS versions and the one" \
               "pinned to each service day; \`crosswalk/\` links Passio and" \
-              "Trillium stops, routes and true timepoints for each version pair." > README.md
+              "Trillium stops, routes and true timepoints for each version pair;" \
+              "\`quality/\` holds the daily feed-quality metrics." > README.md
           fi
 
       - name: Archive pending days
@@ -76,7 +78,15 @@ jobs:
             --crosswalk-dir data-branch/crosswalk
           echo "code=$?" >> "$GITHUB_OUTPUT"
 
-      - name: Publish the manifest
+      - name: Compute quality metrics
+        id: quality
+        run: |
+          set +e
+          python -m pipeline.quality --pending --data data-branch \
+            --raw-dir work/files --tables-dir work/tables
+          echo "code=$?" >> "$GITHUB_OUTPUT"
+
+      - name: Publish the manifests
         run: |
           cd data-branch
           git add -A
@@ -92,5 +102,5 @@ jobs:
       - name: Fail if any step above failed
         if: >-
           steps.archive.outputs.code != '0' || steps.tables.outputs.code != '0' ||
-          steps.static.outputs.code != '0'
+          steps.static.outputs.code != '0' || steps.quality.outputs.code != '0'
         run: exit 1
