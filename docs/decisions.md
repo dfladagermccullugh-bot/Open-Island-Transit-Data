@@ -22,3 +22,5 @@
 | 2026-11-19 | Parsed tables store runs of unchanged values, not one row per fetch | Polling every 20 s repeats most values; runs keep every change and how long each value was seen, at a fraction of the size |
 | 2026-11-19 | Parsed tables are built from the archived raw file, not from the collector | Every derived row then traces to a published file and its hash |
 | 2026-11-19 | Parsed tables go to their own `parsed-YYYY-MM` releases, rebuilt when the table code version changes | Raw files never change; derived files can be regenerated |
+| 2026-11-19 | Static GTFS versions are identified by the hash of every file except `feed_info.txt` | Passio rewrites its feed_info dates daily and Trillium stamps generation time; neither is a schedule change |
+| 2026-11-19 | Each service day is pinned to the first complete download that day, else a matching incomplete download, else the latest earlier complete download | Uses the schedule as published for that day where possible, and records which rule applied |

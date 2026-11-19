@@ -1,8 +1,8 @@
 name: Nightly archive
 
 # Copies every complete service day from the collector to GitHub Releases,
-# builds the parsed daily tables from those files, and records both in the
-# manifests on the `data` branch. Runs after midnight Pacific
+# builds the parsed daily tables from those files, updates the static GTFS
+# version registry, and records all three in manifests on the `data` branch. Runs after midnight Pacific
 # (08:35 UTC) with a second attempt later in the morning.
 on:
   schedule:
@@ -43,7 +43,9 @@ jobs:
             printf '%s\n' "# Data branch" "" \
               "Written by the nightly archive job. \`manifest/raw.json\` lists every" \
               "archived service day, its files in GitHub Releases, and their hashes;" \
-              "\`manifest/parsed.json\` does the same for the parsed tables." > README.md
+              "\`manifest/parsed.json\` does the same for the parsed tables;" \
+              "\`manifest/static.json\` lists static GTFS versions and the one" \
+              "pinned to each service day." > README.md
           fi
 
       - name: Archive pending days
@@ -64,6 +66,14 @@ jobs:
             --raw-dir work/files --out work/tables
           echo "code=$?" >> "$GITHUB_OUTPUT"
 
+      - name: Update static GTFS versions
+        id: static
+        run: |
+          set +e
+          python -m pipeline.gtfs --raw-manifest data-branch/manifest/raw.json \
+            --manifest data-branch/manifest/static.json --raw-dir work/files
+          echo "code=$?" >> "$GITHUB_OUTPUT"
+
       - name: Publish the manifest
         run: |
           cd data-branch
@@ -77,6 +87,8 @@ jobs:
             git push -q origin data
           fi
 
-      - name: Fail if any day could not be archived or parsed
-        if: steps.archive.outputs.code != '0' || steps.tables.outputs.code != '0'
+      - name: Fail if any step above failed
+        if: >-
+          steps.archive.outputs.code != '0' || steps.tables.outputs.code != '0' ||
+          steps.static.outputs.code != '0'
         run: exit 1
