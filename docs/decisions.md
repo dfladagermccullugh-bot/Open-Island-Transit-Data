@@ -19,3 +19,6 @@
 | 2026-11-19 | Collection started 21:24:41 UTC | First logged fetch |
 | 2026-11-19 | Archive complete Pacific days shortly after midnight, not the same evening | A day is not finished until midnight; off-hours fetches belong to it |
 | 2026-11-19 | Collector version 0.2.0 from 21:37 UTC | Adds the prune step; fetching is unchanged |
+| 2026-11-19 | Parsed tables store runs of unchanged values, not one row per fetch | Polling every 20 s repeats most values; runs keep every change and how long each value was seen, at a fraction of the size |
+| 2026-11-19 | Parsed tables are built from the archived raw file, not from the collector | Every derived row then traces to a published file and its hash |
+| 2026-11-19 | Parsed tables go to their own `parsed-YYYY-MM` releases, rebuilt when the table code version changes | Raw files never change; derived files can be regenerated |

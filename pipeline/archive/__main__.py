@@ -15,12 +15,12 @@ from __future__ import annotations
 import argparse
 import json
 import os
-import subprocess
 import sys
 from datetime import UTC, date, datetime
 from pathlib import Path
 from typing import Any
 
+from pipeline import release
 from pipeline.archive.build import build_day
 from pipeline.archive.days import complete_days
 from pipeline.archive.store import Collector
@@ -39,47 +39,23 @@ def save_manifest(path: Path, manifest: dict[str, Any]) -> None:
     path.write_text(json.dumps(manifest, indent=1, sort_keys=False, default=str) + "\n")
 
 
-def gh(*args: str) -> str:
-    return subprocess.run(
-        ["gh", *args], check=True, capture_output=True, text=True, env=os.environ
-    ).stdout
-
-
 def release_tag(day: date) -> str:
     return f"raw-{day:%Y-%m}"
 
 
 def upload(day: date, entry: dict[str, Any], out: Path, repo: str) -> str:
     tag = release_tag(day)
-    exists = subprocess.run(
-        ["gh", "release", "view", tag, "--repo", repo], capture_output=True, text=True
+    release.ensure_release(
+        tag,
+        repo,
+        title=f"Raw archive, {day:%B %Y}",
+        notes=(
+            "Island Transit GTFS-Realtime responses exactly as received, one "
+            "Parquet file per service day, plus the fetch log (CSV) and each "
+            "static GTFS download. See docs/codebook.md and LICENSE-DATA.md."
+        ),
     )
-    if exists.returncode != 0:
-        gh(
-            "release",
-            "create",
-            tag,
-            "--repo",
-            repo,
-            "--title",
-            f"Raw archive, {day:%B %Y}",
-            "--notes",
-            (
-                "Island Transit GTFS-Realtime responses exactly as received, one "
-                "Parquet file per service day, plus the fetch log (CSV) and each "
-                "static GTFS download. See docs/codebook.md and LICENSE-DATA.md."
-            ),
-            "--latest=false",
-        )
-    paths = [str(out / f["name"]) for f in entry["files"]]
-    gh("release", "upload", tag, *paths, "--repo", repo, "--clobber")
-
-    # Confirm every file is there at the right size before trusting the upload.
-    assets = json.loads(gh("release", "view", tag, "--repo", repo, "--json", "assets"))["assets"]
-    sizes = {a["name"]: a["size"] for a in assets}
-    for f in entry["files"]:
-        if sizes.get(f["name"]) != f["bytes"]:
-            raise RuntimeError(f"{f['name']}: upload not confirmed ({sizes.get(f['name'])} bytes)")
+    release.upload(tag, repo, out, entry["files"])
     return tag
 
 

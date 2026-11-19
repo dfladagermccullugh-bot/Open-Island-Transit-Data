@@ -1,7 +1,8 @@
 name: Nightly archive
 
-# Copies every complete service day from the collector to GitHub Releases and
-# records it in the manifest on the `data` branch. Runs after midnight Pacific
+# Copies every complete service day from the collector to GitHub Releases,
+# builds the parsed daily tables from those files, and records both in the
+# manifests on the `data` branch. Runs after midnight Pacific
 # (08:35 UTC) with a second attempt later in the morning.
 on:
   schedule:
@@ -41,7 +42,8 @@ jobs:
             git checkout -q --orphan data
             printf '%s\n' "# Data branch" "" \
               "Written by the nightly archive job. \`manifest/raw.json\` lists every" \
-              "archived service day, its files in GitHub Releases, and their hashes." > README.md
+              "archived service day, its files in GitHub Releases, and their hashes;" \
+              "\`manifest/parsed.json\` does the same for the parsed tables." > README.md
           fi
 
       - name: Archive pending days
@@ -50,6 +52,16 @@ jobs:
           set +e
           python -m pipeline.archive --pending --release \
             --manifest data-branch/manifest/raw.json --out work/files
+          echo "code=$?" >> "$GITHUB_OUTPUT"
+
+      - name: Build parsed tables for archived days
+        id: tables
+        run: |
+          set +e
+          python -m pipeline.tables --pending --release \
+            --raw-manifest data-branch/manifest/raw.json \
+            --manifest data-branch/manifest/parsed.json \
+            --raw-dir work/files --out work/tables
           echo "code=$?" >> "$GITHUB_OUTPUT"
 
       - name: Publish the manifest
@@ -65,6 +77,6 @@ jobs:
             git push -q origin data
           fi
 
-      - name: Fail if any day could not be archived
-        if: steps.archive.outputs.code != '0'
+      - name: Fail if any day could not be archived or parsed
+        if: steps.archive.outputs.code != '0' || steps.tables.outputs.code != '0'
         run: exit 1

@@ -1,15 +1,15 @@
 # Codebook
 
-What each published file contains. Derived tables (parsed positions, stop
-events, quality metrics, on-time measures) will be added here as they are
-published.
+What each published file contains. Further derived tables (stop events,
+quality metrics, on-time measures) will be added here as they are published.
 
 ## Where the files are
 
-- **GitHub Releases**, one release per month named `raw-YYYY-MM`. Each
-  service day adds the files below.
-- **`data` branch**, `manifest/raw.json`: every archived day, its row
-  counts, and the size and SHA-256 of each file.
+- **GitHub Releases**, one release per month named `raw-YYYY-MM` for the raw
+  archive and `parsed-YYYY-MM` for the parsed tables. Each service day adds
+  the files below.
+- **`data` branch**, `manifest/raw.json` and `manifest/parsed.json`: every
+  archived day, its row counts, and the size and SHA-256 of each file.
 
 A service day is a calendar date in `America/Los_Angeles`. A row belongs to
 the day in which it was logged. All timestamps are UTC.
@@ -53,6 +53,84 @@ twice a day) or `trillium` (weekly). The Passio zip has been observed
 arriving without its calendar files and central directory; such files are
 archived as they came. `pipeline/gtfs/zipread.py` reads them.
 
+## Parsed tables
+
+Built nightly from `raw-YYYY-MM-DD.parquet` by `pipeline/tables/build.py`,
+one Parquet file per table per service day, in the `parsed-YYYY-MM` release.
+Every field the feed can carry is a column; a field the feed did not send is
+empty (null), never filled in.
+
+**Runs.** The feeds are fetched every 20 seconds but most values change less
+often. Each row is a *run*: consecutive successful fetches of the same feed in
+which one item (a vehicle, a trip, a stop prediction, an alert) reported
+exactly the same values. A run ends when any value changes, when the item is
+missing from a fetch, or when a fetch of that feed fails. Every table ends
+with these columns:
+
+| Column | Type | Meaning |
+|---|---|---|
+| `first_fetch_id`, `last_fetch_id` | integer | First and last fetch of the run; join to the fetch log |
+| `first_requested_at`, `last_requested_at` | timestamp | When those fetches were requested |
+| `times_seen` | integer | Number of fetches in the run |
+
+Times sent by the feed (`vehicle_ts`, `trip_update_ts`, `arrival_time`,
+`departure_time`, alert periods) are converted from Unix seconds to UTC
+timestamps. The feed's entity ids are positions in the message and change
+when vehicles come and go, so they are not kept.
+
+### `vehicles-YYYY-MM-DD.parquet`
+
+One row per vehicle per run, which in practice means one row per vehicle per
+position report (`vehicle_ts`).
+
+| Column | Meaning |
+|---|---|
+| `vehicle_key` | `vehicle_id`, or `entity:<id>` if the feed sent no vehicle id |
+| `vehicle_id`, `vehicle_label` | Vehicle id and the label shown on the bus |
+| `vehicle_ts` | Time of the position report, as sent by the vehicle |
+| `trip_id`, `route_id`, `direction_id`, `start_date`, `start_time`, `trip_schedule_relationship` | The trip the vehicle reports. `direction_id`, `start_date` and `start_time` have not been sent so far |
+| `lat`, `lon`, `bearing`, `speed`, `odometer` | Position; speed in metres per second |
+| `current_stop_sequence`, `stop_id`, `current_status` | The stop the vehicle reports. `current_status` has not been sent so far |
+| `congestion_level`, `occupancy_status`, `occupancy_percentage` | As sent |
+
+### `trip-updates-YYYY-MM-DD.parquet`
+
+One row per trip per run.
+
+| Column | Meaning |
+|---|---|
+| `trip_key` | `trip_id`, or `entity:<id>` if the feed sent no trip id |
+| trip columns | As in `vehicles` |
+| `vehicle_id` | Vehicle assigned to the trip. The feed also lists upcoming trips that have no vehicle yet |
+| `trip_update_ts` | Time of the update |
+| `trip_delay` | Trip-level delay in seconds, if sent |
+| `stop_time_update_count` | Number of stops with a prediction |
+
+### `trip-update-stops-YYYY-MM-DD.parquet`
+
+One row per predicted stop per run: a prediction for one stop of one trip,
+for as long as it stayed unchanged.
+
+| Column | Meaning |
+|---|---|
+| `trip_key`, trip columns, `vehicle_id`, `trip_update_ts`, `trip_delay` | As in `trip-updates` |
+| `stop_sequence`, `stop_id` | The stop |
+| `arrival_time`, `departure_time` | Predicted times |
+| `arrival_delay`, `departure_delay`, `arrival_uncertainty`, `departure_uncertainty` | In seconds, if sent |
+| `stop_schedule_relationship` | As sent |
+
+### `alerts-YYYY-MM-DD.parquet`
+
+One row per alert per run, keyed by the alert's `entity_id`.
+
+| Column | Meaning |
+|---|---|
+| `entity_id` | The alert's id in the feed |
+| `active_periods` | List of start and end times |
+| `cause`, `effect` | As sent |
+| `header`, `description`, `url` | English text (or the first translation) |
+| `route_ids`, `stop_ids`, `trip_ids` | What the alert applies to |
+
 ## `manifest/raw.json`
 
 | Field | Meaning |
@@ -65,6 +143,17 @@ archived as they came. `pipeline/gtfs/zipread.py` reads them.
 | `days.<date>.static` | The static GTFS downloads of that day, with the zip integrity check results |
 | `days.<date>.release_tag` | The release holding the files |
 | `days.<date>.code_sha` | Commit of the code that built the files |
+
+## `manifest/parsed.json`
+
+| Field | Meaning |
+|---|---|
+| `days.<date>.tables_version` | Version of the table code. A day is rebuilt when this changes |
+| `days.<date>.rows` | Rows in each table |
+| `days.<date>.fetches` | Per feed: fetches attempted, parsed, failed (no usable response), and bodies that could not be decoded |
+| `days.<date>.duplicate_keys` | Items that appeared twice in one message (both are kept) |
+| `days.<date>.raw_sha256` | SHA-256 of the raw file the tables were built from |
+| `days.<date>.files`, `release_tag`, `code_sha` | As in `manifest/raw.json` |
 
 ## The collector's live tables
 
