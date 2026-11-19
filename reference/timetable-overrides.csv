@@ -1,0 +1,36 @@
+route_short_name,printed_stop,passio_stop_ids,note
+6,Coupeville Ferry,178134,Engle Rd at Coupeville Ferry Terminal
+6,Coupeville Elementary,178399,Main St at Coupeville Elementary School
+6,WhidbeyHealth,197226;197253,Main St at Whidbey Health Medical Center
+4,NE Goldie St at WhidbeyHealth (North),197260;197264,Goldie Rd at Whidbey Health
+4,WhidbeyHealth at NE Goldie St,197260;197264,Goldie Rd at Whidbey Health
+411W,SE Goldie St at WhidbeyHealth North,197260;197264,Goldie Rd at Whidbey Health
+411W,March Point P&R,197263,March Point
+,Goldie Rd at WhidbeyHealth,197260;197264,Goldie Rd at Whidbey Health
+,NEX/Commissary at Seaplane Base,218444,Seaplane Base NEX/ Commisary
+10,SVC/OH Library,197268,Skagit Valley College/Library
+9,SW Ft Nugent Ave at Stremler Dr (Park Terrace),178310,Fort Nugent at Stremler Dr
+58,Bailey's Corner at Jewett Rd,197279;197285,Jewett Rd at Bailey's Store
+60,Langley at 3rd St & Anthes Ave,178388,Anthes Ave at Third St
+1C,Cama Beach at Welcome Center,178124,Cama Beach
+2C,Shuksan,197213,E Camano Dr at Shuksan Dr
+2C,Elger Bay Store,188843,Elger Bay Rd at Elger Bay Grocery
+3C,Haggen,178271,Haggen Grocery
+411C,Haggen,178271,Haggen Grocery
+411C,North Star,178267,Pioneer Hwy at North Star Cold Storage
+411C,Les Schwab,178307,Pioneer Hwy at Les Schwab
+2,N Oak Harbor St at Oak Hollow,,unresolved: no Passio stop named Oak Hollow on route 2
+60,Langley Rd at SR 525,,unresolved: route 60 has no Passio stop at SR 525 and Langley Rd
+1C,Chapman,,unresolved: Chapman and Rowe or Camano at Chapman Rd
+1C,Arrowhead Road,,unresolved: several Arrowhead Rd stops
+2C,Arrowhead Rd,,unresolved: several Arrowhead Rd stops
+2C,E Camano Drive at Elger Bay Rd,,unresolved: no Passio stop with this name
+2C,South Loop,,not a stop: an on-request loop
+3C,YMCA,,unresolved: landmark with no matching Passio stop name
+3C,CVS,,unresolved: landmark with no matching Passio stop name
+411C,CVS,,unresolved: landmark with no matching Passio stop name
+412,CVS,,unresolved: landmark with no matching Passio stop name
+411C,272nd at Pioneer Hwy,,unresolved: no Passio stop with this name
+9,NW Heller at NW 5th Ave (Hillcrest Elem),178148,Heller St at Hillcrest Elementary School
+9,SW Erie St at Walmart,178196;178323,Walmart at Erie St (both directions)
+9,SW Erie St at Walmart (northbound),178196;178323,Walmart at Erie St (both directions)
