@@ -28,3 +28,4 @@
 | 2026-11-19 | Stop crosswalk: same `stop_code` within 150 m, else nearest stop within 60 m | Codes match for most stops; a few shared codes point to stops kilometres apart; many NAS Whidbey stops have no code in Passio |
 | 2026-11-19 | Quality metrics are written to the `data` branch as one JSON file per day plus a headline CSV | Small, diffable, readable by the site without a server |
 | 2026-11-19 | Scheduled trips come from the Passio calendar even on holidays; Trillium's holiday removals are reported alongside | Passio is the schedule the real-time feed follows; mixing calendars would hide the disagreement |
+| 2026-11-19 | Treat Passio as the schedule in effect; use Trillium only for timepoint flags, and check those against the published timetables | Island Transit's website timetable (effective 2026-09-27) matches Passio on the route 1 trips checked and not Trillium, whose calendar dates from 2025-06-01 |

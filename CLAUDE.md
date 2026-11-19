@@ -34,7 +34,7 @@ Full design, metric definitions and phases: `docs/methods.md`,
 - Trip updates are predicted clock times, refresh about once a minute, and include upcoming trips that have no bus yet.
 - Real-time IDs match the **Passio** static GTFS, which is regenerated daily. The Passio zip sometimes arrives without its calendar files and central directory (seen at night, not in the morning); `pipeline/gtfs/zipread.py` reads it anyway.
 - Passio marks every stop as a timepoint with interpolated times. True timepoints come from the **Trillium** static GTFS, which uses different IDs (386 of 410 stop codes overlap).
-- **The Passio and Trillium schedules differ** (checked 2026-11-19): route 1 weekdays has 68 Passio trips from 03:35 and 43 Trillium trips from 03:45, at different times. Of 5,224 Passio stop times at true timepoints, 52% match a Trillium time exactly, 63% within 5 minutes. Timepoints are therefore taken per route and stop. Which schedule the agency treats as official is unknown; ask Island Transit before publishing on-time figures.
+- **The Passio and Trillium schedules differ, and Passio is the current one.** Davin checked islandtransit.org (schedule effective 2026-09-27) on 2026-11-19: route 1 weekday first southbound 3:35 from Coupeville Elementary, first northbound 4:35 from Clinton Ferry, Harbor Station early bus 3:55. Passio matches all three; Trillium has 3:45, 5:10 and 3:50 (its calendar says "Year-Round starting 6/1/2025"). Trillium is stale, so its timepoint flags may be too. Of 5,224 Passio stop times at Trillium timepoints, 52% match a Trillium time exactly. A service change is announced for 2026-12-27; the static version registry should pick it up as a new Passio version.
 - No license or terms were found for the feeds. See `LICENSE-DATA.md`.
 - Service runs roughly 3:35 AM to 8:25 PM Pacific on weekdays. No trip crosses midnight, so a service day is a Pacific calendar date.
 
@@ -78,5 +78,5 @@ python scripts/verify_feed.py     # feed fields and ID match; run in service hou
 - Send the Island Transit notice email (drafted in his Gmail, to `info@islandtransit.org`).
 - Pages setting (step 6), optional Porkbun CNAME `transit` to `dfladagermccullugh-bot.github.io`.
 - About 40 timed field observations for validation (step 7).
-- Ask Island Transit which static GTFS (Passio or Trillium) holds the official schedule; they differ. Could go in the notice email.
+- Optional: tell Island Transit their Trillium feed (data.trilliumtransit.com, used by trip planners) still has a pre-September schedule. Could go in the notice email.
 - Open question: move the repo from the `dfladagermccullugh-bot` account to his main account before announcing.
