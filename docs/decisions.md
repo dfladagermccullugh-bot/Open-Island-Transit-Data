@@ -17,3 +17,5 @@
 | 2026-11-19 | The collector checks its shared secret by asking the database, not from a function environment variable | Setup needs no manual step, and the secret never leaves the database |
 | 2026-11-19 | Download the Passio static GTFS twice a day (2:15 AM and 8:30 AM Pacific) | The zip was incomplete at night and complete in the morning; sampling both times measures that |
 | 2026-11-19 | Collection started 21:24:41 UTC | First logged fetch |
+| 2026-11-19 | Archive complete Pacific days shortly after midnight, not the same evening | A day is not finished until midnight; off-hours fetches belong to it |
+| 2026-11-19 | Collector version 0.2.0 from 21:37 UTC | Adds the prune step; fetching is unchanged |

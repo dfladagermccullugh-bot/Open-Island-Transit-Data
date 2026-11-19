@@ -1,0 +1,70 @@
+name: Nightly archive
+
+# Copies every complete service day from the collector to GitHub Releases and
+# records it in the manifest on the `data` branch. Runs after midnight Pacific
+# (08:35 UTC) with a second attempt later in the morning.
+on:
+  schedule:
+    - cron: "35 8 * * *"
+    - cron: "35 14 * * *"
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+concurrency:
+  group: nightly-archive
+  cancel-in-progress: false
+
+jobs:
+  archive:
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    env:
+      GH_TOKEN: ${{ github.token }}
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+          cache: pip
+      - run: pip install -e .
+
+      - name: Get the data branch (create it on the first run)
+        run: |
+          git init -q data-branch
+          cd data-branch
+          git remote add origin "https://x-access-token:${GH_TOKEN}@github.com/${GITHUB_REPOSITORY}.git"
+          if git fetch -q --depth 1 origin data; then
+            git checkout -q -b data FETCH_HEAD
+          else
+            git checkout -q --orphan data
+            printf '%s\n' "# Data branch" "" \
+              "Written by the nightly archive job. \`manifest/raw.json\` lists every" \
+              "archived service day, its files in GitHub Releases, and their hashes." > README.md
+          fi
+
+      - name: Archive pending days
+        id: archive
+        run: |
+          set +e
+          python -m pipeline.archive --pending --release \
+            --manifest data-branch/manifest/raw.json --out work/files
+          echo "code=$?" >> "$GITHUB_OUTPUT"
+
+      - name: Publish the manifest
+        run: |
+          cd data-branch
+          git add -A
+          if git diff --cached --quiet; then
+            echo "manifest unchanged"
+          else
+            git -c user.name="github-actions[bot]" \
+                -c user.email="41898282+github-actions[bot]@users.noreply.github.com" \
+                commit -q -m "Archive manifest $(date -u +%Y-%m-%dT%H:%MZ)"
+            git push -q origin data
+          fi
+
+      - name: Fail if any day could not be archived
+        if: steps.archive.outputs.code != '0'
+        run: exit 1

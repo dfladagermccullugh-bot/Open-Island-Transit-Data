@@ -28,7 +28,7 @@ repository.
    ```
 
 5. **Apply** `supabase/migrations/0002_schedule.sql`. Collection starts
-   within 20 seconds.
+   within 20 seconds. Then apply `0003_archive_support.sql`.
 
 6. **Check**:
 
@@ -39,6 +39,22 @@ repository.
 
    Each feed should show a successful fetch in the last minute (five minutes
    for alerts).
+
+## Archive, prune and watchdog
+
+- **Nightly archive** (`.github/workflows/nightly.yml`, `python -m pipeline.archive`):
+  after midnight Pacific, each complete service day is pulled from the
+  collector, written to files, uploaded to the month's GitHub Release, checked,
+  and then listed in `manifest/raw.json` on the `data` branch.
+- **Prune** (`prune-archived` cron job, `supabase/functions/collect/prune.ts`):
+  once a day the collector reads that manifest and deletes its own copy of a
+  day only if the day is at least 3 days old, every listed file can be
+  downloaded at its recorded size, and the database's row count and digest for
+  the day equal the manifest's. The fetch log is never deleted.
+- **Watchdog** (`.github/workflows/watchdog.yml`, `scripts/watchdog.py`): every
+  30 minutes; fails and opens an issue if a feed has no recent successful
+  fetch, the positions feed is empty in service hours, the collector is backing
+  off, or the database is filling up.
 
 ## To pause or stop
 

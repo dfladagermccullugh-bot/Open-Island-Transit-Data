@@ -6,9 +6,10 @@ that feed is as a source of data.
 
 **Status: collecting since 2026-11-19, 1:24 PM Pacific.** Vehicle positions
 and trip updates are fetched every 20 seconds, alerts every 5 minutes, and
-the schedule twice a day. The nightly archive, the derived tables and the
-public site are being built; until the archive is running, the data is
-readable from the collector directly (below).
+the schedule twice a day. Each complete day is copied to
+[GitHub Releases](https://github.com/dfladagermccullugh-bot/Open-Island-Transit-Data/releases)
+shortly after midnight Pacific ([codebook](docs/codebook.md)). The derived
+tables and the public site are being built.
 
 Live status of the collector:
 
@@ -68,10 +69,11 @@ flowchart LR
 |---|---|
 | `supabase/migrations/` | Collector tables, scheduler, public read-only views |
 | `supabase/functions/collect/` | The collector function and its tests |
-| `pipeline/` | Parsing and analysis code (Python) |
+| `pipeline/` | Archive, parsing and analysis code (Python) |
+| `scripts/watchdog.py` | Checks that collection is still running |
 | `scripts/verify_feed.py` | Feed check: fields, freshness, ID matching |
 | `tests/` | Tests and fixtures |
-| `docs/` | Methods, feed checks, decisions, collector setup |
+| `docs/` | Methods, codebook, feed checks, decisions, collector setup |
 
 ## Run the checks yourself
 

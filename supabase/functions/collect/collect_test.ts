@@ -2,6 +2,7 @@
 import { assertEquals, assertThrows } from "jsr:@std/assert@1";
 import { summariseFeed } from "./protobuf.ts";
 import { scanZip } from "./zipscan.ts";
+import { daysToPrune, type Manifest, pacificDate } from "./prune.ts";
 
 const fixture = (name: string) =>
   Deno.readFileSync(new URL(`../../../tests/fixtures/${name}`, import.meta.url));
@@ -62,4 +63,60 @@ Deno.test("real Island Transit trip updates (2026-11-19 07:35 PT)", () => {
   const s = summariseFeed(fixture("islandtransit_tripUpdates_20261119T0731.pb"));
   assertEquals(s.entityCount > 20, true);
   assertEquals(s.newestEntityTs !== null, true);
+});
+
+const entry = (day: string, tag: string | null = "raw-2026-11") => ({
+  service_date: day,
+  raw_rows: 10,
+  digest: "x",
+  release_tag: tag ?? undefined,
+  files: [{ name: `raw-${day}.parquet`, bytes: 1, sha256: "y" }],
+});
+
+Deno.test("pacificDate follows Pacific midnight, not UTC", () => {
+  assertEquals(pacificDate(new Date("2026-11-20T07:59:59Z")), "2026-11-19");
+  assertEquals(pacificDate(new Date("2026-11-20T08:00:00Z")), "2026-11-20");
+  assertEquals(pacificDate(new Date("2027-07-01T06:59:59Z")), "2027-06-30"); // PDT
+});
+
+Deno.test("prune: only archived days at least 3 days old", () => {
+  const manifest: Manifest = {
+    days: {
+      "2026-11-19": entry("2026-11-19"),
+      "2026-11-20": entry("2026-11-20"),
+      // 2026-11-21 was never archived
+      "2026-11-22": entry("2026-11-22"),
+      "2026-11-23": entry("2026-11-23"),
+      "2026-11-24": entry("2026-11-24"),
+    },
+  };
+  const now = new Date("2026-11-25T20:00:00Z"); // Nov 25, noon Pacific
+  assertEquals(daysToPrune(manifest, "2026-11-19T21:24:41Z", now), [
+    "2026-11-19",
+    "2026-11-20",
+    "2026-11-22",
+  ]);
+  // Older days already pruned: start from the oldest day that still has data.
+  assertEquals(daysToPrune(manifest, "2026-11-22T09:00:00Z", now), ["2026-11-22"]);
+});
+
+Deno.test("prune: nothing without stored data, a manifest entry, or a release tag", () => {
+  const now = new Date("2026-11-25T20:00:00Z");
+  assertEquals(daysToPrune({ days: {} }, "2026-11-19T21:24:41Z", now), []);
+  assertEquals(daysToPrune({ days: { "2026-11-19": entry("2026-11-19") } }, null, now), []);
+  assertEquals(
+    daysToPrune({ days: { "2026-11-19": entry("2026-11-19", null) } }, "2026-11-19T21:24:41Z", now),
+    [],
+  );
+});
+
+Deno.test("prune: capped per run", () => {
+  const days: Manifest["days"] = {};
+  for (let d = 1; d <= 28; d++) {
+    const day = `2026-10-${String(d).padStart(2, "0")}`;
+    days[day] = entry(day, "raw-2026-10");
+  }
+  const got = daysToPrune({ days }, "2026-10-01T10:00:00Z", new Date("2026-11-25T20:00:00Z"));
+  assertEquals(got.length, 14);
+  assertEquals(got[0], "2026-10-01");
 });

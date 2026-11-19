@@ -3,6 +3,7 @@
 // Invoked by pg_cron (see supabase/migrations/0002_schedule.sql).
 //   { kind: "realtime", targets: ["vehiclePositions", "tripUpdates"], scheduled_at }
 //   { kind: "static",   targets: ["passio"],                          scheduled_at }
+//   { kind: "prune" }   delete days already archived on GitHub (see prune.ts)
 //
 // For every target it makes one HTTP request, stores the exact response bytes
 // and logs the attempt, whatever the outcome. It never retries within a tick:
@@ -11,10 +12,14 @@
 import { encodeBase64 } from "jsr:@std/encoding@1/base64";
 import { summariseFeed } from "./protobuf.ts";
 import { scanZip } from "./zipscan.ts";
+import { assetUrl, daysToPrune, type Manifest } from "./prune.ts";
 
-const VERSION = "collect/0.1.1";
+const VERSION = "collect/0.2.0";
 const USER_AGENT =
   "OpenIslandTransitData/0.1 (+https://github.com/dfladagermccullugh-bot/Open-Island-Transit-Data)";
+
+const REPO = "dfladagermccullugh-bot/Open-Island-Transit-Data";
+const MANIFEST_URL = `https://raw.githubusercontent.com/${REPO}/data/manifest/raw.json`;
 
 const REALTIME_BASE = "https://passio3.com/islandtransit/passioTransit/gtfs/realtime/";
 const REALTIME_FEEDS = new Set(["vehiclePositions", "tripUpdates", "serviceAlerts"]);
@@ -170,6 +175,63 @@ async function rpc(name: string, args: Json): Promise<unknown> {
   return await res.json();
 }
 
+async function assetConfirmed(tag: string, name: string, bytes: number): Promise<boolean> {
+  const res = await fetch(assetUrl(REPO, tag, name), {
+    method: "HEAD",
+    headers: { "User-Agent": USER_AGENT },
+    redirect: "follow",
+    signal: AbortSignal.timeout(20_000),
+  });
+  await res.body?.cancel();
+  if (!res.ok) return false;
+  const length = res.headers.get("content-length");
+  return length === null || Number(length) === bytes;
+}
+
+async function prune(): Promise<Json> {
+  const res = await fetch(MANIFEST_URL, {
+    headers: { "User-Agent": USER_AGENT },
+    signal: AbortSignal.timeout(20_000),
+  });
+  if (res.status === 404) {
+    await res.body?.cancel();
+    return { ok: true, note: "no archive manifest yet", days: [] };
+  }
+  if (!res.ok) throw new Error(`manifest: HTTP ${res.status}`);
+  const manifest = (await res.json()) as Manifest;
+
+  const health = (await rpc("collector_health", {})) as { oldest_raw_at: string | null }[];
+  const days = daysToPrune(manifest, health[0]?.oldest_raw_at ?? null, new Date());
+
+  const results: Json[] = [];
+  for (const day of days) {
+    const entry = manifest.days[day];
+    try {
+      for (const f of entry.files) {
+        if (!(await assetConfirmed(entry.release_tag!, f.name, f.bytes))) {
+          throw new Error(`archive file not confirmed: ${f.name}`);
+        }
+      }
+      const deleted = await rpc("prune_raw", {
+        p_date: day,
+        p_raw_rows: entry.raw_rows,
+        p_digest: entry.digest,
+      });
+      const archivedStatic = (entry.static ?? []).filter((s) => s.file && s.sha256);
+      const staticCleared = archivedStatic.length
+        ? await rpc("prune_static", {
+          p_ids: archivedStatic.map((s) => s.static_fetch_id),
+          p_sha256: archivedStatic.map((s) => s.sha256),
+        })
+        : 0;
+      results.push({ day, deleted, static_cleared: staticCleared });
+    } catch (err) {
+      results.push({ day, error: (err as Error).message.slice(0, 300) });
+    }
+  }
+  return { ok: true, days: results };
+}
+
 function sameSecret(a: string, b: string): boolean {
   if (a.length !== b.length) return false;
   let diff = 0;
@@ -223,6 +285,9 @@ Deno.serve(async (req: Request) => {
         await rpc("record_static", { p_row: await collectStatic(source) });
       }
       return Response.json({ ok: true, recorded: sources.length });
+    }
+    if (payload.kind === "prune") {
+      return Response.json(await prune());
     }
     return new Response("unknown kind", { status: 400 });
   } catch (err) {
