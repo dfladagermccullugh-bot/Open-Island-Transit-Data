@@ -69,3 +69,72 @@ def test_field_population():
 def test_garbage_raises():
     with pytest.raises(DecodeError):
         parse_feed(b"<html>502 Bad Gateway</html>")
+
+
+# Real responses from Island Transit, saved by scripts/verify_feed.py at
+# 07:35 Pacific on Thursday 2026-11-19.
+REAL_VP = FIXTURES / "islandtransit_vehiclePositions_20261119T0731.pb"
+REAL_TU = FIXTURES / "islandtransit_tripUpdates_20261119T0731.pb"
+REAL_ALERTS = FIXTURES / "islandtransit_serviceAlerts_20261119T0731.pb"
+
+
+def test_real_vehicle_positions():
+    feed = parse_feed(REAL_VP.read_bytes())
+    assert feed.entity_count == 20
+    assert len(feed.vehicles) == 20
+    assert feed.trip_update_stops == [] and feed.alerts == []
+
+    pop = field_population(feed.vehicles)
+    always = (
+        "vehicle_id",
+        "vehicle_label",
+        "vehicle_ts",
+        "trip_id",
+        "route_id",
+        "lat",
+        "lon",
+        "bearing",
+        "speed",
+        "current_stop_sequence",
+        "stop_id",
+        "occupancy_status",
+    )
+    never = ("start_date", "start_time", "direction_id", "current_status", "odometer")
+    assert all(pop[f] == 1.0 for f in always)
+    assert all(pop[f] == 0.0 for f in never)
+
+    # Positions fall on or near Whidbey and Camano Islands.
+    assert all(47.8 < v["lat"] < 48.6 and -122.9 < v["lon"] < -122.0 for v in feed.vehicles)
+    # Vehicle timestamps are close to the header time, never after it.
+    assert all(0 <= feed.header_ts - v["vehicle_ts"] < 600 for v in feed.vehicles)
+    assert {v["occupancy_status"] for v in feed.vehicles} <= {
+        "EMPTY",
+        "MANY_SEATS_AVAILABLE",
+        "FEW_SEATS_AVAILABLE",
+        "STANDING_ROOM_ONLY",
+        "CRUSHED_STANDING_ROOM_ONLY",
+        "FULL",
+        "NOT_ACCEPTING_PASSENGERS",
+    }
+    assert len({v["vehicle_id"] for v in feed.vehicles}) == 20
+
+
+def test_real_trip_updates():
+    feed = parse_feed(REAL_TU.read_bytes())
+    assert len(feed.trip_updates) == feed.entity_count
+    assert len(feed.trip_update_stops) == sum(
+        t["stop_time_update_count"] for t in feed.trip_updates
+    )
+    assert len(feed.trip_update_stops) > 100
+
+    pop = field_population(feed.trip_update_stops)
+    assert pop["trip_id"] == pop["stop_id"] == pop["stop_sequence"] == 1.0
+    assert pop["arrival_time"] == pop["departure_time"] == 1.0
+    # Predictions are clock times; the feed never sends a delay.
+    assert pop["arrival_delay"] == pop["departure_delay"] == pop["trip_delay"] == 0.0
+    assert all(s["departure_time"] >= s["arrival_time"] for s in feed.trip_update_stops)
+
+
+def test_real_alerts_feed_is_empty():
+    feed = parse_feed(REAL_ALERTS.read_bytes())
+    assert feed.entity_count == 0

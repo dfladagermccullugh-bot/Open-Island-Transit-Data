@@ -11,3 +11,6 @@
 | 2026-11-18 | Identify the collector by project name and repository URL in the User-Agent | Lets the host see who is polling and where to complain |
 | 2026-11-18 | On-time window: 1 minute early to 5 minutes late, at true timepoints only | Common agency convention; Passio schedule times at other stops are interpolated |
 | 2026-11-18 | One collector function for real-time and static downloads | Fewer parts to deploy than the two functions first planned |
+| 2026-11-19 | Keep polling trip updates every 20 s although they refresh about once a minute | Cheap, and the refresh rate is itself something to measure; revisit after a week of data |
+| 2026-11-19 | Limit prediction-error figures to trips matched to a reporting vehicle | The trip-update feed also lists upcoming trips that have no bus yet |
+| 2026-11-19 | Use the feed's speed field to detect stationary buses | Present on every vehicle in the daytime check |

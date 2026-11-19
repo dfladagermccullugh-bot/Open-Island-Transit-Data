@@ -49,3 +49,17 @@ Deno.test("zip cut off before its directory: flagged, entries still listed", () 
   assertEquals(z.hasDirectory, false);
   assertEquals(z.files, ["agency.txt", "stops.txt", "routes.txt", "trips.txt", "stop_times.txt"]);
 });
+
+Deno.test("real Island Transit vehicle positions (2026-11-19 07:35 PT)", () => {
+  const s = summariseFeed(fixture("islandtransit_vehiclePositions_20261119T0731.pb"));
+  assertEquals(s.entityCount, 20);
+  // Newest vehicle timestamp is at or just before the header time.
+  const lag = s.headerTs! - s.newestEntityTs!;
+  assertEquals(lag >= 0 && lag < 60, true);
+});
+
+Deno.test("real Island Transit trip updates (2026-11-19 07:35 PT)", () => {
+  const s = summariseFeed(fixture("islandtransit_tripUpdates_20261119T0731.pb"));
+  assertEquals(s.entityCount > 20, true);
+  assertEquals(s.newestEntityTs !== null, true);
+});

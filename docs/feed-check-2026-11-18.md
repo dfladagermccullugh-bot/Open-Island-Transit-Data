@@ -2,8 +2,9 @@
 
 First check of the feeds, run 22:50–23:30 Pacific on Wednesday 2026-11-18.
 Island Transit's last scheduled trip ends at 20:25, so no buses were in
-service. A daytime check follows; its report will be added as
-`docs/feed-check-daytime.md` by `scripts/verify_feed.py`.
+service. The daytime check ran the next morning; its report is
+[`feed-check-daytime.md`](feed-check-daytime.md), written by
+`scripts/verify_feed.py`.
 
 ## Results
 
@@ -45,10 +46,16 @@ From islandtransit.org: Whidbey Monday–Friday 3:45 AM–7:50 PM, weekends
 7:30 AM–6:00 PM. In the schedule no trip runs past midnight, so the service
 date is the Pacific calendar date.
 
-## Open after this check
+## Answered by the daytime check (2026-11-19, 07:31 Pacific)
 
-- Fields actually populated in Island Transit's own feed.
-- Whether Island Transit publishes trip updates, and whether they differ
-  from the schedule.
-- Whether real-time IDs match the Passio static GTFS.
-- Whether the Passio static zip is incomplete at other times of day.
+- **Fields:** every vehicle carried vehicle ID and label, trip ID, route ID,
+  position, bearing, speed, stop sequence, stop ID, timestamp and occupancy.
+  Never sent: `start_date`, `start_time`, `direction_id`, `current_status`.
+- **Trip updates:** published, as predicted clock times with no `delay`
+  field. 1 of 544 stop predictions equalled the schedule, so they are real
+  predictions. Their content changed on 4 of 11 polls at 20-second spacing.
+- **ID match:** all real-time trip, route and stop IDs were found in the
+  Passio static GTFS.
+- **Static zip:** complete at 07:40 Pacific, with `calendar.txt` (no
+  `calendar_dates.txt`). The incomplete zip seen the night before was
+  therefore intermittent. Every download is still checked.

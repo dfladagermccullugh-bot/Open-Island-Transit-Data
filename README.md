@@ -4,9 +4,11 @@ A public archive of the real-time bus feeds published by Island Transit
 (Whidbey and Camano Islands, Washington), with daily measurements of how good
 that feed is as a source of data.
 
-**Status (2026-11-19): under construction. Collection has not started yet.**
-The collector code and its tests are in this repository; deployment is the
-next step. This line is updated when the first data arrives.
+**Status (2026-11-19): the feed has been checked and is usable; collection
+has not started yet.** A check during service hours found 20 buses reporting
+with trip, position, speed and timestamp, and every ID matching the published
+schedule ([report](docs/feed-check-daytime.md)). The collector code and its
+tests are in this repository; deployment is the next step.
 
 ## What this is
 
