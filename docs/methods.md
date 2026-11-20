@@ -178,3 +178,20 @@ On-time figures are labelled experimental until all three hold:
 2. Inferred stop events agree with the feed's own `current_stop_sequence`
    changes.
 3. No negative segment travel times or impossible speeds remain unexplained.
+
+Checks 2 and 3 run every night (`pipeline/events/validate.py`) and are
+written to `validation` in `ontime/days/<date>.json`:
+
+- Check 2: the feed's `current_stop_sequence` is the stop the bus is
+  heading for. When the bus passes stop k it changes to k + 1, somewhere
+  between the last report showing k or less and the first showing more. An
+  inferred departure agrees if it lies in that interval, widened by 30 s.
+  First and last stops are left out. On 2026-11-19, 95% of 2,902 inferred
+  departures agreed; the first report naming the next stop came a median
+  3.8 s after the inferred departure.
+- Check 3: consecutive inferred times along a trip (departure from one stop,
+  arrival at the next) must not run backwards or exceed 35 m/s. Segments
+  across a stretch the bus left out are not measured. On 2026-11-19 none ran
+  backwards; 29 of 5,919 exceeded 35 m/s, all within single 16 to 40 s
+  gaps between reports on fast roads, where the projection can advance up
+  to the 35 m/s search limit. The fastest are listed in the day file.

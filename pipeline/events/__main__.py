@@ -33,6 +33,7 @@ from pipeline import release
 from pipeline.config import COLLECTION_START, REPO
 from pipeline.events.infer import EVENTS_VERSION, infer_day
 from pipeline.events.ontime import summarize
+from pipeline.events.validate import validate
 from pipeline.gtfs.schedule import route_names
 from pipeline.gtfs.zipread import read_zip
 
@@ -89,6 +90,7 @@ DAILY = [
     "late",
     "on_time_share_of_observed",
     "deviation_s_median",
+    "feed_agreement_share",
     "ontime_version",
 ]
 
@@ -176,8 +178,12 @@ def build(day: date, data: Path, raw_dir: Path, tables_dir: Path, out: Path, rep
             "timepoints": pins["timepoints"],
             "events_version": EVENTS_VERSION,
             "routes": route_names(passio),
+            "validation": validate(events, vehicles),
         }
     )
+    summary["feed_agreement_share"] = summary["validation"]["feed_agreement"][
+        "within_tolerance_share"
+    ]
     return {
         "entry": {
             "service_date": d,

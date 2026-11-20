@@ -90,6 +90,32 @@ html`${routes.length === 0 ? "" : Inputs.table(routes, {
   format: {observed_share: d => pct(d), on_time_share_of_observed: d => pct(d)}, rows: 30})}`
 ```
 
+## Automatic checks of the method
+
+Two checks run every day without field data ([Methods](methods.qmd),
+section 5). Each bus report names the stop the bus is heading for; when the
+bus passes a stop, that changes to the next one. An inferred departure
+agrees with the feed when it falls between the last report naming that stop
+and the first naming a later one, give or take 30 seconds. Travel between
+consecutive inferred times should never run backwards or faster than
+126 km/h.
+
+```{ojs}
+//| echo: false
+val = latest?.validation ?? null
+checks = val == null ? [] : [
+  ["Inferred departures compared with the feed", val.feed_agreement.compared],
+  ["Agree with the feed's change of stop (within 30 s)", pct(val.feed_agreement.within_tolerance_share, 1)],
+  ["Median time from inferred departure to the first report naming the next stop",
+    `${num(val.feed_agreement.feed_change_after_departure_s.median, 1)} s`],
+  ["Times the feed's stop sequence went backwards within a trip", val.feed_agreement.feed_sequence_going_backwards],
+  ["Segments between inferred times", val.travel_times.segments],
+  ["Segments running backwards in time", val.travel_times.negative],
+  ["Segments faster than 126 km/h", val.travel_times.over_max_speed],
+].map(([check, value]) => ({check, value}))
+html`${checks.length === 0 ? noData() : Inputs.table(checks, {header: {check: "Check", value: "Result"}, rows: 10})}`
+```
+
 Daily figures as a file:
 [`ontime/daily.csv`](https://github.com/dfladagermccullugh-bot/Open-Island-Transit-Data/blob/data/ontime/daily.csv).
 Every inferred arrival and departure is in the `stop-events` files in the

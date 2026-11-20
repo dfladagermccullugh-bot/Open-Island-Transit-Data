@@ -196,7 +196,12 @@ scheduled timepoint events: a trip's scheduled time at one of its true
 timepoints. `observed_share` is always reported next to the on-time share;
 events with no inferred time are never counted as late. Events scheduled
 before collection began are left out. Each day file also breaks the counts
-down by route and by Pacific hour.
+down by route and by Pacific hour. `validation` holds the automatic checks of the method
+(`pipeline/events/validate.py`, `docs/methods.md`, section 5): agreement of
+inferred departures with the feed's `current_stop_sequence`, overall and by
+route, and segment travel times that run backwards or exceed 35 m/s, with
+the fastest listed. `daily.csv` carries the agreement share as
+`feed_agreement_share`.
 
 ## `quality/`
 
