@@ -29,6 +29,8 @@ series = [
   {key: "stale_in_service_rate", title: "Stale vehicle feed while buses are scheduled", unit: "share"},
   {key: "position_age_s_median", title: "Median age of positions when first seen (s)", unit: "s"},
   {key: "longest_gap_s_median", title: "Median longest gap in a trip's positions (s)", unit: "s"},
+  {key: "timepoint_coverage", title: "Timepoint events with an inferred time (experimental)", unit: "share"},
+  {key: "prediction_mae_s_5min", title: "Arrival prediction error 5 minutes ahead, mean absolute (s, experimental)", unit: "s"},
 ]
 html`${days.length === 0 ? noData() : html`<div class="grid">${series.map(s => html`<div class="g-col-12 g-col-md-6">
   <h4 style="font-size:1rem">${s.title}</h4>
@@ -76,6 +78,47 @@ html`${byRoute.length === 0 ? noData() : Plot.plot({
 })}`
 ```
 
+### Timepoint events observed, by route (experimental)
+
+Scheduled departures at printed timepoints (arrivals at a trip's last stop)
+for which a time could be inferred from vehicle positions.
+
+```{ojs}
+//| echo: false
+ev = latest?.events ?? null
+stopRoute = ev == null ? [] : Object.entries(ev.stop_coverage.timepoints.by_route).map(([id, c]) => ({
+  route: routeLabel(latest.routes, id), ...c,
+  off_shape_share: ev.shape_fit.by_route[id]?.off_shape_share ?? null}))
+html`${stopRoute.length === 0 ? noData() : Plot.plot({
+  style: {background: "transparent"},
+  marginLeft: 220, height: 28 * stopRoute.length + 40,
+  x: {domain: [0, 1], grid: true, label: "Share of scheduled timepoint events observed", tickFormat: d => `${Math.round(d * 100)}%`},
+  y: {label: null},
+  marks: [
+    Plot.barX(stopRoute, {y: "route", x: "coverage", fill: SERIES, rx: 2, sort: {y: "x", reverse: true}}),
+    Plot.ruleX([0]),
+    Plot.tip(stopRoute, Plot.pointerY({y: "route", x: "coverage",
+      title: d => `${d.route}\n${d.observed} of ${d.scheduled} events (${pct(d.coverage)})\nPositions off the route shape: ${pct(d.off_shape_share, 1)}`})),
+  ],
+})}`
+```
+
+### Arrival predictions (experimental)
+
+The feed's predicted arrival time, as published a given number of minutes
+before the bus arrived, minus the arrival time inferred from vehicle
+positions. A positive error means the bus came earlier than predicted.
+Predictions dated on another day than the trip are counted separately and
+left out of the error figures.
+
+```{ojs}
+//| echo: false
+pred = ev == null ? [] : Object.entries(ev.prediction_error.by_horizon_min).map(([h, b]) => ({
+  "Minutes ahead": +h, "Predictions": b.n, "Mean error (s)": b.bias_s, "Median error (s)": b.median_s,
+  "Mean absolute error (s)": b.mae_s, "Within 60 s": b.within_60s_share, "Dated another day": b.other_day}))
+html`${pred.length === 0 ? noData() : Inputs.table(pred, {format: {"Within 60 s": d => pct(d, 1)}, rows: 10})}`
+```
+
 ### Fields the feed leaves empty
 
 Share of position reports in which each field is missing. A field missing
@@ -104,8 +147,17 @@ other = latest == null ? [] : [
   ["Stop ids found in the schedule", pct(latest.processing.id_match.stop_id.match_rate, 1)],
   ["Median response time, vehicle positions", `${num(latest.paradata.vehiclePositions.latency_ms_median)} ms`],
   ["Distinct vehicles reporting", latest.coverage.vehicles_seen],
+  ...(ev == null ? [] : [
+    ["All stop events with an inferred time (experimental)", pct(ev.stop_coverage.all_stops.coverage, 1)],
+    ["Positions more than 100 m off the route shape", pct(ev.shape_fit.off_shape_share, 1)],
+    ["Positions moving against the route shape", pct(ev.shape_fit.wrong_direction_share, 1)],
+    ["Trip ids seen that are not scheduled that day", `${ev.assignment.unassignable} of ${ev.assignment.observed_trip_ids}`],
+    ["Position jitter at terminals, 95th percentile", `${num(ev.jitter.jitter_m_p95, 1)} m`],
+    ["Vehicles seen in the previous 30 days but not this day",
+      ev.missing_vehicles.missing_count == null ? "no earlier days" : ev.missing_vehicles.missing_count],
+  ]),
 ].map(([measure, value]) => ({measure, value}))
-html`${other.length === 0 ? noData() : Inputs.table(other, {header: {measure: "Measure", value: "Value"}, rows: 20})}`
+html`${other.length === 0 ? noData() : Inputs.table(other, {header: {measure: "Measure", value: "Value"}, rows: 30})}`
 ```
 
 ## All days

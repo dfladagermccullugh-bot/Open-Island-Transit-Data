@@ -32,9 +32,25 @@ Implemented in `pipeline/quality/metrics.py`. Notes on the implementation:
 - On the first day of collection only trips that had not ended when
   collection began count as scheduled.
 - Position age is measured at the first fetch that returned a position.
-- Not yet computed (they need stop events or shapes): stop-level coverage,
-  vehicles missing against the previous 30 days, randomness of gaps,
-  off-shape positions, jitter, prediction error, unassignable trips.
+- Metrics built on inferred stop events (stop-level coverage, off-shape
+  positions, prediction error) are in `pipeline/quality/stops.py`, grouped
+  under `events` in the day file, and labelled experimental like the events.
+- Stop-level coverage uses the same measured time as the on-time figures:
+  departure, or arrival at a trip's last stop. Off-shape counts are of
+  reports within a trip's scheduled window, from `trip-tracks`.
+- Prediction error compares each observed stop event with the prediction
+  being published the given number of minutes before it (a prediction
+  counts until 30 s after the last fetch that returned it). The feed sends
+  no `start_date`, and on 2026-11-19 about 1 to 2% of predictions made 1 to
+  5 minutes ahead were clock times on the next day. Those are counted as
+  "dated another day" and left out of the error figures.
+- Jitter: a dwell is 3 or more consecutive reports of one vehicle, each
+  under 0.5 m/s and within 150 m of a trip's first or last stop, at most
+  120 s apart; jitter is each report's distance from the dwell's median
+  position. Speed is as reported by the vehicle.
+- Vehicles missing against the previous 30 days uses the days that have a
+  quality file, so it is empty on the first day.
+- Not yet computed: randomness of gaps (needs several weeks of days).
 
 ### Coverage
 

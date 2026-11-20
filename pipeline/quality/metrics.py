@@ -6,9 +6,8 @@ Inputs for one service day:
   trips      scheduled trips from the pinned Passio static version
   static_ids trip, route and stop ids in that version
 
-Metrics that need inferred stop events (stop-level coverage, prediction
-error) or trip shapes (off-shape positions, jitter) are added with the
-arrival inference.
+Metrics that need inferred stop events or trip shapes are in
+``pipeline/quality/stops.py``.
 """
 
 from __future__ import annotations
@@ -24,7 +23,7 @@ from pipeline.archive.days import day_bounds
 from pipeline.config import PACIFIC
 from pipeline.gtfs.schedule import ServiceWindows, Trip
 
-QUALITY_VERSION = "quality/0.1.0"
+QUALITY_VERSION = "quality/0.2.0"
 
 Row = dict[str, Any]
 

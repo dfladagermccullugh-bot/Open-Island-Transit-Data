@@ -1,0 +1,161 @@
+from datetime import UTC, date, datetime, timedelta
+
+from pipeline.quality.stops import (
+    assignment,
+    jitter,
+    missing_vehicles,
+    prediction_error,
+    shape_fit,
+    stop_coverage,
+)
+
+T0 = datetime(2026, 11, 19, 20, 0, tzinfo=UTC)  # 12:00 Pacific
+
+
+def at(minutes: float) -> datetime:
+    return T0 + timedelta(minutes=minutes)
+
+
+def event(seq, sched_min, dep_min=None, arr_min=None, first=False, last=False, tp=True, **kw):
+    row = {
+        "trip_id": "A",
+        "route_id": "R1",
+        "stop_sequence": seq,
+        "is_first_stop": first,
+        "is_last_stop": last,
+        "is_timepoint": tp,
+        "scheduled_arrival": at(sched_min),
+        "scheduled_departure": at(sched_min),
+        "arrival_time": at(arr_min) if arr_min is not None else None,
+        "departure_time": at(dep_min) if dep_min is not None else None,
+        "arrival_status": "observed" if arr_min is not None else "gap",
+        "departure_status": "observed" if dep_min is not None else "not_reached",
+    }
+    row.update(kw)
+    return row
+
+
+def test_stop_coverage_counts_measured_time_and_reasons():
+    events = [
+        event(1, 0, dep_min=1, first=True),
+        event(2, 10, arr_min=10, tp=False),  # departure missing: not observed
+        event(3, 20, arr_min=21, last=True),  # last stop: arrival counts
+        event(4, -600, dep_min=-600),  # before collection: left out
+    ]
+    out = stop_coverage(events, T0 - timedelta(hours=1))
+    assert out["timepoints"]["scheduled"] == 2
+    assert out["timepoints"]["coverage"] == 1.0
+    assert out["all_stops"]["scheduled"] == 3
+    assert out["all_stops"]["observed"] == 2
+    assert out["all_stops"]["not_observed_by_reason"] == {"not_reached": 1}
+
+
+def track(route, reports, off, wrong, used=None, vehicles=1):
+    return {
+        "route_id": route,
+        "position_reports": reports,
+        "off_shape_reports": off,
+        "wrong_direction_reports": wrong,
+        "reports_used": reports - off - wrong if used is None else used,
+        "vehicles_with_trip_id": vehicles,
+    }
+
+
+def test_shape_fit_and_assignment():
+    tracks = [track("R1", 100, 10, 2), track("R2", 0, 0, 0), track("R2", 50, 50, 0, vehicles=2)]
+    fit = shape_fit(tracks)
+    assert fit["off_shape"] == 60
+    assert fit["off_shape_share"] == 0.4
+    assert fit["by_route"]["R2"]["off_shape_share"] == 1.0
+    vehicles = [{"trip_id": t} for t in ("A", "B", "X", None)]
+    a = assignment(vehicles, tracks, static_trip_ids={"A", "B", "C"}, todays_trip_ids={"A", "C"})
+    assert a["observed_trip_ids"] == 3
+    assert a["trip_id_not_in_static"] == ["X"]
+    assert a["trip_not_scheduled_today"] == ["B"]
+    assert a["unassignable"] == 2
+    assert a["trips_with_no_usable_report"] == 1
+    assert a["trips_with_more_than_one_vehicle"] == 1
+
+
+def prediction(seq, predicted_min, from_min, to_min):
+    return {
+        "trip_id": "A",
+        "stop_sequence": seq,
+        "arrival_time": at(predicted_min),
+        "departure_time": at(predicted_min) + timedelta(seconds=1),
+        "first_requested_at": at(from_min),
+        "last_requested_at": at(to_min),
+    }
+
+
+def test_prediction_error_uses_prediction_in_force_at_each_horizon():
+    events = [event(2, 30, arr_min=30, dep_min=31)]  # actual arrival at minute 30
+    preds = [
+        prediction(2, 29, 24, 29.5),  # in force 5, 2 and 1 minute ahead
+        prediction(2, 33, 0, 12),  # in force 30 minutes ahead
+        prediction(2, 31, 12.2, 16),  # in force 15 minutes ahead
+    ]
+    out = prediction_error(preds, events)["by_horizon_min"]
+    assert out["1"]["n"] == 1 and out["1"]["bias_s"] == -60.0
+    assert out["5"]["within_60s_share"] == 1.0
+    assert out["15"]["bias_s"] == 60.0
+    assert out["30"]["bias_s"] == 180.0
+    # 10 minutes ahead (minute 20): the latest run had stopped being fetched
+    # at minute 16, more than 30 s earlier, so no prediction was in force.
+    assert out["10"]["n"] == 0
+
+
+def test_prediction_error_sets_aside_other_day_predictions():
+    events = [event(2, 30, arr_min=30)]
+    preds = [prediction(2, 30 + 15 * 60, 20, 40)]  # 03:30 Pacific the next day
+    out = prediction_error(preds, events)["by_horizon_min"]["5"]
+    assert out["n"] == 0 and out["other_day"] == 1 and out["other_day_share"] == 1.0
+
+
+def report(vehicle, minute, lat, lon, speed=0.0):
+    return {"vehicle_key": vehicle, "vehicle_ts": at(minute), "lat": lat, "lon": lon,
+            "speed": speed}  # fmt: skip
+
+
+def test_jitter_needs_stationary_reports_at_a_terminal():
+    term = (48.2, -122.6)
+    rows = [report("v1", k, 48.2 + 0.00001 * k, -122.6) for k in range(4)]  # ~1 m steps
+    rows += [report("v1", 4, 48.2, -122.6, speed=8.0)]  # moving: ends the dwell
+    rows += [report("v2", k, 48.3, -122.6) for k in range(5)]  # not at a terminal
+    rows += [report("v3", k * 3, 48.2, -122.6) for k in range(4)]  # 3 min apart: no dwell
+    out = jitter(rows, [term])
+    assert out["dwells"] == 1
+    assert out["reports"] == 4
+    assert 0.5 < out["jitter_m_p95"] < 2.5
+
+
+def test_missing_vehicles():
+    out = missing_vehicles({"1", "3"}, {"2026-11-18": ["1", "2"], "2026-11-17": ["2"]})
+    assert out["missing_today"] == ["2"] and out["missing_count"] == 1
+    assert out["new_today"] == ["3"]
+    first = missing_vehicles({"1"}, {})
+    assert first["missing_count"] is None and first["new_today"] == []
+
+
+def test_pending_recomputes_when_stop_events_change(tmp_path):
+    import json
+
+    from pipeline.quality.__main__ import pending
+    from pipeline.quality.metrics import QUALITY_VERSION
+
+    day = "2026-11-19"
+    parsed = {"days": {day: {"release_tag": "parsed-2026-11"}}}
+    static = {"days": {day: {"passio": {"version": "p1"}}}}
+
+    def events(sha):
+        files = [{"name": f"stop-events-{day}.parquet", "sha256": sha}]
+        return {"days": {day: {"release_tag": "parsed-2026-11", "files": files}}}
+
+    (tmp_path / "days").mkdir()
+    f = tmp_path / "days" / f"{day}.json"
+    assert pending(parsed, static, tmp_path, events("a")) == [date(2026, 11, 19)]
+    f.write_text(json.dumps({"quality_version": QUALITY_VERSION,
+                             "inputs": {"stop_events_sha256": "a"}}))  # fmt: skip
+    assert pending(parsed, static, tmp_path, events("a")) == []
+    assert pending(parsed, static, tmp_path, events("b")) == [date(2026, 11, 19)]
+    assert pending(parsed, static, tmp_path, {"days": {}}) == [date(2026, 11, 19)]

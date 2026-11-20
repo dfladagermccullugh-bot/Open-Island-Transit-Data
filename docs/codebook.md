@@ -198,13 +198,16 @@ down by route and by Pacific hour.
 
 ## `quality/`
 
-Computed by `pipeline/quality/metrics.py` for each service day once its raw
+Computed by `pipeline/quality/metrics.py` and `pipeline/quality/stops.py` for each service day once its raw
 file, parsed tables and pinned schedule exist. Definitions are in
 `docs/methods.md`, section 2.
 
 - `quality/days/YYYY-MM-DD.json`: every metric for the day, grouped as
-  `paradata`, `nonresponse`, `coverage`, `measurement`, `processing`, plus the
-  schedule used (`schedule`) and the SHA-256 of the input files (`inputs`).
+  `paradata`, `nonresponse`, `coverage`, `measurement`, `processing`,
+  `events` (metrics from inferred stop events, experimental; empty if the
+  day has no stop events), plus the schedule used (`schedule`) and the
+  SHA-256 of the input files (`inputs`). A day is recomputed when
+  `QUALITY_VERSION` changes or its stop events are rebuilt.
 - `quality/daily.csv`: one row per day with the headline figures, rebuilt
   from the day files.
 
@@ -220,6 +223,14 @@ file, parsed tables and pinned schedule exist. Definitions are in
 | `longest_gap_s_median` | Median over observed trips of the longest interval between new position reports |
 | `position_age_s_median`, `position_age_s_p95` | Time from the vehicle's timestamp to the first fetch that returned it |
 | `impossible_jumps` | Consecutive reports of one vehicle implying more than 130 km/h |
+| `timepoint_coverage` | Scheduled timepoint events with an inferred time (experimental) |
+| `stop_coverage` | The same at every stop (experimental) |
+| `off_shape_share` | Position reports in a trip's window more than 100 m from its shape |
+| `prediction_mae_s_5min` | Mean absolute error of arrival predictions published 5 minutes ahead, seconds (experimental) |
+| `prediction_within_60s_5min` | Share of those predictions within 60 s (experimental) |
+| `jitter_m_p95` | 95th percentile of position spread while a bus stands at a terminal, metres |
+| `unassignable_trip_ids` | Trip ids reported that are not in the static version or not scheduled that day |
+| `vehicles_missing_vs_30d` | Vehicles seen in the previous 30 days (with quality files) but not this day |
 | `trip_id_match_rate` | Positions whose `trip_id` exists in the static version |
 | `over_coverage_share` | Positions with no trip, an unknown trip, or a trip not scheduled that day |
 | `vehicle_latency_ms_median` | Median response time of the vehicle-position feed |

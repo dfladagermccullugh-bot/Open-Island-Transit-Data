@@ -17,7 +17,7 @@ import csv
 import json
 import os
 import sys
-from datetime import date, datetime
+from datetime import date, datetime, timedelta
 from pathlib import Path
 from typing import Any
 
@@ -27,6 +27,7 @@ from pipeline import release
 from pipeline.config import COLLECTION_START, REPO
 from pipeline.gtfs.schedule import removed_services, route_names, scheduled_trips
 from pipeline.gtfs.zipread import read_zip
+from pipeline.quality import stops as stop_metrics
 from pipeline.quality.metrics import QUALITY_VERSION, day_metrics
 
 FETCH_COLUMNS = [
@@ -56,6 +57,17 @@ HEADLINE = [
     ("position_age_s_median", ("measurement", "position_age_s_median")),
     ("position_age_s_p95", ("measurement", "position_age_s_p95")),
     ("impossible_jumps", ("measurement", "impossible_jumps_over_130_kmh")),
+    ("timepoint_coverage", ("events", "stop_coverage", "timepoints", "coverage")),
+    ("stop_coverage", ("events", "stop_coverage", "all_stops", "coverage")),
+    ("off_shape_share", ("events", "shape_fit", "off_shape_share")),
+    ("prediction_mae_s_5min", ("events", "prediction_error", "by_horizon_min", "5", "mae_s")),
+    (
+        "prediction_within_60s_5min",
+        ("events", "prediction_error", "by_horizon_min", "5", "within_60s_share"),
+    ),
+    ("jitter_m_p95", ("events", "jitter", "jitter_m_p95")),
+    ("unassignable_trip_ids", ("events", "assignment", "unassignable")),
+    ("vehicles_missing_vs_30d", ("events", "missing_vehicles", "missing_count")),
     ("trip_id_match_rate", ("processing", "id_match", "trip_id", "match_rate")),
     ("over_coverage_share", ("coverage", "over_coverage", "share")),
     ("vehicle_latency_ms_median", ("paradata", "vehiclePositions", "latency_ms_median")),
@@ -74,16 +86,101 @@ def _sha(entry: dict[str, Any], name: str) -> str:
     return next(f["sha256"] for f in entry["files"] if f["name"] == name)
 
 
-def pending(parsed: dict, static: dict, out: Path) -> list[date]:
+def _events_sha(events: dict, day: str) -> str | None:
+    entry = events.get("days", {}).get(day)
+    if not entry or not entry.get("release_tag"):
+        return None
+    return _sha(entry, f"stop-events-{day}.parquet")
+
+
+def pending(parsed: dict, static: dict, out: Path, events: dict | None = None) -> list[date]:
+    """Days with no quality file, an older QUALITY_VERSION, or stop events
+    that changed since the file was computed."""
+    events = events or {"days": {}}
     days = []
     for day, entry in parsed["days"].items():
         pins = static.get("days", {}).get(day, {})
         if not entry.get("release_tag") or not (pins.get("passio") or {}).get("version"):
             continue
         f = out / "days" / f"{day}.json"
-        if not f.exists() or json.loads(f.read_text()).get("quality_version") != QUALITY_VERSION:
+        if not f.exists():
+            days.append(date.fromisoformat(day))
+            continue
+        old = json.loads(f.read_text())
+        if old.get("quality_version") != QUALITY_VERSION or (
+            (old.get("inputs") or {}).get("stop_events_sha256") != _events_sha(events, day)
+        ):
             days.append(date.fromisoformat(day))
     return sorted(days)
+
+
+def previous_vehicles(out: Path, day: date, days: int = 30) -> dict[str, list[str]]:
+    """Vehicle ids seen on each of the ``days`` days before ``day`` that
+    have a quality file."""
+    found = {}
+    for k in range(1, days + 1):
+        d = (day - timedelta(days=k)).isoformat()
+        f = out / "days" / f"{d}.json"
+        if f.exists():
+            ids = (json.loads(f.read_text()).get("coverage") or {}).get("vehicle_ids")
+            if ids is not None:
+                found[d] = ids
+    return found
+
+
+def terminals(contents) -> list[tuple[float, float]]:
+    """(lat, lon) of every stop that begins or ends a trip."""
+    stops = {s["stop_id"]: s for s in _csv(contents, "stops.txt")}
+    ends: dict[str, list[tuple[int, str]]] = {}
+    for r in _csv(contents, "stop_times.txt"):
+        ends.setdefault(r["trip_id"], []).append((int(r["stop_sequence"]), r["stop_id"]))
+    ids = set()
+    for seq in ends.values():
+        seq.sort()
+        ids |= {seq[0][1], seq[-1][1]}
+    return sorted(
+        (float(stops[i]["stop_lat"]), float(stops[i]["stop_lon"])) for i in ids if i in stops
+    )
+
+
+def event_metrics(
+    day: date,
+    data: Path,
+    tables_dir: Path,
+    repo: str,
+    parsed: dict,
+    vehicles: list[dict],
+    passio,
+    static_trip_ids: set[str],
+    todays_trip_ids: set[str],
+) -> tuple[dict[str, Any] | None, dict[str, Any]]:
+    """Metrics that need stop events; (None, {}) if the day has none yet."""
+    d = day.isoformat()
+    entry = _load(data / "manifest" / "events.json")["days"].get(d)
+    if not entry or not entry.get("release_tag"):
+        return None, {}
+
+    def table(name: str, source: dict) -> list[dict]:
+        f = f"{name}-{d}.parquet"
+        path = release.fetch(source["release_tag"], repo, f, tables_dir, _sha(source, f))
+        return pq.read_table(path).to_pylist()
+
+    events = table("stop-events", entry)
+    tracks = table("trip-tracks", entry)
+    predictions = table("trip-update-stops", parsed)
+    out = data / "quality"
+    today_ids = {v["vehicle_id"] for v in vehicles if v["vehicle_id"] is not None}
+    metrics = {
+        "experimental": True,
+        "events_version": entry["events_version"],
+        "stop_coverage": stop_metrics.stop_coverage(events, COLLECTION_START),
+        "shape_fit": stop_metrics.shape_fit(tracks),
+        "assignment": stop_metrics.assignment(vehicles, tracks, static_trip_ids, todays_trip_ids),
+        "prediction_error": stop_metrics.prediction_error(predictions, events),
+        "jitter": stop_metrics.jitter(vehicles, terminals(passio)),
+        "missing_vehicles": stop_metrics.missing_vehicles(today_ids, previous_vehicles(out, day)),
+    }
+    return metrics, {"stop_events_sha256": _sha(entry, f"stop-events-{d}.parquet")}
 
 
 def compute(day: date, data: Path, raw_dir: Path, tables_dir: Path, repo: str) -> dict[str, Any]:
@@ -150,6 +247,13 @@ def compute(day: date, data: Path, raw_dir: Path, tables_dir: Path, repo: str) -
     else:
         extra["timepoints"] = None
     m = day_metrics(day, fetches, vehicles, trips, ids, COLLECTION_START, extra)
+    m["coverage"]["vehicle_ids"] = sorted(
+        {v["vehicle_id"] for v in vehicles if v["vehicle_id"] is not None}
+    )
+    m["events"], event_inputs = event_metrics(
+        day, data, tables_dir, repo, parsed, vehicles, passio, ids["trips"],
+        {t.trip_id for t in trips},
+    )  # fmt: skip
     m["routes"] = route_names(passio)
     m["schedule"] = {
         "passio_version": pins["passio"]["version"],
@@ -162,6 +266,8 @@ def compute(day: date, data: Path, raw_dir: Path, tables_dir: Path, repo: str) -
         "raw_sha256": _sha(raw, raw_name),
         "vehicles_sha256": _sha(parsed, veh_name),
         "tables_version": parsed["tables_version"],
+        "stop_events_sha256": None,
+        **event_inputs,
         "code_sha": os.environ.get("GITHUB_SHA"),
     }
     return m
@@ -215,6 +321,7 @@ def main() -> int:
             _load(args.data / "manifest" / "parsed.json"),
             _load(args.data / "manifest" / "static.json"),
             out,
+            _load(args.data / "manifest" / "events.json"),
         )
     days = sorted(set(days))[: args.max_days]
     failed = False
