@@ -26,7 +26,7 @@ route_short_name,day_type,direction,order,printed_stop,passio_route_id,passio_st
 2,weekday,loop,3,SW Erie St at Walmart,7920,197232,Walmart at Erie St,name 0.83,True
 2,weekday,loop,4,NW Heller St at Oak Harbor High School,7920,178373,Heller St at Oak Harbor High School,name 1.00,True
 2,weekday,loop,5,Ault Field Rd at Langley Blvd,7920,178481,Ault Field Rd at Langley Blvd,name 1.00,True
-2,weekday,loop,6,N Oak Harbor St at Oak Hollow,,,,unresolved: no Passio stop named Oak Hollow on route 2,
+2,weekday,loop,6,N Oak Harbor St at Oak Hollow,7920,178144,Oak Harbor Rd at Oak Hallow,override,True
 2,weekday,loop,7,N Oak Harbor St at NW Columbia Dr,7920,178143,Oak Harbor St at Columbia Dr,name 1.00,True
 2,weekday,loop,8,E Whidbey Ave at Saar's Super Saver,7920,178149,Whidbey Ave at Saars Super Saver Foods,name 0.87,True
 2,weekday,loop,9,SE Jerome St at Senior Center/Pool,7920,197267,Jerome St at Senior Ctr/Pool,name 0.78,True
@@ -105,7 +105,7 @@ route_short_name,day_type,direction,order,printed_stop,passio_route_id,passio_st
 60,weekday,southbound,3,Maxwelton Rd at South Whidbey HS,7922,178203,Maxwelton Rd at SW High School,name 0.72,True
 60,weekday,southbound,4,Camano Ave at Langley P&R,7922,178171,Camano Ave at Langley P&R,name 1.00,True
 60,weekday,southbound,5,Langley at 3rd St & Anthes Ave,7922,178388,Anthes Ave at Third St,override,True
-60,weekday,southbound,6,Langley Rd at SR 525,,,,unresolved: route 60 has no Passio stop at SR 525 and Langley Rd,
+60,weekday,southbound,6,Langley Rd at SR 525,7922,197273,Langley Rd at Ken's Korner,override,True
 60,weekday,southbound,7,Clinton Park & Ride,7922,178406,SR 525 at Clinton Park & Ride,name 0.74,True
 60,weekday,southbound,8,Clinton Ferry Terminal,7922,178409,Clinton Ferry Terminal,name 1.00,True
 60,weekday,northbound,1,Clinton Ferry Terminal,7922,178409,Clinton Ferry Terminal,name 1.00,True
@@ -131,28 +131,28 @@ route_short_name,day_type,direction,order,printed_stop,passio_route_id,passio_st
 411W,weekday,southbound,6,Harbor Station at SE Bayshore Dr,7919,178398,Harbor Station Transfer Center Bayshore Dr,name 0.71,True
 1C,weekday,loop,1,Terry's Corner,6737,178376,Terry's Corner,name 1.00,True
 1C,weekday,loop,2,Huntington Store,6737,178280,Huntington Store,name 1.00,True
-1C,weekday,loop,3,Chapman,,,,unresolved: Chapman and Rowe or Camano at Chapman Rd,
+1C,weekday,loop,3,Chapman,6737,178232,Chapman and Rowe,override,False
 1C,weekday,loop,4,Cama Beach at Welcome Center,6737,178124,Cama Beach,override,True
 1C,weekday,loop,5,Lost Lake,6737,178228,Lost Lake,name 1.00,True
 1C,weekday,loop,6,Russell Rd at Sunrise Blvd,6737,218433,Russell Rd at Sunrise Blvd,name 1.00,no Trillium stop
 1C,weekday,loop,7,Camano Plaza,6737,178240,Camano Plaza at E Camano Dr,name 0.66,True
-1C,weekday,loop,8,Arrowhead Road,,,,unresolved: several Arrowhead Rd stops,
+1C,weekday,loop,8,Arrowhead Road,6737,178215,Arrowhead Rd at Chick Rd (Baker View Ln),override,True
 1C,weekday,loop,9,Terry's Corner,6737,178376,Terry's Corner,name 1.00,True
 2C,weekday,loop,1,Terry's Corner,7914,178376,Terry's Corner,name 1.00,True
 2C,weekday,loop,2,Camano Plaza,7914,178240,Camano Plaza at E Camano Dr,name 0.66,True
-2C,weekday,loop,3,E Camano Drive at Elger Bay Rd,,,,unresolved: no Passio stop with this name,
+2C,weekday,loop,3,E Camano Drive at Elger Bay Rd,7914,178276,Camano Island Health System,override,True
 2C,weekday,loop,4,Shuksan,7914,197213,E Camano Dr at Shuksan Dr,override,True
 2C,weekday,loop,5,South Loop,,,,not a stop: an on-request loop,
 2C,weekday,loop,6,Elger Bay Store,7914,188843,Elger Bay Rd at Elger Bay Grocery,override,True
 2C,weekday,loop,7,Russell Rd at Sunrise Blvd,7914,218433,Russell Rd at Sunrise Blvd,name 1.00,no Trillium stop
 2C,weekday,loop,8,Camano Plaza,7914,178240,Camano Plaza at E Camano Dr,name 0.66,True
-2C,weekday,loop,9,Arrowhead Rd,,,,unresolved: several Arrowhead Rd stops,
+2C,weekday,loop,9,Arrowhead Rd,7914,178215,Arrowhead Rd at Chick Rd (Baker View Ln),override,True
 2C,weekday,loop,10,Terry's Corner,7914,178376,Terry's Corner,name 1.00,True
 3C,weekday,eastbound,1,Terry's Corner,7913,178376,Terry's Corner,name 1.00,True
 3C,weekday,eastbound,2,Camano St,7913,178275,Camano St,name 1.00,True
 3C,weekday,eastbound,3,Viking Village,7913,178272,Viking Village,name 1.00,True
 3C,weekday,eastbound,4,Haggen,7913,178271,Haggen Grocery,override,True
-3C,weekday,eastbound,5,YMCA,,,,unresolved: landmark with no matching Passio stop name,
+3C,weekday,eastbound,5,YMCA,,,,unresolved: YMCA is at 7213 267th St NW; candidates Church Creek (178270) or Haggen Grocery (178271),
 3C,weekday,westbound,1,CVS,7913,178283,Rite-Aid Stanwood,override,True
 3C,weekday,westbound,2,Stanwood Library,7913,178136,Stanwood Library,name 1.00,True
 3C,weekday,westbound,3,Terry's Corner,7913,178376,Terry's Corner,name 1.00,True
@@ -172,7 +172,7 @@ route_short_name,day_type,direction,order,printed_stop,passio_route_id,passio_st
 411C,saturday,northbound,2,Camano St,7915,178275,Camano St,name 1.00,True
 411C,saturday,northbound,3,Viking Village,7915,178272,Viking Village,name 1.00,True
 411C,saturday,northbound,4,Haggen,7915,178271,Haggen Grocery,override,True
-411C,saturday,northbound,5,272nd at Pioneer Hwy,,,,unresolved: no Passio stop with this name,
+411C,saturday,northbound,5,272nd at Pioneer Hwy,7915,178268,Bayview Garden on 272nd St at 78th,override,False
 411C,saturday,northbound,6,Conway,7915,178287,Conway,name 1.00,True
 411C,saturday,northbound,7,Skagit Station,7915,178371,Skagit Station,name 1.00,True
 411C,saturday,southbound,1,Skagit Station,7915,178371,Skagit Station,name 1.00,True

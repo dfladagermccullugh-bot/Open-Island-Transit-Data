@@ -19,18 +19,18 @@ route_short_name,printed_stop,passio_stop_ids,note
 411C,Haggen,178271,Haggen Grocery
 411C,North Star,178267,Pioneer Hwy at North Star Cold Storage
 411C,Les Schwab,178307,Pioneer Hwy at Les Schwab
-2,N Oak Harbor St at Oak Hollow,,unresolved: no Passio stop named Oak Hollow on route 2
-60,Langley Rd at SR 525,,unresolved: route 60 has no Passio stop at SR 525 and Langley Rd
-1C,Chapman,,unresolved: Chapman and Rowe or Camano at Chapman Rd
-1C,Arrowhead Road,,unresolved: several Arrowhead Rd stops
-2C,Arrowhead Rd,,unresolved: several Arrowhead Rd stops
-2C,E Camano Drive at Elger Bay Rd,,unresolved: no Passio stop with this name
+2,N Oak Harbor St at Oak Hollow,178144,Oak Harbor Rd at Oak Hallow (spelled Hallow in Passio); between Ault Field Rd and Columbia Dr as printed
+60,Langley Rd at SR 525,197273;197275,Langley Rd at Ken's Korner: the Langley Rd stop just off SR 525 (Davin 2026-11-20); the weekend timetable prints it as Ken's Korner
+1C,Chapman,178232,Chapman and Rowe (Davin 2026-11-20); three other Chapman Rd stops nearby
+1C,Arrowhead Road,178215,Arrowhead Rd at Chick Rd (Davin 2026-11-20); after Camano Plaza as printed
+2C,Arrowhead Rd,178215,Arrowhead Rd at Chick Rd (Davin 2026-11-20); after Camano Plaza as printed
+2C,E Camano Drive at Elger Bay Rd,178276,Camano Island Health System at Elger Bay Rd and SE Camano Dr (Davin 2026-11-20); between Camano Plaza and Shuksan as printed
 2C,South Loop,,not a stop: an on-request loop
-3C,YMCA,,unresolved: landmark with no matching Passio stop name
+3C,YMCA,,unresolved: YMCA is at 7213 267th St NW; candidates Church Creek (178270) or Haggen Grocery (178271), awaiting confirmation
 3C,CVS,178283,Rite-Aid Stanwood: same site as CVS at 26817 88th Ave NW (confirmed by Davin and CVS store locator 2026-11-20)
 411C,CVS,178283,Rite-Aid Stanwood: same site as CVS at 26817 88th Ave NW (confirmed by Davin and CVS store locator 2026-11-20)
 412,CVS,178283,Rite-Aid Stanwood: same site as CVS at 26817 88th Ave NW (confirmed by Davin and CVS store locator 2026-11-20)
-411C,272nd at Pioneer Hwy,,unresolved: no Passio stop with this name
+411C,272nd at Pioneer Hwy,178268,Bayview Garden on 272nd St at 78th: Pioneer Hwy stop before 77th Ave NW (Davin 2026-11-20); after Haggen as printed
 9,NW Heller at NW 5th Ave (Hillcrest Elem),178148,Heller St at Hillcrest Elementary School
 9,SW Erie St at Walmart,178196;178323,Walmart at Erie St (both directions)
 9,SW Erie St at Walmart (northbound),178196;178323,Walmart at Erie St (both directions)
