@@ -186,40 +186,62 @@ route_short_name,day_type,direction,order,printed_stop,passio_route_id,passio_st
 412,weekday,southbound,2,CVS,,,,unresolved: landmark with no matching Passio stop name,
 412,weekday,southbound,3,Stanwood P&R,7916,178160,Stanwood P&R II,name 0.85,True
 412,weekday,southbound,4,I-5 P&R,7916,178261,I-5 P&R,name 1.00,True
-412,weekday,southbound,4,I-5 P&R,7916,178296,I-5 P&R,name 1.00,True
-412,weekday,southbound,5,EVCC Tower at Broadway,7916,178259,EVCC Tower & Broadway,name 0.81,True
 412,weekday,southbound,5,EVCC Tower at Broadway,7916,178260,EVCC Tower & Broadway,name 0.81,True
 412,weekday,southbound,6,Everett Station,7916,178258,Everett Station,name 1.00,True
 412,weekday,northbound,1,Everett Station,7916,178258,Everett Station,name 1.00,True
 412,weekday,northbound,2,EVCC Tower at Broadway,7916,178259,EVCC Tower & Broadway,name 0.81,True
-412,weekday,northbound,2,EVCC Tower at Broadway,7916,178260,EVCC Tower & Broadway,name 0.81,True
-412,weekday,northbound,3,I-5 P&R,7916,178261,I-5 P&R,name 1.00,True
 412,weekday,northbound,3,I-5 P&R,7916,178296,I-5 P&R,name 1.00,True
 412,weekday,northbound,4,CVS,,,,unresolved: landmark with no matching Passio stop name,
 412,weekday,northbound,5,Stanwood P&R,7916,178160,Stanwood P&R II,name 0.85,True
 412,weekday,northbound,6,Terry's Corner,7916,178376,Terry's Corner,name 1.00,True
+,weekday AM,loop,1,Harbor Station at Bayshore Dr,9430,178398,Harbor Station Transfer Center Bayshore Dr,name 0.71,True
 ,weekday AM,loop,1,Harbor Station at Bayshore Dr,9431,178398,Harbor Station Transfer Center Bayshore Dr,name 0.71,True
+,weekday AM,loop,1,Harbor Station at Bayshore Dr,9432,178398,Harbor Station Transfer Center Bayshore Dr,name 0.71,True
 ,weekday AM,loop,2,Guam Ave at Community Center,9431,218472,Guam Ave at Community,name 0.79,True
+,weekday AM,loop,2,Guam Ave at Community Center,9432,218472,Guam Ave at Community,name 0.79,True
 ,weekday AM,loop,3,Eastern Dr at Larch Dr,9431,218476,Eastern Dr at Larch Dr,name 1.00,no Trillium stop
+,weekday AM,loop,3,Eastern Dr at Larch Dr,9432,218476,Eastern Dr at Larch Dr,name 1.00,no Trillium stop
 ,weekday AM,loop,4,Crescent Harbor Rd at Western Dr,9431,218479,Cresent Harbor Rd at Western Dr,name 0.79,True
+,weekday AM,loop,4,Crescent Harbor Rd at Western Dr,9432,218479,Cresent Harbor Rd at Western Dr,name 0.79,True
 ,weekday AM,loop,5,Midway St at Hangar 6,9431,218480,Midway St at Hangar 6,name 1.00,no Trillium stop
+,weekday AM,loop,5,Midway St at Hangar 6,9432,218480,Midway St at Hangar 6,name 1.00,no Trillium stop
 ,weekday AM,loop,6,Saratoga St at Medical,9431,218486,Saratoga St at Medical,name 1.00,True
+,weekday AM,loop,6,Saratoga St at Medical,9432,218486,Saratoga St at Medical,name 1.00,True
+,weekday AM,loop,7,Intruder St at Barracks,9430,218443,Intruder St at Barracks,name 1.00,True
 ,weekday AM,loop,7,Intruder St at Barracks,9431,218443,Intruder St at Barracks,name 1.00,True
-,weekday AM,loop,8,Goldie Rd at WhidbeyHealth,9432,197260,Goldie Rd at Whidbey-Health,override,True
+,weekday AM,loop,7,Intruder St at Barracks,9432,218443,Intruder St at Barracks,name 1.00,True
+,weekday AM,loop,8,Goldie Rd at WhidbeyHealth,9430,197264,Goldie Rd at Whidbey Health,override,True
 ,weekday AM,loop,8,Goldie Rd at WhidbeyHealth,9431,197264,Goldie Rd at Whidbey Health,override,True
+,weekday AM,loop,9,Harbor Station at Bayshore Dr,9430,178398,Harbor Station Transfer Center Bayshore Dr,name 0.71,True
 ,weekday AM,loop,9,Harbor Station at Bayshore Dr,9431,178398,Harbor Station Transfer Center Bayshore Dr,name 0.71,True
+,weekday AM,loop,9,Harbor Station at Bayshore Dr,9432,178398,Harbor Station Transfer Center Bayshore Dr,name 0.71,True
+,weekday PM,loop,1,Harbor Station at Bayshore Dr,9430,178398,Harbor Station Transfer Center Bayshore Dr,name 0.71,True
 ,weekday PM,loop,1,Harbor Station at Bayshore Dr,9431,178398,Harbor Station Transfer Center Bayshore Dr,name 0.71,True
+,weekday PM,loop,1,Harbor Station at Bayshore Dr,9432,178398,Harbor Station Transfer Center Bayshore Dr,name 0.71,True
+,weekday PM,loop,2,Goldie Rd at WhidbeyHealth,9430,197260,Goldie Rd at Whidbey-Health,override,True
 ,weekday PM,loop,2,Goldie Rd at WhidbeyHealth,9432,197260,Goldie Rd at Whidbey-Health,override,True
-,weekday PM,loop,2,Goldie Rd at WhidbeyHealth,9431,197264,Goldie Rd at Whidbey Health,override,True
 ,weekday PM,loop,3,Midway St at Hangar 6,9431,218480,Midway St at Hangar 6,name 1.00,no Trillium stop
+,weekday PM,loop,3,Midway St at Hangar 6,9432,218480,Midway St at Hangar 6,name 1.00,no Trillium stop
 ,weekday PM,loop,4,Saratoga St at Medical,9431,218486,Saratoga St at Medical,name 1.00,True
+,weekday PM,loop,4,Saratoga St at Medical,9432,218486,Saratoga St at Medical,name 1.00,True
+,weekday PM,loop,5,Intruder St at Barracks,9430,218443,Intruder St at Barracks,name 1.00,True
 ,weekday PM,loop,5,Intruder St at Barracks,9431,218443,Intruder St at Barracks,name 1.00,True
+,weekday PM,loop,5,Intruder St at Barracks,9432,218443,Intruder St at Barracks,name 1.00,True
 ,weekday PM,loop,6,Eastern Dr at Larch Dr,9431,218476,Eastern Dr at Larch Dr,name 1.00,no Trillium stop
+,weekday PM,loop,6,Eastern Dr at Larch Dr,9432,218476,Eastern Dr at Larch Dr,name 1.00,no Trillium stop
 ,weekday PM,loop,7,Guam Ave at Community Center,9431,218472,Guam Ave at Community,name 0.79,True
+,weekday PM,loop,7,Guam Ave at Community Center,9432,218472,Guam Ave at Community,name 0.79,True
 ,weekday PM,loop,8,Guam Ave at Raven Dr,9431,218475,Guam Ave at Raven Dr,name 1.00,True
+,weekday PM,loop,8,Guam Ave at Raven Dr,9432,218475,Guam Ave at Raven Dr,name 1.00,True
+,weekday PM,loop,9,Harbor Station at Bayshore Dr,9430,178398,Harbor Station Transfer Center Bayshore Dr,name 0.71,True
 ,weekday PM,loop,9,Harbor Station at Bayshore Dr,9431,178398,Harbor Station Transfer Center Bayshore Dr,name 0.71,True
+,weekday PM,loop,9,Harbor Station at Bayshore Dr,9432,178398,Harbor Station Transfer Center Bayshore Dr,name 0.71,True
+,weekday AM and PM,seaplane base,1,Harbor Station at Bayshore Dr,9430,178398,Harbor Station Transfer Center Bayshore Dr,name 0.71,True
 ,weekday AM and PM,seaplane base,1,Harbor Station at Bayshore Dr,9431,178398,Harbor Station Transfer Center Bayshore Dr,name 0.71,True
+,weekday AM and PM,seaplane base,1,Harbor Station at Bayshore Dr,9432,178398,Harbor Station Transfer Center Bayshore Dr,name 0.71,True
+,weekday AM and PM,seaplane base,2,Goldie Rd at WhidbeyHealth,9430,197260,Goldie Rd at Whidbey-Health,override,True
 ,weekday AM and PM,seaplane base,2,Goldie Rd at WhidbeyHealth,9432,197260,Goldie Rd at Whidbey-Health,override,True
-,weekday AM and PM,seaplane base,2,Goldie Rd at WhidbeyHealth,9431,197264,Goldie Rd at Whidbey Health,override,True
+,weekday AM and PM,seaplane base,3,Intruder St at Barracks,9430,218443,Intruder St at Barracks,name 1.00,True
 ,weekday AM and PM,seaplane base,3,Intruder St at Barracks,9431,218443,Intruder St at Barracks,name 1.00,True
+,weekday AM and PM,seaplane base,3,Intruder St at Barracks,9432,218443,Intruder St at Barracks,name 1.00,True
 ,weekday AM and PM,seaplane base,4,NEX/Commissary at Seaplane Base,9430,218444,Seaplane Base NEX/ Commisary,override,no Trillium stop

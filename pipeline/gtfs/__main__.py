@@ -11,22 +11,27 @@ archived day is pinned to one version per source. See
 
 For each pair of pinned Passio and Trillium versions, the crosswalk
 (``pipeline/gtfs/crosswalk.py``) is written once to
-``<crosswalk-dir>/<passio version>__<trillium version>/``.
+``<crosswalk-dir>/<passio version>__<trillium version>/``. For each pair of
+Passio version and printed timetable in effect, the true timepoints
+(``pipeline/gtfs/timepoints.py``) are written once to
+``<timepoints-dir>/<passio version>__timetable-<date>-<hash>/``.
 """
 
 from __future__ import annotations
 
 import argparse
 import csv
+import hashlib
 import json
 import os
 import sys
+from datetime import date
 from pathlib import Path
 from typing import Any
 
 from pipeline import release
 from pipeline.config import REPO
-from pipeline.gtfs import crosswalk
+from pipeline.gtfs import crosswalk, timepoints
 from pipeline.gtfs.versions import add_download, fingerprint, pin_days
 from pipeline.gtfs.zipread import read_zip
 
@@ -79,6 +84,44 @@ def _zip(registry: dict[str, Any], version: str, raw_dir: Path, repo: str):
     return read_zip(path.read_bytes())
 
 
+def _write_csv(path: Path, rows: list[dict[str, Any]]) -> None:
+    with path.open("w", newline="") as fh:
+        writer = csv.DictWriter(fh, fieldnames=list(rows[0]) if rows else ["empty"])
+        writer.writeheader()
+        writer.writerows(rows)
+
+
+def _reference_id(effective: date) -> str:
+    """``timetable-<date>-<hash>``: the hash covers the reference files and the
+    matching code version, so a change to either gets a new folder instead of
+    silently replacing one."""
+    h = hashlib.sha256(timepoints.TIMEPOINTS_VERSION.encode())
+    for path in timepoints.references()[effective]:
+        h.update(path.read_bytes() if path.exists() else b"")
+    return f"timetable-{effective.isoformat()}-{h.hexdigest()[:8]}"
+
+
+def write_timepoints(registry: dict[str, Any], out: Path, raw_dir: Path, repo: str) -> list[str]:
+    """Match the printed timetable in effect each day to that day's Passio
+    version, write it once per pair, and record which applies to each day."""
+    written = []
+    for day, pins in registry["days"].items():
+        pv = (pins.get("passio") or {}).get("version")
+        effective = timepoints.reference_for(date.fromisoformat(day))
+        key = f"{pv}__{_reference_id(effective)}" if pv and effective else None
+        pins["timepoints"] = key
+        if not key or (out / key / "summary.json").exists():
+            continue
+        built = timepoints.build(_zip(registry, pv, raw_dir, repo), effective)
+        folder = out / key
+        folder.mkdir(parents=True, exist_ok=True)
+        _write_csv(folder / "timepoints.csv", built["matched"])
+        summary = {"passio_version": pv, **built["summary"]}
+        (folder / "summary.json").write_text(json.dumps(summary, indent=1) + "\n")
+        written.append(key)
+    return written
+
+
 def write_crosswalks(registry: dict[str, Any], out: Path, raw_dir: Path, repo: str) -> list[str]:
     """Write the crosswalk for every pinned version pair that lacks one, and
     record which crosswalk applies to each day. Returns the pairs written."""
@@ -94,11 +137,7 @@ def write_crosswalks(registry: dict[str, Any], out: Path, raw_dir: Path, repo: s
         folder = out / pins["crosswalk"]
         folder.mkdir(parents=True, exist_ok=True)
         for name in ("stops", "routes", "timepoint_stops", "schedule_agreement"):
-            rows = built[name]
-            with (folder / f"{name}.csv").open("w", newline="") as fh:
-                writer = csv.DictWriter(fh, fieldnames=list(rows[0]) if rows else ["empty"])
-                writer.writeheader()
-                writer.writerows(rows)
+            _write_csv(folder / f"{name}.csv", built[name])
         summary = {"passio_version": pv, "trillium_version": tv, **built["summary"]}
         (folder / "summary.json").write_text(json.dumps(summary, indent=1) + "\n")
         written.append(pins["crosswalk"])
@@ -111,6 +150,7 @@ def main() -> int:
     ap.add_argument("--manifest", type=Path, default=Path("work/manifest/static.json"))
     ap.add_argument("--raw-dir", type=Path, default=Path("work/files"))
     ap.add_argument("--crosswalk-dir", type=Path, default=Path("work/crosswalk"))
+    ap.add_argument("--timepoints-dir", type=Path, default=Path("work/timepoints"))
     ap.add_argument("--repo", default=os.environ.get("GITHUB_REPOSITORY", REPO))
     args = ap.parse_args()
 
@@ -121,9 +161,11 @@ def main() -> int:
     registry = load(args.manifest)
     added = update(registry, raw, args.raw_dir, args.repo)
     written = write_crosswalks(registry, args.crosswalk_dir, args.raw_dir, args.repo)
+    tps = write_timepoints(registry, args.timepoints_dir, args.raw_dir, args.repo)
     save(args.manifest, registry)
     print(f"{added} downloads added; {len(registry['versions'])} versions; ", end="")
-    print(f"{len(registry['days'])} days pinned; crosswalks written: {written or 'none'}")
+    print(f"{len(registry['days'])} days pinned; crosswalks written: {written or 'none'}; ", end="")
+    print(f"timepoints written: {tps or 'none'}")
     return 0
 
 

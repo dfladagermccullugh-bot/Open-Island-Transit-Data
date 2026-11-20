@@ -1,7 +1,7 @@
 """Crosswalk from the Passio static GTFS to the Trillium static GTFS.
 
 The real-time feed uses Passio's ids, and Passio marks every stop as a
-timepoint with interpolated times. Trillium marks the true timepoints but uses
+timepoint with interpolated times. Trillium marks timepoints but uses
 different ids. This module links the two:
 
 Stops
@@ -15,15 +15,17 @@ Routes
     By ``route_short_name``. Routes with no short name are matched when each
     feed has routes without one and Trillium has exactly one.
 
-Timepoints
+Trillium timepoints
     The two feeds do not carry the same schedule (trip counts and times
     differ), so timepoints cannot be matched trip by trip. A Passio stop is a
-    true timepoint on a route when Trillium marks the matched stop as a
+    Trillium timepoint on a route when Trillium marks the matched stop as a
     timepoint on at least one trip of the matched route. The counts behind
-    that decision are kept.
+    that decision are kept. Trillium's schedule is out of date, so these
+    flags are kept for comparison only; the timepoints used for on-time
+    figures come from the printed timetables (``pipeline/gtfs/timepoints.py``).
 
 Schedule agreement
-    For every Passio stop time at a true timepoint, the nearest Trillium
+    For every Passio stop time at a Trillium timepoint, the nearest Trillium
     timepoint time at the same stop and route, on a day of the week both
     serve. This measures how far the two published schedules agree; it is
     not used to choose timepoints.
@@ -192,7 +194,7 @@ def timepoints(
                 "passio_stop_times": len(sts),
                 "trillium_stop_times": events.get(key, 0) if t_route and t_stop else 0,
                 "trillium_timepoint_stop_times": n_tp if t_route and t_stop else 0,
-                "is_timepoint": is_tp,
+                "trillium_timepoint": is_tp,
             }
         )
         if not is_tp:
@@ -232,7 +234,7 @@ def summarize(
         },
         "timepoints": {
             "passio_route_stops": len(tp_rows),
-            "true_timepoint_route_stops": sum(r["is_timepoint"] for r in tp_rows),
+            "trillium_timepoint_route_stops": sum(r["trillium_timepoint"] for r in tp_rows),
             "mixed_route_stops": sum(
                 0 < r["trillium_timepoint_stop_times"] < r["trillium_stop_times"] for r in tp_rows
             ),

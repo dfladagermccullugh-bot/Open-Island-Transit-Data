@@ -60,6 +60,8 @@ HEADLINE = [
     ("over_coverage_share", ("coverage", "over_coverage", "share")),
     ("vehicle_latency_ms_median", ("paradata", "vehiclePositions", "latency_ms_median")),
     ("vehicles_seen", ("coverage", "vehicles_seen")),
+    ("timetable_reference", ("processing", "timepoints", "reference")),
+    ("timepoint_names_resolved_share", ("processing", "timepoints", "resolved_share")),
     ("quality_version", ("quality_version",)),
 ]
 
@@ -131,6 +133,22 @@ def compute(day: date, data: Path, raw_dir: Path, tables_dir: Path, repo: str) -
             for x in sorted(downloads, key=lambda x: x["requested_at"])
         ],
     }  # fmt: skip
+    tp_key = pins.get("timepoints")
+    tp_summary = data / "timepoints" / str(tp_key) / "summary.json"
+    if tp_key and tp_summary.exists():
+        tp = json.loads(tp_summary.read_text())
+        extra["timepoints"] = {
+            "folder": tp_key,
+            "reference": tp["reference"],
+            "printed_names": tp["printed_names"],
+            "resolved_names": tp["resolved_names"],
+            "resolved_share": round(tp["resolved_names"] / tp["printed_names"], 4)
+            if tp["printed_names"]
+            else None,
+            "timepoint_route_stops": tp["timepoint_route_stops"],
+        }
+    else:
+        extra["timepoints"] = None
     m = day_metrics(day, fetches, vehicles, trips, ids, COLLECTION_START, extra)
     m["schedule"] = {
         "passio_version": pins["passio"]["version"],

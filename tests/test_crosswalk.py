@@ -101,7 +101,7 @@ def test_timepoints_and_agreement():
     ]
     routes = [{"passio_route_id": "p1", "trillium_route_id": "t1", "method": "route_short_name"}]
     tp_rows, agreement = timepoints(passio, trillium, stops, routes)
-    flags = {r["passio_stop_id"]: r["is_timepoint"] for r in tp_rows}
+    flags = {r["passio_stop_id"]: r["trillium_timepoint"] for r in tp_rows}
     assert flags == {"P1": True, "P2": False, "P3": True}
     diffs = {(a["passio_trip_id"], a["passio_stop_id"]): a["nearest_trillium_minus_passio_s"]
              for a in agreement}  # fmt: skip
@@ -109,7 +109,7 @@ def test_timepoints_and_agreement():
     assert diffs == {("a", "P1"): 0, ("a", "P3"): 60, ("b", "P1"): None}
 
     summary = summarize(stops, routes, tp_rows, agreement)
-    assert summary["timepoints"]["true_timepoint_route_stops"] == 2
+    assert summary["timepoints"]["trillium_timepoint_route_stops"] == 2
     assert summary["schedule_agreement"] == {
         "passio_stop_times_at_timepoints": 3,
         "same_time": 1,

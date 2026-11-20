@@ -47,7 +47,8 @@ jobs:
               "\`manifest/parsed.json\` does the same for the parsed tables;" \
               "\`manifest/static.json\` lists static GTFS versions and the one" \
               "pinned to each service day; \`crosswalk/\` links Passio and" \
-              "Trillium stops, routes and true timepoints for each version pair;" \
+              "Trillium stops, routes and Trillium timepoints for each version pair;" \
+              "\`timepoints/\` holds the true timepoints from the printed timetables;" \
               "\`quality/\` holds the daily feed-quality metrics." > README.md
           fi
 
@@ -75,7 +76,7 @@ jobs:
           set +e
           python -m pipeline.gtfs --raw-manifest data-branch/manifest/raw.json \
             --manifest data-branch/manifest/static.json --raw-dir work/files \
-            --crosswalk-dir data-branch/crosswalk
+            --crosswalk-dir data-branch/crosswalk --timepoints-dir data-branch/timepoints
           echo "code=$?" >> "$GITHUB_OUTPUT"
 
       - name: Compute quality metrics
