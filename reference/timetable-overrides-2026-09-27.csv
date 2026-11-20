@@ -27,9 +27,9 @@ route_short_name,printed_stop,passio_stop_ids,note
 2C,E Camano Drive at Elger Bay Rd,,unresolved: no Passio stop with this name
 2C,South Loop,,not a stop: an on-request loop
 3C,YMCA,,unresolved: landmark with no matching Passio stop name
-3C,CVS,,unresolved: landmark with no matching Passio stop name
-411C,CVS,,unresolved: landmark with no matching Passio stop name
-412,CVS,,unresolved: landmark with no matching Passio stop name
+3C,CVS,178283,Rite-Aid Stanwood: same site as CVS at 26817 88th Ave NW (confirmed by Davin and CVS store locator 2026-11-20)
+411C,CVS,178283,Rite-Aid Stanwood: same site as CVS at 26817 88th Ave NW (confirmed by Davin and CVS store locator 2026-11-20)
+412,CVS,178283,Rite-Aid Stanwood: same site as CVS at 26817 88th Ave NW (confirmed by Davin and CVS store locator 2026-11-20)
 411C,272nd at Pioneer Hwy,,unresolved: no Passio stop with this name
 9,NW Heller at NW 5th Ave (Hillcrest Elem),178148,Heller St at Hillcrest Elementary School
 9,SW Erie St at Walmart,178196;178323,Walmart at Erie St (both directions)
