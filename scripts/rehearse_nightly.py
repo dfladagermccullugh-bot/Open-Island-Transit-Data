@@ -3,7 +3,7 @@
     python scripts/rehearse_nightly.py 2026-11-19 /path/to/empty/folder
 
 Publishes nothing. Pulls the day from the collector, then runs archive,
-tables, static GTFS, events and quality in the nightly order, writing the
+tables, static GTFS, events, quality and the final check in the nightly order, writing the
 would-be data branch to <folder>/data-branch and the would-be release files
 to <folder>/releases/<tag>/. Works on the current, incomplete day too: the
 check that the collector's digest equals the archive's is skipped, because
@@ -49,7 +49,10 @@ def main() -> int:
         rows = archive_build.merge_rows(collector.fetch_log(d), list(collector.raw(d)))
         return archive_build.write_day(d, rows, collector.static(d), out)
 
-    rel.ensure_release, rel.upload, rel.fetch = ensure_release, upload, fetch
+    def assets(tag, repo):
+        return {f.name: f.stat().st_size for f in (store / tag).glob("*")}
+
+    rel.ensure_release, rel.upload, rel.fetch, rel.assets = ensure_release, upload, fetch, assets
     archive_build.build_day = build_day
 
     data, work = root / "data-branch", root / "work"
@@ -69,6 +72,7 @@ def main() -> int:
                              f"{work}/events"]),
         ("pipeline.quality", ["--pending", "--data", str(data), "--raw-dir", f"{work}/files",
                               "--tables-dir", f"{work}/tables"]),
+        ("pipeline.check", ["--data", str(data)]),
     ]  # fmt: skip
     for module, argv in steps:
         print(f"--- {module}")

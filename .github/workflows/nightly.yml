@@ -110,9 +110,16 @@ jobs:
             git push -q origin data
           fi
 
+      - name: Check the data branch against Releases
+        id: check
+        run: |
+          set +e
+          python -m pipeline.check --data data-branch
+          echo "code=$?" >> "$GITHUB_OUTPUT"
+
       - name: Fail if any step above failed
         if: >-
           steps.archive.outputs.code != '0' || steps.tables.outputs.code != '0' ||
           steps.static.outputs.code != '0' || steps.events.outputs.code != '0' ||
-          steps.quality.outputs.code != '0'
+          steps.quality.outputs.code != '0' || steps.check.outputs.code != '0'
         run: exit 1

@@ -57,11 +57,16 @@ def upload(tag: str, repo: str, out: Path, files: list[dict[str, Any]]) -> None:
         repo,
         "--clobber",
     )
-    assets = json.loads(gh("release", "view", tag, "--repo", repo, "--json", "assets"))["assets"]
-    sizes = {a["name"]: a["size"] for a in assets}
+    sizes = assets(tag, repo)
     for f in files:
         if sizes.get(f["name"]) != f["bytes"]:
             raise RuntimeError(f"{f['name']}: upload not confirmed ({sizes.get(f['name'])} bytes)")
+
+
+def assets(tag: str, repo: str) -> dict[str, int]:
+    """Name -> size in bytes of every file in a release."""
+    out = json.loads(gh("release", "view", tag, "--repo", repo, "--json", "assets"))
+    return {a["name"]: a["size"] for a in out["assets"]}
 
 
 def fetch(tag: str, repo: str, name: str, dest: Path, sha256: str) -> Path:
