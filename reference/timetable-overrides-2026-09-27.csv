@@ -26,7 +26,7 @@ route_short_name,printed_stop,passio_stop_ids,note
 2C,Arrowhead Rd,178215,Arrowhead Rd at Chick Rd (Davin 2026-11-20); after Camano Plaza as printed
 2C,E Camano Drive at Elger Bay Rd,178276,Camano Island Health System at Elger Bay Rd and SE Camano Dr (Davin 2026-11-20); between Camano Plaza and Shuksan as printed
 2C,South Loop,,not a stop: an on-request loop
-3C,YMCA,,unresolved: YMCA is at 7213 267th St NW; candidates Church Creek (178270) or Haggen Grocery (178271), awaiting confirmation
+3C,YMCA,178270,Church Creek: the YMCA (7213 267th St NW) is beside Church Creek Dental Care; judged the same site (Davin 2026-11-20); first stop of westbound 3C after Haggen
 3C,CVS,178283,Rite-Aid Stanwood: same site as CVS at 26817 88th Ave NW (confirmed by Davin and CVS store locator 2026-11-20)
 411C,CVS,178283,Rite-Aid Stanwood: same site as CVS at 26817 88th Ave NW (confirmed by Davin and CVS store locator 2026-11-20)
 412,CVS,178283,Rite-Aid Stanwood: same site as CVS at 26817 88th Ave NW (confirmed by Davin and CVS store locator 2026-11-20)
