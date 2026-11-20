@@ -1,0 +1,28 @@
+---
+title: "Data"
+---
+
+All data is free to download. Raw and parsed files are in the repository's
+[Releases](https://github.com/dfladagermccullugh-bot/Open-Island-Transit-Data/releases)
+(`raw-YYYY-MM` and `parsed-YYYY-MM`, one file per service day); daily
+metrics and manifests are on the
+[`data` branch](https://github.com/dfladagermccullugh-bot/Open-Island-Transit-Data/tree/data).
+The feeds carried no license or terms of use when collection began; see
+[`LICENSE-DATA.md`](https://github.com/dfladagermccullugh-bot/Open-Island-Transit-Data/blob/main/LICENSE-DATA.md).
+
+## Archived days
+
+```{ojs}
+//| echo: false
+import {json} from "./lib.js"
+raw = json("data/manifest/raw.json")
+rows = raw == null ? [] : Object.values(raw.days).map(d => ({
+  day: d.service_date, fetches: d.fetch_rows, ok: d.ok_rows,
+  megabytes: d.files.reduce((a, f) => a + f.bytes, 0) / 1e6,
+  release: d.release_tag}))
+html`${rows.length === 0 ? html`<p>No day archived yet.</p>` : Inputs.table(rows.reverse(), {
+  header: {day: "Service day", fetches: "Fetch attempts", ok: "Successful", megabytes: "Size (MB)", release: "Release"},
+  format: {megabytes: d => d.toFixed(1)}, rows: 20})}`
+```
+
+{{< include ../docs/codebook.md >}}

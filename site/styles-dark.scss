@@ -1,0 +1,14 @@
+/*-- scss:defaults --*/
+$body-bg: #1a1a19;
+
+/*-- scss:rules --*/
+:root {
+  --series-1: #3987e5;
+  --muted: #c3c2b7;
+}
+.stat-row { display: flex; flex-wrap: wrap; gap: 1rem; margin: 1rem 0; }
+.stat { flex: 1 1 11rem; border: 1px solid rgba(255,255,255,.15); border-radius: 6px; padding: .75rem 1rem; }
+.stat .label { font-size: .85rem; color: var(--muted); }
+.stat .value { font-size: 1.6rem; font-weight: 600; line-height: 1.2; }
+.stat .note { font-size: .8rem; color: var(--muted); }
+.experimental { border-left: 4px solid #c98500; padding: .5rem 1rem; background: rgba(201,133,0,.12); }

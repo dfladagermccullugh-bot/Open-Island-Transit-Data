@@ -33,6 +33,7 @@ from pipeline import release
 from pipeline.config import COLLECTION_START, REPO
 from pipeline.events.infer import EVENTS_VERSION, infer_day
 from pipeline.events.ontime import summarize
+from pipeline.gtfs.schedule import route_names
 from pipeline.gtfs.zipread import read_zip
 
 TS = pa.timestamp("us", tz="UTC")
@@ -172,6 +173,7 @@ def build(day: date, data: Path, raw_dir: Path, tables_dir: Path, out: Path, rep
             "passio_version": pins["passio"]["version"],
             "timepoints": pins["timepoints"],
             "events_version": EVENTS_VERSION,
+            "routes": route_names(passio),
         }
     )
     return {

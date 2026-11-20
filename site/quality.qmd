@@ -1,0 +1,118 @@
+---
+title: "Feed quality"
+---
+
+Daily measurements of the real-time feed as a source of data, grouped as a
+survey researcher would: coverage, nonresponse, measurement error,
+processing error and paradata. Definitions are on the [Methods](methods.qmd)
+page. Collection began on 2026-11-19 at 1:24 PM Pacific, so that day is
+partial.
+
+```{ojs}
+//| echo: false
+//| output: false
+import {csv, json, pct, num, routeLabel, SERIES} from "./lib.js"
+daily = csv(d3, "data/quality/daily.csv")
+days = daily.map(d => ({...d, date: new Date(d.service_date)}))
+latestDate = days.length ? days.at(-1).date.toISOString().slice(0, 10) : null
+latest = latestDate ? json(`data/quality/days/${latestDate}.json`) : null
+nodata = html`<p>No processed days yet.</p>`
+```
+
+## Over time
+
+```{ojs}
+//| echo: false
+series = [
+  {key: "trip_coverage", title: "Scheduled trips seen in the feed", unit: "share"},
+  {key: "vehicle_uptime", title: "Collector uptime, vehicle positions", unit: "share"},
+  {key: "stale_in_service_rate", title: "Stale vehicle feed while buses are scheduled", unit: "share"},
+  {key: "position_age_s_median", title: "Median age of positions when first seen (s)", unit: "s"},
+  {key: "longest_gap_s_median", title: "Median longest gap in a trip's positions (s)", unit: "s"},
+]
+html`${days.length === 0 ? nodata : html`<div class="grid">${series.map(s => html`<div class="g-col-12 g-col-md-6">
+  <h4 style="font-size:1rem">${s.title}</h4>
+  ${Plot.plot({
+    style: {background: "transparent"},
+    height: 200, marginLeft: 50,
+    x: {type: "utc", label: null},
+    y: {grid: true, label: null, tickFormat: s.unit === "share" ? (d => `${Math.round(d * 100)}%`) : undefined,
+        domain: s.unit === "share" ? [0, 1] : undefined},
+    marks: [
+      Plot.ruleY([0]),
+      Plot.lineY(days, {x: "date", y: s.key, stroke: SERIES, strokeWidth: 2}),
+      Plot.dot(days, {x: "date", y: s.key, fill: SERIES, r: 4}),
+      Plot.tip(days, Plot.pointerX({x: "date", y: s.key,
+        title: d => `${d.date.toISOString().slice(0, 10)}\n${s.unit === "share" ? pct(d[s.key], 1) : num(d[s.key], 1) + " s"}`})),
+    ],
+  })}</div>`)}</div>`}`
+```
+
+## Latest day in detail
+
+```{ojs}
+//| echo: false
+html`${latest == null ? nodata : html`<p>Service day <strong>${latestDate}</strong>, measured against Passio schedule version
+  <code>${latest.schedule.passio_version}</code>.</p>`}`
+```
+
+### Trip coverage by route
+
+```{ojs}
+//| echo: false
+byRoute = latest == null ? [] : Object.entries(latest.coverage.by_route).map(([id, c]) => ({
+  route: routeLabel(latest.routes, id), ...c}))
+html`${byRoute.length === 0 ? nodata : Plot.plot({
+    style: {background: "transparent"},
+  marginLeft: 220, height: 28 * byRoute.length + 40,
+  x: {domain: [0, 1], grid: true, label: "Share of scheduled trips with at least one position", tickFormat: d => `${Math.round(d * 100)}%`},
+  y: {label: null},
+  marks: [
+    Plot.barX(byRoute, {y: "route", x: "coverage", fill: SERIES, rx: 2, sort: {y: "x", reverse: true}}),
+    Plot.ruleX([0]),
+    Plot.tip(byRoute, Plot.pointerY({y: "route", x: "coverage",
+      title: d => `${d.route}\n${d.observed} of ${d.scheduled} trips (${pct(d.coverage)})`})),
+  ],
+})}`
+```
+
+### Fields the feed leaves empty
+
+Share of position reports in which each field is missing. A field missing
+from every report is not sent by the feed at all.
+
+```{ojs}
+//| echo: false
+items = latest == null ? [] : Object.entries(latest.nonresponse.items.missing_share)
+  .map(([field, share]) => ({field, share}))
+html`${items.length === 0 ? nodata : Inputs.table(items, {
+  columns: ["field", "share"], header: {field: "Field", share: "Missing"},
+  format: {share: d => pct(d, 1)}, rows: 25})}`
+```
+
+### Other figures for the day
+
+```{ojs}
+//| echo: false
+other = latest == null ? [] : [
+  ["Fetch failures, vehicle positions", pct(latest.nonresponse.fetch.vehiclePositions.rate, 2)],
+  ["Empty vehicle feed while buses are scheduled", pct(latest.nonresponse.vehicle_feed.empty_in_service_rate, 2)],
+  ["Positions with no trip, an unknown trip, or a trip not scheduled that day", pct(latest.coverage.over_coverage.share, 2)],
+  ["Impossible jumps (over 130 km/h)", latest.measurement.impossible_jumps_over_130_kmh],
+  ["Vehicle timestamps in the future / going backwards", `${latest.measurement.timestamps_in_future} / ${latest.measurement.timestamps_going_backwards}`],
+  ["Trip ids found in the schedule", pct(latest.processing.id_match.trip_id.match_rate, 1)],
+  ["Stop ids found in the schedule", pct(latest.processing.id_match.stop_id.match_rate, 1)],
+  ["Median response time, vehicle positions", `${num(latest.paradata.vehiclePositions.latency_ms_median)} ms`],
+  ["Distinct vehicles reporting", latest.coverage.vehicles_seen],
+].map(([measure, value]) => ({measure, value}))
+html`${other.length === 0 ? nodata : Inputs.table(other, {header: {measure: "Measure", value: "Value"}, rows: 20})}`
+```
+
+## All days
+
+```{ojs}
+//| echo: false
+html`${daily.length === 0 ? nodata : Inputs.table(daily, {rows: 15})}`
+```
+
+The same table as a file: [`quality/daily.csv`](https://github.com/dfladagermccullugh-bot/Open-Island-Transit-Data/blob/data/quality/daily.csv).

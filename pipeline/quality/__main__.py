@@ -25,7 +25,7 @@ import pyarrow.parquet as pq
 
 from pipeline import release
 from pipeline.config import COLLECTION_START, REPO
-from pipeline.gtfs.schedule import removed_services, scheduled_trips
+from pipeline.gtfs.schedule import removed_services, route_names, scheduled_trips
 from pipeline.gtfs.zipread import read_zip
 from pipeline.quality.metrics import QUALITY_VERSION, day_metrics
 
@@ -150,6 +150,7 @@ def compute(day: date, data: Path, raw_dir: Path, tables_dir: Path, repo: str) -
     else:
         extra["timepoints"] = None
     m = day_metrics(day, fetches, vehicles, trips, ids, COLLECTION_START, extra)
+    m["routes"] = route_names(passio)
     m["schedule"] = {
         "passio_version": pins["passio"]["version"],
         "passio_basis": pins["passio"]["basis"],

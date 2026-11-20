@@ -1,0 +1,80 @@
+---
+title: "Island Transit real-time feed: status"
+---
+
+This site archives the real-time bus data published by
+[Island Transit](https://www.islandtransit.org/) (Whidbey and Camano
+Islands, Washington) and measures how good that data is, using the error
+framework survey researchers apply to any data source. It also estimates
+on-time performance from bus positions; those figures are experimental.
+
+## Collector, live
+
+```{ojs}
+//| echo: false
+STATUS_URL = "https://ekczqlmunyumtgtthppb.supabase.co/rest/v1/status_now"
+PUBLIC_KEY = "sb_publishable_AWlvBYVrlTz7dEaf7RwwzA_5zRN3af-"
+status = {
+  try {
+    const r = await fetch(STATUS_URL, {headers: {apikey: PUBLIC_KEY}});
+    return r.ok ? await r.json() : null;
+  } catch (e) { return null; }
+}
+feedName = ({vehiclePositions: "Vehicle positions", tripUpdates: "Trip updates", serviceAlerts: "Service alerts"})
+ago = s => s == null ? "never" : s < 120 ? `${s} s ago` : s < 7200 ? `${Math.round(s / 60)} min ago` : `${Math.round(s / 3600)} h ago`
+html`${status == null
+  ? html`<p>The collector could not be reached from this page just now.</p>`
+  : html`<div class="stat-row">${["vehiclePositions", "tripUpdates", "serviceAlerts"].map(f => {
+      const s = status.find(d => d.feed === f) || {};
+      return html`<div class="stat">
+        <div class="label">${feedName[f]}</div>
+        <div class="value">${ago(s.last_ok_age_s)}</div>
+        <div class="note">last successful fetch · ${s.last_entity_count ?? "–"} entities ·
+          today ${s.ok_today ?? 0} of ${s.attempts_today ?? 0} fetches succeeded</div>
+      </div>`;
+    })}</div>
+    <p class="note">Collecting since ${new Date(status[0]?.collecting_since).toLocaleString("en-US", {timeZone: "America/Los_Angeles", dateStyle: "medium", timeStyle: "short"})} Pacific.
+    Vehicle positions and trip updates are requested every 20 seconds, alerts every 5 minutes.</p>`}`
+```
+
+## Latest complete day
+
+```{ojs}
+//| echo: false
+import {csv, pct, num} from "./lib.js"
+quality = csv(d3, "data/quality/daily.csv")
+ontime = csv(d3, "data/ontime/daily.csv")
+q = quality.at(-1)
+o = ontime.at(-1)
+html`${q == null
+  ? html`<p>No day has been processed yet. The first complete service day is processed shortly after midnight Pacific.</p>`
+  : html`<p>Service day <strong>${q.service_date instanceof Date ? q.service_date.toISOString().slice(0, 10) : q.service_date}</strong>
+     (Pacific calendar date). <a href="quality.html">All quality figures</a>.</p>
+  <div class="stat-row">
+    <div class="stat"><div class="label">Scheduled trips seen in the feed</div>
+      <div class="value">${pct(q.trip_coverage)}</div>
+      <div class="note">of ${q.scheduled_trips} scheduled trips</div></div>
+    <div class="stat"><div class="label">Collector uptime, vehicle positions</div>
+      <div class="value">${pct(q.vehicle_uptime, 1)}</div>
+      <div class="note">20-second slots with a successful fetch</div></div>
+    <div class="stat"><div class="label">Age of positions when first seen</div>
+      <div class="value">${num(q.position_age_s_median)} s</div>
+      <div class="note">median; 95th percentile ${num(q.position_age_s_p95)} s</div></div>
+    <div class="stat"><div class="label">On time at timepoints (experimental)</div>
+      <div class="value">${o ? pct(o.on_time_share_of_observed) : "–"}</div>
+      <div class="note">${o ? `of observed events; ${pct(o.observed_share)} of scheduled events observed` : "not yet computed"}</div></div>
+  </div>`}`
+```
+
+## What is published
+
+- **Raw archive**: every response from the three feeds, exactly as received,
+  one file per day, in the repository's
+  [Releases](https://github.com/dfladagermccullugh-bot/Open-Island-Transit-Data/releases).
+- **Parsed tables**: vehicle positions, trip updates, stop predictions,
+  alerts and inferred stop events, as Parquet files.
+- **Daily metrics**: feed quality and on-time summaries, on the
+  [`data` branch](https://github.com/dfladagermccullugh-bot/Open-Island-Transit-Data/tree/data).
+
+See [Data](data.qmd) for file descriptions and [Methods](methods.qmd) for
+how each figure is defined.

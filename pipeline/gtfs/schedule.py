@@ -34,6 +34,17 @@ def _rows(contents: ZipContents, name: str) -> list[dict[str, str]]:
     return list(csv.DictReader(io.StringIO(body.decode("utf-8-sig", errors="replace"))))
 
 
+def route_names(contents: ZipContents) -> dict[str, dict[str, str]]:
+    """Route id -> short and long name, for labelling outputs."""
+    return {
+        r["route_id"]: {
+            "short_name": r.get("route_short_name", ""),
+            "long_name": r.get("route_long_name", ""),
+        }
+        for r in _rows(contents, "routes.txt")
+    }
+
+
 def active_services(contents: ZipContents, day: date) -> set[str]:
     stamp = day.strftime("%Y%m%d")
     weekday = DAYS[day.weekday()]

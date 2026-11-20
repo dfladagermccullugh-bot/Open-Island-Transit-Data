@@ -4,6 +4,8 @@ A public archive of the real-time bus feeds published by Island Transit
 (Whidbey and Camano Islands, Washington), with daily measurements of how good
 that feed is as a source of data.
 
+**Site: <https://dfladagermccullugh-bot.github.io/Open-Island-Transit-Data/>**
+
 **Status: collecting since 2026-11-19, 1:24 PM Pacific.** Vehicle positions
 and trip updates are fetched every 20 seconds, alerts every 5 minutes, and
 the schedule twice a day. Each complete day is copied to
