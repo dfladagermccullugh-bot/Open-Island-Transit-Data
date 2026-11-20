@@ -8,6 +8,7 @@ on:
 permissions:
   contents: read
   issues: write
+  actions: write
 
 concurrency:
   group: watchdog
@@ -27,6 +28,9 @@ jobs:
           python-version: "3.12"
           cache: pip
       - run: pip install -e .
+      - name: Start the nightly job if yesterday is still unprocessed
+        continue-on-error: true
+        run: python scripts/catch_up.py
       - name: Check the collector
         id: check
         run: |

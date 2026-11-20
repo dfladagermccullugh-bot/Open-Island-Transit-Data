@@ -5,15 +5,25 @@ name: Nightly archive
 # version registry and crosswalk, infers stop events and on-time summaries,
 # and computes the daily quality metrics. All
 # outputs except the Release files are committed to the `data` branch. Runs after midnight Pacific
-# (08:35 UTC) with a second attempt later in the morning.
+# (08:35 UTC) with further attempts through the day, because GitHub drops
+# scheduled runs when busy (the first 08:35 run never started). Every step
+# only handles pending days, so extra attempts cost about a minute and change
+# nothing. The watchdog also dispatches this workflow if yesterday is still
+# unprocessed (scripts/catch_up.py). The site is redeployed only when the
+# data branch changed.
 on:
   schedule:
     - cron: "35 8 * * *"
+    - cron: "47 9 * * *"
+    - cron: "23 11 * * *"
     - cron: "35 14 * * *"
+    - cron: "13 17 * * *"
+    - cron: "41 20 * * *"
   workflow_dispatch:
 
 permissions:
   contents: write
+  actions: write
 
 concurrency:
   group: nightly-archive
@@ -98,17 +108,23 @@ jobs:
           echo "code=$?" >> "$GITHUB_OUTPUT"
 
       - name: Publish the manifests
+        id: publish
         run: |
           cd data-branch
           git add -A
           if git diff --cached --quiet; then
             echo "manifest unchanged"
           else
+            echo "changed=1" >> "$GITHUB_OUTPUT"
             git -c user.name="github-actions[bot]" \
                 -c user.email="41898282+github-actions[bot]@users.noreply.github.com" \
                 commit -q -m "Archive manifest $(date -u +%Y-%m-%dT%H:%MZ)"
             git push -q origin data
           fi
+
+      - name: Redeploy the site with the new data
+        if: steps.publish.outputs.changed == '1'
+        run: gh workflow run pages.yml --repo "$GITHUB_REPOSITORY" --ref main
 
       - name: Check the data branch against Releases
         id: check
