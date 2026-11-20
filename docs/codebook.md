@@ -13,7 +13,8 @@ quality metrics, on-time measures) will be added here as they are published.
   `manifest/static.json`: static GTFS versions and the version pinned to each
   service day. `crosswalk/`: links between the Passio and Trillium static
   feeds. `timepoints/`: true timepoints from the printed timetables.
-  `quality/`: daily feed-quality metrics.
+  `quality/`: daily feed-quality metrics. `ontime/`: experimental daily
+  on-time summaries. `manifest/events.json`: the stop-event files.
 
 A service day is a calendar date in `America/Los_Angeles`. A row belongs to
 the day in which it was logged. All timestamps are UTC.
@@ -152,6 +153,48 @@ stop, or none, are left unresolved rather than guessed.
 |---|---|
 | `timepoints.csv` | One row per printed stop and matched Passio stop: route, day type, direction, printed order and name, `passio_route_id`, `passio_stop_id`, `passio_stop_name`, and `match` (`name <score>`, `override`, or the reason it is unresolved) |
 | `summary.json` | Reference date, printed names, resolved names, the unresolved names with reasons, and the number of timepoint route-stop pairs |
+
+## Stop events (experimental)
+
+Built nightly by `pipeline/events/infer.py` (method: `docs/methods.md`,
+section 3) and stored in the `parsed-YYYY-MM` release. Experimental until
+the field validation in `docs/methods.md`, section 5.
+
+### `stop-events-YYYY-MM-DD.parquet`
+
+One row per scheduled stop of every scheduled trip in the Passio schedule
+for the day, observed or not.
+
+| Column | Meaning |
+|---|---|
+| `trip_id`, `route_id`, `stop_sequence`, `stop_id` | Passio ids |
+| `vehicle_key` | The vehicle whose reports were used; empty if none carried the trip id |
+| `is_first_stop`, `is_last_stop` | Position in the trip |
+| `is_timepoint` | A true timepoint (`timepoints/`) |
+| `stop_distance_m` | The stop's distance along the trip's shape |
+| `scheduled_arrival`, `scheduled_departure` | Passio schedule, as UTC timestamps |
+| `arrival_time` | When the bus first came within 40 m of the stop along the shape |
+| `departure_time` | When it moved more than 40 m past the stop |
+| `arrival_gap_s`, `departure_gap_s` | Seconds between the two position reports the time was interpolated from |
+| `arrival_status`, `departure_status` | `observed`; `gap` (reports more than 120 s apart, no time given); `not_reached` (tracking ended before the stop); `past_when_first_seen`; `no_reports` (no vehicle carried the trip id); `not_applicable` (no arrival at the first stop, no departure at the last) |
+
+### `trip-tracks-YYYY-MM-DD.parquet`
+
+One row per scheduled trip: the vehicles that carried its id, how many of
+their position reports were used, and why the rest were not
+(`reports_before_start`, `reports_after_end`, `off_shape_reports` more than
+100 m from the shape, `wrong_direction_reports`), and how far along the
+shape the bus was followed.
+
+## `ontime/` (experimental)
+
+`ontime/days/YYYY-MM-DD.json` and `ontime/daily.csv`, from
+`pipeline/events/ontime.py` (`docs/methods.md`, section 4). Counts are of
+scheduled timepoint events: a trip's scheduled time at one of its true
+timepoints. `observed_share` is always reported next to the on-time share;
+events with no inferred time are never counted as late. Events scheduled
+before collection began are left out. Each day file also breaks the counts
+down by route and by Pacific hour.
 
 ## `quality/`
 

@@ -91,13 +91,22 @@ The feed reports where a bus is, not when it reached a stop. Stop times are
 inferred with the standard approach for vehicle-location data:
 
 1. Project each position onto the trip's shape to get distance along the
-   route.
+   route. Tracking starts at the first position within 300 m of the start of
+   the shape, because a bus often shows its next trip id while finishing the
+   previous trip; without one, it starts 2 minutes before the scheduled
+   departure. It stops when the bus reaches the end of the shape.
 2. Require forward progress, searching only a window ahead of the last
    matched distance (this handles loops and repeated stops).
 3. For each stop, interpolate the time the bus crossed the stop's distance
    between the two positions on either side.
 4. Arrival is the first time within 40 m of the stop along the shape;
-   departure is the last.
+   departure is the last, that is, the moment the bus is more than 40 m past
+   it. Distance along the shape is kept non-decreasing so GPS jitter cannot
+   produce a second crossing. Positions more than 100 m from the shape, or
+   moving against its direction above 3 m/s, are counted and not used.
+
+Implemented in `pipeline/events/infer.py`; the stops used for on-time
+figures are the printed timetable timepoints (`pipeline/gtfs/timepoints.py`).
 
 Each inferred event keeps the time gap between the two positions it was
 interpolated from. If that gap exceeds 120 s the event is recorded as not

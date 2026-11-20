@@ -2,7 +2,8 @@ name: Nightly archive
 
 # Copies every complete service day from the collector to GitHub Releases,
 # builds the parsed daily tables from those files, updates the static GTFS
-# version registry and crosswalk, and computes the daily quality metrics. All
+# version registry and crosswalk, infers stop events and on-time summaries,
+# and computes the daily quality metrics. All
 # outputs except the Release files are committed to the `data` branch. Runs after midnight Pacific
 # (08:35 UTC) with a second attempt later in the morning.
 on:
@@ -49,7 +50,8 @@ jobs:
               "pinned to each service day; \`crosswalk/\` links Passio and" \
               "Trillium stops, routes and Trillium timepoints for each version pair;" \
               "\`timepoints/\` holds the true timepoints from the printed timetables;" \
-              "\`quality/\` holds the daily feed-quality metrics." > README.md
+              "\`quality/\` holds the daily feed-quality metrics; \`ontime/\` the" \
+              "experimental on-time summaries." > README.md
           fi
 
       - name: Archive pending days
@@ -79,6 +81,14 @@ jobs:
             --crosswalk-dir data-branch/crosswalk --timepoints-dir data-branch/timepoints
           echo "code=$?" >> "$GITHUB_OUTPUT"
 
+      - name: Infer stop events and on-time summary
+        id: events
+        run: |
+          set +e
+          python -m pipeline.events --pending --release --data data-branch \
+            --raw-dir work/files --tables-dir work/tables --out work/events
+          echo "code=$?" >> "$GITHUB_OUTPUT"
+
       - name: Compute quality metrics
         id: quality
         run: |
@@ -103,5 +113,6 @@ jobs:
       - name: Fail if any step above failed
         if: >-
           steps.archive.outputs.code != '0' || steps.tables.outputs.code != '0' ||
-          steps.static.outputs.code != '0' || steps.quality.outputs.code != '0'
+          steps.static.outputs.code != '0' || steps.events.outputs.code != '0' ||
+          steps.quality.outputs.code != '0'
         run: exit 1
