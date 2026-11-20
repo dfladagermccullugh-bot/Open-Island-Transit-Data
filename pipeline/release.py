@@ -6,33 +6,43 @@ import hashlib
 import json
 import os
 import subprocess
+import time
 from pathlib import Path
 from typing import Any
 
+RETRY_WAITS_S = (5, 20, 60)
+
 
 def gh(*args: str) -> str:
-    return subprocess.run(
-        ["gh", *args], check=True, capture_output=True, text=True, env=os.environ
-    ).stdout
+    """Run ``gh``; retry after a failure (GitHub can briefly report a release
+    it has just created as missing); raise with gh's own error message."""
+    for attempt in range(len(RETRY_WAITS_S) + 1):
+        run = subprocess.run(["gh", *args], capture_output=True, text=True, env=os.environ)
+        if run.returncode == 0:
+            return run.stdout
+        if attempt < len(RETRY_WAITS_S):
+            time.sleep(RETRY_WAITS_S[attempt])
+    raise RuntimeError(f"gh {' '.join(args[:3])} failed: {run.stderr.strip()[-2000:]}")
+
+
+def _exists(tag: str, repo: str) -> bool:
+    view = subprocess.run(
+        ["gh", "release", "view", tag, "--repo", repo], capture_output=True, text=True
+    )
+    return view.returncode == 0
 
 
 def ensure_release(tag: str, repo: str, title: str, notes: str) -> None:
-    exists = subprocess.run(
-        ["gh", "release", "view", tag, "--repo", repo], capture_output=True, text=True
-    )
-    if exists.returncode != 0:
-        gh(
-            "release",
-            "create",
-            tag,
-            "--repo",
-            repo,
-            "--title",
-            title,
-            "--notes",
-            notes,
-            "--latest=false",
-        )
+    if _exists(tag, repo):
+        return
+    try:
+        gh("release", "create", tag, "--repo", repo, "--title", title, "--notes", notes,
+           "--latest=false")  # fmt: skip
+    except RuntimeError:
+        # A create that succeeded but reported an error is retried as
+        # "already exists"; only fail if the release is really missing.
+        if not _exists(tag, repo):
+            raise
 
 
 def upload(tag: str, repo: str, out: Path, files: list[dict[str, Any]]) -> None:
