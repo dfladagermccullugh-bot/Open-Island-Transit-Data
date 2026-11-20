@@ -16,7 +16,7 @@ daily = csv(d3, "data/quality/daily.csv")
 days = daily.map(d => ({...d, date: new Date(d.service_date)}))
 latestDate = days.length ? days.at(-1).date.toISOString().slice(0, 10) : null
 latest = latestDate ? json(`data/quality/days/${latestDate}.json`) : null
-nodata = html`<p>No processed days yet.</p>`
+noData = () => html`<p>No processed days yet.</p>`
 ```
 
 ## Over time
@@ -30,7 +30,7 @@ series = [
   {key: "position_age_s_median", title: "Median age of positions when first seen (s)", unit: "s"},
   {key: "longest_gap_s_median", title: "Median longest gap in a trip's positions (s)", unit: "s"},
 ]
-html`${days.length === 0 ? nodata : html`<div class="grid">${series.map(s => html`<div class="g-col-12 g-col-md-6">
+html`${days.length === 0 ? noData() : html`<div class="grid">${series.map(s => html`<div class="g-col-12 g-col-md-6">
   <h4 style="font-size:1rem">${s.title}</h4>
   ${Plot.plot({
     style: {background: "transparent"},
@@ -52,7 +52,7 @@ html`${days.length === 0 ? nodata : html`<div class="grid">${series.map(s => htm
 
 ```{ojs}
 //| echo: false
-html`${latest == null ? nodata : html`<p>Service day <strong>${latestDate}</strong>, measured against Passio schedule version
+html`${latest == null ? noData() : html`<p>Service day <strong>${latestDate}</strong>, measured against Passio schedule version
   <code>${latest.schedule.passio_version}</code>.</p>`}`
 ```
 
@@ -62,7 +62,7 @@ html`${latest == null ? nodata : html`<p>Service day <strong>${latestDate}</stro
 //| echo: false
 byRoute = latest == null ? [] : Object.entries(latest.coverage.by_route).map(([id, c]) => ({
   route: routeLabel(latest.routes, id), ...c}))
-html`${byRoute.length === 0 ? nodata : Plot.plot({
+html`${byRoute.length === 0 ? noData() : Plot.plot({
     style: {background: "transparent"},
   marginLeft: 220, height: 28 * byRoute.length + 40,
   x: {domain: [0, 1], grid: true, label: "Share of scheduled trips with at least one position", tickFormat: d => `${Math.round(d * 100)}%`},
@@ -85,7 +85,7 @@ from every report is not sent by the feed at all.
 //| echo: false
 items = latest == null ? [] : Object.entries(latest.nonresponse.items.missing_share)
   .map(([field, share]) => ({field, share}))
-html`${items.length === 0 ? nodata : Inputs.table(items, {
+html`${items.length === 0 ? noData() : Inputs.table(items, {
   columns: ["field", "share"], header: {field: "Field", share: "Missing"},
   format: {share: d => pct(d, 1)}, rows: 25})}`
 ```
@@ -105,14 +105,14 @@ other = latest == null ? [] : [
   ["Median response time, vehicle positions", `${num(latest.paradata.vehiclePositions.latency_ms_median)} ms`],
   ["Distinct vehicles reporting", latest.coverage.vehicles_seen],
 ].map(([measure, value]) => ({measure, value}))
-html`${other.length === 0 ? nodata : Inputs.table(other, {header: {measure: "Measure", value: "Value"}, rows: 20})}`
+html`${other.length === 0 ? noData() : Inputs.table(other, {header: {measure: "Measure", value: "Value"}, rows: 20})}`
 ```
 
 ## All days
 
 ```{ojs}
 //| echo: false
-html`${daily.length === 0 ? nodata : Inputs.table(daily, {rows: 15})}`
+html`${daily.length === 0 ? noData() : Inputs.table(daily, {rows: 15})}`
 ```
 
 The same table as a file: [`quality/daily.csv`](https://github.com/dfladagermccullugh-bot/Open-Island-Transit-Data/blob/data/quality/daily.csv).

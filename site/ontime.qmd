@@ -22,7 +22,7 @@ daily = csv(d3, "data/ontime/daily.csv")
 days = daily.map(d => ({...d, date: new Date(d.service_date)}))
 latestDate = days.length ? days.at(-1).date.toISOString().slice(0, 10) : null
 latest = latestDate ? json(`data/ontime/days/${latestDate}.json`) : null
-nodata = html`<p>No processed days yet.</p>`
+noData = () => html`<p>No processed days yet.</p>`
 ```
 
 ## Over time
@@ -33,7 +33,7 @@ pair = [
   {key: "on_time_share_of_observed", title: "On time, share of observed timepoint events"},
   {key: "observed_share", title: "Observed, share of scheduled timepoint events"},
 ]
-html`${days.length === 0 ? nodata : html`<div class="grid">${pair.map(s => html`<div class="g-col-12 g-col-md-6">
+html`${days.length === 0 ? noData() : html`<div class="grid">${pair.map(s => html`<div class="g-col-12 g-col-md-6">
   <h4 style="font-size:1rem">${s.title}</h4>
   ${Plot.plot({
     style: {background: "transparent"},
@@ -56,7 +56,7 @@ html`${days.length === 0 ? nodata : html`<div class="grid">${pair.map(s => html`
 //| echo: false
 routes = latest == null ? [] : Object.entries(latest.by_route).map(([id, r]) => ({
   route: routeLabel(latest.routes, id), ...r}))
-html`${latest == null ? nodata : html`<p>Service day <strong>${latestDate}</strong>:
+html`${latest == null ? noData() : html`<p>Service day <strong>${latestDate}</strong>:
   ${latest.scheduled} scheduled timepoint events, ${pct(latest.observed_share)} observed,
   ${pct(latest.on_time_share_of_observed)} of those on time; median deviation
   ${num(latest.deviation_s_median / 60, 1)} minutes.</p>`}`
