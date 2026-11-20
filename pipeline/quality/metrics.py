@@ -23,7 +23,7 @@ from pipeline.archive.days import day_bounds
 from pipeline.config import PACIFIC
 from pipeline.gtfs.schedule import ServiceWindows, Trip
 
-QUALITY_VERSION = "quality/0.2.0"
+QUALITY_VERSION = "quality/0.3.0"
 
 Row = dict[str, Any]
 
@@ -220,6 +220,20 @@ def trip_gaps(vehicles: list[Row]) -> dict[str, Any]:
 
 # --- coverage -----------------------------------------------------------------
 
+TRIP_COLUMNS = ("trip_id", "route_id", "start_hour", "scheduled_in_service", "observed")
+
+
+def trip_records(trips: list[Trip], seen: set[str]) -> list[list[Any]]:
+    """One row per scheduled trip: Pacific hour of its first departure, how
+    many scheduled trips (itself included) are in service at that moment,
+    and whether any position carried its id. Input to the gap model
+    (``pipeline/quality/gaps.py``)."""
+    rows = []
+    for t in sorted(trips, key=lambda t: (t.start, t.trip_id)):
+        busy = sum(o.start <= t.start < o.end or o is t for o in trips)
+        rows.append([t.trip_id, t.route_id, _hour(t.start), busy, t.trip_id in seen])
+    return rows
+
 
 def coverage(
     vehicles: list[Row],
@@ -248,6 +262,10 @@ def coverage(
         "by_route": {
             r: {**c, "coverage": _share(c["observed"], c["scheduled"])}
             for r, c in sorted(by_route.items())
+        },
+        "trips": {
+            "columns": list(TRIP_COLUMNS),
+            "rows": trip_records(trips, seen),
         },
         "vehicles_seen": len({v["vehicle_key"] for v in vehicles}),
         "over_coverage": {

@@ -7,7 +7,8 @@ A day is pending when it has parsed tables and a pinned Passio version, and
 ``<data>/quality/days/<date>.json`` is missing or was computed by an older
 ``QUALITY_VERSION``. Inputs are taken from local copies when their SHA-256
 matches the manifests, otherwise downloaded from Releases. After each run
-``<data>/quality/daily.csv`` is rebuilt from all day files.
+``<data>/quality/daily.csv`` and ``<data>/quality/gaps.json`` (randomness of
+gaps, ``pipeline/quality/gaps.py``) are rebuilt from all day files.
 """
 
 from __future__ import annotations
@@ -27,6 +28,7 @@ from pipeline import release
 from pipeline.config import COLLECTION_START, REPO
 from pipeline.gtfs.schedule import removed_services, route_names, scheduled_trips
 from pipeline.gtfs.zipread import read_zip
+from pipeline.quality import gaps
 from pipeline.quality import stops as stop_metrics
 from pipeline.quality.metrics import QUALITY_VERSION, day_metrics
 
@@ -341,6 +343,8 @@ def main() -> int:
             print(f"{day}: FAILED: {exc!r}", file=sys.stderr)
     if (out / "days").exists():
         print(f"daily.csv: {write_daily_csv(out)} days")
+        g = gaps.write(out)
+        print(f"gaps.json: {g['trips']} trips, {g['unobserved']} unobserved; {g['model_status']}")
     else:
         print("no quality files yet")
     return 1 if failed else 0

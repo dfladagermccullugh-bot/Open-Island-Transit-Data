@@ -205,7 +205,7 @@ the fastest listed. `daily.csv` carries the agreement share as
 
 ## `quality/`
 
-Computed by `pipeline/quality/metrics.py` and `pipeline/quality/stops.py` for each service day once its raw
+Computed by `pipeline/quality/metrics.py`, `pipeline/quality/stops.py` and `pipeline/quality/gaps.py` for each service day once its raw
 file, parsed tables and pinned schedule exist. Definitions are in
 `docs/methods.md`, section 2.
 
@@ -215,8 +215,20 @@ file, parsed tables and pinned schedule exist. Definitions are in
   day has no stop events), plus the schedule used (`schedule`) and the
   SHA-256 of the input files (`inputs`). A day is recomputed when
   `QUALITY_VERSION` changes or its stop events are rebuilt.
+  `coverage.trips` (from `quality/0.3.0`) lists every scheduled trip that
+  could be observed, as `columns` and `rows`: `trip_id`, `route_id`,
+  `start_hour` (Pacific hour of the first departure), `scheduled_in_service`
+  (scheduled trips in service at that moment, the trip included) and
+  `observed` (any position carried its `trip_id`).
 - `quality/daily.csv`: one row per day with the headline figures, rebuilt
   from the day files.
+- `quality/gaps.json` (`pipeline/quality/gaps.py`): randomness of gaps over
+  all days with trip rows. `rates` gives scheduled and unobserved trips by
+  hour, hour band, route, day type and trips in service. `model` is a
+  logistic regression of "trip not observed" (Firth penalised likelihood)
+  with odds ratios, 95% intervals, p-values and a likelihood-ratio test of
+  all predictors; it stays `null` until there are 14 days and 30 unobserved
+  trips (`model_status` says which).
 
 | `daily.csv` column | Meaning |
 |---|---|

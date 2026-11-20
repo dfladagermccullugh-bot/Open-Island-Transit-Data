@@ -50,7 +50,8 @@ Implemented in `pipeline/quality/metrics.py`. Notes on the implementation:
   position. Speed is as reported by the vehicle.
 - Vehicles missing against the previous 30 days uses the days that have a
   quality file, so it is empty on the first day.
-- Not yet computed: randomness of gaps (needs several weeks of days).
+- Randomness of gaps is published from the first day as rates; the model
+  is fitted once there are 14 days and 30 unobserved trips.
 
 ### Coverage
 
@@ -70,7 +71,7 @@ Implemented in `pipeline/quality/metrics.py`. Notes on the implementation:
 | Stale feed | Fetches whose newest vehicle timestamp is more than 120 s old while service is scheduled |
 | Trip gaps | For each observed trip: the longest interval with no new position, and the share of the trip spent in gaps over 90 s |
 | Item nonresponse | Share of positions missing each field |
-| Randomness of gaps | Gap rates by hour, route and day type; a logistic model of "trip not observed" on hour, route and number of buses scheduled |
+| Randomness of gaps | Share of scheduled trips with no position report by hour, route, day type and number of trips in service, over all days; a logistic model of "trip not observed" on hour band (before 7, 7–9, 9–15 reference, 15–18, 18 on), route (routes with under 30 trips pooled), day type and the number of scheduled trips in service at the trip's start. Firth's penalised likelihood keeps estimates finite when a route has no unobserved trips. The likelihood-ratio test of all predictors together tests whether gaps are missing completely at random. Fitted from 14 days and 30 unobserved trips |
 
 ### Measurement error
 

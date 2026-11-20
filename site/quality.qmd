@@ -162,6 +162,54 @@ other = latest == null ? [] : [
 html`${other.length === 0 ? noData() : Inputs.table(other, {header: {measure: "Measure", value: "Value"}, rows: 30})}`
 ```
 
+## Randomness of gaps
+
+Are the trips the feed misses spread at random, or concentrated at certain
+hours, on certain routes, or when many buses are out? Shares of scheduled
+trips with no position report, over all days so far. A logistic model is
+fitted once there are 14 days and 30 unobserved trips.
+
+```{ojs}
+//| echo: false
+gaps = json("data/quality/gaps.json")
+pval = p => p == null ? "–" : p < 0.0001 ? "< 0.0001" : `= ${num(p, 4)}`
+gapTables = gaps == null || gaps.rates == null ? [] : [
+  ["Hour band (Pacific)", gaps.rates.by_hour_band],
+  ["Trips in service at the trip's start", gaps.rates.by_trips_in_service],
+  ["Day type", gaps.rates.by_day_type],
+  ["Route", Object.fromEntries(Object.entries(gaps.rates.by_route)
+    .map(([id, v]) => [routeLabel(latest && latest.routes, id), v]))],
+]
+html`${gapTables.length === 0 ? noData() : html`
+  <p>${gaps.days.length} day${gaps.days.length === 1 ? "" : "s"}, ${gaps.trips} scheduled trips,
+    ${gaps.unobserved} with no position report.</p>
+  <div class="grid">${gapTables.map(([title, t]) => html`<div class="g-col-12 g-col-md-6">
+    <h4 style="font-size:1rem">${title}</h4>
+    ${Inputs.table(Object.entries(t).map(([group, v]) => ({group, ...v})), {
+      columns: ["group", "scheduled", "unobserved", "rate"],
+      header: {group: "", scheduled: "Scheduled", unobserved: "Not seen", rate: "Share not seen"},
+      format: {rate: d => pct(d, 1)}, rows: 20})}</div>`)}</div>`}`
+```
+
+```{ojs}
+//| echo: false
+html`${gaps == null ? "" : gaps.model == null ? html`<p><em>Model ${gaps.model_status}.</em></p>` : html`
+  <p>Logistic regression of "trip not observed" (Firth penalised likelihood), ${gaps.model.trips} trips.
+  Likelihood-ratio test of all predictors together: χ² = ${num(gaps.model.lr_test_all_predictors.statistic, 1)},
+  df = ${gaps.model.lr_test_all_predictors.df}, p ${pval(gaps.model.lr_test_all_predictors.p)}.
+  A small p-value means gaps are not missing completely at random.
+  Reference levels: ${gaps.model.reference_levels["hour band"]}, route ${routeLabel(latest && latest.routes, gaps.model.reference_levels.route)},
+  ${gaps.model.reference_levels["day type"]}.${gaps.model.converged ? "" : " The fit did not converge."}</p>
+  ${Inputs.table(gaps.model.terms.filter(t => t.term !== "intercept").map(t => ({...t,
+      term: t.term.startsWith("route: ") ? `route: ${routeLabel(latest && latest.routes, t.term.slice(7))}` : t.term,
+      ci: `${num(t.or_95ci[0], 2)} to ${num(t.or_95ci[1], 2)}`})), {
+    columns: ["term", "odds_ratio", "ci", "p"],
+    header: {term: "Term", odds_ratio: "Odds ratio", ci: "95% interval", p: "p"},
+    format: {odds_ratio: d => num(d, 2), p: d => pval(d).replace(/^= /, "")}, rows: 30})}`}`
+```
+
+The model and its inputs: [`quality/gaps.json`](https://github.com/dfladagermccullugh-bot/Open-Island-Transit-Data/blob/data/quality/gaps.json).
+
 ## All days
 
 ```{ojs}

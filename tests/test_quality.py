@@ -190,3 +190,12 @@ def test_day_metrics_ignores_trips_before_collection():
     assert m["scheduled_service"]["trips_ended_before_collection"] == 1
     assert m["coverage"]["trip_coverage"] == 1.0
     assert m["processing"]["id_match"]["route_id"]["present"] == 0
+
+
+def test_trip_records_count_trips_in_service():
+    trips = [trip("A", 0, 2), trip("B", 1, 3), trip("C", 2, 4, route="R2")]
+    vehicles = [report("V", 0, trip="A")]
+    c = coverage(vehicles, trips, {"A", "B", "C"})
+    rows = [dict(zip(c["trips"]["columns"], r, strict=True)) for r in c["trips"]["rows"]]
+    assert [r["scheduled_in_service"] for r in rows] == [1, 2, 2]  # A ends as C starts
+    assert [r["observed"] for r in rows] == [True, False, False]
