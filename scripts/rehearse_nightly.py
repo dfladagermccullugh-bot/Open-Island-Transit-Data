@@ -56,9 +56,10 @@ def main() -> int:
     steps = [
         ("pipeline.archive", ["--date", day, "--release", "--manifest",
                               f"{data}/manifest/raw.json", "--out", f"{work}/files"]),
-        ("pipeline.tables", ["--pending", "--release", "--raw-manifest", f"{data}/manifest/raw.json",
-                             "--manifest", f"{data}/manifest/parsed.json", "--raw-dir",
-                             f"{work}/files", "--out", f"{work}/tables"]),
+        ("pipeline.tables", ["--pending", "--release", "--raw-manifest",
+                             f"{data}/manifest/raw.json", "--manifest",
+                             f"{data}/manifest/parsed.json", "--raw-dir", f"{work}/files",
+                             "--out", f"{work}/tables"]),
         ("pipeline.gtfs", ["--raw-manifest", f"{data}/manifest/raw.json", "--manifest",
                            f"{data}/manifest/static.json", "--raw-dir", f"{work}/files",
                            "--crosswalk-dir", f"{data}/crosswalk", "--timepoints-dir",

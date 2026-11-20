@@ -60,6 +60,7 @@ pytest -q
 deno test --allow-read supabase/functions/collect/
 python scripts/watchdog.py        # collector healthy?
 python scripts/verify_feed.py     # feed fields and ID match; run in service hours
+python scripts/rehearse_nightly.py <date> <empty dir>   # whole nightly chain locally, publishes nothing
 ```
 
 ## Next steps, in order
