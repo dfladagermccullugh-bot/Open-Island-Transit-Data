@@ -1,12 +1,9 @@
 name: Site
 
 # Builds the public site with Quarto and deploys it to GitHub Pages. Runs
-# after each nightly archive run (new data on the `data` branch), when the
-# site or the methods and codebook change, and on demand.
+# when the nightly job changed the `data` branch (it dispatches this
+# workflow), when the site or the methods and codebook change, and on demand.
 on:
-  workflow_run:
-    workflows: ["Nightly archive"]
-    types: [completed]
   push:
     branches: [main]
     paths:
