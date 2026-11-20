@@ -22,6 +22,31 @@ def to_xy(lat: np.ndarray | float, lon: np.ndarray | float) -> tuple:
     return np.asarray(lon, dtype=float) * _KX, np.asarray(lat, dtype=float) * _KY
 
 
+RETRACE_TOL_M = 3.0
+
+
+def drop_retraced(lats: list[float], lons: list[float]) -> tuple[list[float], list[float], float]:
+    """Collapse segments drawn forth, back and forth again (points A, B, A, B
+    become A, B). Some published shapes repeat every segment this way, which
+    inflates distances along the shape about threefold. Returns the cleaned
+    points and the metres of shape removed."""
+    x, y = to_xy(lats, lons)
+    keep: list[int] = []
+    removed = 0.0
+
+    def near(i: int, j: int) -> bool:
+        return math.hypot(x[i] - x[j], y[i] - y[j]) <= RETRACE_TOL_M
+
+    for i in range(len(lats)):
+        keep.append(i)
+        while len(keep) >= 4 and near(keep[-4], keep[-2]) and near(keep[-3], keep[-1]):
+            a, b = keep[-2], keep[-1]
+            removed += math.hypot(x[a] - x[keep[-3]], y[a] - y[keep[-3]])
+            removed += math.hypot(x[b] - x[a], y[b] - y[a])
+            del keep[-2:]
+    return [lats[i] for i in keep], [lons[i] for i in keep], removed
+
+
 @dataclass
 class Shape:
     """A polyline with the distance along it at each vertex."""
@@ -29,12 +54,14 @@ class Shape:
     x: np.ndarray
     y: np.ndarray
     cum: np.ndarray  # metres from the start, at each vertex
+    retraced_m: float = 0.0  # metres of retraced segments removed (``drop_retraced``)
 
     @classmethod
     def from_latlon(cls, lats: list[float], lons: list[float]) -> Shape:
+        lats, lons, removed = drop_retraced(list(lats), list(lons))
         x, y = to_xy(lats, lons)
         steps = np.hypot(np.diff(x), np.diff(y))
-        return cls(x, y, np.concatenate([[0.0], np.cumsum(steps)]))
+        return cls(x, y, np.concatenate([[0.0], np.cumsum(steps)]), removed)
 
     @property
     def length(self) -> float:
@@ -69,6 +96,26 @@ class Shape:
         off = np.hypot(x0 + t * dx - px, y0 + t * dy - py)
         i = int(np.argmin(off))
         return float(along[i]), float(off[i])
+
+    def passes(self, lat: float, lon: float, max_off: float) -> list[tuple[float, float]]:
+        """Every place the shape passes the point: for each run of consecutive
+        segments within ``max_off`` metres, the nearest point of the run, as
+        (distance along the shape, offset). The nearest point on the whole
+        shape is always included. Sorted by distance along the shape."""
+        px, py = to_xy(lat, lon)
+        x0, y0 = self.x[:-1], self.y[:-1]
+        dx, dy = np.diff(self.x), np.diff(self.y)
+        seg2 = dx * dx + dy * dy
+        with np.errstate(invalid="ignore", divide="ignore"):
+            t = np.clip(np.where(seg2 > 0, ((px - x0) * dx + (py - y0) * dy) / seg2, 0.0), 0, 1)
+        along = self.cum[:-1] + t * np.sqrt(seg2)
+        off = np.hypot(x0 + t * dx - px, y0 + t * dy - py)
+        out = {int(np.argmin(off))}
+        near = np.flatnonzero(off <= max_off)
+        if near.size:
+            runs = np.split(near, np.flatnonzero(np.diff(near) > 1) + 1)
+            out |= {int(r[np.argmin(off[r])]) for r in runs}
+        return sorted((float(along[i]), float(off[i])) for i in out)
 
     def heading(self, along: float) -> float:
         """Compass heading of the shape (degrees) at a distance along it."""

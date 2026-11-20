@@ -151,6 +151,8 @@ other = latest == null ? [] : [
     ["All stop events with an inferred time (experimental)", pct(ev.stop_coverage.all_stops.coverage, 1)],
     ["Positions more than 100 m off the route shape", pct(ev.shape_fit.off_shape_share, 1)],
     ["Positions moving against the route shape", pct(ev.shape_fit.wrong_direction_share, 1)],
+    ["Trips that left out part of the published route shape", `${ev.shape_fit.trips_skipping_part_of_shape} (${num(ev.shape_fit.skipped_km, 1)} km)`],
+    ["Route shapes that draw segments three times (corrected)", `${ev.retraced_shapes.shapes_retraced} of ${ev.retraced_shapes.shapes_used}`],
     ["Trip ids seen that are not scheduled that day", `${ev.assignment.unassignable} of ${ev.assignment.observed_trip_ids}`],
     ["Position jitter at terminals, 95th percentile", `${num(ev.jitter.jitter_m_p95, 1)} m`],
     ["Vehicles seen in the previous 30 days but not this day",

@@ -50,8 +50,10 @@ def test_stop_coverage_counts_measured_time_and_reasons():
     assert out["all_stops"]["not_observed_by_reason"] == {"not_reached": 1}
 
 
-def track(route, reports, off, wrong, used=None, vehicles=1):
+def track(route, reports, off, wrong, used=None, vehicles=1, skips=0):
     return {
+        "shape_skips": skips,
+        "skipped_m": 1500.0 * skips,
         "route_id": route,
         "position_reports": reports,
         "off_shape_reports": off,
@@ -62,8 +64,10 @@ def track(route, reports, off, wrong, used=None, vehicles=1):
 
 
 def test_shape_fit_and_assignment():
-    tracks = [track("R1", 100, 10, 2), track("R2", 0, 0, 0), track("R2", 50, 50, 0, vehicles=2)]
+    tracks = [track("R1", 100, 10, 2, skips=2), track("R2", 0, 0, 0)]
+    tracks.append(track("R2", 50, 50, 0, vehicles=2))
     fit = shape_fit(tracks)
+    assert fit["trips_skipping_part_of_shape"] == 1 and fit["skipped_km"] == 3.0
     assert fit["off_shape"] == 60
     assert fit["off_shape_share"] == 0.4
     assert fit["by_route"]["R2"]["off_shape_share"] == 1.0
@@ -159,3 +163,17 @@ def test_pending_recomputes_when_stop_events_change(tmp_path):
     assert pending(parsed, static, tmp_path, events("a")) == []
     assert pending(parsed, static, tmp_path, events("b")) == [date(2026, 11, 19)]
     assert pending(parsed, static, tmp_path, {"days": {}}) == [date(2026, 11, 19)]
+
+
+def test_retraced_shapes():
+    from pipeline.quality.stops import retraced_shapes
+
+    def pts(sid, lons):
+        return [{"shape_id": sid, "shape_pt_sequence": str(i), "shape_pt_lat": "48.2",
+                 "shape_pt_lon": str(x)} for i, x in enumerate(lons)]  # fmt: skip
+
+    rows = pts("BAD", [-122.6, -122.59, -122.6, -122.59, -122.58]) + pts("OK", [-122.6, -122.5])
+    rows += pts("UNUSED", [-122.6, -122.59, -122.6, -122.59])
+    out = retraced_shapes(rows, {"BAD", "OK"})
+    assert out["shapes_used"] == 2 and out["shapes_retraced"] == 1
+    assert 1400 < out["retraced_m_by_shape"]["BAD"] < 1600

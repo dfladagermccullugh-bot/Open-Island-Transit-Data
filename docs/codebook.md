@@ -176,15 +176,17 @@ for the day, observed or not.
 | `arrival_time` | When the bus first came within 40 m of the stop along the shape |
 | `departure_time` | When it moved more than 40 m past the stop |
 | `arrival_gap_s`, `departure_gap_s` | Seconds between the two position reports the time was interpolated from |
-| `arrival_status`, `departure_status` | `observed`; `gap` (reports more than 120 s apart, no time given); `not_reached` (tracking ended before the stop); `past_when_first_seen`; `no_reports` (no vehicle carried the trip id); `not_applicable` (no arrival at the first stop, no departure at the last) |
+| `arrival_status`, `departure_status` | `observed`; `gap` (reports more than 120 s apart, no time given); `not_reached` (tracking ended before the stop); `past_when_first_seen`; `skipped` (the bus left out the part of the shape the stop is on); `no_shape` (the trip has no shape); `no_reports` (no vehicle carried the trip id); `not_applicable` (no arrival at the first stop, no departure at the last) |
 
 ### `trip-tracks-YYYY-MM-DD.parquet`
 
 One row per scheduled trip: the vehicles that carried its id, how many of
 their position reports were used, and why the rest were not
 (`reports_before_start`, `reports_after_end`, `off_shape_reports` more than
-100 m from the shape, `wrong_direction_reports`), and how far along the
-shape the bus was followed.
+100 m from the shape, `wrong_direction_reports`), how far along the
+shape the bus was followed, and the parts of the shape it left out
+(`shape_skips`, `skipped_m`). `shape_length_m` is after collapsing
+retraced segments (`docs/methods.md`, section 3).
 
 ## `ontime/` (experimental)
 

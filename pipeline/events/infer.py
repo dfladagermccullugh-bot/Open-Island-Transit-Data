@@ -15,7 +15,10 @@ static version pinned to it:
    loops and repeated stops). Reports more than ``OFF_SHAPE_M`` from the
    shape, or moving against its direction, are counted and not used.
    Distance along the shape is kept non-decreasing, so GPS jitter cannot
-   create a second crossing.
+   create a second crossing. If two consecutive reports lie on a later part
+   of the shape, heading its way, tracking moves there and the stretch in
+   between is recorded as not driven (the published shape can include a
+   branch a trip does not take).
 4. Arrival at a stop is the moment the bus first comes within
    ``STOP_RADIUS_M`` of it along the shape; departure is the moment it moves
    beyond that distance. Each is interpolated linearly between the two
@@ -39,7 +42,7 @@ from pipeline.events.geometry import Shape
 from pipeline.gtfs.schedule import day_origin, scheduled_trips
 from pipeline.gtfs.zipread import ZipContents
 
-EVENTS_VERSION = "events/0.1.0"
+EVENTS_VERSION = "events/0.2.0"
 
 WINDOW_MIN = 30
 OFF_SHAPE_M = 100.0
@@ -52,6 +55,10 @@ END_ZONE_M = 50.0  # tracking stops this close to the end of the shape
 LATE_JOIN_S = 120.0  # without a report near the start, track from 2 min before departure
 MOVING_MS = 3.0  # above this speed, the bearing is trusted
 WRONG_WAY_DEG = 120.0  # bearing this far from the shape's heading: moving the other way
+REANCHOR_M = 30.0  # a report this close to a later part of the shape may re-anchor there
+REANCHOR_DEG = 45.0  # ... if the bus's bearing is this close to the shape's heading
+STOP_PASS_M = 150.0  # a shape passing within this distance of a stop may serve it
+UNPLACED_COST_M = 10_000.0  # cost of leaving a stop at the previous stop's distance
 
 Row = dict[str, Any]
 
@@ -100,7 +107,14 @@ class StaticData:
         )
 
     def place_stops(self, trip_id: str) -> list[float] | None:
-        """Distance along the shape of each stop of the trip, in order."""
+        """Distance along the shape of each stop of the trip, in order.
+
+        A shape can pass a stop more than once (loops, out-and-back
+        segments). Each stop's candidates are every pass within
+        ``STOP_PASS_M`` plus the nearest point; the placement keeps stops in
+        order along the shape and minimises the sum of their offsets
+        (dynamic programming). A stop with no candidate in order is put at
+        the previous stop's distance, at a cost of ``UNPLACED_COST_M``."""
         trip = self.trips[trip_id]
         shape = self.shapes.get(trip.get("shape_id", ""))
         if shape is None:
@@ -108,15 +122,43 @@ class StaticData:
         ids = tuple(r["stop_id"] for r in self.stop_times.get(trip_id, []))
         key = (trip["shape_id"], ids)
         if key not in self._placed:
-            out, prev = [], 0.0
-            for sid in ids:
-                s = self.stops[sid]
-                hit = shape.project(float(s["stop_lat"]), float(s["stop_lon"]), prev, None)
-                d = hit[0] if hit else prev
-                out.append(d)
-                prev = d
-            self._placed[key] = out
+            cands = [
+                shape.passes(float(self.stops[s]["stop_lat"]), float(self.stops[s]["stop_lon"]),
+                             STOP_PASS_M)
+                for s in ids
+            ]  # fmt: skip
+            self._placed[key] = order_stops(cands)
         return self._placed[key]
+
+
+def order_stops(cands: list[list[tuple[float, float]]]) -> list[float]:
+    """Choose one (distance, offset) candidate per stop so that distances
+    never decrease and the summed offset is smallest. See ``place_stops``."""
+    if not cands:
+        return []
+    # Each state: (cost, distance, back-pointer index into the previous row).
+    rows: list[list[tuple[float, float, int]]] = []
+    prev: list[tuple[float, float, int]] = [(0.0, 0.0, -1)]
+    for opts in cands:
+        row = []
+        for along, off in opts:
+            best = min(
+                ((c + off, k) for k, (c, d, _) in enumerate(prev) if d <= along + 1e-6),
+                default=None,
+            )
+            if best is not None:
+                row.append((best[0], along, best[1]))
+        # Unplaced: stay at the cheapest previous state's distance.
+        k = min(range(len(prev)), key=lambda k: prev[k][0])
+        row.append((prev[k][0] + UNPLACED_COST_M, prev[k][1], k))
+        rows.append(row)
+        prev = row
+    j = min(range(len(prev)), key=lambda k: prev[k][0])
+    out = []
+    for row in reversed(rows):
+        out.append(row[j][1])
+        j = row[j][2]
+    return out[::-1]
 
 
 @dataclass
@@ -130,6 +172,7 @@ class Track:
     after_end: int = 0  # dropped: after the bus reached the end of the shape
     off_shape: int = 0  # dropped: more than OFF_SHAPE_M from the shape
     wrong_direction: int = 0  # dropped: moving against the shape's direction
+    skips: list[tuple[float, float]] = field(default_factory=list)  # stretches not driven
 
 
 def _angle(a: float, b: float) -> float:
@@ -145,7 +188,13 @@ def track(shape: Shape, reports: list[tuple], scheduled_start: float) -> Track:
     often already carries the next trip's id while finishing the previous
     one). If there is none, it starts at the first report from
     ``scheduled_start`` minus ``LATE_JOIN_S``, wherever it is. It ends when
-    the bus reaches the end of the shape."""
+    the bus reaches the end of the shape.
+
+    If the bus leaves out part of the shape (the published shape has a
+    branch this trip did not drive), reports stop matching the search
+    window. Tracking then moves forward to a later part of the shape when two
+    consecutive reports lie on it (see ``_forward_pass``), and records the
+    stretch left out in ``skips``; stops in it get no time."""
     tr = Track([], [], reports=len(reports))
     start = next(
         (
@@ -159,6 +208,7 @@ def track(shape: Shape, reports: list[tuple], scheduled_start: float) -> Track:
         late = scheduled_start - LATE_JOIN_S
         start = next((k for k, r in enumerate(reports) if r[0] >= late), len(reports))
     tr.before_start = start
+    pending: tuple[float, float, str] | None = None  # a report that may re-anchor tracking
     for k in range(start, len(reports)):
         ts, lat, lon, bearing, speed = reports[k]
         if tr.dists and tr.dists[-1] >= shape.length - END_ZONE_M:
@@ -177,18 +227,60 @@ def track(shape: Shape, reports: list[tuple], scheduled_start: float) -> Track:
                 lat, lon, max(last - BACKTRACK_M, 0.0), last + BACKTRACK_M + MAX_SPEED_MS * dt
             )
         if hit is None or hit[1] > OFF_SHAPE_M:
-            tr.off_shape += 1
+            kind = "off_shape"
+        elif _against(shape, hit[0], bearing, speed):
+            kind = "wrong_direction"
+        else:
+            pending = None
+            tr.times.append(ts)
+            tr.dists.append(max(hit[0], tr.dists[-1]) if tr.dists else hit[0])
             continue
+        setattr(tr, kind, getattr(tr, kind) + 1)
+        if not tr.dists:
+            continue
+        jump = _forward_pass(shape, lat, lon, bearing, speed, tr.dists[-1])
         if (
-            bearing is not None
-            and (speed or 0.0) >= MOVING_MS
-            and _angle(bearing, shape.heading(hit[0])) > WRONG_WAY_DEG
+            jump is not None
+            and pending is not None
+            and pending[1] <= jump <= pending[1] + BACKTRACK_M + MAX_SPEED_MS * (ts - pending[0])
         ):
-            tr.wrong_direction += 1
-            continue
-        tr.times.append(ts)
-        tr.dists.append(max(hit[0], tr.dists[-1]) if tr.dists else hit[0])
+            # Two reports in a row agree: the bus left out part of the shape.
+            setattr(tr, pending[2], getattr(tr, pending[2]) - 1)
+            setattr(tr, kind, getattr(tr, kind) - 1)
+            tr.skips.append((tr.dists[-1], pending[1]))
+            tr.times += [pending[0], ts]
+            tr.dists += [pending[1], jump]
+            pending = None
+        else:
+            pending = (ts, jump, kind) if jump is not None else None
     return tr
+
+
+def _against(shape: Shape, along: float, bearing: float | None, speed: float | None) -> bool:
+    """Moving against the shape's direction at that distance along it."""
+    return (
+        bearing is not None
+        and (speed or 0.0) >= MOVING_MS
+        and _angle(bearing, shape.heading(along)) > WRONG_WAY_DEG
+    )
+
+
+def _forward_pass(
+    shape: Shape, lat: float, lon: float, bearing: float | None, speed: float | None, last: float
+) -> float | None:
+    """The first later part of the shape the report lies on, heading the same
+    way as the bus: within ``REANCHOR_M``, bearing within ``REANCHOR_DEG``.
+    None if the bus is not clearly moving."""
+    if bearing is None or (speed or 0.0) < MOVING_MS:
+        return None
+    for along, off in shape.passes(lat, lon, REANCHOR_M):
+        if (
+            along > last + BACKTRACK_M
+            and off <= REANCHOR_M
+            and _angle(bearing, shape.heading(along)) <= REANCHOR_DEG
+        ):
+            return along
+    return None
 
 
 def crossing(tr: Track, boundary: float) -> tuple[float | None, float | None, str]:
@@ -196,6 +288,8 @@ def crossing(tr: Track, boundary: float) -> tuple[float | None, float | None, st
     seconds between the two reports used, status)."""
     if not tr.dists:
         return None, None, "no_reports"
+    if any(a < boundary < b for a, b in tr.skips):
+        return None, None, "skipped"
     for k, d in enumerate(tr.dists):
         if d >= boundary:
             if k == 0:
@@ -313,6 +407,8 @@ def infer_day(
                 "shape_id": meta.get("shape_id"),
                 "shape_length_m": round(shape.length, 1) if shape is not None else None,
                 "max_distance_m": round(tr.dists[-1], 1) if tr.dists else None,
+                "shape_skips": len(tr.skips),
+                "skipped_m": round(sum(b - a for a, b in tr.skips), 1),
             }
         )
     return events, trips_out

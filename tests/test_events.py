@@ -171,3 +171,58 @@ def test_summarize_skips_non_timepoints_and_events_before_collection():
     assert s["on_time_share_of_observed"] == 0.5
     assert s["experimental"] is True
     assert s["by_hour"]["6"]["scheduled"] == 3  # 06:10 to 06:30 Pacific
+
+
+def test_drop_retraced_collapses_forth_back_forth():
+    lons = [lon_at(d) for d in (0, 500, 0, 500, 1000, 500, 1000, 1500)]
+    lats, out, removed = geometry.drop_retraced([LAT] * len(lons), lons)
+    assert out == pytest.approx([lon_at(d) for d in (0, 500, 1000, 1500)])
+    assert removed == pytest.approx(2000, abs=1)
+    s = Shape.from_latlon([LAT] * len(lons), lons)
+    assert s.length == pytest.approx(1500, abs=1) and s.retraced_m == pytest.approx(2000, abs=1)
+    # A single out-and-back (A, B, A) is a real path and is kept.
+    _, kept, removed = geometry.drop_retraced([LAT] * 3, [lon_at(0), lon_at(500), lon_at(0)])
+    assert len(kept) == 3 and removed == 0
+
+
+def out_and_back() -> Shape:
+    """East 2 km along LAT, then back west 2 km along a road 50 m north."""
+    near = 50 / geometry._KY
+    lats = [LAT, LAT, LAT + near, LAT + near]
+    lons = [lon_at(0), lon_at(2000), lon_at(2000), lon_at(0)]
+    return Shape.from_latlon(lats, lons)
+
+
+def test_passes_and_stop_order_on_out_and_back():
+    from pipeline.events.infer import order_stops
+
+    s = out_and_back()
+    mid = 25 / geometry._KY  # halfway between the two roads
+    p = s.passes(LAT + mid, lon_at(300), 150)
+    assert [round(d) for d, _ in p] == [300, 3750]
+    stops = [
+        [(0.0, 0.0)],
+        s.passes(LAT + mid, lon_at(300), 150),  # equally near both roads
+        s.passes(LAT, lon_at(1500), 150),  # outbound
+        s.passes(LAT + 2 * mid, lon_at(500), 150),  # return
+    ]
+    placed = order_stops(stops)
+    assert [round(d) for d in placed] == [0, 300, 1500, 3550]
+
+
+def test_tracking_reanchors_past_a_branch_not_driven():
+    # Shape: east 0-1000, a 3 km spur north and back, then east 1000-2000.
+    north = 1500 / geometry._KY
+    lats = [LAT, LAT, LAT + north, LAT, LAT]
+    lons = [lon_at(0), lon_at(1000), lon_at(1000), lon_at(1010), lon_at(2000)]
+    s = Shape.from_latlon(lats, lons)
+    spur_end = s.cum[3]
+    # The bus drives straight east, leaving out the spur.
+    rs = reports([(0, 0), (20, 300), (40, 600), (60, 900), (80, 1200), (100, 1500), (120, 1800)])
+    tr = track(s, rs, T0)
+    assert len(tr.skips) == 1
+    a, b = tr.skips[0]
+    assert a == pytest.approx(900, abs=1) and b > spur_end
+    assert tr.off_shape == 0 and len(tr.dists) == len(rs)
+    assert crossing(tr, 1000 + 1500)[2] == "skipped"  # a stop up the spur
+    assert crossing(tr, s.length - 300)[2] == "observed"

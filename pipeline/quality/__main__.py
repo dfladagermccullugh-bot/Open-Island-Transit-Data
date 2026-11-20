@@ -175,6 +175,9 @@ def event_metrics(
         "events_version": entry["events_version"],
         "stop_coverage": stop_metrics.stop_coverage(events, COLLECTION_START),
         "shape_fit": stop_metrics.shape_fit(tracks),
+        "retraced_shapes": stop_metrics.retraced_shapes(
+            _csv(passio, "shapes.txt"), {t["shape_id"] for t in tracks if t["shape_id"]}
+        ),
         "assignment": stop_metrics.assignment(vehicles, tracks, static_trip_ids, todays_trip_ids),
         "prediction_error": stop_metrics.prediction_error(predictions, events),
         "jitter": stop_metrics.jitter(vehicles, terminals(passio)),

@@ -20,6 +20,7 @@ from datetime import datetime, timedelta
 from typing import Any
 
 from pipeline.config import PACIFIC
+from pipeline.events.geometry import drop_retraced
 from pipeline.events.ontime import classify
 from pipeline.quality.metrics import _metres, _quantile, _r, _share
 
@@ -32,6 +33,7 @@ STATIONARY_MS = 0.5
 TERMINAL_M = 150.0
 DWELL_GAP_S = 120.0
 DWELL_MIN_REPORTS = 3
+RETRACED_REPORT_M = 100  # smaller retracing (a few metres at a stop) is not reported
 
 
 # --- stop-level coverage ----------------------------------------------------------
@@ -104,9 +106,13 @@ def shape_fit(tracks: list[Row]) -> dict[str, Any]:
             "wrong_direction_share": _share(c["wrong_direction"], c["position_reports"]),
         }
 
+    skipped = [t for t in tracks if t.get("shape_skips")]
     return {
         **block(total),
         "threshold_m": 100,
+        "trips_skipping_part_of_shape": len(skipped),
+        "skipped_km": round(sum(t["skipped_m"] for t in skipped) / 1000, 1),
+        "skipping_by_route": dict(sorted(Counter(t["route_id"] for t in skipped).items())),
         "by_route": {r: block(c) for r, c in sorted(by_route.items())},
     }
 
@@ -129,6 +135,30 @@ def assignment(
         "scheduled_trips_with_reports": len(with_reports),
         "trips_with_no_usable_report": sum(t["reports_used"] == 0 for t in with_reports),
         "trips_with_more_than_one_vehicle": sum(t["vehicles_with_trip_id"] > 1 for t in tracks),
+    }
+
+
+def retraced_shapes(shapes_txt: list[Row], used: set[str]) -> dict[str, Any]:
+    """Shapes used that day that draw segments forth, back and forth again
+    (``pipeline/events/geometry.py``, ``drop_retraced``), and the metres
+    removed before stop events were inferred."""
+    pts: dict[str, list[tuple[int, float, float]]] = defaultdict(list)
+    for r in shapes_txt:
+        if r["shape_id"] in used:
+            pts[r["shape_id"]].append(
+                (int(r["shape_pt_sequence"]), float(r["shape_pt_lat"]), float(r["shape_pt_lon"]))
+            )
+    removed = {}
+    for sid, p in pts.items():
+        p.sort()
+        _, _, m = drop_retraced([a[1] for a in p], [a[2] for a in p])
+        if m >= RETRACED_REPORT_M:
+            removed[sid] = round(m)
+    return {
+        "shapes_used": len(pts),
+        "shapes_retraced": len(removed),
+        "retraced_m_by_shape": dict(sorted(removed.items())),
+        "reported_from_m": RETRACED_REPORT_M,
     }
 
 

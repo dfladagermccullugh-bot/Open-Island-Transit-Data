@@ -106,16 +106,28 @@ Implemented in `pipeline/quality/metrics.py`. Notes on the implementation:
 The feed reports where a bus is, not when it reached a stop. Stop times are
 inferred with the standard approach for vehicle-location data:
 
-1. Project each position onto the trip's shape to get distance along the
+1. Place each stop on the trip's shape. A shape can pass a stop more than
+   once (loops, out-and-back roads), so every pass within 150 m is a
+   candidate, and the placement keeps the stops in order while minimising
+   their summed distance from the shape. Before this, segments a shape
+   draws forth, back and forth again are collapsed to one (Passio's route 1C
+   shapes repeat every segment this way, which made them about 21 km too
+   long); the metres removed are reported as a processing error.
+2. Project each position onto the trip's shape to get distance along the
    route. Tracking starts at the first position within 300 m of the start of
    the shape, because a bus often shows its next trip id while finishing the
    previous trip; without one, it starts 2 minutes before the scheduled
    departure. It stops when the bus reaches the end of the shape.
-2. Require forward progress, searching only a window ahead of the last
-   matched distance (this handles loops and repeated stops).
-3. For each stop, interpolate the time the bus crossed the stop's distance
+3. Require forward progress, searching only a window ahead of the last
+   matched distance (this handles loops and repeated stops). If two
+   consecutive positions lie on a later part of the shape (within 30 m,
+   heading within 45 degrees of the shape's direction there), tracking moves
+   forward to it: the bus has left out part of the published shape, for
+   example an on-request loop. Stops in the stretch left out get no time
+   (status `skipped`).
+4. For each stop, interpolate the time the bus crossed the stop's distance
    between the two positions on either side.
-4. Arrival is the first time within 40 m of the stop along the shape;
+5. Arrival is the first time within 40 m of the stop along the shape;
    departure is the last, that is, the moment the bus is more than 40 m past
    it. Distance along the shape is kept non-decreasing so GPS jitter cannot
    produce a second crossing. Positions more than 100 m from the shape, or
@@ -136,6 +148,7 @@ Known problems and how they are handled:
 | Vehicles with no trip | Excluded; counted as over-coverage |
 | Trip label changes early or late at a layover | Positions accepted only within the trip's scheduled window ± 30 minutes and on its shape |
 | Detours | Events more than 100 m off the shape are flagged and excluded from on-time figures |
+| Parts of the shape not driven | Tracking moves past them once two positions agree; their stops are `skipped`, counted as not observed |
 | Gaps in positions | No interpolation across more than 120 s |
 | Interpolated schedule times | On-time figures use true timepoints only: the stops printed in Island Transit's public timetables for the service period, matched to Passio stops on the same route (`pipeline/gtfs/timepoints.py`, `reference/`, `timepoints/`). Printed names that cannot be tied to one stop are left out and counted. Scheduled times are Passio's, the schedule the real-time feed follows |
 | Schedule changes daily | Each service day is pinned to the static version in effect that day |

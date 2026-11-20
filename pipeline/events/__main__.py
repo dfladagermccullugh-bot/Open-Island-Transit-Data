@@ -75,6 +75,8 @@ TRACK_SCHEMA = pa.schema(
         ("shape_id", pa.string()),
         ("shape_length_m", pa.float64()),
         ("max_distance_m", pa.float64()),
+        ("shape_skips", pa.int32()),
+        ("skipped_m", pa.float64()),
     ]
 )
 DAILY = [
