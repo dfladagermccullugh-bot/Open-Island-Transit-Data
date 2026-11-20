@@ -1,0 +1,26 @@
+name: Release self-test
+
+# Manual only. Runs pipeline/release.py against a throwaway release
+# (created, uploaded to, downloaded from, then deleted) to confirm the
+# gh commands work with the Actions token.
+on:
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  selftest:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    env:
+      GH_TOKEN: ${{ github.token }}
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+          cache: pip
+      - run: pip install -e .
+      - run: gh --version
+      - run: python scripts/selftest_release.py "$GITHUB_REPOSITORY" "$RUNNER_TEMP/selftest"
