@@ -1,0 +1,475 @@
+passio_stop_id,passio_stop_code,passio_stop_name,trillium_stop_id,trillium_stop_code,trillium_stop_name,method,distance_m,nearest_trillium_stop_id,nearest_trillium_stop_name,nearest_distance_m
+178139,2550,271st St NW & 88th Ave NW,3449362,2550,271st St NW & 88th Ave NW,stop_code,0.0,3449362,271st St NW & 88th Ave NW,0.0
+178138,2551,271st St NW & 92nd Ave NW,3449361,2551,271st St NW & 92nd Ave NW,stop_code,0.0,3449361,271st St NW & 92nd Ave NW,0.0
+178137,2552,271st St NW & 94th Dr NW,3449360,2552,271st St NW & 94th Dr NW,stop_code,0.0,3449360,271st St NW & 94th Dr NW,0.0
+178364,336,271st St NW & 96th Ave NW,3449639,336,271st St NW & 96th Ave NW,stop_code,0.0,3449639,271st St NW & 96th Ave NW,0.0
+178169,1328,2nd St at Star Store,3449397,1328,2nd St at Star Store,stop_code,0.0,3449397,2nd St at Star Store,0.0
+178168,1330,6th St at Creekside Terrace,3449396,1330,6th St at Creekside Terrace,stop_code,0.0,3449396,6th St at Creekside Terrace,0.0
+218471,,92nd Ave at 532,,,,,246.5,3449361,271st St NW & 92nd Ave NW,246.5
+218434,,Admiral Dr at Rickover Dr,3449409,1288,Admirals Dr at Rickover Dr,distance,16.1,3449409,Admirals Dr at Rickover Dr,16.1
+218435,,Admirals Dr at Byrd Dr,3449419,1268,Admirals Dr at Byrd Dr,distance,9.0,3449419,Admirals Dr at Byrd Dr,9.0
+178497,2598,Airline Way at Ridgeview Dr,4149306,,Airline Way at Ridgeview Dr,distance,0.0,4149306,Airline Way at Ridgeview Dr,0.0
+178332,796,Anacortes: SR 20 at Flea Market/Sharpes Corner,3449599,796,Anacortes: SR 20 at Flea Market/Sharpes Corner,stop_code,0.0,3449599,Anacortes: SR 20 at Flea Market/Sharpes Corner,0.0
+178333,793,Anacortes: SR 20 at Sharpe's Corner Country Store,3449600,793,Anacortes: SR 20 at Sharpe's Corner Country Store,stop_code,0.0,3449600,Anacortes: SR 20 at Sharpe's Corner Country Store,0.0
+178388,93,Anthes Ave at Third St,3449678,93,Anthes Ave at Third St,stop_code,0.0,3449678,Anthes Ave at Third St,0.0
+178453,27,Arnold Rd at Gabrielson Ave,3449754,27,Arnold Rd at Gabrielson Ave,stop_code,0.0,3449754,Arnold Rd at Gabrielson Ave,0.0
+178197,1205,Arnold Rd at Monroe Landing Rd,3449435,1205,Arnold Rd at Monroe Landing Rd,stop_code,0.0,3449435,Arnold Rd at Monroe Landing Rd,0.0
+178257,1041,Arnold Rd at Monroe Landing Rd,3449514,1041,Arnold Rd at Monroe Landing Rd,stop_code,0.0,3449514,Arnold Rd at Monroe Landing Rd,0.0
+178459,15,Arnold Rd at N Riepma Ave,3449761,15,Arnold Rd at N Riepma Ave,stop_code,0.0,3449761,Arnold Rd at N Riepma Ave,0.0
+178452,28,Arnold Rd at Riepma Rd,3449753,28,Arnold Rd at Riepma Rd,stop_code,0.0,3449753,Arnold Rd at Riepma Rd,0.0
+178256,1042,Arnold Rd at Sharon St,3449513,1042,Arnold Rd at Sharon St,stop_code,0.0,3449513,Arnold Rd at Sharon St,0.0
+178211,1155,Arrowhead Rd at Camano Center (Utsalady Elementary School),3449463,1155,Arrowhead Rd at Camano Center (Utsalady Elementary School),stop_code,0.0,3449463,Arrowhead Rd at Camano Center (Utsalady Elementary School),0.0
+178215,1150,Arrowhead Rd at Chick Rd (Baker View Ln),3449467,1150,Arrowhead Rd at Chick Rd (Baker View Ln),stop_code,0.0,3449467,Arrowhead Rd at Chick Rd (Baker View Ln),0.0
+178481,18,Ault Field Rd at Langley Blvd,3450314,18,Ault Field Rd at Langley Blvd,stop_code,0.0,3450314,Ault Field Rd at Langley Blvd,0.0
+178147,1411,Ault Field Rd at Summit Blvd,3449371,1411,Ault Field Rd at Summit Blvd,stop_code,0.0,3449371,Ault Field Rd at Summit Blvd,0.0
+197280,2579,Bailey Rd at Cultus Bay Rd,3449334,2579,Bailey Rd at Cultus Bay Rd (NB),stop_code,0.0,3449334,Bailey Rd at Cultus Bay Rd (NB),0.0
+197282,407,Bailey Rd at Cultus Bay Rd,3449638,407,Bailey Rd at Cultus Bay Rd (SB),stop_code,0.0,3449638,Bailey Rd at Cultus Bay Rd (SB),0.0
+178418,3013,Bakken Rd at Poor Rd (Greenbank Park & Ride),3449708,3013,Bakken Rd at Poor Rd (Greenbank Park & Ride),stop_code,0.0,3449708,Bakken Rd at Poor Rd (Greenbank Park & Ride),0.0
+178401,71,Barrington Dr at Haggens,3449691,71,Barrington Dr at Haggens,stop_code,0.0,3449691,Barrington Dr at Haggens,0.0
+178241,1102,Barrington Dr at Post Office,3449495,1102,Barrington Dr at Post Office,stop_code,0.0,3449495,Barrington Dr at Post Office,0.0
+178159,1362,Barrington Dr at Walmart,3449384,1362,Barrington Dr at Walmart,stop_code,0.0,3449384,Barrington Dr at Walmart,0.0
+178185,1262,Bayshore at City Beach,3449422,1262,Bayshore at City Beach,stop_code,0.0,3449422,Bayshore at City Beach,0.0
+178494,181,Bayshore Dr at Grocery Outlet,4149270,181,Bayshore Dr at Grocery Outlet,stop_code,0.0,4149270,Bayshore Dr at Grocery Outlet,0.0
+178268,1011,Bayview Garden on 272nd St at 78th,3449526,1011,Bayview Garden on 272nd St at 78th,stop_code,0.0,3449526,Bayview Garden on 272nd St at 78th,0.0
+178194,57,Bayview P&R,3449703,57,Bayview P&R,stop_code,0.0,3449703,Bayview P&R,0.0
+178413,1209,Bayview P&R,3449432,1209,Bayview P&R,stop_code,0.0,3449432,Bayview P&R,0.0
+178111,2590,Bayview Rd at Marshview Rd,3449331,2590,Bayview Rd at Marshview Rd,stop_code,0.0,3449331,Bayview Rd at Marshview Rd,0.0
+197271,2591,Beeksma Dr at Bayshore Dr,4209763,,S Beeksma Dr at SW Bayshore Dr,distance,10.9,4209763,S Beeksma Dr at SW Bayshore Dr,10.9
+197717,,Blakely at Swede Hill Rd,3449643,206,Blakely Ave at Swede Hill Rd (NB),distance,9.7,3449643,Blakely Ave at Swede Hill Rd (NB),9.7
+218470,,Broadway & 10th St - NB,,,,,246.3,3449518,EVCC Tower & Broadway,246.3
+218469,,Broadway & 12th St - NB,,,,,554.3,3449517,EVCC Tower & Broadway,554.3
+218446,,Broadway & 12th St - SB,,,,,602.8,3449517,EVCC Tower & Broadway,602.8
+218468,,Broadway & 14th NB,,,,,814.9,3449517,EVCC Tower & Broadway,814.9
+218447,,Broadway & 14th SB,,,,,862.8,3449517,EVCC Tower & Broadway,862.8
+218467,,Broadway & 16th St - NB,,,,,1099.2,3449517,EVCC Tower & Broadway,1099.2
+218448,,Broadway & 16th St - SB,,,,,1144.0,3449517,EVCC Tower & Broadway,1144.0
+218466,,Broadway & 18th St - NB,,,,,1383.4,3449517,EVCC Tower & Broadway,1383.4
+218449,,Broadway & 18th St - SB,,,,,1422.8,3449517,EVCC Tower & Broadway,1422.8
+218450,,Broadway & 21st St - SB,,,,,1663.1,3449516,Everett Station,1663.1
+218464,,Broadway & 23rd St - NB,,,,,1409.6,3449516,Everett Station,1409.6
+218451,,Broadway & 23rd St - SB,,,,,1374.7,3449516,Everett Station,1374.7
+218463,,Broadway & 26th NB,,,,,911.2,3449516,Everett Station,911.2
+218462,,Broadway & California - NB,,,,,737.7,3449516,Everett Station,737.7
+218457,,Broadway & California SB,,,,,762.7,3449516,Everett Station,762.7
+178255,1047,Broadway at Madrona,3449511,1047,Broadway at Madrona,stop_code,0.0,3449511,Broadway at Madrona,0.0
+178446,34,Broadway at Madrona Way,3449747,34,Broadway at Madrona Way,stop_code,0.0,3449747,Broadway at Madrona Way,0.0
+218465,,Broadway& 21st NB,,,,,1692.4,3449516,Everett Station,1692.4
+178391,86,Bush Point Rd at Adams Rd,3449681,86,Bush Point Rd at Adams Rd,stop_code,0.0,3449681,Bush Point Rd at Adams Rd,0.0
+178392,85,Bush Point Rd at Dolphin Dr,3449682,85,Bush Point Rd at Dolphin Dr,stop_code,0.0,3449682,Bush Point Rd at Dolphin Dr,0.0
+178433,48,Bush Point Rd at Mutiny Bay Rd,3449734,48,Bush Point Rd at Mutiny Bay Rd,stop_code,0.0,3449734,Bush Point Rd at Mutiny Bay Rd,0.0
+178390,87,Bush Point Rd at Shore Meadow Rd,3449680,87,Bush Point Rd at Shore Meadow Rd,stop_code,0.0,3449680,Bush Point Rd at Shore Meadow Rd,0.0
+178124,2569,Cama Beach,3449344,2569,Cama Beach,stop_code,0.0,3449344,Cama Beach,0.0
+197206,1166,Camano at CanKu,3449454,1166,Camano at CanKu,stop_code,0.0,3449454,Camano at CanKu,0.0
+178231,1130,Camano at Chapman Rd,3449483,1130,Camano at Chapman Rd,stop_code,0.0,3449483,Camano at Chapman Rd,0.0
+178386,96,Camano Ave at Edgecliff Dr,3449676,96,Camano Ave at Edgecliff Dr,stop_code,0.0,3449676,Camano Ave at Edgecliff Dr,0.0
+178167,1332,Camano Ave at Langley Fair Grounds,3449395,1332,Camano Ave at Langley Fair Grounds,stop_code,0.0,3449395,Camano Ave at Langley Fair Grounds,0.0
+178171,1325,Camano Ave at Langley P&R,3449399,1325,Camano Ave at Langley P&R,stop_code,0.0,3449399,Camano Ave at Langley P&R,0.0
+178387,95,Camano Ave at South Whidbey Community Center,3449677,95,Camano Ave at South Whidbey Community Center,stop_code,0.0,3449677,Camano Ave at South Whidbey Community Center,0.0
+178375,113,Camano Dr at Bayview (Utsalady),3449665,113,Camano Dr at Bayview (Utsalady),stop_code,0.0,3449665,Camano Dr at Bayview (Utsalady),0.0
+178277,986,Camano Dr at Shumway,3449538,986,Camano Dr at Shumway,stop_code,0.0,3449538,Camano Dr at Shumway,0.0
+178233,1127,Camano Hill Rd at Chapman Rd,3449485,1127,Camano Hill Rd at Chapman Rd,stop_code,0.0,3449485,Camano Hill Rd at Chapman Rd,0.0
+178276,993,Camano Island Health System,3449534,993,Camano Island Health System,stop_code,0.0,3449534,Camano Island Health System,0.0
+178240,1103,Camano Plaza at E Camano Dr,3449494,1103,Camano Plaza at E Camano Dr,stop_code,0.0,3449494,Camano Plaza at E Camano Dr,0.0
+178125,2568,Camano St,3449345,2568,Camano St,stop_code,0.0,3449345,Camano St,0.0
+178275,999,Camano St,3449533,999,Camano St,stop_code,0.0,3449533,Camano St,0.0
+223026,,Cameron Rd at SR 525,,,,,356.9,3449503,Freeland P&R,356.9
+178170,1327,Cascade Ave at 4th St,3449398,1327,Cascade Ave at 4th St,stop_code,0.0,3449398,Cascade Ave at 4th St,0.0
+178187,1260,Central Ave at Berg Rd,3449424,1260,Central Ave at Berg Rd,stop_code,0.0,3449424,Central Ave at Berg Rd,0.0
+178232,1128,Chapman and Rowe,3449484,1128,Chapman and Rowe,stop_code,0.0,3449484,Chapman and Rowe,0.0
+178382,102,Chapman Rd at Falcon Rd,3449672,102,Chapman Rd at Falcon Rd,stop_code,0.0,3449672,Chapman Rd at Falcon Rd,0.0
+218484,,Charles Porter Ave at Hangars 5 and 12,,,,,90.7,3449326,Charles Porter Ave at Hangars 5/12,90.7
+218442,,"Charles Porter Gate Access, NASWI",,,,,386.4,3449610,Goldie Rd S. of Ault Field Rd (N. Whidbey Center),386.4
+178270,1008,Church Creek,3449528,1008,Church Creek,stop_code,0.0,3449528,Church Creek,0.0
+178409,63,Clinton Ferry Terminal,3449699,63,Clinton Ferry Terminal,stop_code,0.0,3449699,Clinton Ferry Terminal,0.0
+197242,2554,Clinton Park & Ride at Deer Lake Rd,3449358,2554,Clinton Park & Ride at Deer Lake Rd (Northbound),stop_code,0.0,3449358,Clinton Park & Ride at Deer Lake Rd (Northbound),0.0
+197274,64,Clinton Park & Ride at Deer Lake Rd,3449698,64,Clinton Park & Ride at Deer Lake Rd (Southbound),stop_code,0.0,3449698,Clinton Park & Ride at Deer Lake Rd (Southbound),0.0
+178286,966,Conway,3449547,966,Conway,stop_code,0.0,3449547,Conway,0.0
+178287,964,Conway,3449548,964,Conway,stop_code,0.0,3449548,Conway,0.0
+178319,835,Coupeville Library,3449586,835,Coupeville Library,stop_code,0.0,3449586,Coupeville Library,0.0
+178482,836,Coupeville Library,3450319,836,Coupeville Library,stop_code,0.0,3450319,Coupeville Library,0.0
+178316,849,Coupeville Park & Ride,3449581,849,Coupeville Park & Ride,stop_code,0.0,3449581,Coupeville Park & Ride,0.0
+197228,851,Coveland St at Alexander St,3449579,851,Coveland St at Alexander St (NB),stop_code,0.0,3449579,Coveland St at Alexander St (NB),0.0
+197251,837,Coveland St at Alexander St,3449585,837,Coveland St at Alexander St (SB),stop_code,0.0,3449585,Coveland St at Alexander St (SB),0.0
+218479,,Cresent Harbor Rd at Western Dr,3449726,2622,Crescent Harbor Rd at Western Dr,distance,22.6,3449726,Crescent Harbor Rd at Western Dr,22.6
+178151,1406,Crosby Ave at Cherry Hill,3449376,1406,Crosby Ave at Cherry Hill,stop_code,0.0,3449376,Crosby Ave at Cherry Hill,0.0
+178150,1407,Crosby Ave at Parkwood Manor,3449375,1407,Crosby Ave at Parkwood Manor,stop_code,0.0,3449375,Crosby Ave at Parkwood Manor,0.0
+178115,2578,Cultus Bay Rd at Adobe Rd,3449335,2578,Cultus Bay Rd at Adobe Rd,stop_code,0.0,3449335,Cultus Bay Rd at Adobe Rd,0.0
+178176,1295,Cultus Bay Rd at E Deer Lake Rd,3449405,1295,Cultus Bay Rd at E Deer Lake Rd,stop_code,0.0,3449405,Cultus Bay Rd at E Deer Lake Rd,0.0
+197283,412,Cultus Bay Rd at French Rd,3449633,412,Cultus Bay Rd at French Rd (NB),stop_code,0.0,3449633,Cultus Bay Rd at French Rd (NB),0.0
+197284,2577,Cultus Bay Rd at French Rd,3449336,2577,Cultus Bay Rd at French Rd (SB),stop_code,0.0,3449336,Cultus Bay Rd at French Rd (SB),0.0
+197220,121,Dallman Rd at Glacier Ln,3449660,121,Dallman Rd at Glacier Ln,stop_code,0.0,3449660,Dallman Rd at Glacier Ln,0.0
+197221,122,Dallman Rd at S Camano Dr,3449659,122,Dallman Rd at S Camano Dr,stop_code,0.0,3449659,Dallman Rd at S Camano Dr,0.0
+178395,82,Day Rd at Christenson Rd,3449685,82,Day Rd at Christenson Rd,stop_code,0.0,3449685,Day Rd at Christenson Rd,0.0
+178419,3012,Day Rd at Christenson Rd,3449709,3012,Day Rd at Christenson Rd,stop_code,0.0,3449709,Day Rd at Christenson Rd,0.0
+178501,3002,Deception Pass State Park at Cranberry Lake,4211550,,Deception Pass State Park at Cranberry Lake,distance,0.0,4211550,Deception Pass State Park at Cranberry Lake,0.0
+178121,2572,Deer Lake Rd at Heggeness Rd,3449341,2572,Deer Lake Rd at Heggeness Rd,stop_code,0.0,3449341,Deer Lake Rd at Heggeness Rd,0.0
+178120,2573,Deer Lake Road at Haven Way,3449340,2573,Deer Lake Road at Haven Way,stop_code,0.0,3449340,Deer Lake Road at Haven Way,0.0
+178426,3005,E Bush Point Rd at Dolphin Dr,3449716,3005,E Bush Point Rd at Dolphin Dr,stop_code,0.0,3449716,E Bush Point Rd at Dolphin Dr,0.0
+178428,3003,E Bush Point Rd at Mutiny Bay Rd,3449719,3003,E Bush Point Rd at Mutiny Bay Rd,stop_code,0.0,3449719,E Bush Point Rd at Mutiny Bay Rd,0.0
+178427,3004,E Bush Point Rd at S Shore Meadow Rd,3449718,3004,E Bush Point Rd at S Shore Meadow Rd,stop_code,0.0,3449718,E Bush Point Rd at S Shore Meadow Rd,0.0
+178429,3002,E Bush Point Rd at SR 525,3449720,3002,E Bush Point Rd at SR 525,stop_code,0.0,3449720,E Bush Point Rd at SR 525,0.0
+197210,1161,E Camano Dr at Broadmoore Rd,3449458,1161,E Camano Dr at Broadmoore Rd,stop_code,0.0,3449458,E Camano Dr at Broadmoore Rd,0.0
+197219,1158,E Camano Dr at Dallman Rd,3449461,1158,E Camano Dr at Dallman Rd,stop_code,0.0,3449461,E Camano Dr at Dallman Rd,0.0
+188814,117,E Camano Dr at Dan St,3449662,117,E Camano Dr at Dan St,stop_code,0.0,3449662,E Camano Dr at Dan St,0.0
+188810,988,E Camano Dr at Fairway Dr,3449537,988,E Camano Dr at Fairway Dr,stop_code,0.0,3449537,E Camano Dr at Fairway Dr,0.0
+197215,3004,E Camano Dr at Garrison Rd,4230280,,E Camano Dr at Garrison Rd,distance,0.0,4230280,E Camano Dr at Garrison Rd,0.0
+197212,1160,E Camano Dr at Karen Way,3449459,1160,E Camano Dr at Karen Way,stop_code,0.0,3449459,E Camano Dr at Karen Way,0.0
+197209,1122,E Camano Dr at Mountain View Rd,3449488,1122,E Camano Dr at Mountain View Rd,stop_code,0.0,3449488,E Camano Dr at Mountain View Rd,0.0
+188817,1165,E Camano Dr at Sandell Rd,3449455,1165,E Camano Dr at Sandell Rd,stop_code,0.0,3449455,E Camano Dr at Sandell Rd,0.0
+197213,120,E Camano Dr at Shuksan Dr,3449661,120,E Camano Dr at Shuksan Dr,stop_code,0.0,3449661,E Camano Dr at Shuksan Dr,0.0
+197211,1159,E Camano Dr at Sunnyshore Dr,3449460,1159,E Camano Dr at Sunnyshore Dr,stop_code,0.0,3449460,E Camano Dr at Sunnyshore Dr,0.0
+197214,3003,E Camano Dr at Tyee Store,4230279,,E Camano Dr at Tyee Store,distance,0.0,4230279,E Camano Dr at Tyee Store,0.0
+178117,2576,E Deer Lake Rd at Cultus Bay Rd,3449337,2576,E Deer Lake Rd at Cultus Bay Rd,stop_code,0.0,3449337,E Deer Lake Rd at Cultus Bay Rd,0.0
+178119,2574,E Deer Lake Rd at Holst Rd,3449339,2574,E Deer Lake Rd at Holst Rd,stop_code,0.0,3449339,E Deer Lake Rd at Holst Rd,0.0
+178118,2575,E Deer Lake Rd at Wintergreen Dr,3449338,2575,E Deer Lake Rd at Wintergreen Dr,stop_code,0.0,3449338,E Deer Lake Rd at Wintergreen Dr,0.0
+178214,1151,E North Camano Dr at Terry Heights Ln,3449466,1151,E North Camano Dr at Terry Heights Ln,stop_code,0.0,3449466,E North Camano Dr at Terry Heights Ln,0.0
+218476,,Eastern Dr at Larch Dr,,,,,71.8,3449729,Eastern Dr at Larch Dr,71.8
+218477,,Eastern Dr at Maple Ln,4260005,2633,Eastern Dr at Maple Dr,distance,24.7,4260005,Eastern Dr at Maple Dr,24.7
+188845,1162,Elger Bay Rd at Dry Lake Rd,3449457,1162,Elger Bay Rd at Dry Lake Rd,stop_code,0.0,3449457,Elger Bay Rd at Dry Lake Rd,0.0
+188843,126,Elger Bay Rd at Elger Bay Grocery,3449657,126,Elger Bay Rd at Elger Bay Grocery,stop_code,0.0,3449657,Elger Bay Rd at Elger Bay Grocery,0.0
+178134,2556,Engle Rd at Coupeville Ferry Terminal,3449356,2556,Engle Rd at Coupeville Ferry Terminal,stop_code,0.0,3449356,Engle Rd at Coupeville Ferry Terminal,0.0
+197257,2557,Engle Rd at Fort Casey State Park,3449355,2557,Engle Rd at Fort Casey State Park (NB),stop_code,0.0,3449355,Engle Rd at Fort Casey State Park (NB),0.0
+178162,1353,Engle Rd at Hill Rd,3449387,1353,Engle Rd at Hill Rd,stop_code,0.0,3449387,Engle Rd at Hill Rd,0.0
+178259,1032,EVCC Tower & Broadway,3449517,1032,EVCC Tower & Broadway,stop_code,0.0,3449517,EVCC Tower & Broadway,0.0
+178260,1031,EVCC Tower & Broadway,3449518,1031,EVCC Tower & Broadway,stop_code,0.0,3449518,EVCC Tower & Broadway,0.0
+218458,,"Event Center, Everett",,,,,436.4,3449516,Everett Station,436.4
+218452,,Everett Ave & Lombard W,,,,,894.1,3449516,Everett Station,894.1
+178258,1033,Everett Station,3449516,1033,Everett Station,stop_code,0.0,3449516,Everett Station,0.0
+178177,1292,Fort Casey Rd at Patmore Rd,3449406,1292,Fort Casey Rd at Patmore Rd (NB),stop_code,0.0,3449406,Fort Casey Rd at Patmore Rd (NB),0.0
+178188,,Fort Casey Rd at Terry Rd,3449425,1259,Fort Casey Rd at Terry Rd,distance,11.8,3449425,Fort Casey Rd at Terry Rd,11.8
+218441,,Fort Casey Rd at W Rusty Rd,4226674,,Fort Casey Rd at W Rusty Rd,distance,17.2,4226674,Fort Casey Rd at W Rusty Rd,17.2
+178253,1180,Fort Nugent & Zylstra,3449453,1180,Fort Nugent & Zylstra,stop_code,0.0,3449453,Fort Nugent & Zylstra,0.0
+178206,1186,Fort Nugent at Nienhuis,3449448,1186,Fort Nugent at Nienhuis,stop_code,0.0,3449448,Fort Nugent at Nienhuis,0.0
+178324,821,Fort Nugent at Peacock,3449591,821,Fort Nugent at Peacock,stop_code,0.0,3449591,Fort Nugent at Peacock,0.0
+178310,857,Fort Nugent at Stremler Dr,3449574,857,Fort Nugent at Stremler Dr,stop_code,0.0,3449574,Fort Nugent at Stremler Dr,0.0
+178207,1185,Fort Nugent at Union,3449449,1185,Fort Nugent at Union,stop_code,0.0,3449449,Fort Nugent at Union,0.0
+197255,1189,Fort Nugent Ave at Quince St,3450320,1189,Fort Nugent Ave at Quince St (Fireside),stop_code,0.0,3450320,Fort Nugent Ave at Quince St (Fireside),0.0
+178311,855,Fort Nugent/West Beach,3449575,855,Fort Nugent/West Beach,stop_code,0.0,3449575,Fort Nugent/West Beach,0.0
+178321,830,Fort Nugent/West Beach,3449588,830,Fort Nugent/West Beach,stop_code,0.0,3449588,Fort Nugent/West Beach,0.0
+178249,1077,Freeland at Main St,3449504,1077,Freeland at Main St,stop_code,0.0,3449504,Freeland at Main St,0.0
+178248,1078,Freeland P&R,3449503,1078,Freeland P&R,stop_code,0.0,3449503,Freeland P&R,0.0
+178273,1003,Frontier Bank,3449531,1003,Frontier Bank,stop_code,0.0,3449531,Frontier Bank,0.0
+178141,1417,Glenco St at SE 6th Ave,3449365,1417,Glenco St at SE 6th Ave,stop_code,0.0,3449365,Glenco St at SE 6th Ave,0.0
+178359,411,Glendale Rd at Cultus Bay Rd,3449634,411,Glendale Rd at Cultus Bay Rd,stop_code,0.0,3449634,Glendale Rd at Cultus Bay Rd,0.0
+178350,1410,Goldie Rd at 21st Court,3449619,1410,Goldie Rd at 21st Court,stop_code,0.0,3449619,Goldie Rd at 21st Court,0.0
+178486,760,Goldie Rd at NE 21st Ct,3450323,760,Goldie Rd at NE 21st Ct,stop_code,0.0,3450323,Goldie Rd at NE 21st Ct,0.0
+197264,1351,Goldie Rd at Whidbey Health,3449389,1351,Goldie Rd (Whidbey Health) at Evergreen St,stop_code,0.0,3449389,Goldie Rd (Whidbey Health) at Evergreen St,0.0
+197260,945,Goldie Rd at Whidbey-Health,3449554,945,Whidbey-Health (North),stop_code,0.0,3449554,Whidbey-Health (North),0.0
+178342,776,Goldie Rd S. of Ault Field Rd (N. Whidbey Center),3449610,776,Goldie Rd S. of Ault Field Rd (N. Whidbey Center),stop_code,0.0,3449610,Goldie Rd S. of Ault Field Rd (N. Whidbey Center),0.0
+197261,763,Goldie Road at Hayland Lane,3449617,763,Goldie Road at Hayland Lane,stop_code,0.0,3449617,Goldie Road at Hayland Lane,0.0
+218472,,Guam Ave at Community,3449725,2626,Guam Ave at Community Center,distance,57.7,3449725,Guam Ave at Community Center,57.7
+218475,,Guam Ave at Raven Dr,3449722,2632,Guam Ave at Raven Dr,distance,13.3,3449722,Guam Ave at Raven Dr,13.3
+178271,1007,Haggen Grocery,3449529,1007,Haggen Grocery,stop_code,65.4,3449529,Haggen Grocery,65.4
+218436,,Halsey Dr at Byrd Dr,3449583,845,Halsey Dr at Byrd Dr,distance,8.3,3449583,Halsey Dr at Byrd Dr,8.3
+178398,78,Harbor Station Transfer Center Bayshore Dr,3449688,78,Harbor Station Transfer Center Bayshore Dr,stop_code,0.0,3449688,Harbor Station Transfer Center Bayshore Dr,0.0
+197719,,Harper St at Blakely Ave,3449646,203,Blakely Ave at Harper St,distance,39.0,3449646,Blakely Ave at Harper St,39.0
+197720,,Hat St,3449644,205,Hat St at San Juan Ave,distance,34.9,3449644,Hat St at San Juan Ave,34.9
+178148,1409,Heller St at Hillcrest Elementary School,3449373,1409,Heller St at Hillcrest Elementary School,stop_code,0.0,3449373,Heller St at Hillcrest Elementary School,0.0
+178373,129,Heller St at Oak Harbor High School,3449656,129,Heller St at Oak Harbor High School,stop_code,0.0,3449656,Heller St at Oak Harbor High School,0.0
+178153,1404,Heller St at Redwing Dr,3449378,1404,Heller St at Redwing Dr,stop_code,0.0,3449378,Heller St at Redwing Dr,0.0
+178154,1402,Heller St at SW 6th Kimball Park,3449379,1402,Heller St at SW 6th Kimball Park,stop_code,0.0,3449379,Heller St at SW 6th Kimball Park,0.0
+178496,1402,Heller St at SW 6th Kimball Park,3449379,1402,Heller St at SW 6th Kimball Park,stop_code,0.0,3449379,Heller St at SW 6th Kimball Park,0.0
+178155,1401,Heller St at Swantown Ave,3449380,1401,Heller St at Swantown Ave,stop_code,0.0,3449380,Heller St at Swantown Ave,0.0
+178152,1405,Heller St at Wagon Wheel,3449377,1405,Heller St at Wagon Wheel,stop_code,0.0,3449377,Heller St at Wagon Wheel,0.0
+218454,,Hewitt Ave & Wetmore SB,,,,,897.3,3449516,Everett Station,897.3
+197718,,Howard Rd at The Goose,3449565,890,Howard Rd at The Goose,distance,0.7,3449565,Howard Rd at The Goose,0.7
+178186,1261,Humphrey Rd at SR 525,3449423,1261,Humphrey Rd at SR 525,stop_code,0.0,3449423,Humphrey Rd at SR 525,0.0
+178407,65,Humphrey Road Park & Ride,3449697,65,Humphrey Road Park & Ride,stop_code,0.0,3449697,Humphrey Road Park & Ride,0.0
+178280,979,Huntington Store,3449541,979,Huntington Store,stop_code,0.0,3449541,Huntington Store,0.0
+178261,1030,I-5 P&R,3449519,1030,I-5 P&R,stop_code,0.0,3449519,I-5 P&R,0.0
+178296,941,I-5 P&R,3449558,941,I-5 P&R,stop_code,0.0,3449558,I-5 P&R,0.0
+178381,103,Indian Beach,3449671,103,Indian Beach,stop_code,0.0,3449671,Indian Beach,0.0
+218443,,Intruder St at Barracks,4260009,2637,Intruder St at Barracks,distance,27.5,4260009,Intruder St at Barracks,27.5
+178357,742,Island County District Court,3449632,742,Island County District Court,stop_code,0.0,3449632,Island County District Court,0.0
+197267,948,Jerome St at Senior Ctr/Pool,3449553,948,Senior Ctr/Pool Jerome St,stop_code,0.0,3449553,Senior Ctr/Pool Jerome St,0.0
+197279,2562,Jewett Rd at Bailey's Store,3449351,2562,Jewett Rd at Bailey's Store (SB),stop_code,0.0,3449351,Jewett Rd at Bailey's Store (SB),0.0
+197285,408,Jewett Rd at Bailey's Store,3449637,408,Jewett Rd at Bailey's Store (NB),stop_code,0.0,3449637,Jewett Rd at Bailey's Store (NB),0.0
+197277,2581,Jewett Rd at Glendale Rd,3449333,2581,Jewett Rd at Glendale Rd (SB),stop_code,0.0,3449333,Jewett Rd at Glendale Rd (SB),0.0
+197287,410,Jewett Rd at Glendale Rd,3449635,410,Jewett Rd at Glendale Rd (NB),stop_code,0.0,3449635,Jewett Rd at Glendale Rd (NB),0.0
+197278,2582,Jewett Rd at Sorrel Ln,3449332,2582,Jewett Rd at Sorrel Ln (SB),stop_code,0.0,3449332,Jewett Rd at Sorrel Ln (SB),0.0
+197286,409,Jewett Rd at Sorrel Ln,3449636,409,Jewett Rd at Sorrel Ln (NB),stop_code,0.0,3449636,Jewett Rd at Sorrel Ln (NB),0.0
+218437,,Koenig Ln at SR 20,3449408,1290,Koenig Ln at SR 20,distance,6.3,3449408,Koenig Ln at SR 20,6.3
+178477,3014,Lagoon Point Rd at Christie Rd,3450292,3014,Lagoon Point Rd at Christie Rd,stop_code,0.0,3450292,Lagoon Point Rd at Christie Rd,0.0
+178394,83,Lagoon Point Rd at Gylany Way,3449684,83,Lagoon Point Rd at Gylany Way,stop_code,0.0,3449684,Lagoon Point Rd at Gylany Way,0.0
+178420,3011,Lagoon Point Rd at Gylany Way,3449710,3011,Lagoon Point Rd at Gylany Way,stop_code,0.0,3449710,Lagoon Point Rd at Gylany Way,0.0
+178227,1134,Lake at Lakewood,3449479,1134,Lake at Lakewood,stop_code,0.0,3449479,Lake at Lakewood,0.0
+178308,869,Langey Rd at Whidbey Island Winery,3449570,869,Langey Rd at Whidbey Island Winery,stop_code,0.0,3449570,Langey Rd at Whidbey Island Winery,0.0
+197273,1335,Langley Rd at Ken's Korner,3449392,1335,Langley Rd at Ken's Korner (SB),stop_code,0.0,3449392,Langley Rd at Ken's Korner (SB),0.0
+197275,68,Langley Rd at Ken's Korner,3449694,68,Langley Rd at Ken's Korner (NB),stop_code,0.0,3449694,Langley Rd at Ken's Korner (NB),0.0
+178166,1334,Langley Rd at Soccer Fields,3449393,1334,Langley Rd at Soccer Fields,stop_code,0.0,3449393,Langley Rd at Soccer Fields,0.0
+178309,868,Langley Soccer Fields,3449571,868,Langley Soccer Fields,stop_code,0.0,3449571,Langley Soccer Fields,0.0
+218483,,Lexington St at Air Terminal,,,,,95.7,3449327,Hangars 11 / 14 / Air Terminal,95.7
+218485,,Lexington St at Nor'Wester (Fleet and Fam),4260007,2639,Lexington St at Nor'Western,distance,19.0,4260007,Lexington St at Nor'Western,19.0
+178140,1500,Libbey Rd at SR 20,3449364,1500,Libbey Rd at SR 20 (Skymeadow),stop_code,0.0,3449364,Libbey Rd at SR 20 (Skymeadow),0.0
+178228,1133,Lost Lake,3449480,1133,Lost Lake,stop_code,0.0,3449480,Lost Lake,0.0
+178380,104,Lost Lake: Monticello Dr at Lakewood Dr,3449670,104,Lost Lake: Monticello Dr at Lakewood Dr,stop_code,0.0,3449670,Lost Lake: Monticello Dr at Lakewood Dr,0.0
+178416,52,Madrona at Captain Whidbey Inn,3449706,52,Madrona at Captain Whidbey Inn,stop_code,0.0,3449706,Madrona at Captain Whidbey Inn,0.0
+178254,1049,Madrona at Vine,3449510,1049,Madrona at Vine,stop_code,0.0,3449510,Madrona at Vine,0.0
+178399,76,Main St at Coupeville Elementary School,3449689,76,Main St at Coupeville Elementary School,stop_code,0.0,3449689,Main St at Coupeville Elementary School,0.0
+178163,1352,Main St at Coupeville High School,3449388,1352,Main St at Coupeville High School,stop_code,0.0,3449388,Main St at Coupeville High School,0.0
+197227,850,Main St at Courthouse,3449580,850,Main St at Courthouse (NB),stop_code,0.0,3449580,Main St at Courthouse (NB),0.0
+197252,74,Main St at Courthouse,3449690,74,Main St at Courthouse (SB),stop_code,0.0,3449690,Main St at Courthouse (SB),0.0
+197237,1300,Main St at Freeland,3449404,1300,Main St at Corey Oil,stop_code,0.0,3449404,Main St at Corey Oil,0.0
+178251,1075,Main St at Freeland Plaza,3449506,1075,Main St at Freeland Plaza,stop_code,89.4,3449506,Main St at Freeland Plaza,89.4
+178417,51,Main St at Freeland Plaza,3449707,51,Main St at Payless,stop_code,0.0,3449707,Main St at Payless,0.0
+178250,1076,Main St at Maple Ridge,3449505,1076,Maple Ridge Senior Condos,stop_code,0.0,3449505,Maple Ridge Senior Condos,0.0
+178252,1068,Main St at Maple Ridge,3449508,1068,Main St at Maple Ridge,stop_code,0.0,3449508,Main St at Maple Ridge,0.0
+197226,1092,Main St at Whidbey Health Medical Center,3449498,1092,Main St at Whidbey Health Medical Center (NB),stop_code,0.0,3449498,Main St at Whidbey Health Medical Center (NB),0.0
+197253,839,Main St at Whidbey Health Medical Center,3449584,839,Main St at Whidbey Health Medical Center (SB),stop_code,0.0,3449584,Main St at Whidbey Health Medical Center (SB),0.0
+197263,133,March Point,3449655,133,March's Point,stop_code,0.0,3449655,March's Point,0.0
+178172,1323,Maxwelton at SR 525,3449400,1323,Maxwelton at SR 525,stop_code,0.0,3449400,Maxwelton at SR 525,0.0
+197272,1135,Maxwelton Rd at Castle Park,3449343,1135,Maxwelton Rd at Castle Park (Southbound),stop_code,0.0,3449343,Maxwelton Rd at Castle Park (Southbound),0.0
+197276,2570,Maxwelton Rd at Castle Park,3449478,2570,Maxwelton Rd at Castle Park (Northbound),stop_code,0.0,3449478,Maxwelton Rd at Castle Park (Northbound),0.0
+178301,919,Maxwelton Rd at Island Christian Academy,3449563,919,Maxwelton Rd at Island Christian Academy,stop_code,0.0,3449563,Maxwelton Rd at Island Christian Academy,0.0
+178122,2571,Maxwelton Rd at South Whidbey Elementary,3449342,2571,Maxwelton Rd at South Whidbey Elementary,stop_code,0.0,3449342,Maxwelton Rd at South Whidbey Elementary,0.0
+178203,1194,Maxwelton Rd at SW High School,3449442,1194,Maxwelton Rd at SW High School,stop_code,0.0,3449442,Maxwelton Rd at SW High School,0.0
+178274,1001,Middle School - Camano Island,3449532,1001,Middle School - Camano Island,stop_code,0.0,3449532,Middle School - Camano Island,0.0
+197265,779,Midway at 8th,3449609,779,Midway at 8th (McDonalds),stop_code,0.0,3449609,Midway at 8th (McDonalds),0.0
+178351,757,Midway Blvd at NE 4th Ave,3449621,757,Midway Blvd at NE 4th Ave,stop_code,0.0,3449621,Midway Blvd at NE 4th Ave,0.0
+178340,780,Midway Blvd at NE 5th Ave,3449608,780,Midway Blvd at NE 5th Ave at Sears,stop_code,0.0,3449608,Midway Blvd at NE 5th Ave at Sears,0.0
+178326,806,Midway Blvd at NE 6th,3449593,806,Midway Blvd at NE 6th,stop_code,0.0,3449593,Midway Blvd at NE 6th,0.0
+178336,787,Midway Blvd at NE 8th Ave,3449603,787,Midway Blvd at NE 8th Ave,stop_code,0.0,3449603,Midway Blvd at NE 8th Ave,0.0
+178337,785,Midway Blvd at SE 4th Ave (Oak Harbor Elementary),3449604,785,Midway Blvd at SE 4th Ave (Oak Harbor Elementary),stop_code,0.0,3449604,Midway Blvd at SE 4th Ave (Oak Harbor Elementary),0.0
+178325,807,Midway Blvd at SE 6th Ave,3449592,807,Midway Blvd at SE 6th Ave,stop_code,0.0,3449592,Midway Blvd at SE 6th Ave,0.0
+178352,755,Midway Blvd at SE 6th Ave (Whidbey Playhouse),3449622,755,Midway Blvd at SE 6th Ave (Whidbey Playhouse),stop_code,0.0,3449622,Midway Blvd at SE 6th Ave (Whidbey Playhouse),0.0
+178338,784,Midway Blvd at SE 9th St,3449605,784,Midway Blvd at SE 9th St,stop_code,0.0,3449605,Midway Blvd at SE 9th St,0.0
+218487,,Midway St at Convergence Zone,4260008,2638,Midway St at Convergence Zone,distance,18.7,4260008,Midway St at Convergence Zone,18.7
+218480,,Midway St at Hangar 6,,,,,69.3,3449329,Hangar 6 / Fleet Readiness,69.3
+178190,1248,Monkey Hill Rd. at Ducken Rd. (on request),3449428,1248,Monkey Hill Rd. at Ducken Rd. (on request),stop_code,0.0,3449428,Monkey Hill Rd. at Ducken Rd. (on request),0.0
+178242,1099,Monroe Landing at SR 20 (Blue Fox Drive-In),3449497,1099,Monroe Landing at SR 20 (Blue Fox Drive-In),stop_code,0.0,3449497,Monroe Landing at SR 20 (Blue Fox Drive-In),0.0
+197233,25,Monroe Landing at the airport,3449756,25,Monroe Landing at the airport,stop_code,0.0,3449756,Monroe Landing at the airport,0.0
+197230,17,Monroe Landing Rd at AJ Eisenberg Airport,3449760,17,Monroe Landing Rd at AJ Eisenberg Airport,stop_code,0.0,3449760,Monroe Landing Rd at AJ Eisenberg Airport,0.0
+178479,1098,Monroe Landing Rd at SR 20 (Blue Fox Drive-in),3450311,1098,Monroe Landing Rd at SR 20 (Blue Fox Drive-in),stop_code,0.0,3450311,Monroe Landing Rd at SR 20 (Blue Fox Drive-in),0.0
+178212,1154,Monticello Dr at Bonnie Lane,3449464,1154,Monticello Dr at Bonnie Lane,stop_code,0.0,3449464,Monticello Dr at Bonnie Lane,0.0
+178229,1132,Monticello Dr at Dry Lake,3449481,1132,Monticello Dr at Dry Lake,stop_code,0.0,3449481,Monticello Dr at Dry Lake,0.0
+178230,1131,Monticello Dr at SW Camano,3449482,1131,Monticello Dr at SW Camano,stop_code,0.0,3449482,Monticello Dr at SW Camano,0.0
+178491,2594,Monticello Way at Orchard Loop,4149267,,Monticello Way at Orchard Loop,distance,0.0,4149267,Monticello Way at Orchard Loop,0.0
+178498,2599,Monticello Way at Swantown Rd,4149307,,Monticello Way at Swantown Rd,distance,0.0,4149307,Monticello Way at Swantown Rd,0.0
+178377,110,N Arrowhead Rd at East North Camano Dr,3449667,110,N Arrowhead Rd at East North Camano Dr,stop_code,0.0,3449667,N Arrowhead Rd at East North Camano Dr,0.0
+218445,,N Broadway & 10th St - SB,,,,,332.5,3449518,EVCC Tower & Broadway,332.5
+218482,,N Ranger St at Hangars 11 and 14,3449328,2604,Hangars 8 / 10,distance,3.6,3449328,Hangars 8 / 10,3.6
+197269,1380,NE 7th at Kettle St,3449383,1380,NE 7th at Click Music,stop_code,0.0,3449383,NE 7th at Click Music,0.0
+178157,1381,NE 7th Ave at Lexy Manor,3449382,1381,NE 7th Ave at Lexy Manor,stop_code,0.0,3449382,NE 7th Ave at Lexy Manor,0.0
+178224,1141,North Camano and Arrowhead Rd,3449476,1141,North Camano and Arrowhead Rd,stop_code,0.0,3449476,North Camano and Arrowhead Rd,0.0
+178281,978,North Camano at Essex St,3449542,978,North Camano at Essex St,stop_code,0.0,3449542,North Camano at Essex St,0.0
+178223,1142,North Camano at Fay Lane,3449475,1142,North Camano at Fay Lane,stop_code,0.0,3449475,North Camano at Fay Lane,0.0
+178235,1124,North Camano Dr at Maple Grove Rd,3449487,1124,North Camano Dr at Maple Grove Rd,stop_code,0.0,3449487,North Camano Dr at Maple Grove Rd,0.0
+178222,1143,Northwest Camano and Swanson Ln,3449474,1143,Northwest Camano and Swanson Ln,stop_code,0.0,3449474,Northwest Camano and Swanson Ln,0.0
+178221,1144,Northwest Camano at Tara Ln,3449473,1144,Northwest Camano at Tara Ln,stop_code,0.0,3449473,Northwest Camano at Tara Ln,0.0
+178492,2596,NW Crosby Rd at NW Scenic Vista St,4149268,,NW Crosby Rd at NW Scenic Vista St,distance,0.0,4149268,NW Crosby Rd at NW Scenic Vista St,0.0
+178179,1280,NW Madrona Way at SR 20,3449413,1280,NW Madrona Way at SR 20,stop_code,0.0,3449413,NW Madrona Way at SR 20,0.0
+178339,781,Oak Harbor Elementary on SE Midway Blvd,3449607,781,Oak Harbor Elementary on SE Midway Blvd,stop_code,0.0,3449607,Oak Harbor Elementary on SE Midway Blvd,0.0
+178145,1413,Oak Harbor Rd at Gun Club Rd,3449369,1413,Oak Harbor Rd at Gun Club Rd,stop_code,0.0,3449369,Oak Harbor Rd at Gun Club Rd,0.0
+178144,1414,Oak Harbor Rd at Oak Hallow,3449368,1414,Oak Harbor Rd at Walmarc Storage,stop_code,0.0,3449368,Oak Harbor Rd at Walmarc Storage,0.0
+178146,1412,Oak Harbor Rd at Schay Rd,3449370,1412,Oak Harbor Rd at Schay Rd,stop_code,0.0,3449370,Oak Harbor Rd at Schay Rd,0.0
+178143,1415,Oak Harbor St at Columbia Dr,3449367,1415,Oak Harbor St at Columbia Dr,stop_code,0.0,3449367,Oak Harbor St at Columbia Dr,0.0
+178487,805,Oak Harbor St at NE 10th Ave,3878785,805,Oak Harbor St at NE 10th Ave (NB),stop_code,0.0,3878785,Oak Harbor St at NE 10th Ave (NB),0.0
+197266,806,Oak Harbor St at NE 10th Ave,3878787,806,Oak Harbor St at NE 10th Ave (SB),stop_code,0.0,3878787,Oak Harbor St at NE 10th Ave (SB),0.0
+218459,,Pacific Ave & Rockefeller Ave - NB,,,,,623.6,3449516,Everett Station,623.6
+218456,,Pacific Ave & Rockefeller Ave SB,,,,,621.1,3449516,Everett Station,621.1
+178184,1269,Pioneer at Ace Hardware,3449418,1269,Pioneer at Ace Hardware,stop_code,0.0,3449418,Pioneer at Ace Hardware,0.0
+178355,746,Pioneer Ave at Regatta Dr,3449630,746,Pioneer Ave at Regatta Dr,stop_code,0.0,3449630,Pioneer Ave at Regatta Dr,0.0
+178178,1284,Pioneer Highway,3449411,1284,Pioneer Highway,stop_code,0.0,3449411,Pioneer Highway,0.0
+178289,962,Pioneer Hwy at 300th St,3449550,962,Pioneer Hwy at 300th St,stop_code,0.0,3449550,Pioneer Hwy at 300th St,0.0
+178284,968,Pioneer Hwy at 300th St NW,3449545,968,Pioneer Hwy at 300th St NW,stop_code,0.0,3449545,Pioneer Hwy at 300th St NW,0.0
+178307,871,Pioneer Hwy at Les Schwab,3449569,871,Pioneer Hwy at Les Schwab,stop_code,0.0,3449569,Pioneer Hwy at Les Schwab,0.0
+178285,967,Pioneer Hwy at Milltown Rd,3449546,967,Pioneer Hwy at Milltown Rd,stop_code,0.0,3449546,Pioneer Hwy at Milltown Rd,0.0
+178288,963,Pioneer Hwy at Milltown Rd,3449549,963,Pioneer Hwy at Milltown Rd,stop_code,0.0,3449549,Pioneer Hwy at Milltown Rd,0.0
+178267,1013,Pioneer Hwy at North Star Cold Storage,3449525,1013,Pioneer Hwy at North Star Cold Storage,stop_code,0.0,3449525,Pioneer Hwy at North Star Cold Storage,0.0
+218481,,Ranger St at Hangars 8 and 10,4260006,2640,Ranger St at Hangar 5,distance,11.8,4260006,Ranger St at Hangar 5,11.8
+178353,748,Regatta at Shelter #343,3449628,748,Regatta at Shelter #343,stop_code,0.0,3449628,Regatta at Shelter #343,0.0
+178500,3001,Ridgeway Dr at Stremler Dr,4149309,,Ridgeway Dr at Stremler Dr,distance,0.0,4149309,Ridgeway Dr at Stremler Dr,0.0
+178283,791,Rite-Aid Stanwood,3449544,791,Rite-Aid Stanwood,stop_code,0.0,3449544,Rite-Aid Stanwood,0.0
+218433,,Russell Rd at Sunrise Blvd,,,,,1684.9,3449468,SE Camano Dr at Russell Rd,1684.9
+197222,989,S Camano Dr and Broadmoore Rd,3449536,989,S Camano Dr and Broadmoore Rd,stop_code,0.0,3449536,S Camano Dr and Broadmoore Rd,0.0
+197224,991,S Camano Dr at Awa Ln,3449535,991,S Camano Dr at Awa Ln,stop_code,0.0,3449535,S Camano Dr at Awa Ln,0.0
+197218,3007,S Camano Dr at Bernie Rd,4230283,,S Camano Dr at Bernie Rd,distance,0.0,4230283,S Camano Dr at Bernie Rd,0.0
+197216,3005,S Camano Dr at Eagle Ridge Dr,4230281,,S Camano Dr at Eagle Ridge Dr,distance,0.0,4230281,S Camano Dr at Eagle Ridge Dr,0.0
+197223,123,S Camano Dr at El Camano St,3449658,123,S Camano Dr at El Camano St,stop_code,0.0,3449658,S Camano Dr at El Camano St,0.0
+197217,3006,S Camano Dr at S Bayside Rd,4230282,,S Camano Dr at S Bayside Rd,distance,0.0,4230282,S Camano Dr at S Bayside Rd,0.0
+188835,1164,S Camano Dr at Sunnyshore Dr,3449456,1164,S Camano Dr at Sunnyshore Dr,stop_code,0.0,3449456,S Camano Dr at Sunnyshore Dr,0.0
+178424,3007,S Smugglers Cove Rd at High Rd,3449714,3007,S Smugglers Cove Rd at High Rd,stop_code,0.0,3449714,S Smugglers Cove Rd at High Rd,0.0
+178423,3008,S Smugglers Cove Rd at Rhodie Ln,3449713,3008,S Smugglers Cove Rd at Rhodie Ln,stop_code,0.0,3449713,S Smugglers Cove Rd at Rhodie Ln,0.0
+178422,3009,S Smugglers Cove Rd at S.W. State Park,3449712,3009,S Smugglers Cove Rd at S.W. State Park,stop_code,0.0,3449712,S Smugglers Cove Rd at S.W. State Park,0.0
+178425,3006,S Smugglers Cove Rd at Scurlock Rd,3449715,3006,S Smugglers Cove Rd at Scurlock Rd,stop_code,0.0,3449715,S Smugglers Cove Rd at Scurlock Rd,0.0
+178421,3010,S Smugglers Cove Rd at Westcliff Dr,3449711,3010,S Smugglers Cove Rd at Westcliff Dr,stop_code,0.0,3449711,S Smugglers Cove Rd at Westcliff Dr,0.0
+218486,,Saratoga St at Medical,3449730,2614,Medical/Dental,distance,9.1,3449730,Medical/Dental,9.1
+197281,200,Scatchet Head Rd at Bailey Rd,3449649,200,Scatchet Head Rd at Bailey Rd (SB),stop_code,0.0,3449649,Scatchet Head Rd at Bailey Rd (SB),0.0
+178142,1416,Se 4th Ave at Glencoe St,3449366,1416,Se 4th Ave at Glencoe St,stop_code,0.0,3449366,Se 4th Ave at Glencoe St,0.0
+178192,1224,SE 8th and Ireland St,3449430,1224,SE 8th and Ireland St,stop_code,0.0,3449430,SE 8th and Ireland St,0.0
+178356,745,SE Bayshore Dr at SE Pioneer Way,3449631,745,SE Bayshore Dr at SE Pioneer Way NB,stop_code,0.0,3449631,SE Bayshore Dr at SE Pioneer Way NB,0.0
+197259,745,SE Bayshore Dr at SE Pioneer Way,3449631,745,SE Bayshore Dr at SE Pioneer Way NB,stop_code,0.0,3449631,SE Bayshore Dr at SE Pioneer Way NB,0.0
+178218,1147,SE Camano at Cavalero Rd,3449470,1147,SE Camano at Cavalero Rd,stop_code,0.0,3449470,SE Camano at Cavalero Rd,0.0
+197208,1156,SE Camano at W Brejon Way,3449462,1156,SE Camano at W Brejon Way,stop_code,0.0,3449462,SE Camano at W Brejon Way,0.0
+178217,1148,SE Camano Dr at Beach Dr,3449469,1148,SE Camano Dr at Beach Dr,stop_code,0.0,3449469,SE Camano Dr at Beach Dr,0.0
+197225,1203,SE Camano Dr at Lehman Dr,3449437,1203,SE Camano Dr at Lehman Dr (NB),stop_code,0.0,3449437,SE Camano Dr at Lehman Dr (NB),0.0
+178379,105,SE Camano Dr at Patricia Ann Dr,3449669,105,SE Camano Dr at Patricia Ann Dr (SB),stop_code,0.0,3449669,SE Camano Dr at Patricia Ann Dr (SB),0.0
+197204,105,SE Camano Dr at Patricia Ann Dr,3449669,105,SE Camano Dr at Patricia Ann Dr (SB),stop_code,0.0,3449669,SE Camano Dr at Patricia Ann Dr (SB),0.0
+178378,106,SE Camano Dr at Short Rd,3449668,106,SE Camano Dr at Short Rd (NB),stop_code,0.0,3449668,SE Camano Dr at Short Rd (NB),0.0
+197205,106,SE Camano Dr at Short Rd,3449668,106,SE Camano Dr at Short Rd (NB),stop_code,0.0,3449668,SE Camano Dr at Short Rd (NB),0.0
+197207,114,SE Camano Dr at Short Rd,3449664,114,SE Camano Dr at Short Rd (SB),stop_code,0.0,3449664,SE Camano Dr at Short Rd (SB),0.0
+178156,1400,SE City Beach St at U.S. Postal Service,3449381,1400,SE City Beach St at U.S. Postal Service,stop_code,0.0,3449381,SE City Beach St at U.S. Postal Service,0.0
+178495,2597,SE Ireland St at SE 8th Ave,4149272,,SE Ireland St at SE 8th Ave,distance,0.0,4149272,SE Ireland St at SE 8th Ave,0.0
+218444,,Seaplane Base NEX/ Commisary,,,,,177.9,4260012,Seaplane Base NEX,177.9
+178371,134,Skagit Station,3449654,134,Skagit Station,stop_code,0.0,3449654,Skagit Station,0.0
+197268,942,Skagit Valley College/Library,3449557,942,Skagit Valley College/Library,stop_code,0.0,3449557,Skagit Valley College/Library,0.0
+178436,44,Smuggler Cove Rd at High Rd,3449737,44,Smuggler Cove Rd at High Rd,stop_code,0.0,3449737,Smuggler Cove Rd at High Rd,0.0
+178435,45,Smugglers Cove at Scurlock Rd,3449736,45,Smugglers Cove at Scurlock Rd,stop_code,0.0,3449736,Smugglers Cove at Scurlock Rd,0.0
+178247,1082,Smugglers Cove at Westcliff,3449502,1082,Smugglers Cove at Westcliff,stop_code,0.0,3449502,Smugglers Cove at Westcliff,0.0
+178393,84,Smugglers Cove Rd at Rhodie Ln,3449683,84,Smugglers Cove Rd at Rhodie Ln,stop_code,0.0,3449683,Smugglers Cove Rd at Rhodie Ln,0.0
+178434,46,Smugglers Cove Rd at SW State Park,3449735,46,Smugglers Cove Rd at SW State Park,stop_code,0.0,3449735,Smugglers Cove Rd at SW State Park,0.0
+178385,97,South Whidbey High School,3449675,97,South Whidbey High School,stop_code,0.0,3449675,South Whidbey High School,0.0
+178225,1140,Southwest Camano and Admiralty Way,3449477,1140,Southwest Camano and Admiralty Way,stop_code,0.0,3449477,Southwest Camano and Admiralty Way,0.0
+178213,1153,Southwest Camano at Saratoga Way,3449465,1153,Southwest Camano at Saratoga Way,stop_code,0.0,3449465,Southwest Camano at Saratoga Way,0.0
+178475,1100,SR 20 and Waterloo Rd,3450287,1100,SR 20 and Waterloo Rd,stop_code,0.0,3450287,SR 20 and Waterloo Rd,0.0
+178457,19,SR 20 at 24th Ave,3449759,19,SR 20 at 24th Ave,stop_code,0.0,3449759,SR 20 at 24th Ave,0.0
+178344,771,SR 20 at Banta Rd,3449613,771,SR 20 at Banta Rd,stop_code,0.0,3449613,SR 20 at Banta Rd,0.0
+178345,769,SR 20 at Deception Circle,3449614,769,SR 20 at Deception Circle,stop_code,0.0,3449614,SR 20 at Deception Circle,0.0
+178331,798,SR 20 at Deception Pass State Park,3449598,798,SR 20 at Deception Pass State Park,stop_code,0.0,3449598,SR 20 at Deception Pass State Park,0.0
+178239,1108,SR 20 at DeGraff Rd,3449493,1108,SR 20 at DeGraff Rd,stop_code,0.0,3449493,SR 20 at DeGraff Rd,0.0
+178201,1198,SR 20 at Ducken Rd,3449440,1198,SR 20 at Ducken Rd,stop_code,0.0,3449440,SR 20 at Ducken Rd,0.0
+178328,802,SR 20 at Frostad,3449595,802,SR 20 at Frostad,stop_code,0.0,3449595,SR 20 at Frostad,0.0
+178455,23,SR 20 at Haga Rd,3449757,23,SR 20 at Haga Rd,stop_code,0.0,3449757,SR 20 at Haga Rd,0.0
+178182,1274,SR 20 at Island Transit Facility,3449416,1274,SR 20 at Island Transit Facility,stop_code,0.0,3449416,SR 20 at Island Transit Facility,0.0
+178447,33,SR 20 at Jacobs Rd,3449748,33,SR 20 at Jacobs Rd,stop_code,0.0,3449748,SR 20 at Jacobs Rd,0.0
+178329,801,SR 20 at Jones Rd,3449596,801,SR 20 at Jones Rd,stop_code,0.0,3449596,SR 20 at Jones Rd,0.0
+178334,790,SR 20 at Jones Rd,3449601,790,SR 20 at Jones Rd,stop_code,0.0,3449601,SR 20 at Jones Rd,0.0
+178299,929,SR 20 at Kennedy Ln,3449561,929,SR 20 at Kennedy Ln,stop_code,0.0,3449561,SR 20 at Kennedy Ln,0.0
+178450,30,SR 20 at Libbey Rd,3449751,30,SR 20 at Libbey Rd,stop_code,0.0,3449751,SR 20 at Libbey Rd,0.0
+178343,775,SR 20 at Liberty Market,3449611,775,SR 20 at Liberty Market,stop_code,0.0,3449611,SR 20 at Liberty Market,0.0
+178474,1064,SR 20 at Miller Rd,3450286,1064,SR 20 at Miller Rd,stop_code,0.0,3450286,SR 20 at Miller Rd,0.0
+178180,1276,SR 20 at Morris Rd,3449414,1276,SR 20 at Morris Rd,stop_code,0.0,3449414,SR 20 at Morris Rd,0.0
+197229,14,SR 20 at N Power Rd,3449762,14,SR 20 at N Power Rd (San Juan De Fuca Store),stop_code,0.0,3449762,SR 20 at N Power Rd (San Juan De Fuca Store),0.0
+178445,35,SR 20 at Navy O.L.F.,3449746,35,SR 20 at Navy O.L.F.,stop_code,0.0,3449746,SR 20 at Navy O.L.F.,0.0
+178347,764,SR 20 at Northgate Dr,3449616,764,SR 20 at Northgate Dr,stop_code,0.0,3449616,SR 20 at Northgate Dr,0.0
+178461,13,SR 20 at NW Madrona Way,3449763,13,SR 20 at NW Madrona Way,stop_code,0.0,3449763,SR 20 at NW Madrona Way,0.0
+178181,1275,SR 20 at Parker Rd,3449415,1275,SR 20 at Parker Rd,stop_code,0.0,3449415,SR 20 at Parker Rd,0.0
+178438,42,SR 20 at Patmore Rd,3449739,42,SR 20 at Patmore Rd,stop_code,0.0,3449739,SR 20 at Patmore Rd,0.0
+178451,29,SR 20 at Power Rd,3449752,29,SR 20 at Power Rd,stop_code,0.0,3449752,SR 20 at Power Rd,0.0
+197248,8,SR 20 at Race Rd,3449768,8,SR 20 at Race Rd (NB),stop_code,0.0,3449768,SR 20 at Race Rd (NB),0.0
+178464,10,SR 20 at Rhododendron St Park and Animal Shelter,3449766,10,SR 20 at Rhododendron St Park and Animal Shelter,stop_code,0.0,3449766,SR 20 at Rhododendron St Park and Animal Shelter,0.0
+178183,1273,SR 20 at Ryan's House,3449417,1273,SR 20 at Ryan's House,stop_code,0.0,3449417,SR 20 at Ryan's House,0.0
+178463,11,SR 20 at S Quail Trail Ln,3449765,11,SR 20 at S Quail Trail Ln,stop_code,0.0,3449765,SR 20 at S Quail Trail Ln,0.0
+178298,939,SR 20 at SE 3rd Ave,3449560,939,SR 20 at SW 3rd Ave,stop_code,0.0,3449560,SR 20 at SW 3rd Ave,0.0
+178449,31,SR 20 at Sherman St,3449750,31,SR 20 at Sherman St,stop_code,0.0,3449750,SR 20 at Sherman St,0.0
+178462,12,SR 20 at Sherman St,3449764,12,SR 20 at Sherman St,stop_code,0.0,3449764,SR 20 at Sherman St,0.0
+178327,803,SR 20 at Sleeper Rd,3449594,803,SR 20 at Sleeper Rd,stop_code,0.0,3449594,SR 20 at Sleeper Rd,0.0
+178335,789,SR 20 at Sleeper Rd,3449602,789,SR 20 at Sleeper Rd,stop_code,0.0,3449602,SR 20 at Sleeper Rd,0.0
+178330,799,SR 20 at Soundview Ln,3449597,799,SR 20 at Soundview Ln,stop_code,0.0,3449597,SR 20 at Soundview Ln,0.0
+178473,20,SR 20 at Squire Rd,3450285,20,SR 20 at Squire Rd,stop_code,0.0,3450285,SR 20 at Squire Rd,0.0
+178456,22,SR 20 at SW Swantown Ave,3449758,22,SR 20 at SW Swantown Ave,stop_code,0.0,3449758,SR 20 at SW Swantown Ave,0.0
+178465,9,SR 20 at W Welcher Rd,3449767,9,SR 20 at W Welcher Rd,stop_code,0.0,3449767,SR 20 at W Welcher Rd,0.0
+178478,1101,SR 20 at Waterloo Rd,3450310,1101,SR 20 at Waterloo Rd,stop_code,0.0,3450310,SR 20 at Waterloo Rd,0.0
+178349,761,SR 20 at Whispering Pines,3449618,761,SR 20 at Whispering Pines,stop_code,0.0,3449618,SR 20 at Whispering Pines,0.0
+178444,36,SR 525 at Admirals Dr,3449745,36,SR 525 at Admirals Dr,stop_code,0.0,3449745,SR 525 at Admirals Dr,0.0
+178467,7,SR 525 at Aloha Pl,3449769,7,SR 525 at Aloha Pl,stop_code,0.0,3449769,SR 525 at Aloha Pl,0.0
+178367,151,SR 525 at Aqua View Ln,3449650,151,SR 525 at Aqua View Ln,stop_code,0.0,3449650,SR 525 at Aqua View Ln,0.0
+178432,49,SR 525 at Bush Point Rd,3449733,49,SR 525 at Bush Point Rd,stop_code,0.0,3449733,SR 525 at Bush Point Rd,0.0
+197240,70,SR 525 at Campbell Rd,3449692,70,SR 525 at Campbell Rd (SB),stop_code,0.0,3449692,SR 525 at Campbell Rd (SB),0.0
+197244,901,SR 525 at Campbell Rd,3449564,901,SR 525 at Campbell Rd (NB),stop_code,0.0,3449564,SR 525 at Campbell Rd (NB),0.0
+197241,61,SR 525 at Cedar Vista Dr,3449700,61,SR 525 at Cedar Vista Dr (SB),stop_code,0.0,3449700,SR 525 at Cedar Vista Dr (SB),0.0
+197243,67,SR 525 at Cedar Vista Dr,3449695,67,SR 525 at Cedar Vista Dr (NB),stop_code,0.0,3449695,SR 525 at Cedar Vista Dr (NB),0.0
+178369,149,SR 525 at Classic Rd,3449652,149,SR 525 at Classic Rd,stop_code,0.0,3449652,SR 525 at Classic Rd,0.0
+178397,80,SR 525 at Classic Rd,3449687,80,SR 525 at Classic Rd,stop_code,0.0,3449687,SR 525 at Classic Rd,0.0
+178406,66,SR 525 at Clinton Park & Ride,3449696,66,SR 525 at Clinton Park & Ride,stop_code,0.0,3449696,SR 525 at Clinton Park & Ride,0.0
+178237,1118,SR 525 at Coles Rd,3449490,1118,SR 525 at Coles Rd,stop_code,0.0,3449490,SR 525 at Coles Rd,0.0
+178238,1117,SR 525 at Coles Rd,3449491,1117,SR 525 at Coles Rd,stop_code,0.0,3449491,SR 525 at Coles Rd,0.0
+178245,1084,SR 525 at Cox Dr,3449500,1084,SR 525 at Cox Dr,stop_code,0.0,3449500,SR 525 at Cox Dr,0.0
+178173,1320,SR 525 at Craw Rd,3449401,1320,SR 525 at Craw Rd,stop_code,0.0,3449401,SR 525 at Craw Rd,0.0
+178132,2559,SR 525 at Crawford Rd,3449354,2559,SR 525 at Crawford Rd,stop_code,0.0,3449354,SR 525 at Crawford Rd,0.0
+197239,60,SR 525 at Cultus Bay Rd,3449701,60,SR 525 at Cultus Bay Rd (SB),stop_code,0.0,3449701,SR 525 at Cultus Bay Rd (SB),0.0
+178191,1246,SR 525 at Dairy Queen,3449429,1246,SR 525 at Dairy Queen,stop_code,0.0,3449429,SR 525 at Dairy Queen,0.0
+178439,41,SR 525 at Donahey Rd,3449740,41,SR 525 at Donahey Rd,stop_code,0.0,3449740,SR 525 at Donahey Rd,0.0
+178200,1200,SR 525 at Double Bluff,3449439,1200,SR 525 at Double Bluff,stop_code,0.0,3449439,SR 525 at Double Bluff,0.0
+178304,883,SR 525 at Double Bluff Rd,3449566,883,SR 525 at Double Bluff Rd,stop_code,0.0,3449566,SR 525 at Double Bluff Rd,0.0
+178199,1201,SR 525 at Eagle's Club,3449438,1201,SR 525 at Eagle's Club,stop_code,0.0,3449438,SR 525 at Eagle's Club,0.0
+178440,40,SR 525 at Ellwood Dr,3449741,40,SR 525 at Ellwood Dr,stop_code,0.0,3449741,SR 525 at Ellwood Dr,0.0
+178470,3,SR 525 at Ellwood Dr,3449772,3,SR 525 at Ellwood Dr,stop_code,0.0,3449772,SR 525 at Ellwood Dr,0.0
+178370,1079,SR 525 at Freeland Ave,3449653,1079,SR 525 at Freeland Ave,stop_code,0.0,3449653,SR 525 at Freeland Ave,0.0
+178431,50,SR 525 at Freeland P&R,3449732,50,SR 525 at Freeland P&R,stop_code,0.0,3449732,SR 525 at Freeland P&R,0.0
+178441,39,SR 525 at Gramayre Rd,3449742,39,SR 525 at Gramayre Rd,stop_code,0.0,3449742,SR 525 at Gramayre Rd,0.0
+178469,4,SR 525 at Gramayre Rd,3449771,4,SR 525 at Gramayre Rd,stop_code,0.0,3449771,SR 525 at Gramayre Rd,0.0
+178246,1083,SR 525 at Greenbank,3449501,1083,SR 525 at Greenbank,stop_code,0.0,3449501,SR 525 at Greenbank,0.0
+178384,100,SR 525 at Greenbank,3449674,100,SR 525 at Greenbank,stop_code,0.0,3449674,SR 525 at Greenbank,0.0
+178472,858,SR 525 at Honeymoon Bay Rd,3450284,858,SR 525 at Honeymoon Bay Rd,stop_code,0.0,3450284,SR 525 at Honeymoon Bay Rd,0.0
+178443,37,SR 525 at Houston Rd,3449744,37,SR 525 at Houston Rd,stop_code,0.0,3449744,SR 525 at Houston Rd,0.0
+178468,6,SR 525 at Houston Rd,3449770,6,SR 525 at Houston Rd,stop_code,0.0,3449770,SR 525 at Houston Rd,0.0
+197245,69,SR 525 at Langley Rd,3449693,69,SR 525 at Langley Rd (NB),stop_code,0.0,3449693,SR 525 at Langley Rd (NB),0.0
+178442,38,SR 525 at Ledgewood Beach Rd,3449743,38,SR 525 at Ledgewood Beach Rd,stop_code,0.0,3449743,SR 525 at Ledgewood Beach Rd,0.0
+197238,59,SR 525 at Maxwelton Rd,3449702,59,SR 525 at Maxwelton Rd (SB),stop_code,0.0,3449702,SR 525 at Maxwelton Rd (SB),0.0
+197246,878,SR 525 at Maxwelton Rd,3449568,878,SR 525 at Maxwelton Rd (NB),stop_code,0.0,3449568,SR 525 at Maxwelton Rd (NB),0.0
+178236,1120,SR 525 at Mills Dr,3449489,1120,SR 525 at Mills Dr,stop_code,0.0,3449489,SR 525 at Mills Dr,0.0
+197247,81,SR 525 at Mutiny Bay Rd,3450289,81,SR 525 at Mutiny Bay Rd (Northbound),stop_code,0.0,3450289,SR 525 at Mutiny Bay Rd (Northbound),0.0
+197254,81,SR 525 at Mutiny Bay Rd,3449686,81,SR 525 at Mutiny Bay Rd (Soutbound),stop_code,0.0,3449686,SR 525 at Mutiny Bay Rd (Soutbound),0.0
+197236,101,SR 525 at Race Rd,3449673,101,SR 525 at Race Rd (SB),stop_code,0.0,3449673,SR 525 at Race Rd (SB),0.0
+178198,1204,SR 525 at Red Barn,3449436,1204,SR 525 at Red Barn,stop_code,0.0,3449436,SR 525 at Red Barn,0.0
+178415,55,SR 525 at Red Barn,3449705,55,SR 525 at Red Barn,stop_code,0.0,3449705,SR 525 at Red Barn,0.0
+178368,150,SR 525 at Resort Rd,3449651,150,SR 525 at Resort Rd,stop_code,0.0,3449651,SR 525 at Resort Rd,0.0
+178174,1319,SR 525 at Sanford Dr,3449402,1319,SR 525 at Sanford Dr,stop_code,0.0,3449402,SR 525 at Sanford Dr,0.0
+178437,43,SR 525 at Smugglers Cove Rd,3449738,43,SR 525 at Smugglers Cove Rd,stop_code,0.0,3449738,SR 525 at Smugglers Cove Rd,0.0
+178471,2,SR 525 at Smugglers Cove Rd,3449773,2,SR 525 at Smugglers Cove Rd,stop_code,0.0,3449773,SR 525 at Smugglers Cove Rd,0.0
+178131,2560,SR 525 at Thompson Rd,3449353,2560,SR 525 at Thompson Rd,stop_code,0.0,3449353,SR 525 at Thompson Rd,0.0
+178305,881,SR 525 at Useless Bay,3449567,881,SR 525 at Useless Bay,stop_code,0.0,3449567,SR 525 at Useless Bay,0.0
+178414,56,SR 525 at Useless Bay,3449704,56,SR 525 at Useless Bay (Bayview Eye Vision),stop_code,0.0,3449704,SR 525 at Useless Bay (Bayview Eye Vision),0.0
+178282,975,SR 532 at E Juniper Beach Rd,3449543,975,SR 532 at E Juniper Beach Rd,stop_code,0.0,3449543,SR 532 at E Juniper Beach Rd,0.0
+178290,956,SR 532 at E Juniper Beach Rd,3449551,956,SR 532 at E Juniper Beach Rd,stop_code,0.0,3449551,SR 532 at E Juniper Beach Rd,0.0
+178263,1020,SR 532 at Fox Trot,3449521,1020,SR 532 at Fox Trot,stop_code,0.0,3449521,SR 532 at Fox Trot,0.0
+178291,955,SR 532 at Fox Trot Way,3449552,955,SR 532 at Fox Trot Way,stop_code,0.0,3449552,SR 532 at Fox Trot Way,0.0
+178265,1018,SR 532 at Heichel Rd,3449523,1018,SR 532 at Heichel Rd,stop_code,0.0,3449523,SR 532 at Heichel Rd,0.0
+178264,1019,SR 532 at Hiechel Rd,3449522,1019,SR 532 at Hiechel Rd,stop_code,0.0,3449522,SR 532 at Hiechel Rd,0.0
+178262,1023,SR 532 at Smith Rd,3449520,1023,SR 532 at Smith Rd,stop_code,0.0,3449520,SR 532 at Smith Rd,0.0
+178266,1015,SR 532 at Smith Rd,3449524,1015,SR 532 at Smith Rd,stop_code,0.0,3449524,SR 532 at Smith Rd,0.0
+223027,,St Augistine Church at N Oak Harbor St.,3450316,1419,Oak Harbor St at St. Augustine Church,distance,10.9,3450316,Oak Harbor St at St. Augustine Church,10.9
+178269,1010,Stanwood High School,3449527,1010,Stanwood High School,stop_code,0.0,3449527,Stanwood High School,0.0
+178136,2553,Stanwood Library,3449359,2553,Stanwood Library,stop_code,0.0,3449359,Stanwood Library,0.0
+178160,1360,Stanwood P&R II,3449385,1360,Stanwood P&R II,stop_code,0.0,3449385,Stanwood P&R II,0.0
+178234,1125,Sunset at S.W. Camano,3449486,1125,Sunset at S.W. Camano,stop_code,0.0,3449486,Sunset at S.W. Camano,0.0
+178278,982,Sunset Dr at Beachwood (Yacht Club) Camano Is,3449539,982,Sunset Dr at Beachwood (Yacht Club) Camano Is,stop_code,0.0,3449539,Sunset Dr at Beachwood (Yacht Club) Camano Is,0.0
+178219,1146,Sunset Dr at Doubleview Dr,3449471,1146,Sunset Dr at Doubleview Dr,stop_code,0.0,3449471,Sunset Dr at Doubleview Dr,0.0
+178279,981,Sunset Dr at Vista,3449540,981,Sunset Dr at Vista,stop_code,0.0,3449540,Sunset Dr at Vista,0.0
+178489,2592,SW 24th Ave at Ridgeway Dr,4149265,,SW 24th Ave at Ridgeway Dr,distance,0.0,4149265,SW 24th Ave at Ridgeway Dr,0.0
+178297,1043,SW 6th Ave at Oak Harbor Intermediate School,3449559,1043,SW 6th Ave at Oak Harbor Intermediate School,stop_code,0.0,3449559,SW 6th Ave at Oak Harbor Intermediate School,0.0
+178493,180,SW Barrington Dr at Kaleeton Loop,4149269,180,SW Barrington Dr at Kaleeton Loop,stop_code,0.0,4149269,SW Barrington Dr at Kaleeton Loop,0.0
+178430,3001,SW Fort Nugent Ave at Fort Nugent Park,3449721,3001,SW Fort Nugent Ave at Fort Nugent Park,stop_code,0.0,3449721,SW Fort Nugent Ave at Fort Nugent Park,0.0
+178322,826,Swantown at Regency,3449589,826,Fort Nugent/Swantown to West Beach/Coupeville,stop_code,0.0,3449589,Fort Nugent/Swantown to West Beach/Coupeville,0.0
+178499,3000,Swantown Ave at Quinault St,4149308,,Swantown Ave at Quinault St,distance,0.0,4149308,Swantown Ave at Quinault St,0.0
+178490,2593,Swantown Rd at Fairway Ln,4149266,,Swantown Rd at Fairway Ln,distance,0.0,4149266,Swantown Rd at Fairway Ln,0.0
+218488,,Taylor Rd at Fakkema Rd,3449626,751,Taylor Rd at Fakkema Rd,distance,25.7,3449626,Taylor Rd at Fakkema Rd,25.7
+197235,2563,Terry Rd at Fort Casey Rd,3449350,2563,Terry Rd at Fort Casey Rd (EB),stop_code,0.0,3449350,Terry Rd at Fort Casey Rd (EB),0.0
+197249,1089,Terry Rd at Fort Casey Rd,3449349,1089,Terry Rd at Fort Casey Rd (WB),stop_code,0.0,3449349,Terry Rd at Fort Casey Rd (WB),0.0
+197234,32,"Terry Rd at Main St, Coupeville High School",3449749,32,Terry Rd at Main St (Coupeville High School EB),stop_code,0.0,3449749,Terry Rd at Main St (Coupeville High School EB),0.0
+197250,1090,"Terry Rd at Main St, Coupeville HS",3449499,1090,Terry Rd at Main St (Coupeville High School WB),stop_code,0.0,3449499,Terry Rd at Main St (Coupeville High School WB),0.0
+178376,111,Terry's Corner,3449666,111,Terry's Corner,stop_code,0.0,3449666,Terry's Corner,0.0
+178195,1208,The Goose at Howard Rd,3449433,1208,The Goose at Howard Rd,stop_code,0.0,3449433,The Goose at Howard Rd,0.0
+178346,766,Troxell at Monkey Hill Rd (on request),3449615,766,Troxell at Monkey Hill Rd (on request),stop_code,0.0,3449615,Troxell at Monkey Hill Rd (on request),0.0
+178272,1004,Viking Village,3449530,1004,Viking Village,stop_code,0.0,3449530,Viking Village,0.0
+178220,1145,Vista Dr at Grandview Ave,3449472,1145,Vista Dr at Grandview Ave,stop_code,0.0,3449472,Vista Dr at Grandview Ave,0.0
+218474,,Wake Ave at Recreation Center,3449723,2630,Wake at Recreaction Center,distance,7.7,3449723,Wake at Recreaction Center,7.7
+218473,,Wake Ave at Wake Ave,3449724,2628,Wake Ave at Wake Ave,distance,18.5,3449724,Wake Ave at Wake Ave,18.5
+178196,1206,Walmart at Erie St,3449434,1206,Walmart at Erie St (NB),stop_code,0.0,3449434,Walmart at Erie St (NB),0.0
+178323,825,Walmart at Erie St,3449590,825,Walmart at Erie St (SB),stop_code,0.0,3449590,Walmart at Erie St (SB),0.0
+197231,1206,Walmart at Erie St,3449434,1206,Walmart at Erie St (NB),stop_code,0.0,3449434,Walmart at Erie St (NB),0.0
+197232,825,Walmart at Erie St,3449590,825,Walmart at Erie St (SB),stop_code,0.0,3449590,Walmart at Erie St (SB),0.0
+218439,,Wanamaker Rd at Ferry Ave,3449407,1291,Wannamaker Rd at Ferry Ave,distance,27.8,3449407,Wannamaker Rd at Ferry Ave,27.8
+178126,,Wanamaker Rd at Fort Casey Rd,3449346,2567,Wanamaker Rd at Fort Casey Rd,distance,4.6,3449346,Wanamaker Rd at Fort Casey Rd,4.6
+218438,,Wanamaker Rd at Keystone Hill Rd,3450318,1286,Wanamaker Rd at Keystone Hill Rd,distance,11.5,3450318,Wanamaker Rd at Keystone Hill Rd,11.5
+218440,,Wanamaker Rd at Prairie View Ave,3449582,847,Wanamaker Rd at Prairie View Ave,distance,37.2,3449582,Wanamaker Rd at Prairie View Ave,37.2
+178205,1187,West Beach at Deseret,3449447,1187,West Beach at Deseret,stop_code,0.0,3449447,West Beach at Deseret,0.0
+178312,854,West Beach at Deseret,3449576,854,West Beach at Deseret,stop_code,0.0,3449576,West Beach at Deseret,0.0
+178374,1183,West Beach at Hastie Lake Rd,3449451,1183,West Beach at Hastie Lake Rd,stop_code,0.0,3449451,West Beach at Hastie Lake Rd,0.0
+178484,1067,West Beach at Norcliffe,3450321,1067,West Beach Rd at Norcliffe Way,stop_code,0.0,3450321,West Beach Rd at Norcliffe Way,0.0
+178208,1184,West Beach at Van Dam,3449450,1184,West Beach at Van Dam,stop_code,0.0,3449450,West Beach at Van Dam,0.0
+178300,928,West Beach at Van Dam,3449562,928,West Beach at Van Dam,stop_code,0.0,3449562,West Beach at Van Dam,0.0
+178485,1181,West Beach Rd at Darst Rd,3450322,1181,West Beach Rd at Darst Rd,stop_code,0.0,3450322,West Beach Rd at Darst Rd,0.0
+178204,1191,West Beach Rd at San Juan St,3449443,1191,West Beach Rd at San Juan St,stop_code,0.0,3449443,West Beach Rd at San Juan St,0.0
+197256,834,West Beach Rd at W La Mesa Dr,3449587,834,West Beach Rd at W La Mesa Dr (to Coupeville),stop_code,0.0,3449587,West Beach Rd at W La Mesa Dr (to Coupeville),0.0
+197258,853,West Beach Rd at West La Mesa Dr,3449577,853,West Beach Rd at West La Mesa Dr (to Oak Harbor),stop_code,0.0,3449577,West Beach Rd at West La Mesa Dr (to Oak Harbor),0.0
+218478,,Western Dr at Western Dr,,,,,90.9,3449727,Western at Western,90.9
+218461,,Wetmore & Everett NB,,,,,1037.1,3449516,Everett Station,1037.1
+218453,,Wetmore Ave & Everett,,,,,1047.0,3449516,Everett Station,1047.0
+218460,,Wetmore Ave & Hewett NB,,,,,905.3,3449516,Everett Station,905.3
+218455,,Wetmore Ave & Wall SB,,,,,810.1,3449516,Everett Station,810.1
+178294,944,Whidbey Ave at Midway,3449555,944,Whidbey Ave at Midway,stop_code,0.0,3449555,Whidbey Ave at Midway,0.0
+178295,943,Whidbey Ave at Regatta Dr,3449556,943,Whidbey Ave at Regatta Dr (Opportunity Council),stop_code,0.0,3449556,Whidbey Ave at Regatta Dr (Opportunity Council),0.0
+178149,1408,Whidbey Ave at Saars Super Saver Foods,3449374,1408,Whidbey Ave at Saars Super Saver Foods,stop_code,0.0,3449374,Whidbey Ave at Saars Super Saver Foods,0.0
+178480,2564,Whidbey Ave at Whidbey Cottages,3450313,2564,Whidbey Ave at Whidbey Cottages,stop_code,0.0,3450313,Whidbey Ave at Whidbey Cottages,0.0

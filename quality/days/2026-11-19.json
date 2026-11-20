@@ -1,0 +1,839 @@
+{
+ "service_date": "2026-11-19",
+ "quality_version": "quality/0.2.0",
+ "computed_at": "2026-11-20T09:11:30+00:00",
+ "scheduled_service": {
+  "trips": 341,
+  "trips_ended_before_collection": 180,
+  "first_departure": "2026-11-19T20:32:00+00:00",
+  "last_arrival": "2026-11-20T04:25:00+00:00",
+  "scheduled_hours": 7.88
+ },
+ "paradata": {
+  "observed_from": "2026-11-19T21:24:40+00:00",
+  "vehiclePositions": {
+   "slots_expected": 1906,
+   "slots_logged": 1904,
+   "slots_ok": 1904,
+   "uptime": 0.998951,
+   "not_logged": 2,
+   "logged_not_ok": 0,
+   "latency_ms_median": 291.0,
+   "latency_ms_p95": 379.0,
+   "collector_versions": [
+    "collect/0.1.1",
+    "collect/0.2.0"
+   ]
+  },
+  "tripUpdates": {
+   "slots_expected": 1906,
+   "slots_logged": 1904,
+   "slots_ok": 1904,
+   "uptime": 0.998951,
+   "not_logged": 2,
+   "logged_not_ok": 0,
+   "latency_ms_median": 299.0,
+   "latency_ms_p95": 401.0,
+   "collector_versions": [
+    "collect/0.1.1",
+    "collect/0.2.0"
+   ]
+  },
+  "serviceAlerts": {
+   "slots_expected": 128,
+   "slots_logged": 127,
+   "slots_ok": 127,
+   "uptime": 0.992188,
+   "not_logged": 1,
+   "logged_not_ok": 0,
+   "latency_ms_median": 285.0,
+   "latency_ms_p95": 371.8,
+   "collector_versions": [
+    "collect/0.1.1",
+    "collect/0.2.0"
+   ]
+  }
+ },
+ "nonresponse": {
+  "fetch": {
+   "vehiclePositions": {
+    "attempted": 1904,
+    "failed": 0,
+    "rate": 0.0,
+    "by_error": {}
+   },
+   "tripUpdates": {
+    "attempted": 1904,
+    "failed": 0,
+    "rate": 0.0,
+    "by_error": {}
+   },
+   "serviceAlerts": {
+    "attempted": 127,
+    "failed": 0,
+    "rate": 0.0,
+    "by_error": {}
+   }
+  },
+  "vehicle_feed": {
+   "in_service_fetches": 1260,
+   "ok_in_service_fetches": 1260,
+   "empty_in_service": 0,
+   "empty_in_service_rate": 0.0,
+   "stale_in_service": 0,
+   "stale_in_service_rate": 0.0,
+   "by_hour": {
+    "13": {
+     "attempted": 106,
+     "in_service": 106,
+     "ok_in_service": 106
+    },
+    "14": {
+     "attempted": 180,
+     "in_service": 180,
+     "ok_in_service": 180
+    },
+    "15": {
+     "attempted": 180,
+     "in_service": 180,
+     "ok_in_service": 180
+    },
+    "16": {
+     "attempted": 180,
+     "in_service": 180,
+     "ok_in_service": 180
+    },
+    "17": {
+     "attempted": 179,
+     "in_service": 179,
+     "ok_in_service": 179
+    },
+    "18": {
+     "attempted": 180,
+     "in_service": 180,
+     "ok_in_service": 180
+    },
+    "19": {
+     "attempted": 180,
+     "in_service": 180,
+     "ok_in_service": 180
+    },
+    "20": {
+     "attempted": 180,
+     "in_service": 75,
+     "ok_in_service": 75
+    },
+    "21": {
+     "attempted": 179
+    },
+    "22": {
+     "attempted": 180
+    },
+    "23": {
+     "attempted": 180
+    }
+   }
+  },
+  "items": {
+   "position_reports": 21615,
+   "missing_share": {
+    "vehicle_id": 0.0,
+    "vehicle_label": 0.0,
+    "vehicle_ts": 0.0,
+    "trip_id": 0.0,
+    "route_id": 0.0,
+    "direction_id": 1.0,
+    "start_date": 1.0,
+    "start_time": 1.0,
+    "trip_schedule_relationship": 1.0,
+    "lat": 0.0,
+    "lon": 0.0,
+    "bearing": 0.0,
+    "speed": 0.0,
+    "odometer": 1.0,
+    "current_stop_sequence": 0.0,
+    "stop_id": 0.0,
+    "current_status": 1.0,
+    "congestion_level": 1.0,
+    "occupancy_status": 0.0,
+    "occupancy_percentage": 1.0
+   }
+  },
+  "trip_gaps": {
+   "trips_with_two_or_more_reports": 157,
+   "longest_gap_s_median": 28.0,
+   "longest_gap_s_p95": 1087.6,
+   "trips_with_gap_over_90s": 44,
+   "share_of_trip_time_in_gaps_mean": 0.0634
+  }
+ },
+ "coverage": {
+  "scheduled_trips": 161,
+  "observed_scheduled_trips": 156,
+  "trip_coverage": 0.968944,
+  "routes_never_reporting": [],
+  "by_route": {
+   "6737": {
+    "scheduled": 8,
+    "observed": 8,
+    "coverage": 1.0
+   },
+   "6743": {
+    "scheduled": 5,
+    "observed": 5,
+    "coverage": 1.0
+   },
+   "6744": {
+    "scheduled": 14,
+    "observed": 14,
+    "coverage": 1.0
+   },
+   "7913": {
+    "scheduled": 13,
+    "observed": 12,
+    "coverage": 0.923077
+   },
+   "7914": {
+    "scheduled": 8,
+    "observed": 8,
+    "coverage": 1.0
+   },
+   "7915": {
+    "scheduled": 8,
+    "observed": 8,
+    "coverage": 1.0
+   },
+   "7916": {
+    "scheduled": 6,
+    "observed": 5,
+    "coverage": 0.833333
+   },
+   "7918": {
+    "scheduled": 13,
+    "observed": 13,
+    "coverage": 1.0
+   },
+   "7919": {
+    "scheduled": 12,
+    "observed": 12,
+    "coverage": 1.0
+   },
+   "7920": {
+    "scheduled": 6,
+    "observed": 6,
+    "coverage": 1.0
+   },
+   "7922": {
+    "scheduled": 24,
+    "observed": 24,
+    "coverage": 1.0
+   },
+   "7923": {
+    "scheduled": 10,
+    "observed": 8,
+    "coverage": 0.8
+   },
+   "9404": {
+    "scheduled": 30,
+    "observed": 29,
+    "coverage": 0.966667
+   },
+   "9432": {
+    "scheduled": 4,
+    "observed": 4,
+    "coverage": 1.0
+   }
+  },
+  "vehicles_seen": 23,
+  "over_coverage": {
+   "position_reports": 21615,
+   "no_trip_id": 0,
+   "trip_id_not_in_static": 0,
+   "trip_not_scheduled_today": 3,
+   "share": 0.000139
+  },
+  "vehicle_ids": [
+   "17429",
+   "17430",
+   "17431",
+   "17433",
+   "17435",
+   "17447",
+   "17448",
+   "17450",
+   "17452",
+   "17453",
+   "17454",
+   "17455",
+   "17456",
+   "17460",
+   "17463",
+   "17468",
+   "17470",
+   "17472",
+   "17977",
+   "20383",
+   "20388",
+   "21513",
+   "21514"
+  ]
+ },
+ "measurement": {
+  "position_age_s_median": 4.1,
+  "position_age_s_p95": 8.0,
+  "position_age_definition": "first fetch request time minus vehicle timestamp",
+  "timestamps_in_future": 74,
+  "timestamps_going_backwards": 0,
+  "consecutive_report_pairs": 21592,
+  "impossible_jumps_over_130_kmh": 2
+ },
+ "processing": {
+  "id_match": {
+   "trip_id": {
+    "present": 21615,
+    "in_static": 21615,
+    "match_rate": 1.0
+   },
+   "route_id": {
+    "present": 21615,
+    "in_static": 21615,
+    "match_rate": 1.0
+   },
+   "stop_id": {
+    "present": 21615,
+    "in_static": 21615,
+    "match_rate": 1.0
+   }
+  },
+  "parser": {
+   "serviceAlerts": {
+    "attempted": 127,
+    "parsed": 127,
+    "failed": 0,
+    "decode_errors": 0,
+    "decode_error_rate": 0.0
+   },
+   "tripUpdates": {
+    "attempted": 1904,
+    "parsed": 1904,
+    "failed": 0,
+    "decode_errors": 0,
+    "decode_error_rate": 0.0
+   },
+   "vehiclePositions": {
+    "attempted": 1904,
+    "parsed": 1904,
+    "failed": 0,
+    "decode_errors": 0,
+    "decode_error_rate": 0.0
+   }
+  },
+  "static_downloads": [
+   {
+    "static_fetch_id": 1,
+    "source": "passio",
+    "requested_at": "2026-11-19T21:24:27.234+00:00",
+    "complete": true,
+    "problems": [],
+    "missing": [],
+    "version": "passio-9b1efa882037"
+   },
+   {
+    "static_fetch_id": 2,
+    "source": "trillium",
+    "requested_at": "2026-11-19T21:24:28.069+00:00",
+    "complete": true,
+    "problems": [],
+    "missing": [],
+    "version": "trillium-a4cf6ffeea6a"
+   }
+  ],
+  "timepoints": {
+   "folder": "passio-9b1efa882037__timetable-2026-09-27-970aa207",
+   "reference": "2026-09-27",
+   "printed_names": 147,
+   "resolved_names": 146,
+   "resolved_share": 0.9932,
+   "timepoint_route_stops": 169
+  }
+ },
+ "events": {
+  "experimental": true,
+  "events_version": "events/0.2.0",
+  "stop_coverage": {
+   "timepoints": {
+    "scheduled": 1130,
+    "observed": 876,
+    "coverage": 0.775221,
+    "not_observed_by_reason": {
+     "gap": 63,
+     "no_reports": 26,
+     "not_reached": 98,
+     "past_when_first_seen": 38,
+     "skipped": 29
+    },
+    "by_route": {
+     "6737": {
+      "scheduled": 64,
+      "observed": 25,
+      "coverage": 0.390625
+     },
+     "6743": {
+      "scheduled": 70,
+      "observed": 34,
+      "coverage": 0.485714
+     },
+     "6744": {
+      "scheduled": 131,
+      "observed": 122,
+      "coverage": 0.931298
+     },
+     "7913": {
+      "scheduled": 49,
+      "observed": 36,
+      "coverage": 0.734694
+     },
+     "7914": {
+      "scheduled": 71,
+      "observed": 45,
+      "coverage": 0.633803
+     },
+     "7915": {
+      "scheduled": 48,
+      "observed": 40,
+      "coverage": 0.833333
+     },
+     "7916": {
+      "scheduled": 32,
+      "observed": 16,
+      "coverage": 0.5
+     },
+     "7918": {
+      "scheduled": 83,
+      "observed": 66,
+      "coverage": 0.795181
+     },
+     "7919": {
+      "scheduled": 72,
+      "observed": 53,
+      "coverage": 0.736111
+     },
+     "7920": {
+      "scheduled": 60,
+      "observed": 51,
+      "coverage": 0.85
+     },
+     "7922": {
+      "scheduled": 138,
+      "observed": 112,
+      "coverage": 0.811594
+     },
+     "7923": {
+      "scheduled": 60,
+      "observed": 42,
+      "coverage": 0.7
+     },
+     "9404": {
+      "scheduled": 219,
+      "observed": 206,
+      "coverage": 0.940639
+     },
+     "9432": {
+      "scheduled": 33,
+      "observed": 28,
+      "coverage": 0.848485
+     }
+    }
+   },
+   "all_stops": {
+    "scheduled": 4546,
+    "observed": 3947,
+    "coverage": 0.868236,
+    "not_observed_by_reason": {
+     "gap": 189,
+     "no_reports": 50,
+     "not_reached": 150,
+     "past_when_first_seen": 70,
+     "skipped": 140
+    },
+    "by_route": {
+     "6737": {
+      "scheduled": 275,
+      "observed": 155,
+      "coverage": 0.563636
+     },
+     "6743": {
+      "scheduled": 118,
+      "observed": 64,
+      "coverage": 0.542373
+     },
+     "6744": {
+      "scheduled": 288,
+      "observed": 272,
+      "coverage": 0.944444
+     },
+     "7913": {
+      "scheduled": 163,
+      "observed": 146,
+      "coverage": 0.895706
+     },
+     "7914": {
+      "scheduled": 289,
+      "observed": 181,
+      "coverage": 0.626298
+     },
+     "7915": {
+      "scheduled": 96,
+      "observed": 88,
+      "coverage": 0.916667
+     },
+     "7916": {
+      "scheduled": 113,
+      "observed": 47,
+      "coverage": 0.415929
+     },
+     "7918": {
+      "scheduled": 311,
+      "observed": 286,
+      "coverage": 0.919614
+     },
+     "7919": {
+      "scheduled": 210,
+      "observed": 187,
+      "coverage": 0.890476
+     },
+     "7920": {
+      "scheduled": 138,
+      "observed": 127,
+      "coverage": 0.92029
+     },
+     "7922": {
+      "scheduled": 690,
+      "observed": 626,
+      "coverage": 0.907246
+     },
+     "7923": {
+      "scheduled": 130,
+      "observed": 104,
+      "coverage": 0.8
+     },
+     "9404": {
+      "scheduled": 1639,
+      "observed": 1585,
+      "coverage": 0.967053
+     },
+     "9432": {
+      "scheduled": 86,
+      "observed": 79,
+      "coverage": 0.918605
+     }
+    }
+   }
+  },
+  "shape_fit": {
+   "position_reports": 20716,
+   "off_shape": 832,
+   "off_shape_share": 0.040162,
+   "wrong_direction": 82,
+   "wrong_direction_share": 0.003958,
+   "threshold_m": 100,
+   "trips_skipping_part_of_shape": 27,
+   "skipped_km": 291.1,
+   "skipping_by_route": {
+    "6737": 6,
+    "7914": 6,
+    "7916": 3,
+    "7919": 4,
+    "7922": 7,
+    "9404": 1
+   },
+   "by_route": {
+    "6737": {
+     "position_reports": 1233,
+     "off_shape": 108,
+     "off_shape_share": 0.087591,
+     "wrong_direction": 3,
+     "wrong_direction_share": 0.002433
+    },
+    "6743": {
+     "position_reports": 575,
+     "off_shape": 30,
+     "off_shape_share": 0.052174,
+     "wrong_direction": 6,
+     "wrong_direction_share": 0.010435
+    },
+    "6744": {
+     "position_reports": 1354,
+     "off_shape": 48,
+     "off_shape_share": 0.035451,
+     "wrong_direction": 1,
+     "wrong_direction_share": 0.000739
+    },
+    "7913": {
+     "position_reports": 742,
+     "off_shape": 27,
+     "off_shape_share": 0.036388,
+     "wrong_direction": 4,
+     "wrong_direction_share": 0.005391
+    },
+    "7914": {
+     "position_reports": 1272,
+     "off_shape": 108,
+     "off_shape_share": 0.084906,
+     "wrong_direction": 9,
+     "wrong_direction_share": 0.007075
+    },
+    "7915": {
+     "position_reports": 1004,
+     "off_shape": 30,
+     "off_shape_share": 0.02988,
+     "wrong_direction": 0,
+     "wrong_direction_share": 0.0
+    },
+    "7916": {
+     "position_reports": 866,
+     "off_shape": 84,
+     "off_shape_share": 0.096998,
+     "wrong_direction": 2,
+     "wrong_direction_share": 0.002309
+    },
+    "7918": {
+     "position_reports": 1453,
+     "off_shape": 179,
+     "off_shape_share": 0.123193,
+     "wrong_direction": 8,
+     "wrong_direction_share": 0.005506
+    },
+    "7919": {
+     "position_reports": 1262,
+     "off_shape": 14,
+     "off_shape_share": 0.011094,
+     "wrong_direction": 2,
+     "wrong_direction_share": 0.001585
+    },
+    "7920": {
+     "position_reports": 612,
+     "off_shape": 34,
+     "off_shape_share": 0.055556,
+     "wrong_direction": 7,
+     "wrong_direction_share": 0.011438
+    },
+    "7922": {
+     "position_reports": 2585,
+     "off_shape": 8,
+     "off_shape_share": 0.003095,
+     "wrong_direction": 8,
+     "wrong_direction_share": 0.003095
+    },
+    "7923": {
+     "position_reports": 381,
+     "off_shape": 0,
+     "off_shape_share": 0.0,
+     "wrong_direction": 3,
+     "wrong_direction_share": 0.007874
+    },
+    "9404": {
+     "position_reports": 6791,
+     "off_shape": 159,
+     "off_shape_share": 0.023413,
+     "wrong_direction": 24,
+     "wrong_direction_share": 0.003534
+    },
+    "9431": {
+     "position_reports": 0,
+     "off_shape": 0,
+     "off_shape_share": null,
+     "wrong_direction": 0,
+     "wrong_direction_share": null
+    },
+    "9432": {
+     "position_reports": 586,
+     "off_shape": 3,
+     "off_shape_share": 0.005119,
+     "wrong_direction": 5,
+     "wrong_direction_share": 0.008532
+    }
+   }
+  },
+  "retraced_shapes": {
+   "shapes_used": 41,
+   "shapes_retraced": 1,
+   "retraced_m_by_shape": {
+    "74560": 21167
+   },
+   "reported_from_m": 100
+  },
+  "assignment": {
+   "observed_trip_ids": 161,
+   "unassignable": 3,
+   "unassignable_share": 0.018634,
+   "trip_id_not_in_static": [],
+   "trip_not_scheduled_today": [
+    "1155022",
+    "1155028",
+    "1155193"
+   ],
+   "scheduled_trips_with_reports": 157,
+   "trips_with_no_usable_report": 3,
+   "trips_with_more_than_one_vehicle": 3
+  },
+  "prediction_error": {
+   "observed_events_with_predictions": 3475,
+   "definition": "predicted minus inferred time; arrival, or departure at a trip's first stop",
+   "by_horizon_min": {
+    "1": {
+     "n": 2443,
+     "other_day": 43,
+     "other_day_share": 0.017297,
+     "bias_s": 122.2,
+     "median_s": -7.7,
+     "mae_s": 182.9,
+     "within_60s_share": 0.44167
+    },
+    "2": {
+     "n": 2441,
+     "other_day": 45,
+     "other_day_share": 0.018101,
+     "bias_s": 97.0,
+     "median_s": -25.5,
+     "mae_s": 188.9,
+     "within_60s_share": 0.328554
+    },
+    "5": {
+     "n": 2355,
+     "other_day": 42,
+     "other_day_share": 0.017522,
+     "bias_s": 77.5,
+     "median_s": -73.0,
+     "mae_s": 259.2,
+     "within_60s_share": 0.169427
+    },
+    "10": {
+     "n": 2139,
+     "other_day": 8,
+     "other_day_share": 0.003726,
+     "bias_s": -7.9,
+     "median_s": -125.7,
+     "mae_s": 290.6,
+     "within_60s_share": 0.14446
+    },
+    "15": {
+     "n": 1787,
+     "other_day": 13,
+     "other_day_share": 0.007222,
+     "bias_s": -11.2,
+     "median_s": -128.9,
+     "mae_s": 344.3,
+     "within_60s_share": 0.137101
+    },
+    "30": {
+     "n": 1097,
+     "other_day": 0,
+     "other_day_share": 0.0,
+     "bias_s": 319.8,
+     "median_s": -91.7,
+     "mae_s": 679.4,
+     "within_60s_share": 0.13856
+    }
+   }
+  },
+  "jitter": {
+   "dwells": 162,
+   "reports": 3114,
+   "jitter_m_median": 2.4,
+   "jitter_m_p95": 7.6,
+   "definition": "distance from the dwell's median position; speed under 0.5 m/s, within 150 m of a first or last stop, at least 3 reports"
+  },
+  "missing_vehicles": {
+   "previous_days_available": 0,
+   "vehicles_seen_previously": 0,
+   "missing_count": null,
+   "missing_today": [],
+   "new_today": []
+  }
+ },
+ "routes": {
+  "7920": {
+   "short_name": "2",
+   "long_name": "Ault Field Rd/ Oak Harbor"
+  },
+  "6744": {
+   "short_name": "10",
+   "long_name": "Central Oak Harbor"
+  },
+  "9404": {
+   "short_name": "1",
+   "long_name": "Clinton / Oak Harbor"
+  },
+  "7923": {
+   "short_name": "58",
+   "long_name": "Clinton Ferry/ Scatchet Head"
+  },
+  "7924": {
+   "short_name": "4",
+   "long_name": "Deception Pass/ Oak Harbor"
+  },
+  "7914": {
+   "short_name": "2C",
+   "long_name": "East Camano"
+  },
+  "7916": {
+   "short_name": "412",
+   "long_name": "Everett/ Camano Island"
+  },
+  "7922": {
+   "short_name": "60",
+   "long_name": "Freeland - Langley - Clinton"
+  },
+  "7919": {
+   "short_name": "411W",
+   "long_name": "March Point Anacortes/ Oak Harbor"
+  },
+  "7915": {
+   "short_name": "411C",
+   "long_name": "Mount Vernon/ Camano Island"
+  },
+  "9431": {
+   "short_name": "",
+   "long_name": "Naswi Am"
+  },
+  "9432": {
+   "short_name": "",
+   "long_name": "Naswi Pm"
+  },
+  "9430": {
+   "short_name": "",
+   "long_name": "Naswi Wkend"
+  },
+  "7918": {
+   "short_name": "6",
+   "long_name": "Oak Harbor/ Coupeville Ferry"
+  },
+  "7913": {
+   "short_name": "3C",
+   "long_name": "Stanwood/ Camano Island"
+  },
+  "6737": {
+   "short_name": "1C",
+   "long_name": "West Camano Shuttle"
+  },
+  "6743": {
+   "short_name": "9",
+   "long_name": "West Oak Harbor"
+  }
+ },
+ "schedule": {
+  "passio_version": "passio-9b1efa882037",
+  "passio_basis": "complete download that day",
+  "trillium_version": "trillium-a4cf6ffeea6a",
+  "trillium_removes_service_today": [],
+  "note": "Scheduled trips come from the Passio calendar, which has no holiday exceptions."
+ },
+ "inputs": {
+  "raw_sha256": "9faa6e3b579028a8878c57f4fdd7a16b65c5b20b2b935f42cf750f696e55d976",
+  "vehicles_sha256": "009f7f6614c5bd983f8cd70b4eb4a4dc4afbe07bf6edb1c05c20c793291ca953",
+  "tables_version": "tables/0.1.0",
+  "stop_events_sha256": "5cc4495ff5dc492d50113e2dab30231482b529411fd00fdf676fe02be915f41a",
+  "code_sha": "98535dcb690a8964ef9f9432bc3db4a6a38e11bf"
+ }
+}

@@ -1,0 +1,18 @@
+passio_route_id,passio_route_short_name,passio_route_long_name,trillium_route_id,trillium_route_long_name,method
+7920,2,Ault Field Rd/ Oak Harbor,74488,Ault Field Rd Oak Harbor,route_short_name
+6744,10,Central Oak Harbor,74489,Central Oak Harbor,route_short_name
+9404,1,Clinton / Oak Harbor,32474,Clinton / Oak Harbor,route_short_name
+7923,58,Clinton Ferry/ Scatchet Head,32473,South Whidbey Shuttle,route_short_name
+7924,4,Deception Pass/ Oak Harbor,76391,Oak Harbor / Deception Pass,route_short_name
+7914,2C,East Camano,32469,East Camano Shuttle,route_short_name
+7916,412,Everett/ Camano Island,32481,Camano Island/Everett,route_short_name
+7922,60,Freeland - Langley - Clinton,32479,Clinton - Langley - Bayview,route_short_name
+7919,411W,March Point Anacortes/ Oak Harbor,32471,Oak Harbor / Marchs Point Anacortes,route_short_name
+7915,411C,Mount Vernon/ Camano Island,32467,Camano Island/Mount Vernon,route_short_name
+9431,,Naswi Am,76271,NAS Whidbey Island,no short name in either feed
+9432,,Naswi Pm,76271,NAS Whidbey Island,no short name in either feed
+9430,,Naswi Wkend,76271,NAS Whidbey Island,no short name in either feed
+7918,6,Oak Harbor/ Coupeville Ferry,32482,Oak Harbor/Coupeville,route_short_name
+7913,3C,Stanwood/ Camano Island,32472,Camano Island/Stanwood,route_short_name
+6737,1C,West Camano Shuttle,32470,West Camano Shuttle,route_short_name
+6743,9,West Oak Harbor,74486,West Oak Harbor,route_short_name

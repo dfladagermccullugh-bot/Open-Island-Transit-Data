@@ -1,0 +1,28 @@
+{
+ "passio_version": "passio-9b1efa882037",
+ "trillium_version": "trillium-a4cf6ffeea6a",
+ "stops": {
+  "passio": 474,
+  "by_method": {
+   "stop_code": 394,
+   "unmatched": 36,
+   "distance": 44
+  }
+ },
+ "routes": {
+  "passio": 17,
+  "unmatched": []
+ },
+ "timepoints": {
+  "passio_route_stops": 652,
+  "trillium_timepoint_route_stops": 165,
+  "mixed_route_stops": 20
+ },
+ "schedule_agreement": {
+  "passio_stop_times_at_timepoints": 5224,
+  "same_time": 2719,
+  "within_60_s": 2811,
+  "within_300_s": 3276,
+  "no_trillium_time_same_weekday": 153
+ }
+}

@@ -1,0 +1,138 @@
+{
+ "version": 1,
+ "repo": "dfladagermccullugh-bot/Open-Island-Transit-Data",
+ "versions": {
+  "passio-9b1efa882037": {
+   "source": "passio",
+   "content_sha256": "9b1efa882037745402a69eb435f5848330e47dbff45a3f4d15c0c3f2abecb5a9",
+   "files": {
+    "agency.txt": "0a39bd2da09542423aa20f68783f49936254fc1396e3b59b2ccd353dce7668f2",
+    "calendar.txt": "d93ff8fbaa4ece4ebc03bba54f7511902ae5de037f22b943dbd55fdf7062c43e",
+    "routes.txt": "fb3eee683dc2d54c8a85d1a1d28ba88891e250aaeb203b99ea30ab4c9e75fd10",
+    "shapes.txt": "ae7e80dff2a7f17b98abac367c2fd5841eb84144e0ac5766f53ff81494369717",
+    "stop_times.txt": "47a460289b9219e13c635a62a9d5ce80527d8bd1195e73420f8babf9801b301d",
+    "stops.txt": "d95cb19d562a5d73d027c2bfde6b86b1505ab965f3e2c99337d4fe6b9a07d319",
+    "trips.txt": "85a43b18fc723c3c88f3df21874a26bcfa46bb98a6a9fb4439f43cad030425b1"
+   },
+   "feed_info": {
+    "feed_publisher_name": "Passio Technologies",
+    "feed_publisher_url": "https://passiotech.com",
+    "feed_lang": "en",
+    "feed_contact_email": "support@passiotech.com",
+    "feed_contact_url": "https://passio3.com",
+    "feed_start_date": "20261118",
+    "feed_end_date": "20261219",
+    "feed_version": "20260917"
+   },
+   "first_seen": "2026-11-19T21:24:27.234+00:00",
+   "last_seen": "2026-11-19T21:24:27.234+00:00",
+   "first_day": "2026-11-19",
+   "example": {
+    "release_tag": "raw-2026-11",
+    "file": "static-2026-11-19-passio-1.zip",
+    "sha256": "6b0114bf4e2e8d726b46242d3e327798d049172576c07e1a8f325b13b9872554"
+   },
+   "downloads": [
+    1
+   ]
+  },
+  "trillium-a4cf6ffeea6a": {
+   "source": "trillium",
+   "content_sha256": "a4cf6ffeea6a230b2047bfeb0721f5e6400c4a11d675bb399715bce696ca1d60",
+   "files": {
+    "agency.txt": "ebdcb68fb69c5b3d71c891d739732f6bc1af2abb20a5ff0d02ac18335e4ad2ce",
+    "areas.txt": "d732e41dd645f3d742a54316372c3e441064862df9dc4ed6435ef357eea4c602",
+    "booking_rules.txt": "771e7f202037c8beb602fcfe5296fb7b49c3e06ecb2f6fa6d6d0ce4b4a6ae7ee",
+    "calendar.txt": "d8a56c9051f9e1438ed98e183b906936d1bdb5789879c2a69fb3aeb52569293d",
+    "calendar_attributes.txt": "f52402db9412d23616b72266d405837ef148dae72ff1d99a763fc48fb26d9c54",
+    "calendar_dates.txt": "e2066584d748d2cbf6d36f4d2d195fdff4c8c73d3cd653fcf460739dd34a47ae",
+    "directions.txt": "fa144968a1d024fbd18a4e5bfaf04c56b02a3f696e68baf67aee8759a034fc92",
+    "fare_attributes.txt": "2fea314d1ab45cc935ae5f15b2ccee18fb70c41029d969ee7c47a5327daa383f",
+    "fare_rules.txt": "c181e64f96b9eba6594b596f792c7bad941fa9b289a528360f4901b0c29d3245",
+    "farezone_attributes.txt": "0356cb6f4cf143c1685ef41078ae829aa1c5dcfb6227a0b76d1215b08c5bddf8",
+    "frequencies.txt": "f84af99e7ecfdd92cb9c8987d6028a3bca03b3847251212e739666ce9f4f45bc",
+    "linked_datasets.txt": "3477f2da6183a9c4513000b68ad4846557c26ba96dbfa1dba12d96902538844a",
+    "location_groups.txt": "f0555a180df24fa53f4bd4dd957689f31b9808c11418d4aee79fbdb88acca6cb",
+    "routes.txt": "d613f10821d2e6feabea91a484524fe407293af09235739467beadb4224b702d",
+    "runcut.txt": "7e3d24f667132f3a5b22a248514e69b2aa6c3e78e2997c8235b8339f53bbc59e",
+    "shapes.txt": "906d308629130d5cd82a38dcf76609e1a4ebeb4dcb9b6005c135c4bb7cede71f",
+    "stop_attributes.txt": "c49e3242a89d20adb47dc2d8ecdc78fff74d7412ec80790e6ccb48846111ce0b",
+    "stop_times.txt": "e0de41cb36503bb8d0a88da27e76408677e291d7dde289e4d4b50b771f9dfa9d",
+    "stops.txt": "cc6f6f9ee3e8804a9e78b08c99a7df881f91bd8b30085a91f240ec7080f53fdd",
+    "timetable_stop_order.txt": "6df10c404b0ea737b9fa72b4b989e69056a7519525ed830b533aacbe00e18ef5",
+    "timetables.txt": "93d3774c2f58c7c4aa11ecf2d0f97b83d883bc41902fc21095074f1af3ac4339",
+    "transfers.txt": "5be60f727ad23f7ae25475d17a71e2e964d25623d477a27249d6b6f99a2edadd",
+    "trips.txt": "d67d552a5c0d601d6c1bd5910ea33ba39bfd7c44d4884b5c75266a6d05b960e5"
+   },
+   "feed_info": {
+    "feed_publisher_url": "http://www.trilliumtransit.com",
+    "feed_publisher_name": "Trillium Solutions, Inc.",
+    "feed_lang": "en",
+    "feed_version": "UTC: 29-Sep-2026 22:45",
+    "feed_license": "",
+    "feed_contact_email": "support+islandtransit-wa-us@trilliumtransit.com",
+    "feed_contact_url": "http://support.trilliumtransit.com",
+    "feed_start_date": "20260929",
+    "feed_end_date": "20270401",
+    "feed_id": "islandtransit-wa-us"
+   },
+   "first_seen": "2026-11-19T21:24:28.069+00:00",
+   "last_seen": "2026-11-19T21:24:28.069+00:00",
+   "first_day": "2026-11-19",
+   "example": {
+    "release_tag": "raw-2026-11",
+    "file": "static-2026-11-19-trillium-2.zip",
+    "sha256": "1be99962507fc442320eab7d192a3c81a09562dc9231864e6ddb160217614cc1"
+   },
+   "downloads": [
+    2
+   ]
+  }
+ },
+ "downloads": {
+  "1": {
+   "static_fetch_id": 1,
+   "source": "passio",
+   "day": "2026-11-19",
+   "requested_at": "2026-11-19T21:24:27.234+00:00",
+   "release_tag": "raw-2026-11",
+   "file": "static-2026-11-19-passio-1.zip",
+   "sha256": "6b0114bf4e2e8d726b46242d3e327798d049172576c07e1a8f325b13b9872554",
+   "complete": true,
+   "problems": [],
+   "missing": [],
+   "version": "passio-9b1efa882037",
+   "content_sha256": "9b1efa882037745402a69eb435f5848330e47dbff45a3f4d15c0c3f2abecb5a9"
+  },
+  "2": {
+   "static_fetch_id": 2,
+   "source": "trillium",
+   "day": "2026-11-19",
+   "requested_at": "2026-11-19T21:24:28.069+00:00",
+   "release_tag": "raw-2026-11",
+   "file": "static-2026-11-19-trillium-2.zip",
+   "sha256": "1be99962507fc442320eab7d192a3c81a09562dc9231864e6ddb160217614cc1",
+   "complete": true,
+   "problems": [],
+   "missing": [],
+   "version": "trillium-a4cf6ffeea6a",
+   "content_sha256": "a4cf6ffeea6a230b2047bfeb0721f5e6400c4a11d675bb399715bce696ca1d60"
+  }
+ },
+ "days": {
+  "2026-11-19": {
+   "passio": {
+    "version": "passio-9b1efa882037",
+    "basis": "complete download that day",
+    "changed_during_day": false
+   },
+   "trillium": {
+    "version": "trillium-a4cf6ffeea6a",
+    "basis": "complete download that day",
+    "changed_during_day": false
+   },
+   "crosswalk": "passio-9b1efa882037__trillium-a4cf6ffeea6a",
+   "timepoints": "passio-9b1efa882037__timetable-2026-09-27-970aa207"
+  }
+ }
+}

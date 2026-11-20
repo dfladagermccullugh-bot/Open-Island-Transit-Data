@@ -1,0 +1,68 @@
+{
+ "version": 1,
+ "repo": "dfladagermccullugh-bot/Open-Island-Transit-Data",
+ "days": {
+  "2026-11-19": {
+   "service_date": "2026-11-19",
+   "tables_version": "tables/0.1.0",
+   "rows": {
+    "vehicles": 21615,
+    "trip-updates": 8458,
+    "trip-update-stops": 158815,
+    "alerts": 0
+   },
+   "fetches": {
+    "serviceAlerts": {
+     "attempted": 127,
+     "parsed": 127,
+     "failed": 0,
+     "decode_errors": 0
+    },
+    "tripUpdates": {
+     "attempted": 1904,
+     "parsed": 1904,
+     "failed": 0,
+     "decode_errors": 0
+    },
+    "vehiclePositions": {
+     "attempted": 1904,
+     "parsed": 1904,
+     "failed": 0,
+     "decode_errors": 0
+    }
+   },
+   "duplicate_keys": {
+    "vehicles": 0,
+    "trip-updates": 61,
+    "trip-update-stops": 380,
+    "alerts": 0
+   },
+   "files": [
+    {
+     "name": "vehicles-2026-11-19.parquet",
+     "bytes": 360671,
+     "sha256": "009f7f6614c5bd983f8cd70b4eb4a4dc4afbe07bf6edb1c05c20c793291ca953"
+    },
+    {
+     "name": "trip-updates-2026-11-19.parquet",
+     "bytes": 52498,
+     "sha256": "69302376dc65b56357eb67e945f0a4dd2561006eb1b62b4272663bb660e52ebd"
+    },
+    {
+     "name": "trip-update-stops-2026-11-19.parquet",
+     "bytes": 891716,
+     "sha256": "780c98a1d196919ed3e72a78e1b226ec6eab7720f5e9ede2de83471ce5284a6e"
+    },
+    {
+     "name": "alerts-2026-11-19.parquet",
+     "bytes": 3621,
+     "sha256": "df1f1cafbf93dd6e0ef77fc78bcba32116c190ff44a0115efcae1bc2bca2cef4"
+    }
+   ],
+   "raw_sha256": "9faa6e3b579028a8878c57f4fdd7a16b65c5b20b2b935f42cf750f696e55d976",
+   "release_tag": "parsed-2026-11",
+   "built_at": "2026-11-20T09:11:25+00:00",
+   "code_sha": "98535dcb690a8964ef9f9432bc3db4a6a38e11bf"
+  }
+ }
+}
