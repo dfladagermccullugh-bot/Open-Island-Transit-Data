@@ -55,6 +55,16 @@ repository.
   30 minutes; fails and opens an issue if a feed has no recent successful
   fetch, the positions feed is empty in service hours, the collector is backing
   off, or the database is filling up.
+- **Starting the workflows** (`supabase/migrations/0004_dispatch_workflows.sql`):
+  GitHub's own schedule skipped runs for this repository, so pg_cron also
+  starts the nightly archive (`dispatch-nightly`, 08:40 and 14:40 UTC) and the
+  watchdog (`dispatch-watchdog`, every 30 minutes) through GitHub's
+  workflow-dispatch API. It needs a fine-grained GitHub token for this
+  repository only, with "Actions: Read and write", stored once in Vault:
+  `select vault.create_secret('<token>', 'github_dispatch_token');`. Without
+  it the jobs do nothing and only the GitHub schedules run. Recent responses:
+  `select id, status_code, created from net._http_response order by id desc limit 5;`
+  (204 means GitHub accepted the request).
 
 ## To pause or stop
 
