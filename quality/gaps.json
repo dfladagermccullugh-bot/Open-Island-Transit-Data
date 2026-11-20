@@ -1,0 +1,172 @@
+{
+ "gaps_version": "gaps/0.1.0",
+ "days": [
+  "2026-11-19"
+ ],
+ "trips": 161,
+ "unobserved": 5,
+ "rates": {
+  "by_hour": {
+   "12": {
+    "scheduled": 6,
+    "unobserved": 1,
+    "rate": 0.166667
+   },
+   "13": {
+    "scheduled": 22,
+    "unobserved": 1,
+    "rate": 0.045455
+   },
+   "14": {
+    "scheduled": 23,
+    "unobserved": 1,
+    "rate": 0.043478
+   },
+   "15": {
+    "scheduled": 22,
+    "unobserved": 0,
+    "rate": 0.0
+   },
+   "16": {
+    "scheduled": 24,
+    "unobserved": 1,
+    "rate": 0.041667
+   },
+   "17": {
+    "scheduled": 25,
+    "unobserved": 1,
+    "rate": 0.04
+   },
+   "18": {
+    "scheduled": 24,
+    "unobserved": 0,
+    "rate": 0.0
+   },
+   "19": {
+    "scheduled": 14,
+    "unobserved": 0,
+    "rate": 0.0
+   },
+   "20": {
+    "scheduled": 1,
+    "unobserved": 0,
+    "rate": 0.0
+   }
+  },
+  "by_hour_band": {
+   "midday (9-15)": {
+    "scheduled": 51,
+    "unobserved": 3,
+    "rate": 0.058824
+   },
+   "afternoon peak (15-18)": {
+    "scheduled": 71,
+    "unobserved": 2,
+    "rate": 0.028169
+   },
+   "evening (18 on)": {
+    "scheduled": 39,
+    "unobserved": 0,
+    "rate": 0.0
+   }
+  },
+  "by_route": {
+   "6737": {
+    "scheduled": 8,
+    "unobserved": 0,
+    "rate": 0.0
+   },
+   "6743": {
+    "scheduled": 5,
+    "unobserved": 0,
+    "rate": 0.0
+   },
+   "6744": {
+    "scheduled": 14,
+    "unobserved": 0,
+    "rate": 0.0
+   },
+   "7913": {
+    "scheduled": 13,
+    "unobserved": 1,
+    "rate": 0.076923
+   },
+   "7914": {
+    "scheduled": 8,
+    "unobserved": 0,
+    "rate": 0.0
+   },
+   "7915": {
+    "scheduled": 8,
+    "unobserved": 0,
+    "rate": 0.0
+   },
+   "7916": {
+    "scheduled": 6,
+    "unobserved": 1,
+    "rate": 0.166667
+   },
+   "7918": {
+    "scheduled": 13,
+    "unobserved": 0,
+    "rate": 0.0
+   },
+   "7919": {
+    "scheduled": 12,
+    "unobserved": 0,
+    "rate": 0.0
+   },
+   "7920": {
+    "scheduled": 6,
+    "unobserved": 0,
+    "rate": 0.0
+   },
+   "7922": {
+    "scheduled": 24,
+    "unobserved": 0,
+    "rate": 0.0
+   },
+   "7923": {
+    "scheduled": 10,
+    "unobserved": 2,
+    "rate": 0.2
+   },
+   "9404": {
+    "scheduled": 30,
+    "unobserved": 1,
+    "rate": 0.033333
+   },
+   "9432": {
+    "scheduled": 4,
+    "unobserved": 0,
+    "rate": 0.0
+   }
+  },
+  "by_day_type": {
+   "weekday": {
+    "scheduled": 161,
+    "unobserved": 5,
+    "rate": 0.031056
+   }
+  },
+  "by_trips_in_service": {
+   "1-9": {
+    "scheduled": 16,
+    "unobserved": 1,
+    "rate": 0.0625
+   },
+   "10-14": {
+    "scheduled": 43,
+    "unobserved": 1,
+    "rate": 0.023256
+   },
+   "15-19": {
+    "scheduled": 102,
+    "unobserved": 3,
+    "rate": 0.029412
+   }
+  }
+ },
+ "model": null,
+ "model_status": "not fitted: needs 14 days and 30 unobserved trips (have 1 and 5)"
+}
