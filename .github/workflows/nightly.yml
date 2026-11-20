@@ -99,6 +99,13 @@ jobs:
             --raw-dir work/files --tables-dir work/tables --out work/events
           echo "code=$?" >> "$GITHUB_OUTPUT"
 
+      - name: Score field observations
+        id: field
+        run: |
+          set +e
+          python -m pipeline.events.field score --data data-branch --tables-dir work/tables
+          echo "code=$?" >> "$GITHUB_OUTPUT"
+
       - name: Compute quality metrics
         id: quality
         run: |
@@ -137,5 +144,6 @@ jobs:
         if: >-
           steps.archive.outputs.code != '0' || steps.tables.outputs.code != '0' ||
           steps.static.outputs.code != '0' || steps.events.outputs.code != '0' ||
+          steps.field.outputs.code != '0' ||
           steps.quality.outputs.code != '0' || steps.check.outputs.code != '0'
         run: exit 1

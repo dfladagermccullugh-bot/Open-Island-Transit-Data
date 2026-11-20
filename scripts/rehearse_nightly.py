@@ -70,6 +70,8 @@ def main() -> int:
         ("pipeline.events", ["--pending", "--release", "--data", str(data), "--raw-dir",
                              f"{work}/files", "--tables-dir", f"{work}/tables", "--out",
                              f"{work}/events"]),
+        ("pipeline.events.field", ["score", "--data", str(data), "--tables-dir",
+                                   f"{work}/tables"]),
         ("pipeline.quality", ["--pending", "--data", str(data), "--raw-dir", f"{work}/files",
                               "--tables-dir", f"{work}/tables"]),
         ("pipeline.check", ["--data", str(data)]),

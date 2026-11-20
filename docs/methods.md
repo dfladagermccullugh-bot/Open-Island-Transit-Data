@@ -180,6 +180,14 @@ On-time figures are labelled experimental until all three hold:
    changes.
 3. No negative segment travel times or impossible speeds remain unexplained.
 
+Check 1 is scored every night by `pipeline/events/field.py` from
+`reference/field-observations.csv` into `ontime/field-check.json`. The
+observer times the moments the method infers: the bus coming within 40 m
+of the stop and the bus more than 40 m past it (`docs/field-check.md`).
+Each timed moment is matched to the inferred event with the same service
+date, trip and stop; differences are inferred minus timed. Timed moments
+with no inferred time are counted, not scored.
+
 Checks 2 and 3 run every night (`pipeline/events/validate.py`) and are
 written to `validation` in `ontime/days/<date>.json`:
 
