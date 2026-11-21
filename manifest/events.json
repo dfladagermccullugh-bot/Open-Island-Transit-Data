@@ -3,7 +3,7 @@
  "days": {
   "2026-11-19": {
    "service_date": "2026-11-19",
-   "events_version": "events/0.3.0",
+   "events_version": "events/0.3.1",
    "ontime_version": "ontime/0.3.0",
    "validate_version": "validate/0.1.0",
    "service_expected": true,
@@ -17,22 +17,22 @@
    "files": [
     {
      "name": "stop-events-2026-11-19.parquet",
-     "bytes": 111749,
-     "sha256": "64c20718f10c520f49fbb619ef7ef6febec363028781bffc4a8151c2c21046de"
+     "bytes": 111750,
+     "sha256": "c0222caf7c6abb67d8e21f80b61c50adf89cb8093109891ab57df54a1023c151"
     },
     {
      "name": "trip-tracks-2026-11-19.parquet",
      "bytes": 12464,
-     "sha256": "8a5d440144534d004889e4ab6a54d2e91467c8a5426eaf20787ae9e3156e421d"
+     "sha256": "326bf47d5977c9f50d125256e9a181e7839e2f60722f4c405e138b15cb885098"
     }
    ],
    "release_tag": "parsed-2026-11",
-   "built_at": "2026-11-21T18:41:41+00:00",
-   "code_sha": "3e4d28b3e39c01cc561cf957282bdef148a81731"
+   "built_at": "2026-11-21T22:49:28+00:00",
+   "code_sha": "611611c98f303e568d8a2412eacaf82fa71f148e"
   },
   "2026-11-20": {
    "service_date": "2026-11-20",
-   "events_version": "events/0.3.0",
+   "events_version": "events/0.3.1",
    "ontime_version": "ontime/0.3.0",
    "validate_version": "validate/0.1.0",
    "service_expected": true,
@@ -46,18 +46,18 @@
    "files": [
     {
      "name": "stop-events-2026-11-20.parquet",
-     "bytes": 178646,
-     "sha256": "7f87afa7566eaf17199f55ddd24db0f3d0ffb9bae2834bef6bd01e401c89ad50"
+     "bytes": 178647,
+     "sha256": "890229b33ebfa8f8266a8f789459a68c222805afd1361962d8bf0e1b05a4deef"
     },
     {
      "name": "trip-tracks-2026-11-20.parquet",
      "bytes": 14468,
-     "sha256": "97ca67cf9f359bc20364cf2208b0bc3daeb7b9340b98b5de08a876ca1e62f6a0"
+     "sha256": "bc57298d8fb0b7ec42e731a3a14d36ec57c0ed6c5924c0157f3a1c73f570d419"
     }
    ],
    "release_tag": "parsed-2026-11",
-   "built_at": "2026-11-21T18:41:47+00:00",
-   "code_sha": "3e4d28b3e39c01cc561cf957282bdef148a81731"
+   "built_at": "2026-11-21T22:49:23+00:00",
+   "code_sha": "611611c98f303e568d8a2412eacaf82fa71f148e"
   }
  }
 }
