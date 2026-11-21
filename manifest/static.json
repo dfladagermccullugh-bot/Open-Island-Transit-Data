@@ -25,7 +25,7 @@
     "feed_version": "20260917"
    },
    "first_seen": "2026-11-19T21:24:27.234+00:00",
-   "last_seen": "2026-11-19T21:24:27.234+00:00",
+   "last_seen": "2026-11-20T16:30:00.064+00:00",
    "first_day": "2026-11-19",
    "example": {
     "release_tag": "raw-2026-11",
@@ -33,7 +33,9 @@
     "sha256": "6b0114bf4e2e8d726b46242d3e327798d049172576c07e1a8f325b13b9872554"
    },
    "downloads": [
-    1
+    1,
+    3,
+    4
    ]
   },
   "trillium-a4cf6ffeea6a": {
@@ -117,6 +119,34 @@
    "missing": [],
    "version": "trillium-a4cf6ffeea6a",
    "content_sha256": "a4cf6ffeea6a230b2047bfeb0721f5e6400c4a11d675bb399715bce696ca1d60"
+  },
+  "3": {
+   "static_fetch_id": 3,
+   "source": "passio",
+   "day": "2026-11-20",
+   "requested_at": "2026-11-20T10:15:00.624+00:00",
+   "release_tag": "raw-2026-11",
+   "file": "static-2026-11-20-passio-3.zip",
+   "sha256": "235e724c1b778c1f64582642bdda7d05530d8cc231ebda6b9243432b29134d88",
+   "complete": true,
+   "problems": [],
+   "missing": [],
+   "version": "passio-9b1efa882037",
+   "content_sha256": "9b1efa882037745402a69eb435f5848330e47dbff45a3f4d15c0c3f2abecb5a9"
+  },
+  "4": {
+   "static_fetch_id": 4,
+   "source": "passio",
+   "day": "2026-11-20",
+   "requested_at": "2026-11-20T16:30:00.064+00:00",
+   "release_tag": "raw-2026-11",
+   "file": "static-2026-11-20-passio-4.zip",
+   "sha256": "38471a52d88a84b3fe85efc92e52e72456daa3ec69e2f8a5f92abf833563cbe0",
+   "complete": true,
+   "problems": [],
+   "missing": [],
+   "version": "passio-9b1efa882037",
+   "content_sha256": "9b1efa882037745402a69eb435f5848330e47dbff45a3f4d15c0c3f2abecb5a9"
   }
  },
  "days": {
@@ -129,6 +159,20 @@
    "trillium": {
     "version": "trillium-a4cf6ffeea6a",
     "basis": "complete download that day",
+    "changed_during_day": false
+   },
+   "crosswalk": "passio-9b1efa882037__trillium-a4cf6ffeea6a",
+   "timepoints": "passio-9b1efa882037__timetable-2026-09-27-970aa207"
+  },
+  "2026-11-20": {
+   "passio": {
+    "version": "passio-9b1efa882037",
+    "basis": "complete download that day",
+    "changed_during_day": false
+   },
+   "trillium": {
+    "version": "trillium-a4cf6ffeea6a",
+    "basis": "carried forward from 2026-11-19",
     "changed_during_day": false
    },
    "crosswalk": "passio-9b1efa882037__trillium-a4cf6ffeea6a",
