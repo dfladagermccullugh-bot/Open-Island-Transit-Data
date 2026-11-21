@@ -1,0 +1,225 @@
+---
+title: "Routes"
+subtitle: "How often each route's buses left on time, stop by stop"
+---
+
+Tap a route on the map, or pick one from the list. A departure is
+[on time]{.term tabindex="0" tip="Leaving no more than 1 minute early and no more than 5 minutes late. At the last stop of a trip, arriving counts instead of leaving."}
+when the bus leaves between 1 minute early and 5 minutes late. Only the stops
+printed in Island Transit's timetables
+([timepoints]{.term tabindex="0" tip="The stops whose times are printed in Island Transit's timetables. These are the times the agency publishes for riders."})
+are counted.
+
+```{ojs}
+//| echo: false
+//| output: false
+import {json, pct, band, BANDS, NO_BAND, routeTitle, routeSub, routeOrder, routeSlug, lateness, plural, longDate, routeMap, MIN_OBSERVED} from "./lib.js"
+import {drawRouteMap} from "./map.js"
+L = require("leaflet@1.9.4")
+recent = json("data/ontime/recent.json")
+mapData = routeMap(recent?.timepoints)
+routeList = mapData == null ? [] : mapData.routes
+  .map(r => ({...r, stats: recent?.routes?.[r.route_id] ?? null}))
+  .sort(routeOrder)
+byId = Object.fromEntries(routeList.map(r => [r.route_id, r]))
+fromHash = {
+  const h = decodeURIComponent(location.hash.slice(1)).toLowerCase();
+  const r = routeList.find(r => routeSlug(r, r.route_id) === h);
+  return r ? r.route_id : null;
+}
+```
+
+```{ojs}
+//| echo: false
+html`<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/leaflet@1.9.4/dist/leaflet.css">`
+```
+
+```{ojs}
+//| echo: false
+viewof routeId = Inputs.select([null, ...routeList.map(r => r.route_id)], {
+  label: "Route",
+  value: fromHash,
+  width: 380,
+  format: id => id == null ? "All routes" : [routeTitle(byId[id]), routeSub(byId[id])].filter(Boolean).join(" · "),
+})
+```
+
+```{ojs}
+//| echo: false
+mapView = mapData == null ? null : drawRouteMap(L, mapData, recent, {
+  height: width < 640 ? 420 : 580,
+  onSelect: id => {
+    const sel = viewof routeId;
+    sel.value = id;
+    sel.dispatchEvent(new Event("input", {bubbles: true}));
+  },
+})
+html`${mapView == null
+  ? html`<p class="empty">The route map appears after the first day is processed.</p>`
+  : mapView.node}`
+```
+
+```{ojs}
+//| echo: false
+//| output: false
+// Follow links to another route on this page (routes.html#60).
+{
+  const onHash = () => {
+    const h = decodeURIComponent(location.hash.slice(1)).toLowerCase();
+    const r = routeList.find(r => routeSlug(r, r.route_id) === h);
+    const id = r ? r.route_id : null;
+    const sel = viewof routeId;
+    if (sel.value !== id) {
+      sel.value = id;
+      sel.dispatchEvent(new Event("input", {bubbles: true}));
+    }
+  };
+  addEventListener("hashchange", onHash);
+  invalidation.then(() => removeEventListener("hashchange", onHash));
+}
+```
+
+```{ojs}
+//| echo: false
+//| output: false
+{
+  mapView?.setSelected(routeId);
+  const slug = routeId == null ? "" : `#${routeSlug(byId[routeId], routeId)}`;
+  history.replaceState(null, "", `${location.pathname}${location.search}${slug}`);
+}
+```
+
+```{ojs}
+//| echo: false
+windowNote = recent == null ? "" : recent.days === 1
+  ? `Based on ${longDate(recent.last_service_date)}.`
+  : `Based on the ${recent.days} days from ${longDate(recent.first_service_date)} to ${longDate(recent.last_service_date)}.`
+html`${recent == null ? html`<p class="empty">No day has been processed yet.</p>` : html`<p class="note">${windowNote}</p>`}`
+```
+
+```{ojs}
+//| echo: false
+selected = routeId == null ? null : byId[routeId]
+st = selected?.stats ?? null
+html`${selected == null ? overview() : detail(selected, st)}`
+```
+
+```{ojs}
+//| echo: false
+//| output: false
+bandTag = (b) => html`<span class="band-tag band-${b.key}"><span class="swatch band-${b.key}"></span>${b.label}</span>`
+
+overview = () => {
+  const rows = routeList.map(r => {
+    const s = r.stats;
+    return {
+      route: r.route_id,
+      name: routeTitle(r),
+      where: routeSub(r),
+      on_time: s?.on_time_share_of_observed ?? null,
+      typical: s?.deviation_s_median ?? null,
+      seen: s?.observed ?? 0,
+      band: band(s?.on_time_share_of_observed, s?.observed),
+    };
+  });
+  return html`<h2>All routes</h2>
+    <p>Pick a route above for its stops. Routes with fewer than ${MIN_OBSERVED} departures seen are not rated.</p>
+    ${Inputs.table(rows, {
+      columns: ["name", "where", "on_time", "typical", "seen", "band"],
+      header: {name: "Route", where: "Serves", on_time: "On time", typical: "Typical departure", seen: "Departures seen", band: "Band"},
+      format: {on_time: d => pct(d), typical: d => lateness(d), band: b => bandTag(b)},
+      sort: "seen", reverse: true, rows: rows.length + 1, height: 34 * (rows.length + 1) + 8, layout: "auto",
+    })}`;
+}
+
+detail = (r, s) => {
+  if (s == null) return html`<h2>${routeTitle(r)}</h2><p>${routeSub(r)}</p>
+    <p class="empty">No departures from this route's timepoints were scheduled in this period.</p>`;
+  const b = band(s.on_time_share_of_observed, s.observed);
+  return html`<h2 class="route-title">${routeTitle(r)} <span class="route-sub">${routeSub(r)}</span></h2>
+  <div class="stat-row">
+    <div class="stat stat-big"><div class="label">Departures on time</div>
+      <div class="value">${pct(s.on_time_share_of_observed)}</div>
+      <div class="note">${bandTag(b)}</div></div>
+    <div class="stat"><div class="label">Typical departure</div>
+      <div class="value">${lateness(s.deviation_s_median)}</div>
+      <div class="note">half of departures were between ${lateness(s.deviation_s_p25)} and ${lateness(s.deviation_s_p75)}</div></div>
+    <div class="stat"><div class="label">Early, on time, late</div>
+      <div class="value">${pct(s.early_share_of_observed)} · ${pct(s.on_time_share_of_observed)} · ${pct(s.late_share_of_observed)}</div>
+      <div class="note">of ${plural(s.observed, "departure")} seen</div></div>
+    <div class="stat"><div class="label">Departures seen</div>
+      <div class="value">${pct(s.observed_share)}</div>
+      <div class="note">${s.observed} of ${plural(s.scheduled, "scheduled departure")}; the rest had no tracking data</div></div>
+  </div>
+  ${stopChart(s)}
+  ${trendChart(s)}`;
+}
+
+stopChart = (s) => {
+  const stops = s.stops.filter(d => d.deviations_counted > 0).map(d => ({
+    ...d, label: d.name, med: d.deviation_s_median / 60, lo: d.deviation_s_p25 / 60, hi: d.deviation_s_p75 / 60,
+    band: band(d.on_time_share_of_observed, d.observed)}));
+  if (stops.length === 0) return html`<p class="empty">No stop has enough departures yet.</p>`;
+  const xmin = Math.min(-2, ...stops.map(d => d.lo)) - 0.5;
+  const xmax = Math.max(8, ...stops.map(d => d.hi)) + 0.5;
+  const ids = stops.map(d => d.stop_id);
+  const names = Object.fromEntries(stops.map(d => [d.stop_id, d.label]));
+  return html`<h3>Stop by stop</h3>
+  <p>Each dot is the typical departure at that stop; the bar spans the middle half of departures.
+  The shaded strip is the on-time window, 1 minute early to 5 minutes late.</p>
+  ${(() => {
+    // On narrow screens, stop names go above each row instead of beside it.
+    const narrow = width < 640;
+    const rowH = narrow ? 46 : 34;
+    return Plot.plot({
+      style: {background: "transparent", fontSize: "13px"},
+      width: Math.min(width, 960),
+      marginLeft: narrow ? 12 : 240, marginRight: 16, marginTop: narrow ? 26 : 10, marginBottom: 44,
+      height: rowH * stops.length + 60,
+      x: {domain: [xmin, xmax], grid: true, label: "Minutes late (negative: early)", labelAnchor: "center", labelOffset: 36},
+      y: {domain: ids, tickFormat: id => names[id], label: null, axis: narrow ? null : "left"},
+      marks: [
+        Plot.rectX([0], {x1: -1, x2: 5, fill: "var(--status-good)", fillOpacity: 0.12}),
+        Plot.ruleX([0], {stroke: "var(--text-muted)"}),
+        Plot.ruleY(stops, {y: "stop_id", x1: "lo", x2: "hi", stroke: "var(--text-muted)", strokeWidth: 3, strokeLinecap: "round"}),
+        Plot.dot(stops, {y: "stop_id", x: "med", r: 6, fill: d => d.band.color, stroke: "var(--surface)", strokeWidth: 2}),
+        narrow ? Plot.text(stops, {y: "stop_id", x: xmin, text: "label", textAnchor: "start", dy: -15, fill: "currentColor"}) : null,
+        Plot.tip(stops, Plot.pointerY({y: "stop_id", x: "med",
+          title: d => `${d.label}\nTypically ${lateness(d.deviation_s_median)}\n${pct(d.on_time_share_of_observed)} on time (${plural(d.observed, "departure")} seen)`})),
+      ],
+    });
+  })()}
+  <details><summary>Stop table</summary>
+  ${Inputs.table(stops, {
+    columns: ["label", "on_time_share_of_observed", "deviation_s_median", "observed", "scheduled"],
+    header: {label: "Stop", on_time_share_of_observed: "On time", deviation_s_median: "Typical departure", observed: "Seen", scheduled: "Scheduled"},
+    format: {on_time_share_of_observed: d => pct(d), deviation_s_median: d => lateness(d)},
+    sort: null, rows: stops.length + 1, height: 34 * (stops.length + 1) + 8, layout: "auto"})}
+  </details>`;
+}
+
+trendChart = (s) => {
+  const days = s.daily.filter(d => d.on_time_share_of_observed != null)
+    .map(d => ({...d, date: new Date(`${d.service_date}T12:00:00Z`)}));
+  if (days.length < 2) return html`<h3>Day by day</h3><p class="empty">A day-by-day line appears once there are two days of data.</p>`;
+  return html`<h3>Day by day</h3>${Plot.plot({
+    style: {background: "transparent", fontSize: "13px"},
+    width: Math.min(width, 960),
+    height: 220, marginLeft: 50,
+    x: {type: "utc", label: null},
+    y: {domain: [0, 1], grid: true, label: "On time", tickFormat: d => `${Math.round(d * 100)}%`},
+    marks: [
+      Plot.ruleY([0]),
+      Plot.lineY(days, {x: "date", y: "on_time_share_of_observed", stroke: "var(--series-1)", strokeWidth: 2}),
+      Plot.dot(days, {x: "date", y: "on_time_share_of_observed", fill: "var(--series-1)", r: 4}),
+      Plot.tip(days, Plot.pointerX({x: "date", y: "on_time_share_of_observed",
+        title: d => `${longDate(d.service_date)}\n${pct(d.on_time_share_of_observed)} on time\n${pct(d.observed_share)} of departures seen`})),
+    ],
+  })}`;
+}
+```
+
+These figures are worked out by this project from Island Transit's live bus
+positions and its schedule; they are not official Island Transit figures.
+How: [Methods](methods.qmd). The numbers behind this page:
+[`ontime/recent.json`](https://github.com/dfladagermccullugh-bot/Open-Island-Transit-Data/blob/data/ontime/recent.json).

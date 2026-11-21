@@ -248,13 +248,15 @@ def main() -> int:
     if args.pending:
         days += pending(args.data)
     days = sorted(set(days))[: args.max_days]
+    ontime_dir = args.data / "ontime"
     if not days:
         print("no events to build")
+        if (ontime_dir / "days").exists():
+            print(f"ontime/routes.csv and recent.json: {write_routes(ontime_dir)} days")
         return 0
 
     manifest_path = args.data / "manifest" / "events.json"
     manifest = _load(manifest_path)
-    ontime_dir = args.data / "ontime"
     failed = False
     for day in days:
         try:

@@ -1,8 +1,9 @@
 ---
-title: "Data"
+title: "Download the data"
+subtitle: "Every saved update and every table, free"
 ---
 
-All data is free to download. Raw and parsed files are in the repository's
+Everything this site shows can be rebuilt from these files. All data is free to download. Raw and parsed files are in the repository's
 [Releases](https://github.com/dfladagermccullugh-bot/Open-Island-Transit-Data/releases)
 (`raw-YYYY-MM` and `parsed-YYYY-MM`, one file per service day); daily
 metrics and manifests are on the

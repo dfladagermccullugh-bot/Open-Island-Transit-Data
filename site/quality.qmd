@@ -1,23 +1,56 @@
 ---
-title: "Feed quality"
+title: "Can the data be trusted?"
+subtitle: "How reliable Island Transit's bus-tracking feed is, checked every day"
 ---
 
-Daily measurements of the real-time feed as a source of data, grouped as a
-survey researcher would: coverage, nonresponse, measurement error,
-processing error and paradata. Definitions are on the [Methods](methods.qmd)
-page. Collection began on 2026-11-19 at 1:24 PM Pacific, so that day is
-partial.
+Trip apps, this site, and anyone studying Island Transit rely on the same
+live feed. If buses go missing from it, or their locations arrive late or
+wrong, every number built on it suffers. So the feed is graded every day,
+the way a researcher grades a survey.
 
 ```{ojs}
 //| echo: false
 //| output: false
-import {csv, json, pct, num, routeLabel, SERIES} from "./lib.js"
+import {csv, json, pct, num, routeLabel, longDate, SERIES} from "./lib.js"
 daily = csv(d3, "data/quality/daily.csv")
 days = daily.map(d => ({...d, date: new Date(d.service_date)}))
 latestDate = days.length ? days.at(-1).date.toISOString().slice(0, 10) : null
 latest = latestDate ? json(`data/quality/days/${latestDate}.json`) : null
 noData = () => html`<p>No processed days yet.</p>`
 ```
+
+```{ojs}
+//| echo: false
+lq = days.at(-1) ?? null
+html`${lq == null ? noData() : html`<p class="note">Latest day: ${longDate(latestDate)}.${days.length === 1 ? " Collection began at 1:24 PM Pacific that day, so it is a partial day." : ""}</p>
+<div class="stat-row">
+  <div class="stat"><div class="label">Did every scheduled trip show up?</div>
+    <div class="value">${pct(lq.trip_coverage)}</div>
+    <div class="note">of ${lq.scheduled_trips} scheduled trips appeared in the tracking at least once</div></div>
+  <div class="stat"><div class="label">Did the collector keep running?</div>
+    <div class="value">${pct(lq.vehicle_uptime, 1)}</div>
+    <div class="note">of 20-second checks got a good answer from the feed</div></div>
+  <div class="stat"><div class="label">How fresh are bus locations?</div>
+    <div class="value">${num(lq.position_age_s_median)} seconds</div>
+    <div class="note">typical age of a location when it first appears</div></div>
+  <div class="stat"><div class="label">How close are arrival predictions?</div>
+    <div class="value">${lq.prediction_mae_s_5min == null ? "–" : `${num(lq.prediction_mae_s_5min / 60, 1)} min`}</div>
+    <div class="note">average miss, for predictions made 5 minutes before the bus arrived</div></div>
+  <div class="stat"><div class="label">Are buses where the route says?</div>
+    <div class="value">${pct(1 - lq.off_shape_share)}</div>
+    <div class="note">of locations were within 100 m of the bus's published route</div></div>
+</div>`}`
+```
+
+The rest of this page is the detailed version, grouped the way survey
+researchers grade any data source:
+[coverage]{.term tabindex="0" tip="Whether every scheduled trip shows up in the tracking at all."},
+[nonresponse]{.term tabindex="0" tip="Data that should be there but is missing: failed requests, empty feeds, gaps in a bus's reports."},
+[measurement error]{.term tabindex="0" tip="Data that is there but wrong: GPS wobble, buses that seem to jump, old locations, predictions that miss."},
+[processing error]{.term tabindex="0" tip="Data that cannot be matched up, such as a trip in the feed that is not in the schedule."}
+and [paradata]{.term tabindex="0" tip="Data about the collection itself: every request the collector made, how long it took and whether it worked."}.
+Exact definitions are on the [Methods](methods.qmd) page; plain ones in
+[Plain words](glossary.qmd).
 
 ## Over time
 

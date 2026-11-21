@@ -1,14 +1,23 @@
 /*-- scss:defaults --*/
 $body-bg: #fcfcfb;
+$body-color: #0b0b0b;
+$link-color: #2a78d6;
 
 /*-- scss:rules --*/
 :root {
+  --surface: #fcfcfb;
+  --card: #ffffff;
+  --text-primary: #0b0b0b;
+  --text-secondary: #52514e;
+  --text-muted: #8a8984;
+  --border: rgba(0, 0, 0, .12);
+  --border-strong: rgba(0, 0, 0, .3);
   --series-1: #2a78d6;
-  --muted: #52514e;
+  --status-good: #0ca30c;
+  --status-warning: #fab219;
+  --status-critical: #d03b3b;
+  --status-none: #a3a29c;
+  --map-casing: #1a1a19;
+  --map-water: #dfe9f3;
 }
-.stat-row { display: flex; flex-wrap: wrap; gap: 1rem; margin: 1rem 0; }
-.stat { flex: 1 1 11rem; border: 1px solid rgba(0,0,0,.12); border-radius: 6px; padding: .75rem 1rem; }
-.stat .label { font-size: .85rem; color: var(--muted); }
-.stat .value { font-size: 1.6rem; font-weight: 600; line-height: 1.2; }
-.stat .note { font-size: .8rem; color: var(--muted); }
-.method-note { border-left: 4px solid #eda100; padding: .5rem 1rem; background: rgba(237,161,0,.08); }
+@import "components";

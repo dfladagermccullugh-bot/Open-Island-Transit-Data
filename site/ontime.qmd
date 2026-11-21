@@ -1,6 +1,10 @@
 ---
-title: "On-time performance"
+title: "On time"
+subtitle: "Day by day, for the whole system and every route"
 ---
+
+How often buses left their stops on time, each day since collection began.
+For one route at a time, stop by stop, see [Routes](routes.qmd).
 
 ::: {.method-note}
 These figures are calculated by this project from two things Island

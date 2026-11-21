@@ -138,6 +138,8 @@ def write_routes(ontime_dir: Path, window_days: int = WINDOW_DAYS) -> int:
         "last_service_date": window[-1]["service_date"],
         "days": len(window),
         "definition": window[-1].get("definition"),
+        "timepoints": window[-1].get("timepoints"),
+        "passio_version": window[-1].get("passio_version"),
         "ontime_versions": sorted({d.get("ontime_version", "") for d in window}),
         "overall": _summary(total, total_devs),
         "routes": dict(sorted(routes_out.items())),

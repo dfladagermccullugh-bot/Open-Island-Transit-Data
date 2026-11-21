@@ -3,6 +3,8 @@ project:
   output-dir: _site
   resources:
     - data/**
+    - lib.js
+    - map.js
 
 website:
   title: "Open Island Transit Data"
@@ -11,15 +13,21 @@ website:
   navbar:
     left:
       - href: index.qmd
-        text: Status
-      - href: quality.qmd
-        text: Feed quality
+        text: Home
+      - href: routes.qmd
+        text: Routes
       - href: ontime.qmd
-        text: On-time
-      - href: methods.qmd
-        text: Methods
+        text: On time
+      - href: quality.qmd
+        text: Data quality
       - href: data.qmd
-        text: Data
+        text: Download
+      - text: About
+        menu:
+          - href: methods.qmd
+            text: How it's calculated
+          - href: glossary.qmd
+            text: Plain words
     right:
       - icon: github
         href: "https://github.com/dfladagermccullugh-bot/Open-Island-Transit-Data"
@@ -28,7 +36,7 @@ website:
     center: >-
       Every number on this site is computed by code in the
       [repository](https://github.com/dfladagermccullugh-bot/Open-Island-Transit-Data).
-      Not affiliated with Island Transit.
+      Not affiliated with Island Transit. Map data &copy; OpenStreetMap contributors.
 
 format:
   html:

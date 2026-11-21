@@ -1,15 +1,15 @@
 ---
-title: "Island Transit real-time feed: status"
+pagetitle: "Open Island Transit Data"
+description: "How often Island Transit's buses run on time, worked out from their live locations, with every number and file free to check."
 ---
 
-This site archives the real-time bus data published by
-[Island Transit](https://www.islandtransit.org/) (Whidbey and Camano
-Islands, Washington) and measures how good that data is, using the error
-framework survey researchers apply to any data source. It also estimates
-on-time performance from bus positions, checked automatically every day
-and in person on route 60.
+::: {.hero}
+# How on time are Island Transit's buses?
 
-## Collector, live
+[Island Transit's buses send out their location every few seconds, but nobody
+keeps those updates. This site saves every one, works out how often each bus
+left its stops on time, and checks how trustworthy the tracking data is.
+Everything is free to download.]{.lede}
 
 ```{ojs}
 //| echo: false
@@ -21,61 +21,170 @@ status = {
     return r.ok ? await r.json() : null;
   } catch (e) { return null; }
 }
-feedName = ({vehiclePositions: "Vehicle positions", tripUpdates: "Trip updates", serviceAlerts: "Service alerts"})
-ago = s => s == null ? "never" : s < 120 ? `${s} s ago` : s < 7200 ? `${Math.round(s / 60)} min ago` : `${Math.round(s / 3600)} h ago`
-html`${status == null
-  ? html`<p>The collector could not be reached from this page just now.</p>`
-  : html`<div class="stat-row">${["vehiclePositions", "tripUpdates", "serviceAlerts"].map(f => {
-      const s = status.find(d => d.feed === f) || {};
-      return html`<div class="stat">
-        <div class="label">${feedName[f]}</div>
-        <div class="value">${ago(s.last_ok_age_s)}</div>
-        <div class="note">last successful fetch · ${s.last_entity_count ?? "–"} entities ·
-          today ${s.ok_today ?? 0} of ${s.attempts_today ?? 0} fetches succeeded</div>
-      </div>`;
-    })}</div>
-    <p class="note">Collecting since ${new Date(status[0]?.collecting_since).toLocaleString("en-US", {timeZone: "America/Los_Angeles", dateStyle: "medium", timeStyle: "short"})} Pacific.
-    Vehicle positions and trip updates are requested every 20 seconds, alerts every 5 minutes.</p>`}`
+vp = status?.find(d => d.feed === "vehiclePositions") ?? null
+ago = s => s < 120 ? `${s} seconds ago` : s < 7200 ? `${Math.round(s / 60)} minutes ago` : `${Math.round(s / 3600)} hours ago`
+html`${vp == null
+  ? html`<a class="live" href="#how-it-works"><span class="dot"></span>Saving bus locations every 20 seconds</a>`
+  : vp.last_ok_age_s < 120
+    ? html`<a class="live ok" href="#how-it-works"><span class="dot"></span>Saving now · last update ${ago(vp.last_ok_age_s)}</a>`
+    : html`<a class="live down" href="#how-it-works"><span class="dot"></span>Collector delayed · last update ${ago(vp.last_ok_age_s)}</a>`}`
 ```
-
-## Latest complete day
+:::
 
 ```{ojs}
 //| echo: false
-import {csv, pct, num} from "./lib.js"
+//| output: false
+import {csv, json, pct, lateness, plural, longDate, routeMap, routeSlug} from "./lib.js"
+import {drawRouteMap} from "./map.js"
+recent = json("data/ontime/recent.json")
 quality = csv(d3, "data/quality/daily.csv")
-ontime = csv(d3, "data/ontime/daily.csv")
-q = quality.at(-1)
-o = ontime.at(-1)
-html`${q == null
-  ? html`<p>No day has been processed yet. The first complete service day is processed shortly after midnight Pacific.</p>`
-  : html`<p>Service day <strong>${q.service_date instanceof Date ? q.service_date.toISOString().slice(0, 10) : q.service_date}</strong>
-     (Pacific calendar date). <a href="quality.html">All quality figures</a>.</p>
-  <div class="stat-row">
-    <div class="stat"><div class="label">Scheduled trips seen in the feed</div>
-      <div class="value">${pct(q.trip_coverage)}</div>
-      <div class="note">of ${q.scheduled_trips} scheduled trips</div></div>
-    <div class="stat"><div class="label">Collector uptime, vehicle positions</div>
-      <div class="value">${pct(q.vehicle_uptime, 1)}</div>
-      <div class="note">20-second slots with a successful fetch</div></div>
-    <div class="stat"><div class="label">Age of positions when first seen</div>
-      <div class="value">${num(q.position_age_s_median)} s</div>
-      <div class="note">median; 95th percentile ${num(q.position_age_s_p95)} s</div></div>
-    <div class="stat"><div class="label">On time at timepoints</div>
-      <div class="value">${o ? pct(o.on_time_share_of_observed) : "–"}</div>
-      <div class="note">${o ? `of observed events; ${pct(o.observed_share)} of scheduled events observed` : "not yet computed"}</div></div>
-  </div>`}`
+q = quality.at(-1) ?? null
+o = recent?.overall ?? null
+period = recent == null ? "" : recent.days === 1
+  ? `on ${longDate(recent.last_service_date)}`
+  : `over the ${recent.days} days to ${longDate(recent.last_service_date)}`
 ```
 
-## What is published
+```{ojs}
+//| echo: false
+html`${o == null || o.observed === 0
+  ? html`<p class="empty">The first numbers appear after the first full day is processed, shortly after midnight Pacific.</p>`
+  : html`<div class="headline">
+      <div class="big">${pct(o.on_time_share_of_observed)}</div>
+      <div class="big-label">of bus departures we could see left on time ${period}.
+        <span class="note">On time means no more than 1 minute early or 5 minutes late.
+        The typical departure was ${lateness(o.deviation_s_median)}.</span></div>
+    </div>
+    <div class="stat-row">
+      <div class="stat"><div class="label">Departures checked</div>
+        <div class="value">${o.observed.toLocaleString("en-US")}</div>
+        <div class="note">at the stops printed in the timetables</div></div>
+      <div class="stat"><div class="label">Late departures</div>
+        <div class="value">${pct(o.late_share_of_observed)}</div>
+        <div class="note">more than 5 minutes behind schedule</div></div>
+      ${q == null ? "" : html`<div class="stat"><div class="label">Trips that showed up in the tracking</div>
+        <div class="value">${pct(q.trip_coverage)}</div>
+        <div class="note">of ${q.scheduled_trips.toLocaleString("en-US")} scheduled trips on ${longDate(q.service_date instanceof Date ? q.service_date.toISOString().slice(0, 10) : q.service_date)}</div></div>`}
+    </div>`}`
+```
 
-- **Raw archive**: every response from the three feeds, exactly as received,
-  one file per day, in the repository's
-  [Releases](https://github.com/dfladagermccullugh-bot/Open-Island-Transit-Data/releases).
-- **Parsed tables**: vehicle positions, trip updates, stop predictions,
-  alerts and inferred stop events, as Parquet files.
-- **Daily metrics**: feed quality and on-time summaries, on the
-  [`data` branch](https://github.com/dfladagermccullugh-bot/Open-Island-Transit-Data/tree/data).
+## Every route at a glance
 
-See [Data](data.qmd) for file descriptions and [Methods](methods.qmd) for
-how each figure is defined.
+Each line is a bus route, colored by how often its buses left on time. Tap a
+route to see it stop by stop.
+
+```{ojs}
+//| echo: false
+html`<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/leaflet@1.9.4/dist/leaflet.css">`
+```
+
+```{ojs}
+//| echo: false
+L = require("leaflet@1.9.4")
+mapData = routeMap(recent?.timepoints)
+homeMap = mapData == null ? null : drawRouteMap(L, mapData, recent, {
+  height: width < 640 ? 420 : 580,
+  onSelect: id => {
+    const r = mapData.routes.find(r => r.route_id === id);
+    location.href = `routes.html#${routeSlug(r, id)}`;
+  },
+})
+html`${homeMap == null ? html`<p class="empty">The route map appears after the first day is processed.</p>` : homeMap.node}`
+```
+
+## How it works {#how-it-works}
+
+::: {.how}
+```{=html}
+<svg viewBox="0 0 1000 190" role="img" aria-labelledby="how-title how-desc">
+  <title id="how-title">How the data flows</title>
+  <desc id="how-desc">A bus reports its location to Island Transit's live feed. This project's collector saves every update every 20 seconds. Each night the updates are checked and turned into on-time figures. Results go to this site and into free downloads.</desc>
+  <defs>
+    <marker id="arrowhead" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+      <path class="arrowhead" d="M0,0 L10,5 L0,10 z"/>
+    </marker>
+  </defs>
+  <text class="lane" x="10" y="22">Island Transit</text>
+  <text class="lane" x="415" y="22">This project</text>
+  <g transform="translate(0,40)">
+    <rect class="box" x="10" y="0" width="175" height="120" rx="10"/>
+    <text class="t1" x="97" y="42" text-anchor="middle">The bus</text>
+    <text class="t2" x="97" y="68" text-anchor="middle">GPS on board reports</text>
+    <text class="t2" x="97" y="86" text-anchor="middle">where it is</text>
+
+    <rect class="box" x="212" y="0" width="175" height="120" rx="10"/>
+    <text class="t1" x="299" y="42" text-anchor="middle">The live feed</text>
+    <text class="t2" x="299" y="68" text-anchor="middle">what trip apps read;</text>
+    <text class="t2" x="299" y="86" text-anchor="middle">each update replaces</text>
+    <text class="t2" x="299" y="104" text-anchor="middle">the last one</text>
+
+    <rect class="box ours" x="415" y="0" width="175" height="120" rx="10"/>
+    <text class="t1" x="502" y="42" text-anchor="middle">Our collector</text>
+    <text class="t2" x="502" y="68" text-anchor="middle">saves every update,</text>
+    <text class="t2" x="502" y="86" text-anchor="middle">every 20 seconds,</text>
+    <text class="t2" x="502" y="104" text-anchor="middle">day and night</text>
+
+    <rect class="box ours" x="617" y="0" width="175" height="120" rx="10"/>
+    <text class="t1" x="704" y="42" text-anchor="middle">Nightly checks</text>
+    <text class="t2" x="704" y="68" text-anchor="middle">work out when buses</text>
+    <text class="t2" x="704" y="86" text-anchor="middle">left each stop; grade</text>
+    <text class="t2" x="704" y="104" text-anchor="middle">the tracking data</text>
+
+    <rect class="box ours" x="815" y="0" width="175" height="120" rx="10"/>
+    <text class="t1" x="902" y="42" text-anchor="middle">You</text>
+    <text class="t2" x="902" y="68" text-anchor="middle">this site's charts</text>
+    <text class="t2" x="902" y="86" text-anchor="middle">and map, plus every</text>
+    <text class="t2" x="902" y="104" text-anchor="middle">file to download</text>
+
+    <path class="arrow" d="M187,60 L208,60" marker-end="url(#arrowhead)"/>
+    <path class="arrow" d="M389,60 L411,60" marker-end="url(#arrowhead)"/>
+    <path class="arrow" d="M592,60 L613,60" marker-end="url(#arrowhead)"/>
+    <path class="arrow" d="M794,60 L811,60" marker-end="url(#arrowhead)"/>
+  </g>
+</svg>
+```
+
+::: {.how-steps}
+1. **The bus.** GPS on board reports where it is.
+2. **The live feed.** Island Transit publishes those reports for trip apps;
+   each update replaces the last one.
+3. **Our collector.** Saves every update, every 20 seconds, day and night.
+4. **Nightly checks.** Work out when buses left each stop and grade the
+   tracking data.
+5. **You.** This site's charts and map, plus every file to download.
+:::
+:::
+
+The feed never says "the bus left the stop." It only says where the bus is.
+So each night the saved locations are connected along the route to find the
+moment each bus passed each stop, and that moment is compared with the
+printed timetable. The same saved data also shows how often the tracking
+itself fails: buses that never appear, gaps, stale locations, and arrival
+predictions that miss.
+
+## Explore
+
+::: {.card-grid}
+[**Routes**<br>[Each route on a map, stop by stop: where buses fall behind.]{.card-text}](routes.qmd){.card}
+
+[**On time**<br>[Every route and every hour, day by day, and how the method is checked.]{.card-text}](ontime.qmd){.card}
+
+[**Can the data be trusted?**<br>[How often the tracking drops out, goes stale or misses buses.]{.card-text}](quality.qmd){.card}
+
+[**Download the data**<br>[Every saved update and every table, free, one file per day.]{.card-text}](data.qmd){.card}
+
+[**How it's calculated**<br>[Exact definitions behind every number on this site.]{.card-text}](methods.qmd){.card}
+
+[**Plain words**<br>[What "timepoint," "feed" and the other terms here mean.]{.card-text}](glossary.qmd){.card}
+:::
+
+## Why this exists
+
+Live bus data disappears the moment it is replaced, and Island Transit does
+not publish on-time figures. Keeping every update makes questions like "Was
+route 60 late last week?" or "Does the tracking fail more at rush hour?"
+answerable, by anyone, with the code to check the answer.
+
+[Collecting since November 19, 2026. Not affiliated with Island Transit; the
+figures are this project's own, calculated from Island Transit's public
+data.]{.note}

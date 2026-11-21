@@ -1,0 +1,88 @@
+---
+title: "Plain words"
+subtitle: "What the terms on this site mean"
+---
+
+::: {.glossary}
+Bus location (vehicle position)
+: Where a bus is, sent from its GPS. Each one also says which trip the bus
+  is on, its speed, and how full it is.
+
+Live feed
+: The stream of bus locations, arrival predictions and alerts that Island
+  Transit publishes for trip-planning apps. It uses a standard format called
+  GTFS-Realtime. Each update replaces the last, so nothing is kept unless
+  someone saves it.
+
+Collector
+: This project's program that asks the feed for its latest data every 20
+  seconds and saves exactly what comes back.
+
+Schedule (static GTFS)
+: Island Transit's timetable in a standard file format: every trip, every
+  stop and every scheduled time.
+
+Trip
+: One run of a bus along a route, from its first stop to its last, at a
+  scheduled time.
+
+Timepoint
+: A stop whose time is printed in Island Transit's timetables. These are the
+  times riders are promised, so on-time figures are measured there.
+
+Departure
+: The moment a bus leaves a timepoint. At the last stop of a trip, the
+  arrival is used instead.
+
+On time
+: Leaving no more than 1 minute early and no more than 5 minutes late. At
+  the last stop, any early arrival also counts as on time.
+
+Typical departure
+: The middle value of how early or late buses left: half left earlier, half
+  later (the median).
+
+Seen (observed)
+: A departure for which the tracking data was good enough to work out a
+  time. Departures that were not seen are reported separately and never
+  counted as late.
+
+Service day
+: One calendar day in Pacific time. No Island Transit trip crosses midnight.
+
+Coverage
+: Whether every scheduled trip shows up in the tracking at all.
+
+Nonresponse
+: When data that should be there is missing: a failed request, an empty
+  feed, or a gap in a bus's reports.
+
+Measurement error
+: When the data is there but wrong: GPS wobble, a bus that seems to jump
+  across the map, an old location, or an arrival prediction that misses.
+
+Processing error
+: When the data cannot be matched up: a trip in the feed that is not in the
+  schedule, or a bus that cannot be tied to a trip.
+
+Paradata
+: Data about the data collection itself: every request the collector made,
+  how long it took and whether it worked.
+
+Uptime
+: The share of 20-second slots in which the collector got a good response.
+
+Arrival prediction
+: The "arriving at 3:42" times the feed gives for upcoming stops. This site
+  checks them against when the bus actually arrived.
+
+Release
+: A download page on GitHub holding one month of files.
+
+Parquet
+: A compact file format for tables. Free tools such as Python, R and DuckDB
+  open it.
+:::
+
+The exact definitions behind every number are on the [Methods](methods.qmd)
+page.
