@@ -1,0 +1,35 @@
+route_short_name,printed_stop,passio_stop_ids,note
+6,Coupeville Ferry,178134,Engle Rd at Coupeville Ferry Terminal
+6,Coupeville Elementary,178399,Main St at Coupeville Elementary School
+6,WhidbeyHealth,197226;197253,Main St at Whidbey Health Medical Center
+4,NE Goldie St at WhidbeyHealth (North),197260;197264,Goldie Rd at Whidbey Health
+4,WhidbeyHealth at NE Goldie St,197260;197264,Goldie Rd at Whidbey Health
+411W,NE Goldie at WhidbeyHealth North,197260;197264,Goldie Rd at Whidbey Health
+411W,March Point P&R,197263,March Point
+,Goldie Rd at WhidbeyHealth,197260;197264,Goldie Rd at Whidbey Health
+,NEX/Commissary at Seaplane Base,218444,Seaplane Base NEX/ Commisary
+10,SVC/OH Library,197268,Skagit Valley College/Library
+9,SW Ft Nugent Ave at Stremler Dr (Park Terrace),178310,Fort Nugent at Stremler Dr
+58,Bailey's Corner at Jewett Rd,197279;197285,Jewett Rd at Bailey's Store
+60,Langley at 3rd St & Anthes Ave,178388,Anthes Ave at Third St
+1C,Cama Beach at Welcome Center,178124,Cama Beach
+2C,Shuksan,197213,E Camano Dr at Shuksan Dr
+2C,Elger Bay Store,188843,Elger Bay Rd at Elger Bay Grocery
+3C,Haggen,178271,Haggen Grocery
+411C,Haggen,178271,Haggen Grocery
+411C,North Star,178267,Pioneer Hwy at North Star Cold Storage
+411C,Les Schwab,178307,Pioneer Hwy at Les Schwab
+2,N Oak Harbor St at Oak Hollow,178144,Oak Harbor Rd at Oak Hallow (spelled Hallow in Passio); between Ault Field Rd and Columbia Dr as printed
+1C,Chapman,178232,Chapman and Rowe (Davin 2026-11-20); three other Chapman Rd stops nearby
+1C,Arrowhead Road,178215,Arrowhead Rd at Chick Rd (Davin 2026-11-20); after Camano Plaza as printed
+2C,Arrowhead Rd,178215,Arrowhead Rd at Chick Rd (Davin 2026-11-20); after Camano Plaza as printed
+2C,E Camano Drive at Elger Bay Rd,178276,Camano Island Health System at Elger Bay Rd and SE Camano Dr (Davin 2026-11-20); between Camano Plaza and Shuksan as printed
+2C,South Loop,,not a stop: an on-request loop
+3C,YMCA,178270,Church Creek: the YMCA (7213 267th St NW) is beside Church Creek Dental Care; judged the same site (Davin 2026-11-20); first stop of westbound 3C after Haggen
+3C,CVS,178283,Rite-Aid Stanwood: same site as CVS at 26817 88th Ave NW (confirmed by Davin and CVS store locator 2026-11-20)
+411C,CVS,178283,Rite-Aid Stanwood: same site as CVS at 26817 88th Ave NW (confirmed by Davin and CVS store locator 2026-11-20)
+412,CVS,178283,Rite-Aid Stanwood: same site as CVS at 26817 88th Ave NW (confirmed by Davin and CVS store locator 2026-11-20)
+411C,272nd at Pioneer Hwy,178268,Bayview Garden on 272nd St at 78th: Pioneer Hwy stop before 77th Ave NW (Davin 2026-11-20); after Haggen as printed
+9,NW Heller at NW 5th Ave (Hillcrest Elem),178148,Heller St at Hillcrest Elementary School
+9,SW Erie St at Walmart,178196;178323,Walmart at Erie St (both directions)
+9,SW Erie St at Walmart (northbound),178196;178323,Walmart at Erie St (both directions)
