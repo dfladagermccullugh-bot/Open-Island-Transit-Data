@@ -1,7 +1,7 @@
 {
  "service_date": "2026-11-19",
- "quality_version": "quality/0.3.0",
- "computed_at": "2026-11-21T01:43:34+00:00",
+ "quality_version": "quality/0.4.0",
+ "computed_at": "2026-11-21T18:41:52+00:00",
  "scheduled_service": {
   "trips": 341,
   "trips_ended_before_collection": 180,
@@ -18,6 +18,7 @@
    "uptime": 0.998951,
    "not_logged": 2,
    "logged_not_ok": 0,
+   "tick_phase_s": 6.37,
    "latency_ms_median": 291.0,
    "latency_ms_p95": 379.0,
    "collector_versions": [
@@ -32,6 +33,7 @@
    "uptime": 0.998951,
    "not_logged": 2,
    "logged_not_ok": 0,
+   "tick_phase_s": 6.37,
    "latency_ms_median": 299.0,
    "latency_ms_p95": 401.0,
    "collector_versions": [
@@ -40,12 +42,13 @@
    ]
   },
   "serviceAlerts": {
-   "slots_expected": 128,
+   "slots_expected": 127,
    "slots_logged": 127,
    "slots_ok": 127,
-   "uptime": 0.992188,
-   "not_logged": 1,
+   "uptime": 1.0,
+   "not_logged": 0,
    "logged_not_ok": 0,
+   "tick_phase_s": 0.03,
    "latency_ms_median": 285.0,
    "latency_ms_p95": 371.8,
    "collector_versions": [
@@ -82,6 +85,7 @@
    "empty_in_service_rate": 0.0,
    "stale_in_service": 0,
    "stale_in_service_rate": 0.0,
+   "no_timestamp_in_service": 0,
    "by_hour": {
     "13": {
      "attempted": 106,
@@ -160,17 +164,19 @@
    }
   },
   "trip_gaps": {
-   "trips_with_two_or_more_reports": 157,
+   "trips_with_two_or_more_reports": 155,
    "longest_gap_s_median": 28.0,
-   "longest_gap_s_p95": 1087.6,
-   "trips_with_gap_over_90s": 44,
-   "share_of_trip_time_in_gaps_mean": 0.0634
+   "longest_gap_s_p95": 898.0,
+   "trips_with_gap_over_90s": 38,
+   "share_of_trip_time_in_gaps_mean": 0.0468
   }
  },
  "coverage": {
   "scheduled_trips": 161,
   "observed_scheduled_trips": 156,
   "trip_coverage": 0.968944,
+  "window_min": 30,
+  "trips_seen_only_outside_window": 0,
   "routes_never_reporting": [],
   "by_route": {
    "6737": {
@@ -1443,6 +1449,8 @@
     "match_rate": 1.0
    }
   },
+  "vehicle_table_rows": 21615,
+  "distinct_position_reports": 21615,
   "parser": {
    "serviceAlerts": {
     "attempted": 127,
@@ -1496,16 +1504,16 @@
   }
  },
  "events": {
-  "events_version": "events/0.2.1",
+  "events_version": "events/0.3.0",
   "stop_coverage": {
    "timepoints": {
     "scheduled": 1130,
-    "observed": 876,
-    "coverage": 0.775221,
+    "observed": 878,
+    "coverage": 0.776991,
     "not_observed_by_reason": {
      "gap": 63,
      "no_reports": 26,
-     "not_reached": 98,
+     "not_reached": 96,
      "past_when_first_seen": 38,
      "skipped": 29
     },
@@ -1522,8 +1530,8 @@
      },
      "6744": {
       "scheduled": 131,
-      "observed": 122,
-      "coverage": 0.931298
+      "observed": 123,
+      "coverage": 0.938931
      },
      "7913": {
       "scheduled": 49,
@@ -1532,8 +1540,8 @@
      },
      "7914": {
       "scheduled": 71,
-      "observed": 45,
-      "coverage": 0.633803
+      "observed": 46,
+      "coverage": 0.647887
      },
      "7915": {
       "scheduled": 48,
@@ -1584,12 +1592,12 @@
    },
    "all_stops": {
     "scheduled": 4546,
-    "observed": 3947,
-    "coverage": 0.868236,
+    "observed": 3949,
+    "coverage": 0.868676,
     "not_observed_by_reason": {
      "gap": 189,
      "no_reports": 50,
-     "not_reached": 150,
+     "not_reached": 148,
      "past_when_first_seen": 70,
      "skipped": 140
     },
@@ -1606,8 +1614,8 @@
      },
      "6744": {
       "scheduled": 288,
-      "observed": 272,
-      "coverage": 0.944444
+      "observed": 273,
+      "coverage": 0.947917
      },
      "7913": {
       "scheduled": 163,
@@ -1616,8 +1624,8 @@
      },
      "7914": {
       "scheduled": 289,
-      "observed": 181,
-      "coverage": 0.626298
+      "observed": 182,
+      "coverage": 0.629758
      },
      "7915": {
       "scheduled": 96,
@@ -1669,10 +1677,11 @@
   },
   "shape_fit": {
    "position_reports": 20716,
+   "tracked_reports": 19540,
    "off_shape": 832,
-   "off_shape_share": 0.040162,
+   "off_shape_share": 0.042579,
    "wrong_direction": 82,
-   "wrong_direction_share": 0.003958,
+   "wrong_direction_share": 0.004197,
    "threshold_m": 100,
    "trips_skipping_part_of_shape": 27,
    "skipped_km": 291.1,
@@ -1684,65 +1693,75 @@
     "7922": 7,
     "9404": 1
    },
+   "trips_not_readable": 0,
    "by_route": {
     "6737": {
      "position_reports": 1233,
+     "tracked_reports": 984,
      "off_shape": 108,
-     "off_shape_share": 0.087591,
+     "off_shape_share": 0.109756,
      "wrong_direction": 3,
-     "wrong_direction_share": 0.002433
+     "wrong_direction_share": 0.003049
     },
     "6743": {
      "position_reports": 575,
+     "tracked_reports": 402,
      "off_shape": 30,
-     "off_shape_share": 0.052174,
+     "off_shape_share": 0.074627,
      "wrong_direction": 6,
-     "wrong_direction_share": 0.010435
+     "wrong_direction_share": 0.014925
     },
     "6744": {
      "position_reports": 1354,
+     "tracked_reports": 1346,
      "off_shape": 48,
-     "off_shape_share": 0.035451,
+     "off_shape_share": 0.035661,
      "wrong_direction": 1,
-     "wrong_direction_share": 0.000739
+     "wrong_direction_share": 0.000743
     },
     "7913": {
      "position_reports": 742,
+     "tracked_reports": 689,
      "off_shape": 27,
-     "off_shape_share": 0.036388,
+     "off_shape_share": 0.039187,
      "wrong_direction": 4,
-     "wrong_direction_share": 0.005391
+     "wrong_direction_share": 0.005806
     },
     "7914": {
      "position_reports": 1272,
+     "tracked_reports": 1175,
      "off_shape": 108,
-     "off_shape_share": 0.084906,
+     "off_shape_share": 0.091915,
      "wrong_direction": 9,
-     "wrong_direction_share": 0.007075
+     "wrong_direction_share": 0.00766
     },
     "7915": {
      "position_reports": 1004,
+     "tracked_reports": 1003,
      "off_shape": 30,
-     "off_shape_share": 0.02988,
+     "off_shape_share": 0.02991,
      "wrong_direction": 0,
      "wrong_direction_share": 0.0
     },
     "7916": {
      "position_reports": 866,
+     "tracked_reports": 721,
      "off_shape": 84,
-     "off_shape_share": 0.096998,
+     "off_shape_share": 0.116505,
      "wrong_direction": 2,
-     "wrong_direction_share": 0.002309
+     "wrong_direction_share": 0.002774
     },
     "7918": {
      "position_reports": 1453,
+     "tracked_reports": 1444,
      "off_shape": 179,
-     "off_shape_share": 0.123193,
+     "off_shape_share": 0.123961,
      "wrong_direction": 8,
-     "wrong_direction_share": 0.005506
+     "wrong_direction_share": 0.00554
     },
     "7919": {
      "position_reports": 1262,
+     "tracked_reports": 1262,
      "off_shape": 14,
      "off_shape_share": 0.011094,
      "wrong_direction": 2,
@@ -1750,20 +1769,23 @@
     },
     "7920": {
      "position_reports": 612,
+     "tracked_reports": 611,
      "off_shape": 34,
-     "off_shape_share": 0.055556,
+     "off_shape_share": 0.055646,
      "wrong_direction": 7,
-     "wrong_direction_share": 0.011438
+     "wrong_direction_share": 0.011457
     },
     "7922": {
      "position_reports": 2585,
+     "tracked_reports": 2444,
      "off_shape": 8,
-     "off_shape_share": 0.003095,
+     "off_shape_share": 0.003273,
      "wrong_direction": 8,
-     "wrong_direction_share": 0.003095
+     "wrong_direction_share": 0.003273
     },
     "7923": {
      "position_reports": 381,
+     "tracked_reports": 381,
      "off_shape": 0,
      "off_shape_share": 0.0,
      "wrong_direction": 3,
@@ -1771,13 +1793,15 @@
     },
     "9404": {
      "position_reports": 6791,
+     "tracked_reports": 6535,
      "off_shape": 159,
-     "off_shape_share": 0.023413,
+     "off_shape_share": 0.024331,
      "wrong_direction": 24,
-     "wrong_direction_share": 0.003534
+     "wrong_direction_share": 0.003673
     },
     "9431": {
      "position_reports": 0,
+     "tracked_reports": 0,
      "off_shape": 0,
      "off_shape_share": null,
      "wrong_direction": 0,
@@ -1785,10 +1809,11 @@
     },
     "9432": {
      "position_reports": 586,
+     "tracked_reports": 543,
      "off_shape": 3,
-     "off_shape_share": 0.005119,
+     "off_shape_share": 0.005525,
      "wrong_direction": 5,
-     "wrong_direction_share": 0.008532
+     "wrong_direction_share": 0.009208
     }
    }
   },
@@ -1815,62 +1840,80 @@
    "trips_with_more_than_one_vehicle": 3
   },
   "prediction_error": {
-   "observed_events_with_predictions": 3475,
+   "observed_events_with_predictions": 3476,
    "definition": "predicted minus inferred time; arrival, or departure at a trip's first stop",
    "by_horizon_min": {
     "1": {
-     "n": 2443,
+     "n": 2444,
      "other_day": 43,
-     "other_day_share": 0.017297,
-     "bias_s": 122.2,
-     "median_s": -7.7,
-     "mae_s": 182.9,
-     "within_60s_share": 0.44167
+     "other_day_share": 0.01729,
+     "bias_s": 123.1,
+     "median_s": -7.6,
+     "mae_s": 183.7,
+     "median_abs_s": 71.4,
+     "within_60s_share": 0.441489,
+     "over_30min": 16,
+     "over_30min_share": 0.006547
     },
     "2": {
-     "n": 2441,
+     "n": 2442,
      "other_day": 45,
-     "other_day_share": 0.018101,
-     "bias_s": 97.0,
+     "other_day_share": 0.018094,
+     "bias_s": 97.9,
      "median_s": -25.5,
-     "mae_s": 188.9,
-     "within_60s_share": 0.328554
+     "mae_s": 189.7,
+     "median_abs_s": 91.9,
+     "within_60s_share": 0.328419,
+     "over_30min": 15,
+     "over_30min_share": 0.006143
     },
     "5": {
-     "n": 2355,
+     "n": 2356,
      "other_day": 42,
-     "other_day_share": 0.017522,
+     "other_day_share": 0.017515,
      "bias_s": 77.5,
-     "median_s": -73.0,
+     "median_s": -72.8,
      "mae_s": 259.2,
-     "within_60s_share": 0.169427
+     "median_abs_s": 145.9,
+     "within_60s_share": 0.169355,
+     "over_30min": 23,
+     "over_30min_share": 0.009762
     },
     "10": {
-     "n": 2139,
+     "n": 2140,
      "other_day": 8,
-     "other_day_share": 0.003726,
+     "other_day_share": 0.003724,
      "bias_s": -7.9,
      "median_s": -125.7,
-     "mae_s": 290.6,
-     "within_60s_share": 0.14446
+     "mae_s": 290.5,
+     "median_abs_s": 191.9,
+     "within_60s_share": 0.14486,
+     "over_30min": 30,
+     "over_30min_share": 0.014019
     },
     "15": {
-     "n": 1787,
+     "n": 1788,
      "other_day": 13,
-     "other_day_share": 0.007222,
+     "other_day_share": 0.007218,
      "bias_s": -11.2,
-     "median_s": -128.9,
-     "mae_s": 344.3,
-     "within_60s_share": 0.137101
+     "median_s": -128.7,
+     "mae_s": 344.1,
+     "median_abs_s": 208.7,
+     "within_60s_share": 0.137584,
+     "over_30min": 37,
+     "over_30min_share": 0.020694
     },
     "30": {
-     "n": 1097,
+     "n": 1098,
      "other_day": 0,
      "other_day_share": 0.0,
-     "bias_s": 319.8,
-     "median_s": -91.7,
-     "mae_s": 679.4,
-     "within_60s_share": 0.13856
+     "bias_s": 319.6,
+     "median_s": -91.4,
+     "mae_s": 678.8,
+     "median_abs_s": 211.2,
+     "within_60s_share": 0.139344,
+     "over_30min": 85,
+     "over_30min_share": 0.077413
     }
    }
   },
@@ -1964,13 +2007,15 @@
   "passio_basis": "complete download that day",
   "trillium_version": "trillium-a4cf6ffeea6a",
   "trillium_removes_service_today": [],
-  "note": "Scheduled trips come from the Passio calendar, which has no holiday exceptions."
+  "service_expected": true,
+  "no_service_day": null,
+  "note": "Scheduled trips come from the Passio calendar, which has no holiday exceptions. On a day Island Transit lists as having no service, service_expected is false and the day is left out of figures that pool several days."
  },
  "inputs": {
   "raw_sha256": "9faa6e3b579028a8878c57f4fdd7a16b65c5b20b2b935f42cf750f696e55d976",
   "vehicles_sha256": "009f7f6614c5bd983f8cd70b4eb4a4dc4afbe07bf6edb1c05c20c793291ca953",
   "tables_version": "tables/0.1.0",
-  "stop_events_sha256": "cd3a0cca5ebc09e021b15bfaaf8f44b530c6457f2d91318c1152c07dab3e3096",
-  "code_sha": "7b41d3cf21852b9231dfc22f54bfc1a179f9322f"
+  "stop_events_sha256": "64c20718f10c520f49fbb619ef7ef6febec363028781bffc4a8151c2c21046de",
+  "code_sha": "3e4d28b3e39c01cc561cf957282bdef148a81731"
  }
 }

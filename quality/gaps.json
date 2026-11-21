@@ -1,11 +1,11 @@
 {
- "gaps_version": "gaps/0.1.0",
+ "gaps_version": "gaps/0.2.0",
  "days": [
   "2026-11-19",
   "2026-11-20"
  ],
  "trips": 502,
- "unobserved": 14,
+ "unobserved": 15,
  "rates": {
   "by_hour": {
    "3": {
@@ -90,8 +90,8 @@
    },
    "19": {
     "scheduled": 28,
-    "unobserved": 1,
-    "rate": 0.035714
+    "unobserved": 2,
+    "rate": 0.071429
    },
    "20": {
     "scheduled": 2,
@@ -122,8 +122,8 @@
    },
    "evening (18 on)": {
     "scheduled": 78,
-    "unobserved": 4,
-    "rate": 0.051282
+    "unobserved": 5,
+    "rate": 0.064103
    }
   },
   "by_route": {
@@ -164,8 +164,8 @@
    },
    "7918": {
     "scheduled": 36,
-    "unobserved": 1,
-    "rate": 0.027778
+    "unobserved": 2,
+    "rate": 0.055556
    },
    "7919": {
     "scheduled": 38,
@@ -206,8 +206,8 @@
   "by_day_type": {
    "weekday": {
     "scheduled": 502,
-    "unobserved": 14,
-    "rate": 0.027888
+    "unobserved": 15,
+    "rate": 0.02988
    }
   },
   "by_trips_in_service": {
@@ -218,8 +218,8 @@
    },
    "10-14": {
     "scheduled": 175,
-    "unobserved": 2,
-    "rate": 0.011429
+    "unobserved": 3,
+    "rate": 0.017143
    },
    "15-19": {
     "scheduled": 287,
@@ -229,5 +229,6 @@
   }
  },
  "model": null,
- "model_status": "not fitted: needs 14 days and 30 unobserved trips (have 2 and 14)"
+ "model_status": "not fitted: needs 14 days and 30 unobserved trips (have 2 and 15)",
+ "limits": "The model treats trips as independent. Trips lost together on one day or one bus make its standard errors too small and its p-values too confident. Days with no service are left out."
 }
