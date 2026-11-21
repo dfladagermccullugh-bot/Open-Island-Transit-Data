@@ -1,11 +1,16 @@
 {
- "gaps_version": "gaps/0.2.0",
+ "gaps_version": "gaps/0.3.0",
  "days": [
   "2026-11-19",
   "2026-11-20"
  ],
  "trips": 502,
  "unobserved": 15,
+ "canceled_left_out": 0,
+ "thresholds": {
+  "min_days": 14,
+  "min_unobserved": 30
+ },
  "rates": {
   "by_hour": {
    "3": {
@@ -230,5 +235,5 @@
  },
  "model": null,
  "model_status": "not fitted: needs 14 days and 30 unobserved trips (have 2 and 15)",
- "limits": "The model treats trips as independent. Trips lost together on one day or one bus make its standard errors too small and its p-values too confident. Days with no service are left out."
+ "limits": "The model treats trips as independent. Trips lost together on one day or one bus make its standard errors too small and its p-values too confident. Days with no service are left out, and so are trips the feed marked as canceled that no bus reported."
 }

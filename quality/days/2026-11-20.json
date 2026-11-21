@@ -1,7 +1,7 @@
 {
  "service_date": "2026-11-20",
- "quality_version": "quality/0.4.0",
- "computed_at": "2026-11-21T18:41:58+00:00",
+ "quality_version": "quality/0.5.0",
+ "computed_at": "2026-11-21T22:40:11+00:00",
  "scheduled_service": {
   "trips": 341,
   "trips_ended_before_collection": 0,
@@ -37,7 +37,15 @@
    "latency_ms_p95": 404.0,
    "collector_versions": [
     "collect/0.2.0"
-   ]
+   ],
+   "refresh": {
+    "pairs": 68661,
+    "changed": 18599,
+    "changed_share": 0.270882,
+    "update_interval_s_median": 59.0,
+    "update_interval_s_p90": 71.0,
+    "poll_interval_s": 20
+   }
   },
   "serviceAlerts": {
    "slots_expected": 288,
@@ -233,6 +241,14 @@
   "scheduled_trips": 341,
   "observed_scheduled_trips": 331,
   "trip_coverage": 0.970674,
+  "canceled_trips": 0,
+  "canceled_by": {
+   "flag": 0,
+   "alert": 0
+  },
+  "canceled_trip_ids": [],
+  "canceled_but_observed": 0,
+  "trip_coverage_excluding_canceled": 0.970674,
   "window_min": 30,
   "trips_seen_only_outside_window": 1,
   "routes_never_reporting": [],
@@ -240,76 +256,91 @@
    "6737": {
     "scheduled": 16,
     "observed": 15,
+    "canceled": 0,
     "coverage": 0.9375
    },
    "6743": {
     "scheduled": 11,
     "observed": 11,
+    "canceled": 0,
     "coverage": 1.0
    },
    "6744": {
     "scheduled": 28,
     "observed": 28,
+    "canceled": 0,
     "coverage": 1.0
    },
    "7913": {
     "scheduled": 30,
     "observed": 30,
+    "canceled": 0,
     "coverage": 1.0
    },
    "7914": {
     "scheduled": 16,
     "observed": 16,
+    "canceled": 0,
     "coverage": 1.0
    },
    "7915": {
     "scheduled": 14,
     "observed": 13,
+    "canceled": 0,
     "coverage": 0.928571
    },
    "7916": {
     "scheduled": 10,
     "observed": 9,
+    "canceled": 0,
     "coverage": 0.9
    },
    "7918": {
     "scheduled": 23,
     "observed": 21,
+    "canceled": 0,
     "coverage": 0.913043
    },
    "7919": {
     "scheduled": 26,
     "observed": 26,
+    "canceled": 0,
     "coverage": 1.0
    },
    "7920": {
     "scheduled": 13,
     "observed": 13,
+    "canceled": 0,
     "coverage": 1.0
    },
    "7922": {
     "scheduled": 57,
     "observed": 55,
+    "canceled": 0,
     "coverage": 0.964912
    },
    "7923": {
     "scheduled": 20,
     "observed": 17,
+    "canceled": 0,
     "coverage": 0.85
    },
    "9404": {
     "scheduled": 68,
     "observed": 68,
+    "canceled": 0,
     "coverage": 1.0
    },
    "9431": {
     "scheduled": 5,
     "observed": 5,
+    "canceled": 0,
     "coverage": 1.0
    },
    "9432": {
     "scheduled": 4,
     "observed": 4,
+    "canceled": 0,
     "coverage": 1.0
    }
   },
@@ -319,7 +350,8 @@
     "route_id",
     "start_hour",
     "scheduled_in_service",
-    "observed"
+    "observed",
+    "canceled"
    ],
    "rows": [
     [
@@ -327,1161 +359,1327 @@
      "9404",
      3,
      1,
-     true
+     true,
+     false
     ],
     [
      "1155114",
      "9404",
      3,
      2,
-     true
+     true,
+     false
     ],
     [
      "1155233",
      "9404",
      3,
      3,
-     true
+     true,
+     false
     ],
     [
      "1155234",
      "9404",
      4,
      3,
-     true
+     true,
+     false
     ],
     [
      "1155239",
      "9404",
      4,
      3,
-     true
+     true,
+     false
     ],
     [
      "1154991",
      "6737",
      4,
      6,
-     true
+     true,
+     false
     ],
     [
      "1155007",
      "7913",
      4,
      6,
-     true
+     true,
+     false
     ],
     [
      "1155057",
      "7914",
      4,
      6,
-     true
+     true,
+     false
     ],
     [
      "1155493",
      "7922",
      4,
      8,
-     true
+     true,
+     false
     ],
     [
      "1155620",
      "7923",
      4,
      8,
-     true
+     true,
+     false
     ],
     [
      "1155600",
      "9431",
      5,
      7,
-     true
+     true,
+     false
     ],
     [
      "1155032",
      "7913",
      5,
      8,
-     true
+     true,
+     false
     ],
     [
      "1155625",
      "7923",
      5,
      8,
-     true
+     true,
+     false
     ],
     [
      "1155238",
      "9404",
      5,
      9,
-     true
+     true,
+     false
     ],
     [
      "1155503",
      "7922",
      5,
      10,
-     true
+     true,
+     false
     ],
     [
      "1155586",
      "7922",
      5,
      10,
-     true
+     true,
+     false
     ],
     [
      "1155621",
      "7923",
      5,
      10,
-     true
+     true,
+     false
     ],
     [
      "1155099",
      "7915",
      5,
      9,
-     true
+     true,
+     false
     ],
     [
      "1155601",
      "9431",
      5,
      9,
-     true
+     true,
+     false
     ],
     [
      "1155626",
      "7923",
      5,
      9,
-     true
+     true,
+     false
     ],
     [
      "1155132",
      "9404",
      5,
      10,
-     true
+     true,
+     false
     ],
     [
      "1155235",
      "9404",
      5,
      10,
-     true
+     true,
+     false
     ],
     [
      "1154998",
      "6737",
      5,
      13,
-     true
+     true,
+     false
     ],
     [
      "1155010",
      "7913",
      5,
      13,
-     true
+     true,
+     false
     ],
     [
      "1155061",
      "7914",
      5,
      13,
-     true
+     true,
+     false
     ],
     [
      "1155590",
      "7916",
      5,
      13,
-     true
+     true,
+     false
     ],
     [
      "1155494",
      "7922",
      5,
      12,
-     true
+     true,
+     false
     ],
     [
      "1155588",
      "7922",
      5,
      12,
-     true
+     true,
+     false
     ],
     [
      "1155282",
      "6744",
      6,
      13,
-     true
+     true,
+     false
     ],
     [
      "1155400",
      "7919",
      6,
      13,
-     true
+     true,
+     false
     ],
     [
      "1155602",
      "9431",
      6,
      13,
-     true
+     true,
+     false
     ],
     [
      "1155035",
      "7913",
      6,
      14,
-     true
+     true,
+     false
     ],
     [
      "1155196",
      "9404",
      6,
      15,
-     true
+     true,
+     false
     ],
     [
      "1155236",
      "9404",
      6,
      15,
-     true
+     true,
+     false
     ],
     [
      "1155106",
      "7915",
      6,
      16,
-     true
+     true,
+     false
     ],
     [
      "1155504",
      "7922",
      6,
      15,
-     true
+     true,
+     false
     ],
     [
      "1155589",
      "7922",
      6,
      15,
-     true
+     true,
+     false
     ],
     [
      "1155490",
      "7918",
      6,
      15,
-     true
+     true,
+     false
     ],
     [
      "1155247",
      "7920",
      6,
      14,
-     true
+     true,
+     false
     ],
     [
      "1155297",
      "6744",
      6,
      14,
-     true
+     true,
+     false
     ],
     [
      "1155591",
      "7916",
      6,
      14,
-     true
+     true,
+     false
     ],
     [
      "1155134",
      "9404",
      6,
      14,
-     true
+     true,
+     false
     ],
     [
      "1155240",
      "9404",
      6,
      14,
-     true
+     true,
+     false
     ],
     [
      "1155418",
      "7919",
      6,
      14,
-     true
+     true,
+     false
     ],
     [
      "1154992",
      "6737",
      6,
      17,
-     true
+     true,
+     false
     ],
     [
      "1155011",
      "7913",
      6,
      17,
-     true
+     true,
+     false
     ],
     [
      "1155066",
      "7914",
      6,
      17,
-     true
+     true,
+     false
     ],
     [
      "1155595",
      "7916",
      6,
      17,
-     true
+     true,
+     false
     ],
     [
      "1155532",
      "7922",
      6,
      17,
-     true
+     true,
+     false
     ],
     [
      "1155587",
      "7922",
      6,
      17,
-     true
+     true,
+     false
     ],
     [
      "1155283",
      "6744",
      7,
      14,
-     true
+     true,
+     false
     ],
     [
      "1155402",
      "7919",
      7,
      14,
-     true
+     true,
+     false
     ],
     [
      "1155603",
      "9431",
      7,
      14,
-     true
+     true,
+     false
     ],
     [
      "1155036",
      "7913",
      7,
      15,
-     true
+     true,
+     false
     ],
     [
      "1155202",
      "9404",
      7,
      17,
-     true
+     true,
+     false
     ],
     [
      "1155237",
      "9404",
      7,
      17,
-     true
+     true,
+     false
     ],
     [
      "1155460",
      "7918",
      7,
      18,
-     true
+     true,
+     false
     ],
     [
      "1155605",
      "6743",
      7,
      18,
-     true
+     true,
+     false
     ],
     [
      "1155495",
      "7922",
      7,
      17,
-     true
+     true,
+     false
     ],
     [
      "1155561",
      "7922",
      7,
      17,
-     true
+     true,
+     false
     ],
     [
      "1155100",
      "7915",
      7,
      14,
-     true
+     true,
+     false
     ],
     [
      "1155253",
      "7920",
      7,
      14,
-     true
+     true,
+     false
     ],
     [
      "1155284",
      "6744",
      7,
      14,
-     true
+     true,
+     false
     ],
     [
      "1155596",
      "7916",
      7,
      14,
-     true
+     true,
+     false
     ],
     [
      "1155136",
      "9404",
      7,
      15,
-     true
+     true,
+     false
     ],
     [
      "1155169",
      "9404",
      7,
      15,
-     true
+     true,
+     false
     ],
     [
      "1155420",
      "7919",
      7,
      16,
-     true
+     true,
+     false
     ],
     [
      "1154999",
      "6737",
      7,
      16,
-     true
+     true,
+     false
     ],
     [
      "1155016",
      "7913",
      7,
      16,
-     true
+     true,
+     false
     ],
     [
      "1155067",
      "7914",
      7,
      16,
-     true
+     true,
+     false
     ],
     [
      "1155505",
      "7922",
      7,
      16,
-     true
+     true,
+     false
     ],
     [
      "1155569",
      "7922",
      7,
      16,
-     true
+     true,
+     false
     ],
     [
      "1155623",
      "7923",
      7,
      16,
-     true
+     true,
+     false
     ],
     [
      "1155442",
      "7918",
      7,
      17,
-     true
+     true,
+     false
     ],
     [
      "1155318",
      "6744",
      8,
      16,
-     true
+     true,
+     false
     ],
     [
      "1155405",
      "7919",
      8,
      16,
-     true
+     true,
+     false
     ],
     [
      "1155466",
      "7918",
      8,
      16,
-     true
+     true,
+     false
     ],
     [
      "1155041",
      "7913",
      8,
      17,
-     true
+     true,
+     false
     ],
     [
      "1155628",
      "7923",
      8,
      17,
-     true
+     true,
+     false
     ],
     [
      "1155124",
      "9404",
      8,
      18,
-     true
+     true,
+     false
     ],
     [
      "1155204",
      "9404",
      8,
      18,
-     true
+     true,
+     false
     ],
     [
      "1155107",
      "7915",
      8,
      18,
-     true
+     true,
+     false
     ],
     [
      "1155608",
      "6743",
      8,
      18,
-     true
+     true,
+     false
     ],
     [
      "1155533",
      "7922",
      8,
      17,
-     true
+     true,
+     false
     ],
     [
      "1155578",
      "7922",
      8,
      17,
-     true
+     true,
+     false
     ],
     [
      "1155254",
      "7920",
      8,
      13,
-     true
+     true,
+     false
     ],
     [
      "1155298",
      "6744",
      8,
      13,
-     true
+     true,
+     false
     ],
     [
      "1155133",
      "9404",
      8,
      13,
-     true
+     true,
+     false
     ],
     [
      "1155179",
      "9404",
      8,
      13,
-     true
+     true,
+     false
     ],
     [
      "1155423",
      "7919",
      8,
      14,
-     true
+     true,
+     false
     ],
     [
      "1155447",
      "7918",
      8,
      14,
-     true
+     true,
+     false
     ],
     [
      "1155000",
      "6737",
      8,
      13,
-     true
+     true,
+     false
     ],
     [
      "1155018",
      "7913",
      8,
      13,
-     true
+     true,
+     false
     ],
     [
      "1155062",
      "7914",
      8,
      13,
-     true
+     true,
+     false
     ],
     [
      "1155496",
      "7922",
      8,
      13,
-     true
+     true,
+     false
     ],
     [
      "1155562",
      "7922",
      8,
      13,
-     true
+     true,
+     false
     ],
     [
      "1155341",
      "6744",
      9,
      12,
-     true
+     true,
+     false
     ],
     [
      "1155411",
      "7919",
      9,
      12,
-     true
+     true,
+     false
     ],
     [
      "1155043",
      "7913",
      9,
      13,
-     true
+     true,
+     false
     ],
     [
      "1155127",
      "9404",
      9,
      15,
-     true
+     true,
+     false
     ],
     [
      "1155197",
      "9404",
      9,
      15,
-     true
+     true,
+     false
     ],
     [
      "1155610",
      "6743",
      9,
      15,
-     true
+     true,
+     false
     ],
     [
      "1155506",
      "7922",
      9,
      15,
-     true
+     true,
+     false
     ],
     [
      "1155570",
      "7922",
      9,
      15,
-     true
+     true,
+     false
     ],
     [
      "1155103",
      "7915",
      9,
      12,
-     true
+     true,
+     false
     ],
     [
      "1155248",
      "7920",
      9,
      12,
-     true
+     true,
+     false
     ],
     [
      "1155342",
      "6744",
      9,
      12,
-     true
+     true,
+     false
     ],
     [
      "1155473",
      "7918",
      9,
      12,
-     true
+     true,
+     false
     ],
     [
      "1155135",
      "9404",
      9,
      13,
-     true
+     true,
+     false
     ],
     [
      "1155186",
      "9404",
      9,
      13,
-     true
+     true,
+     false
     ],
     [
      "1155429",
      "7919",
      9,
      14,
-     true
+     true,
+     false
     ],
     [
      "1154993",
      "6737",
      9,
      14,
-     true
+     true,
+     false
     ],
     [
      "1155008",
      "7913",
      9,
      14,
-     true
+     true,
+     false
     ],
     [
      "1155058",
      "7914",
      9,
      14,
-     true
+     true,
+     false
     ],
     [
      "1155534",
      "7922",
      9,
      15,
-     true
+     true,
+     false
     ],
     [
      "1155579",
      "7922",
      9,
      15,
-     true
+     true,
+     false
     ],
     [
      "1155624",
      "7923",
      9,
      15,
-     true
+     true,
+     false
     ],
     [
      "1155354",
      "6744",
      10,
      14,
-     true
+     true,
+     false
     ],
     [
      "1155406",
      "7919",
      10,
      14,
-     true
+     true,
+     false
     ],
     [
      "1155033",
      "7913",
      10,
      15,
-     true
+     true,
+     false
     ],
     [
      "1155629",
      "7923",
      10,
      15,
-     true
+     true,
+     false
     ],
     [
      "1155190",
      "9404",
      10,
      15,
-     true
+     true,
+     false
     ],
     [
      "1155203",
      "9404",
      10,
      15,
-     true
+     true,
+     false
     ],
     [
      "1155110",
      "7915",
      10,
      16,
-     true
+     true,
+     false
     ],
     [
      "1155454",
      "7918",
      10,
      16,
-     true
+     true,
+     false
     ],
     [
      "1155609",
      "6743",
      10,
      17,
-     true
+     true,
+     false
     ],
     [
      "1155497",
      "7922",
      10,
      16,
-     true
+     true,
+     false
     ],
     [
      "1155563",
      "7922",
      10,
      16,
-     true
+     true,
+     false
     ],
     [
      "1155265",
      "7920",
      10,
      12,
-     true
+     true,
+     false
     ],
     [
      "1155319",
      "6744",
      10,
      12,
-     true
+     true,
+     false
     ],
     [
      "1155137",
      "9404",
      10,
      13,
-     true
+     true,
+     false
     ],
     [
      "1155170",
      "9404",
      10,
      13,
-     true
+     true,
+     false
     ],
     [
      "1155424",
      "7919",
      10,
      13,
-     true
+     true,
+     false
     ],
     [
      "1155001",
      "6737",
      10,
      13,
-     true
+     true,
+     false
     ],
     [
      "1155012",
      "7913",
      10,
      13,
-     true
+     true,
+     false
     ],
     [
      "1155063",
      "7914",
      10,
      13,
-     true
+     true,
+     false
     ],
     [
      "1155507",
      "7922",
      10,
      13,
-     true
+     true,
+     false
     ],
     [
      "1155571",
      "7922",
      10,
      13,
-     true
+     true,
+     false
     ],
     [
      "1155343",
      "6744",
      11,
      12,
-     true
+     true,
+     false
     ],
     [
      "1155403",
      "7919",
      11,
      12,
-     true
+     true,
+     false
     ],
     [
      "1155467",
      "7918",
      11,
      12,
-     true
+     true,
+     false
     ],
     [
      "1155037",
      "7913",
      11,
      13,
-     true
+     true,
+     false
     ],
     [
      "1155125",
      "9404",
      11,
      16,
-     true
+     true,
+     false
     ],
     [
      "1155156",
      "9404",
      11,
      16,
-     true
+     true,
+     false
     ],
     [
      "1155604",
      "9431",
      11,
      16,
-     true
+     true,
+     false
     ],
     [
      "1155611",
      "6743",
      11,
      15,
-     true
+     true,
+     false
     ],
     [
      "1155535",
      "7922",
      11,
      15,
-     true
+     true,
+     false
     ],
     [
      "1155580",
      "7922",
      11,
      15,
-     true
+     true,
+     false
     ],
     [
      "1155270",
      "7920",
      11,
      12,
-     true
+     true,
+     false
     ],
     [
      "1155344",
      "6744",
      11,
      12,
-     true
+     true,
+     false
     ],
     [
      "1155165",
      "9404",
      11,
      12,
-     true
+     true,
+     false
     ],
     [
      "1155157",
      "9404",
      11,
      12,
-     true
+     true,
+     false
     ],
     [
      "1155228",
      "9404",
      11,
      12,
-     true
+     true,
+     false
     ],
     [
      "1155421",
      "7919",
      11,
      14,
-     true
+     true,
+     false
     ],
     [
      "1155448",
      "7918",
      11,
      14,
-     true
+     true,
+     false
     ],
     [
      "1154994",
      "6737",
      11,
      14,
-     true
+     true,
+     false
     ],
     [
      "1155009",
      "7913",
      11,
      14,
-     true
+     true,
+     false
     ],
     [
      "1155059",
      "7914",
      11,
      14,
-     true
+     true,
+     false
     ],
     [
      "1155498",
      "7922",
      11,
      15,
-     true
+     true,
+     false
     ],
     [
      "1155564",
      "7922",
      11,
      15,
-     true
+     true,
+     false
     ],
     [
      "1155622",
      "7923",
      11,
      15,
-     true
+     true,
+     false
     ],
     [
      "1155285",
      "6744",
      12,
      14,
-     true
+     true,
+     false
     ],
     [
      "1155401",
      "7919",
      12,
      14,
-     true
+     true,
+     false
     ],
     [
      "1155034",
      "7913",
      12,
      15,
-     true
+     true,
+     false
     ],
     [
      "1155117",
      "9404",
      12,
      15,
-     true
+     true,
+     false
     ],
     [
      "1155627",
      "7923",
      12,
      15,
+     false,
      false
     ],
     [
@@ -1489,608 +1687,695 @@
      "9404",
      12,
      16,
-     true
+     true,
+     false
     ],
     [
      "1155229",
      "9404",
      12,
      16,
-     true
+     true,
+     false
     ],
     [
      "1155612",
      "6743",
      12,
      16,
-     true
+     true,
+     false
     ],
     [
      "1155223",
      "9404",
      12,
      16,
-     true
+     true,
+     false
     ],
     [
      "1155508",
      "7922",
      12,
      15,
-     true
+     true,
+     false
     ],
     [
      "1155572",
      "7922",
      12,
      15,
-     true
+     true,
+     false
     ],
     [
      "1155275",
      "7920",
      12,
      11,
-     true
+     true,
+     false
     ],
     [
      "1155286",
      "6744",
      12,
      11,
-     true
+     true,
+     false
     ],
     [
      "1155474",
      "7918",
      12,
      11,
-     true
+     true,
+     false
     ],
     [
      "1155168",
      "9404",
      12,
      11,
-     true
+     true,
+     false
     ],
     [
      "1155187",
      "9404",
      12,
      13,
-     true
+     true,
+     false
     ],
     [
      "1155205",
      "9404",
      12,
      13,
-     true
+     true,
+     false
     ],
     [
      "1155616",
      "9432",
      12,
      13,
-     true
+     true,
+     false
     ],
     [
      "1155419",
      "7919",
      12,
      14,
-     true
+     true,
+     false
     ],
     [
      "1154995",
      "6737",
      12,
      15,
-     true
+     true,
+     false
     ],
     [
      "1155013",
      "7913",
      12,
      15,
-     true
+     true,
+     false
     ],
     [
      "1155080",
      "7914",
      12,
      15,
-     true
+     true,
+     false
     ],
     [
      "1155224",
      "9404",
      12,
      14,
-     true
+     true,
+     false
     ],
     [
      "1155536",
      "7922",
      12,
      14,
-     true
+     true,
+     false
     ],
     [
      "1155581",
      "7922",
      12,
      14,
-     true
+     true,
+     false
     ],
     [
      "1155357",
      "6744",
      13,
      14,
-     true
+     true,
+     false
     ],
     [
      "1155413",
      "7919",
      13,
      14,
-     true
+     true,
+     false
     ],
     [
      "1155592",
      "7916",
      13,
      14,
-     true
+     true,
+     false
     ],
     [
      "1155038",
      "7913",
      13,
      15,
-     true
+     true,
+     false
     ],
     [
      "1155150",
      "9404",
      13,
      16,
-     true
+     true,
+     false
     ],
     [
      "1155191",
      "9404",
      13,
      16,
-     true
+     true,
+     false
     ],
     [
      "1155455",
      "7918",
      13,
      16,
-     true
+     true,
+     false
     ],
     [
      "1155614",
      "6743",
      13,
      16,
-     true
+     true,
+     false
     ],
     [
      "1155499",
      "7922",
      13,
      16,
-     true
+     true,
+     false
     ],
     [
      "1155565",
      "7922",
      13,
      16,
-     true
+     true,
+     false
     ],
     [
      "1155101",
      "7915",
      13,
      14,
-     true
+     true,
+     false
     ],
     [
      "1155276",
      "7920",
      13,
      14,
-     true
+     true,
+     false
     ],
     [
      "1155320",
      "6744",
      13,
      14,
-     true
+     true,
+     false
     ],
     [
      "1155171",
      "9404",
      13,
      14,
-     true
+     true,
+     false
     ],
     [
      "1155207",
      "9404",
      13,
      14,
-     true
+     true,
+     false
     ],
     [
      "1155431",
      "7919",
      13,
      15,
-     true
+     true,
+     false
     ],
     [
      "1155002",
      "6737",
      13,
      16,
-     true
+     true,
+     false
     ],
     [
      "1155029",
      "7913",
      13,
      16,
-     true
+     true,
+     false
     ],
     [
      "1155064",
      "7914",
      13,
      16,
-     true
+     true,
+     false
     ],
     [
      "1155509",
      "7922",
      13,
      16,
-     true
+     true,
+     false
     ],
     [
      "1155573",
      "7922",
      13,
      16,
-     true
+     true,
+     false
     ],
     [
      "1155630",
      "7923",
      13,
      16,
-     true
+     true,
+     false
     ],
     [
      "1155287",
      "6744",
      14,
      15,
-     true
+     true,
+     false
     ],
     [
      "1155404",
      "7919",
      14,
      15,
-     true
+     true,
+     false
     ],
     [
      "1155483",
      "7918",
      14,
      15,
-     true
+     true,
+     false
     ],
     [
      "1155597",
      "7916",
      14,
      15,
-     true
+     true,
+     false
     ],
     [
      "1155054",
      "7913",
      14,
      16,
-     true
+     true,
+     false
     ],
     [
      "1155635",
      "7923",
      14,
      16,
-     true
+     true,
+     false
     ],
     [
      "1155152",
      "9404",
      14,
      17,
-     true
+     true,
+     false
     ],
     [
      "1155194",
      "9404",
      14,
      17,
-     true
+     true,
+     false
     ],
     [
      "1155108",
      "7915",
      14,
      17,
-     true
+     true,
+     false
     ],
     [
      "1155606",
      "6743",
      14,
      16,
-     true
+     true,
+     false
     ],
     [
      "1155537",
      "7922",
      14,
      15,
-     true
+     true,
+     false
     ],
     [
      "1155582",
      "7922",
      14,
      15,
-     true
+     true,
+     false
     ],
     [
      "1155266",
      "7920",
      14,
      13,
-     true
+     true,
+     false
     ],
     [
      "1155358",
      "6744",
      14,
      13,
-     true
+     true,
+     false
     ],
     [
      "1155180",
      "9404",
      14,
      13,
-     true
+     true,
+     false
     ],
     [
      "1155209",
      "9404",
      14,
      13,
-     true
+     true,
+     false
     ],
     [
      "1155422",
      "7919",
      14,
      14,
-     true
+     true,
+     false
     ],
     [
      "1155459",
      "7918",
      14,
      14,
-     true
+     true,
+     false
     ],
     [
      "1155003",
      "6737",
      14,
      15,
-     true
+     true,
+     false
     ],
     [
      "1155017",
      "7913",
      14,
      15,
-     true
+     true,
+     false
     ],
     [
      "1155081",
      "7914",
      14,
      15,
-     true
+     true,
+     false
     ],
     [
      "1155500",
      "7922",
      14,
      15,
-     true
+     true,
+     false
     ],
     [
      "1155566",
      "7922",
      14,
      15,
-     true
+     true,
+     false
     ],
     [
      "1155355",
      "6744",
      15,
      12,
-     true
+     true,
+     false
     ],
     [
      "1155407",
      "7919",
      15,
      12,
-     true
+     true,
+     false
     ],
     [
      "1155042",
      "7913",
      15,
      13,
-     true
+     true,
+     false
     ],
     [
      "1155154",
      "9404",
      15,
      15,
-     true
+     true,
+     false
     ],
     [
      "1155195",
      "9404",
      15,
      15,
-     true
+     true,
+     false
     ],
     [
      "1155613",
      "6743",
      15,
      13,
-     true
+     true,
+     false
     ],
     [
      "1155510",
      "7922",
      15,
      13,
-     true
+     true,
+     false
     ],
     [
      "1155574",
      "7922",
      15,
      13,
-     true
+     true,
+     false
     ],
     [
      "1155104",
      "7915",
      15,
      13,
-     true
+     true,
+     false
     ],
     [
      "1155277",
      "7920",
      15,
      13,
-     true
+     true,
+     false
     ],
     [
      "1155299",
      "6744",
      15,
      13,
-     true
+     true,
+     false
     ],
     [
      "1155468",
      "7918",
      15,
      13,
-     true
+     true,
+     false
     ],
     [
      "1155593",
      "7916",
      15,
      13,
-     true
+     true,
+     false
     ],
     [
      "1155188",
      "9404",
      15,
      14,
-     true
+     true,
+     false
     ],
     [
      "1155206",
      "9404",
      15,
      14,
-     true
+     true,
+     false
     ],
     [
      "1155425",
      "7919",
      15,
      15,
-     true
+     true,
+     false
     ],
     [
      "1155005",
      "6737",
      15,
      16,
-     true
+     true,
+     false
     ],
     [
      "1155030",
      "7913",
      15,
      16,
-     true
+     true,
+     false
     ],
     [
      "1155060",
      "7914",
      15,
      16,
-     true
+     true,
+     false
     ],
     [
      "1155538",
      "7922",
      15,
      17,
-     true
+     true,
+     false
     ],
     [
      "1155583",
      "7922",
      15,
      17,
-     true
+     true,
+     false
     ],
     [
      "1155631",
      "7923",
      15,
      17,
+     false,
      false
     ],
     [
@@ -2098,83 +2383,95 @@
      "6744",
      16,
      15,
-     true
+     true,
+     false
     ],
     [
      "1155412",
      "7919",
      16,
      15,
-     true
+     true,
+     false
     ],
     [
      "1155055",
      "7913",
      16,
      16,
-     true
+     true,
+     false
     ],
     [
      "1155636",
      "7923",
      16,
      16,
-     true
+     true,
+     false
     ],
     [
      "1155131",
      "9404",
      16,
      16,
-     true
+     true,
+     false
     ],
     [
      "1155151",
      "9404",
      16,
      16,
-     true
+     true,
+     false
     ],
     [
      "1155111",
      "7915",
      16,
      18,
-     true
+     true,
+     false
     ],
     [
      "1155449",
      "7918",
      16,
      18,
-     true
+     true,
+     false
     ],
     [
      "1155617",
      "9432",
      16,
      18,
-     true
+     true,
+     false
     ],
     [
      "1155615",
      "6743",
      16,
      17,
-     true
+     true,
+     false
     ],
     [
      "1155501",
      "7922",
      16,
      15,
-     true
+     true,
+     false
     ],
     [
      "1155567",
      "7922",
      16,
      15,
+     false,
      false
     ],
     [
@@ -2182,20 +2479,23 @@
      "7920",
      16,
      14,
-     true
+     true,
+     false
     ],
     [
      "1155345",
      "6744",
      16,
      14,
-     true
+     true,
+     false
     ],
     [
      "1155598",
      "7916",
      16,
      14,
+     false,
      false
     ],
     [
@@ -2203,188 +2503,215 @@
      "9404",
      16,
      15,
-     true
+     true,
+     false
     ],
     [
      "1155208",
      "9404",
      16,
      15,
-     true
+     true,
+     false
     ],
     [
      "1155430",
      "7919",
      16,
      15,
-     true
+     true,
+     false
     ],
     [
      "1154996",
      "6737",
      16,
      17,
-     true
+     true,
+     false
     ],
     [
      "1155014",
      "7913",
      16,
      17,
-     true
+     true,
+     false
     ],
     [
      "1155084",
      "7914",
      16,
      17,
-     true
+     true,
+     false
     ],
     [
      "1155594",
      "7916",
      16,
      17,
-     true
+     true,
+     false
     ],
     [
      "1155511",
      "7922",
      16,
      17,
-     true
+     true,
+     false
     ],
     [
      "1155575",
      "7922",
      16,
      17,
-     true
+     true,
+     false
     ],
     [
      "1155288",
      "6744",
      17,
      15,
-     true
+     true,
+     false
     ],
     [
      "1155414",
      "7919",
      17,
      15,
-     true
+     true,
+     false
     ],
     [
      "1155618",
      "9432",
      17,
      15,
-     true
+     true,
+     false
     ],
     [
      "1155039",
      "7913",
      17,
      16,
-     true
+     true,
+     false
     ],
     [
      "1155126",
      "9404",
      17,
      18,
-     true
+     true,
+     false
     ],
     [
      "1155153",
      "9404",
      17,
      18,
-     true
+     true,
+     false
     ],
     [
      "1155475",
      "7918",
      17,
      17,
-     true
+     true,
+     false
     ],
     [
      "1155607",
      "6743",
      17,
      17,
-     true
+     true,
+     false
     ],
     [
      "1155539",
      "7922",
      17,
      17,
-     true
+     true,
+     false
     ],
     [
      "1155584",
      "7922",
      17,
      17,
-     true
+     true,
+     false
     ],
     [
      "1155102",
      "7915",
      17,
      14,
-     true
+     true,
+     false
     ],
     [
      "1155271",
      "7920",
      17,
      14,
-     true
+     true,
+     false
     ],
     [
      "1155359",
      "6744",
      17,
      14,
-     true
+     true,
+     false
     ],
     [
      "1155181",
      "9404",
      17,
      15,
-     true
+     true,
+     false
     ],
     [
      "1155210",
      "9404",
      17,
      15,
-     true
+     true,
+     false
     ],
     [
      "1155632",
      "7923",
      17,
      15,
-     true
+     true,
+     false
     ],
     [
      "1155432",
      "7919",
      17,
      16,
-     true
+     true,
+     false
     ],
     [
      "1155004",
      "6737",
      17,
      18,
+     false,
      false
     ],
     [
@@ -2392,111 +2719,127 @@
      "7913",
      17,
      18,
-     true
+     true,
+     false
     ],
     [
      "1155065",
      "7914",
      17,
      18,
-     true
+     true,
+     false
     ],
     [
      "1155599",
      "7916",
      17,
      18,
-     true
+     true,
+     false
     ],
     [
      "1155637",
      "7923",
      17,
      18,
-     true
+     true,
+     false
     ],
     [
      "1155502",
      "7922",
      17,
      17,
-     true
+     true,
+     false
     ],
     [
      "1155576",
      "7922",
      17,
      17,
-     true
+     true,
+     false
     ],
     [
      "1155456",
      "7918",
      17,
      17,
-     true
+     true,
+     false
     ],
     [
      "1155289",
      "6744",
      18,
      16,
-     true
+     true,
+     false
     ],
     [
      "1155417",
      "7919",
      18,
      16,
-     true
+     true,
+     false
     ],
     [
      "1155619",
      "9432",
      18,
      16,
-     true
+     true,
+     false
     ],
     [
      "1155056",
      "7913",
      18,
      17,
-     true
+     true,
+     false
     ],
     [
      "1155128",
      "9404",
      18,
      18,
-     true
+     true,
+     false
     ],
     [
      "1155155",
      "9404",
      18,
      18,
-     true
+     true,
+     false
     ],
     [
      "1155633",
      "7923",
      18,
      18,
-     true
+     true,
+     false
     ],
     [
      "1155109",
      "7915",
      18,
      18,
-     true
+     true,
+     false
     ],
     [
      "1155638",
      "7923",
      18,
      17,
+     false,
      false
     ],
     [
@@ -2504,6 +2847,7 @@
      "7922",
      18,
      17,
+     false,
      false
     ],
     [
@@ -2511,13 +2855,15 @@
      "7922",
      18,
      17,
-     true
+     true,
+     false
     ],
     [
      "1155105",
      "7915",
      18,
      15,
+     false,
      false
     ],
     [
@@ -2525,132 +2871,151 @@
      "7920",
      18,
      15,
-     true
+     true,
+     false
     ],
     [
      "1155290",
      "6744",
      18,
      15,
-     true
+     true,
+     false
     ],
     [
      "1155189",
      "9404",
      18,
      17,
-     true
+     true,
+     false
     ],
     [
      "1155241",
      "9404",
      18,
      17,
-     true
+     true,
+     false
     ],
     [
      "1155461",
      "7918",
      18,
      17,
-     true
+     true,
+     false
     ],
     [
      "1155634",
      "7923",
      18,
      17,
-     true
+     true,
+     false
     ],
     [
      "1155435",
      "7919",
      18,
      16,
-     true
+     true,
+     false
     ],
     [
      "1154997",
      "6737",
      18,
      17,
-     true
+     true,
+     false
     ],
     [
      "1155015",
      "7913",
      18,
      17,
-     true
+     true,
+     false
     ],
     [
      "1155086",
      "7914",
      18,
      17,
-     true
+     true,
+     false
     ],
     [
      "1155639",
      "7923",
      18,
      17,
-     true
+     true,
+     false
     ],
     [
      "1155577",
      "7922",
      18,
      16,
-     true
+     true,
+     false
     ],
     [
      "1155242",
      "9404",
      19,
      14,
-     true
+     true,
+     false
     ],
     [
      "1155300",
      "6744",
      19,
      14,
-     true
+     true,
+     false
     ],
     [
      "1155484",
      "7918",
      19,
      14,
-     true
+     true,
+     false
     ],
     [
      "1155040",
      "7913",
      19,
      14,
-     true
+     true,
+     false
     ],
     [
      "1155227",
      "9404",
      19,
      13,
-     true
+     true,
+     false
     ],
     [
      "1155112",
      "7915",
      19,
      14,
-     true
+     true,
+     false
     ],
     [
      "1155487",
      "7918",
      19,
      14,
+     false,
      false
     ],
     [
@@ -2658,34 +3023,39 @@
      "7922",
      19,
      14,
-     true
+     true,
+     false
     ],
     [
      "1155356",
      "6744",
      19,
      7,
-     true
+     true,
+     false
     ],
     [
      "1155476",
      "7918",
      19,
      7,
-     true
+     true,
+     false
     ],
     [
      "1155232",
      "9404",
      19,
      8,
-     true
+     true,
+     false
     ],
     [
      "1155488",
      "7918",
      19,
      8,
+     false,
      false
     ],
     [
@@ -2693,21 +3063,24 @@
      "6737",
      19,
      8,
-     true
+     true,
+     false
     ],
     [
      "1155085",
      "7914",
      19,
      8,
-     true
+     true,
+     false
     ],
     [
      "1155489",
      "7918",
      20,
      4,
-     true
+     true,
+     false
     ]
    ]
   },
@@ -2719,6 +3092,8 @@
    "trip_not_scheduled_today": 3,
    "share": 6.3e-05
   },
+  "stop_updates_flagged_skipped": 0,
+  "alerts_seen": 0,
   "vehicle_ids": [
    "17425",
    "17429",
@@ -3370,6 +3745,7 @@
  "schedule": {
   "passio_version": "passio-9b1efa882037",
   "passio_basis": "complete download that day",
+  "passio_changed_during_day": false,
   "trillium_version": "trillium-a4cf6ffeea6a",
   "trillium_removes_service_today": [],
   "service_expected": true,
@@ -3381,6 +3757,6 @@
   "vehicles_sha256": "abdd4c5dd24c02c8073961ece8eac5de33bb60abdc612abf3d1f453d884308f9",
   "tables_version": "tables/0.1.0",
   "stop_events_sha256": "7f87afa7566eaf17199f55ddd24db0f3d0ffb9bae2834bef6bd01e401c89ad50",
-  "code_sha": "3e4d28b3e39c01cc561cf957282bdef148a81731"
+  "code_sha": "ee7a90c805f8353778f7524e2d2d82ae3451e8e5"
  }
 }
