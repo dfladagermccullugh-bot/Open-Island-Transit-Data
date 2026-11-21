@@ -30,6 +30,11 @@ the same two:
 - `depart_40m`: the front of the bus is more than **40 m** past the stop on
   its way out.
 
+From on board, or when the 40 m points are hard to judge, time instead:
+
+- `pass_stop`: the bus is level with the stop. This is compared with the
+  midpoint of the inferred arrival and departure.
+
 `time_this` on the sheet says which apply: `departure` at the stop where the
 trip starts, `arrival` where it ends, `both` elsewhere. Write times as
 `14:03:27` or `2:03:27 pm` (seconds are required). Leave a time blank if you

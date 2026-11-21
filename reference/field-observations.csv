@@ -1,1 +1,8 @@
-service_date,stop_id,stop_name,route,trip_id,scheduled,time_this,arrive_40m,depart_40m,note
+service_date,stop_id,stop_name,route,trip_id,scheduled,time_this,arrive_40m,depart_40m,pass_stop,note
+2026-11-20,178409,Clinton Ferry Terminal,60,1155575,16:50,departure,,,,"Davin, on board; left about 4:49 pm (minute only, not scored)"
+2026-11-20,197274,Clinton Park & Ride at Deer Lake Rd,60,1155575,16:51,both,,,16:52:07,"Davin, on board; time bus was level with the stop, +/-3 to 4 s; logged as 'Clinton Post Office park and ride'"
+2026-11-20,178191,SR 525 at Dairy Queen,60,1155575,16:53,both,,,16:53:28,"Davin, on board; time bus was level with the stop, +/-3 to 4 s"
+2026-11-20,197244,SR 525 at Campbell Rd,60,1155575,16:55,both,,,,"Davin, on board; about 4:55 pm (minute only, not scored)"
+2026-11-20,197275,Langley Rd at Ken's Korner,60,1155575,16:56,both,,,16:56:31,"Davin, on board; time bus was level with the stop, +/-3 to 4 s"
+2026-11-20,178309,Langley Soccer Fields,60,1155575,16:57,both,,,16:58:06,"Davin, on board; time bus was level with the stop, +/-3 to 4 s"
+2026-11-20,178171,Camano Ave at Langley P&R,60,1155575,17:00,both,,,17:00:42,"Davin, on board; time bus was level with the stop, +/-3 to 4 s"

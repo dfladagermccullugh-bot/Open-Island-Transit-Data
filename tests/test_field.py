@@ -70,3 +70,23 @@ def test_score():
 def test_score_with_nothing_scored():
     r = field.score([], {})
     assert r["overall"]["n"] == 0 and r["meets_target"] is None
+
+
+def test_pass_is_scored_against_the_midpoint():
+    events = {DAY.isoformat(): [_event("A", "S1", 10, 20), _event("B", "S1", None, 30)]}
+    a = _obs("A", "S1", None, None)
+    a["pass"] = T + timedelta(seconds=12)  # midpoint 15 -> +3 s
+    b = _obs("B", "S1", None, None)
+    b["pass"] = T + timedelta(seconds=30)  # no inferred arrival -> not scored
+    r = field.score([a, b], events)
+    assert r["pass"]["n"] == 1 and r["pass"]["bias_s"] == 3.0
+    assert r["overall"]["n"] == 1 and r["timed_moments_not_inferred"] == 1
+
+
+def test_load_reads_pass_stop(tmp_path):
+    f = tmp_path / "obs.csv"
+    f.write_text(
+        ",".join(field.SHEET_COLUMNS) + "\n2026-11-23,S1,Stop,1,A,08:00,both,,,8:00:12 am,\n"
+    )
+    rows, problems = field.load(f)
+    assert not problems and rows[0]["pass"] == T + timedelta(seconds=12)

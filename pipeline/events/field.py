@@ -3,8 +3,10 @@
 Arrivals and departures timed in person at timepoints are compared with the
 inferred times for the same trip and stop. The inferred arrival is the moment
 the bus comes within 40 m of the stop along its route, the departure the
-moment it is more than 40 m past (docs/methods.md, section 3); observers time
-the same two moments.
+moment it is more than 40 m past (docs/methods.md, section 3). Observers time
+those moments (``arrive_40m``, ``depart_40m``) or, typically from on board,
+the moment the bus is level with the stop (``pass_stop``), which is compared
+with the midpoint of the inferred arrival and departure.
 
 Two commands:
 
@@ -44,11 +46,11 @@ from pipeline.gtfs import timepoints as tp
 from pipeline.gtfs.schedule import _rows, _seconds, day_origin, scheduled_trips
 from pipeline.gtfs.zipread import ZipContents, read_zip
 
-FIELD_VERSION = "field/0.1.0"
+FIELD_VERSION = "field/0.2.0"
 OBSERVATIONS = tp.REFERENCE_DIR / "field-observations.csv"
 PASSIO_ZIP = "https://passio3.com/islandtransit/passioTransit/gtfs/google_transit.zip"
 SHEET_COLUMNS = ("service_date", "stop_id", "stop_name", "route", "trip_id", "scheduled",
-                 "time_this", "arrive_40m", "depart_40m", "note")  # fmt: skip
+                 "time_this", "arrive_40m", "depart_40m", "pass_stop", "note")  # fmt: skip
 TARGET_MAE_S = 30.0
 
 Row = dict[str, Any]
@@ -102,7 +104,7 @@ def sheet(
             "service_date": day.isoformat(), "stop_id": st["stop_id"],
             "stop_name": stops[st["stop_id"]], "route": routes.get(t.route_id, t.route_id),
             "trip_id": t.trip_id, "scheduled": when.strftime("%H:%M"), "time_this": role,
-            "arrive_40m": "", "depart_40m": "", "note": "",
+            "arrive_40m": "", "depart_40m": "", "pass_stop": "", "note": "",
         })  # fmt: skip
     return sorted(out, key=lambda r: (r["stop_name"], r["stop_id"], r["scheduled"], r["trip_id"]))
 
@@ -138,7 +140,7 @@ def load(path: Path = OBSERVATIONS) -> tuple[list[Row], list[str]]:
         return [], []
     rows, problems = [], []
     for n, r in enumerate(csv.DictReader(io.StringIO(path.read_text())), start=2):
-        if not (r.get("arrive_40m") or "").strip() and not (r.get("depart_40m") or "").strip():
+        if not any((r.get(c) or "").strip() for c in ("arrive_40m", "depart_40m", "pass_stop")):
             continue
         try:
             day = date.fromisoformat(r["service_date"].strip())
@@ -147,6 +149,7 @@ def load(path: Path = OBSERVATIONS) -> tuple[list[Row], list[str]]:
                 "trip_id": r["trip_id"].strip(),
                 "arrival": parse_local(day, r.get("arrive_40m", "")),
                 "departure": parse_local(day, r.get("depart_40m", "")),
+                "pass": parse_local(day, r.get("pass_stop", "")),
             })  # fmt: skip
         except (KeyError, ValueError) as exc:
             problems.append(f"line {n}: {exc}")
@@ -171,15 +174,23 @@ def _stats(diffs: list[float]) -> dict[str, Any]:
     }
 
 
+KINDS = ("arrival", "departure", "pass")
+
+
+def _inferred(e: Row, kind: str) -> datetime | None:
+    if kind != "pass":
+        return e[f"{kind}_time"]
+    a, d = e["arrival_time"], e["departure_time"]
+    return a + (d - a) / 2 if a is not None and d is not None else None
+
+
 def score(observations: list[Row], events: dict[str, list[Row]]) -> dict[str, Any]:
     """Compare timed rows with inferred events. ``events`` maps a service
     date to that day's stop-event rows; dates not in it are not scored yet.
     Differences are inferred minus field time, in seconds."""
     index = {(d, e["trip_id"], e["stop_id"]): e for d, rows in events.items() for e in rows}
-    diffs: dict[str, list[float]] = {"arrival": [], "departure": []}
-    by_stop: dict[str, dict[str, list[float]]] = defaultdict(
-        lambda: {"arrival": [], "departure": []}
-    )
+    diffs: dict[str, list[float]] = {k: [] for k in KINDS}
+    by_stop: dict[str, dict[str, list[float]]] = defaultdict(lambda: {k: [] for k in KINDS})
     pending = no_event = not_inferred = 0
     pairs = []
     for o in observations:
@@ -190,10 +201,10 @@ def score(observations: list[Row], events: dict[str, list[Row]]) -> dict[str, An
         if e is None:
             no_event += 1
             continue
-        for kind in ("arrival", "departure"):
-            if o[kind] is None:
+        for kind in KINDS:
+            if o.get(kind) is None:
                 continue
-            inferred = e[f"{kind}_time"]
+            inferred = _inferred(e, kind)
             if inferred is None:
                 not_inferred += 1
                 continue
@@ -204,17 +215,19 @@ def score(observations: list[Row], events: dict[str, list[Row]]) -> dict[str, An
                           "trip_id": o["trip_id"], "stop_id": o["stop_id"], "event": kind,
                           "field": o[kind].isoformat(), "inferred": inferred.isoformat(),
                           "difference_s": round(d, 1)})  # fmt: skip
-    both = diffs["arrival"] + diffs["departure"]
+    both = [d for k in KINDS for d in diffs[k]]
     overall = _stats(both)
     return {
         "field_version": FIELD_VERSION,
         "definition": "inferred minus field-timed, seconds; arrival = bus within 40 m of the "
-        "stop along its route, departure = more than 40 m past it",
+        "stop along its route, departure = more than 40 m past it, pass = bus level with the "
+        "stop, inferred as the midpoint of arrival and departure",
         "target_mae_s": TARGET_MAE_S,
         "meets_target": None if not both else overall["mae_s"] <= TARGET_MAE_S,
         "overall": overall,
         "arrival": _stats(diffs["arrival"]),
         "departure": _stats(diffs["departure"]),
+        "pass": _stats(diffs["pass"]),
         "by_stop": {s: {k: _stats(v) for k, v in d.items()} for s, d in sorted(by_stop.items())},
         "timed_rows": len(observations),
         "rows_waiting_for_their_day": pending,

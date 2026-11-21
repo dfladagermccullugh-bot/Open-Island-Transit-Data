@@ -122,12 +122,14 @@ The experimental label comes off when arrivals and departures timed in
 person agree with the inferred times: about 40 of them at three or four
 timepoints, with a mean absolute difference of 30 seconds or less. The
 observer times the same moments the method infers: the bus coming within
-40 m of the stop, and the bus more than 40 m past it.
+40 m of the stop, and the bus more than 40 m past it, or the moment the bus
+is level with the stop (compared with the midpoint of the two).
 
 ```{ojs}
 //| echo: false
 fc = json("data/ontime/field-check.json")
-fcRows = fc == null || fc.overall.n === 0 ? [] : [["All", fc.overall], ["Arrivals", fc.arrival], ["Departures", fc.departure]]
+fcRows = fc == null || fc.overall.n === 0 ? [] : [["All", fc.overall], ["Arrivals (40 m before)", fc.arrival], ["Departures (40 m past)", fc.departure], ["Level with the stop", fc.pass ?? {n: 0}]]
+  .filter(([, s]) => s.n > 0)
   .map(([moment, s]) => ({moment, n: s.n, bias: s.bias_s, mae: s.mae_s, w30: s.within_30s_share, w60: s.within_60s_share}))
 html`${fcRows.length === 0
   ? html`<p>No timed observations yet${fc && fc.rows_waiting_for_their_day ? ` (${fc.rows_waiting_for_their_day} waiting for their day to be processed)` : ""}.</p>`

@@ -204,7 +204,8 @@ the fastest listed. `daily.csv` carries the agreement share as
 `feed_agreement_share`.
 - `ontime/field-check.json` (`pipeline/events/field.py`): the field check
   (`docs/methods.md`, section 5, check 1). `overall`, `arrival`,
-  `departure` and `by_stop` give the number of timed moments scored, bias,
+  `departure`, `pass` (bus level with the stop, against the midpoint of the
+  inferred arrival and departure) and `by_stop` give the number of timed moments scored, bias,
   median and mean absolute difference (inferred minus timed, seconds) and
   the shares within 30 s and 60 s; `meets_target` compares the mean absolute
   difference with 30 s; `pairs` lists every comparison. Rows whose day is
