@@ -1,9 +1,10 @@
 # Field check: timing buses in person
 
-Check 1 of the validation (`docs/methods.md`, section 5). About 40 timed
-moments at three or four timepoints decide whether the inferred on-time
-figures lose their "experimental" label. Target: a mean absolute difference
-of 30 seconds or less between the timed and the inferred times.
+Check 1 of the validation (`docs/methods.md`, section 5): a spot check of
+whether the inferred stop times match what happens on the street. Target: a
+mean absolute difference of 30 seconds or less between the timed and the
+inferred times. Done on route 60, the route the observer rides; more
+timings on any trip can be added at any time.
 
 ## Before going out
 

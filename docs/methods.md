@@ -172,10 +172,14 @@ Known problems and how they are handled:
 
 On-time figures are labelled experimental until all three hold:
 
-1. Field check: about 40 arrivals and departures timed in person at three or
-   four timepoints with a synchronised clock. Reported: bias, mean absolute
-   error, share within 30 s and 60 s. Target: mean absolute error of 30 s or
-   less.
+1. Field check: arrivals and departures timed in person with a
+   network-synchronised clock, compared with the inferred times. Reported:
+   bias, mean absolute error, share within 30 s and 60 s. Target: mean
+   absolute error of 30 s or less. It is a spot check of whether the
+   tracking matches what happens on the street, done on route 60 (the route
+   the observer rides). It does not cover other routes, departures after a
+   bus has waited at a timepoint, or terminal departures; checks 2 and 3
+   cover all routes every day.
 2. Inferred stop events agree with the feed's own `current_stop_sequence`
    changes.
 3. No negative segment travel times or impossible speeds remain unexplained.

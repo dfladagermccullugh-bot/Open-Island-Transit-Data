@@ -118,10 +118,12 @@ html`${checks.length === 0 ? noData() : Inputs.table(checks, {header: {check: "C
 
 ## Field check
 
-The experimental label comes off when arrivals and departures timed in
-person agree with the inferred times: about 40 of them at three or four
-timepoints, with a mean absolute difference of 30 seconds or less. The
-observer times the same moments the method infers: the bus coming within
+A spot check of whether the inferred times match what happens on the
+street: arrivals and departures timed in person, with a target mean absolute
+difference of 30 seconds or less. It was done on route 60, from on board; it
+does not cover other routes, departures after a bus has waited at a
+timepoint, or departures from terminals. The two automatic checks above
+cover every route every day. The observer times the same moments the method infers: the bus coming within
 40 m of the stop, and the bus more than 40 m past it, or the moment the bus
 is level with the stop (compared with the midpoint of the two).
 
