@@ -37,7 +37,8 @@ export function drawRouteMap(L, mapData, recent, {height = 460, onSelect = null,
   node.setAttribute("role", "region");
   node.setAttribute("aria-label", "Map of Island Transit routes colored by how often buses were on time");
 
-  const m = L.map(node, {scrollWheelZoom: false, zoomSnap: 0.25, attributionControl: true});
+  // Whole zoom levels only: fractional zoom leaves hairline seams between tiles.
+  const m = L.map(node, {scrollWheelZoom: false, zoomSnap: 1, attributionControl: true});
   L.tileLayer(TILES, {maxZoom: 18, attribution: ATTRIBUTION}).addTo(m);
   const [w, s, e, n] = mapData.bbox;
   const all = L.latLngBounds([[s, w], [n, e]]);
