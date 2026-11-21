@@ -4,6 +4,7 @@
   "2026-11-19": {
    "service_date": "2026-11-19",
    "events_version": "events/0.2.1",
+   "ontime_version": "ontime/0.2.0",
    "passio_version": "passio-9b1efa882037",
    "timepoints": "passio-9b1efa882037__timetable-2026-09-27-970aa207",
    "vehicles_sha256": "009f7f6614c5bd983f8cd70b4eb4a4dc4afbe07bf6edb1c05c20c793291ca953",
@@ -24,8 +25,8 @@
     }
    ],
    "release_tag": "parsed-2026-11",
-   "built_at": "2026-11-21T01:43:32+00:00",
-   "code_sha": "7b41d3cf21852b9231dfc22f54bfc1a179f9322f"
+   "built_at": "2026-11-21T02:41:59+00:00",
+   "code_sha": "c423225481b3959e69c8b7a08c00bee546ba2403"
   }
  }
 }

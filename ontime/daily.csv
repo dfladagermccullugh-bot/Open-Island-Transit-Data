@@ -1,2 +1,2 @@
 service_date,scheduled,observed,observed_share,on_time,early,late,on_time_share_of_observed,deviation_s_median,feed_agreement_share,ontime_version
-2026-11-19,1130,876,0.7752,525,18,333,0.5993,217.0,0.9577,ontime/0.1.1
+2026-11-19,1130,876,0.7752,525,18,333,0.5993,217.0,0.9577,ontime/0.2.0
