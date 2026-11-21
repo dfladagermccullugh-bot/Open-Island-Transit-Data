@@ -17,7 +17,7 @@ day, and we have also timed buses in person on route 60. The [Methods](methods.q
 ```{ojs}
 //| echo: false
 //| output: false
-import {csv, json, pct, num, count, band, lateness, longDate, isoDate, serviceDays, MIN_OBSERVED, SERIES, REPO_URL, DATA_URL, RELEASES_URL} from "./lib.js"
+import {csv, json, pct, num, count, band, lateness, longDate, isoDate, serviceDays, recentDays, dateAxis, RECENT_DAYS, DOTS_UP_TO, MIN_OBSERVED, SERIES, REPO_URL, DATA_URL, RELEASES_URL} from "./lib.js"
 daily = csv(d3, "data/ontime/daily.csv")
 // Days with scheduled service; a holiday is archived but not charted.
 days = serviceDays(daily).map(d => ({...d, day: isoDate(d.service_date), date: new Date(`${isoDate(d.service_date)}T12:00:00Z`)}))
@@ -32,21 +32,32 @@ noDetail = () => days.length === 0 ? noData() : html`<p class="empty">The detail
 
 ```{ojs}
 //| echo: false
+// Shown only once there are more days than the chart holds by default.
+viewof showAll = days.length > RECENT_DAYS
+  ? Inputs.toggle({label: "All days"})
+  : Object.assign(html`<span hidden></span>`, {value: false})
+```
+
+```{ojs}
+//| echo: false
+shownDays = recentDays(days, showAll)
+axis = dateAxis(shownDays.map(d => d.date), 8, Math.max(320, Math.min(width, 960)))
 html`${days.length === 0 ? noData() : days.length < 2
   ? html`<p class="empty">So far there is one day of data, ${longDate(latestDate)}, and ${pct(days[0].on_time_share_of_observed)} of the departures we saw that day were on time.
       A day-by-day trend line will appear once a second day comes in.</p>`
   : Plot.plot({
     ariaLabel: "Share of departures on time, by service day",
-    ariaDescription: `From ${longDate(days[0].day)} to ${longDate(latestDate)}. On the latest day, ${pct(days.at(-1).on_time_share_of_observed)} of the departures seen were on time.`,
+    ariaDescription: `From ${longDate(shownDays[0].day)} to ${longDate(latestDate)}. On the latest day, ${pct(days.at(-1).on_time_share_of_observed)} of the departures seen were on time.`,
     style: {background: "transparent"},
     width: Math.max(320, Math.min(width, 960)), height: 240, marginLeft: 50, marginRight: 30,
-    x: {type: "utc", label: null, ticks: days.length <= 8 ? days.map(d => d.date) : 8, tickFormat: "%b %-d"},
+    marginBottom: axis.marginBottom,
+    x: axis.x,
     y: {grid: true, label: "On time", domain: [0, 1], tickFormat: d => `${Math.round(d * 100)}%`},
     marks: [
       Plot.ruleY([0]),
-      Plot.lineY(days, {x: "date", y: "on_time_share_of_observed", stroke: SERIES, strokeWidth: 2}),
-      Plot.dot(days, {x: "date", y: "on_time_share_of_observed", fill: SERIES, r: 4}),
-      Plot.tip(days, Plot.pointerX({x: "date", y: "on_time_share_of_observed",
+      Plot.lineY(shownDays, {x: "date", y: "on_time_share_of_observed", stroke: SERIES, strokeWidth: 2}),
+      ...(shownDays.length <= DOTS_UP_TO ? [Plot.dot(shownDays, {x: "date", y: "on_time_share_of_observed", fill: SERIES, r: 4})] : []),
+      Plot.tip(shownDays, Plot.pointerX({x: "date", y: "on_time_share_of_observed",
         title: d => `${longDate(d.day)}\n${pct(d.on_time_share_of_observed, 1)} on time\n${pct(d.observed_share)} of departures seen`})),
     ],
   })}`
@@ -66,7 +77,9 @@ html`${hours.length === 0 ? noDetail() : html`<p class="note">This chart shows $
     ariaDescription: hours.map(d => `${d.label}: ${pct(d.on_time_share_of_observed)}`).join(", "),
     style: {background: "transparent"},
     width: Math.max(320, Math.min(width, 960)), height: 240, marginLeft: 50,
-    x: {label: null, domain: hours.map(d => d.label), padding: 0.25},
+    // On a narrow screen only every second or third hour is labeled.
+    x: {label: null, domain: hours.map(d => d.label), padding: 0.25,
+        ticks: hours.filter((_, i) => i % Math.max(1, Math.ceil(hours.length * 42 / (Math.max(320, Math.min(width, 960)) - 70))) === 0).map(d => d.label)},
     y: {grid: true, label: "On time", domain: [0, 1], tickFormat: d => `${Math.round(d * 100)}%`},
     marks: [
       Plot.barY(hours, {x: "label", y: "on_time_share_of_observed", fill: d => d.band.color, rx: 3}),

@@ -48,7 +48,7 @@ import {pct} from "./lib.js"
 reports = json("data/reports/index.json")
 reportBase = `${DATA_URL}/reports/`
 reportRows = (reports ?? []).map(r => ({...r, megabytes: r.bytes / 1e6})).reverse()
-html`${reportRows.length === 0 ? html`<p class="empty">No month is complete yet. The first report will cover November 2026.</p>` : Inputs.table(reportRows, {select: false,
+html`${reportRows.length === 0 ? html`<p class="empty">No month is complete yet.</p>` : Inputs.table(reportRows, {select: false,
   columns: ["month", "days_archived", "days_missing", "vehicle_uptime", "trip_coverage",
             "timepoint_observed_share", "on_time_share_of_observed", "megabytes"],
   header: {month: "Month", days_archived: "Days archived", days_missing: "Days missing",

@@ -51,6 +51,36 @@ export function isoDate(d) {
   return d instanceof Date ? d.toISOString().slice(0, 10) : String(d).slice(0, 10);
 }
 
+// Trend charts show the most recent service days unless the reader asks for
+// all of them; with more than a month on screen the dots are left out and the
+// line carries the chart.
+export const RECENT_DAYS = 90;
+export const DOTS_UP_TO = 31;
+
+export function recentDays(rows, all = false) {
+  return all || rows.length <= RECENT_DAYS ? rows : rows.slice(-RECENT_DAYS);
+}
+
+// Options for the date axis of a daily chart: {x, marginBottom}. Ticks sit on
+// days that have data, at most `maxTicks` of them and fewer on a narrow chart
+// (`chartWidth` in pixels), so labels do not run together. When the days span two
+// calendar years, the first tick and the first tick of each new year carry
+// the year on a second line, so "Jan 4" cannot be read as the wrong year.
+export function dateAxis(dates, maxTicks = 8, chartWidth = 960) {
+  const sorted = [...dates].sort((a, b) => a - b);
+  const fit = Math.max(2, Math.min(maxTicks, Math.floor(chartWidth / 75)));
+  const step = Math.max(1, Math.ceil(sorted.length / fit));
+  const ticks = sorted.filter((_, i) => i % step === 0);
+  const spansYears = new Set(sorted.map(d => d.getUTCFullYear())).size > 1;
+  const monthDay = d => d.toLocaleDateString("en-US", {month: "short", day: "numeric", timeZone: "UTC"});
+  const tickFormat = d => {
+    const i = ticks.findIndex(t => +t === +d);
+    const firstOfYear = i <= 0 || ticks[i - 1].getUTCFullYear() !== d.getUTCFullYear();
+    return spansYears && firstOfYear ? `${monthDay(d)}\n${d.getUTCFullYear()}` : monthDay(d);
+  };
+  return {x: {type: "utc", label: null, ticks, tickFormat}, marginBottom: spansYears ? 44 : 30};
+}
+
 export function count(n) {
   return n == null || Number.isNaN(n) ? "–" : Number(n).toLocaleString("en-US");
 }

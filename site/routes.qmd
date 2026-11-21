@@ -15,7 +15,7 @@ if it leaves from 1 minute early to 5 minutes late.
 ```{ojs}
 //| echo: false
 //| output: false
-import {json, pct, count, band, BANDS, NO_BAND, routeTitle, routeSub, routeOrder, routeSlug, lateness, plural, longDate, routeMap, MIN_OBSERVED, DATA_URL} from "./lib.js"
+import {json, pct, count, band, BANDS, NO_BAND, routeTitle, routeSub, routeOrder, routeSlug, lateness, plural, longDate, routeMap, dateAxis, MIN_OBSERVED, DATA_URL} from "./lib.js"
 import {drawRouteMap} from "./map.js"
 L = require("leaflet@1.9.4")
 recent = json("data/ontime/recent.json")
@@ -208,7 +208,7 @@ trendChart = (s) => {
     style: {background: "transparent", fontSize: "13px"},
     width: Math.max(320, Math.min(width, 960)),
     height: 220, marginLeft: 50, marginRight: 30,
-    x: {type: "utc", label: null, ticks: days.length <= 8 ? days.map(d => d.date) : 8, tickFormat: "%b %-d"},
+    ...dateAxis(days.map(d => d.date), 8, Math.max(320, Math.min(width, 960))),
     y: {domain: [0, 1], grid: true, label: "On time", tickFormat: d => `${Math.round(d * 100)}%`},
     marks: [
       Plot.ruleY([0]),

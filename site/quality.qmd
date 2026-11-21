@@ -11,7 +11,7 @@ as the feed itself. That's why we grade the feed every day.
 ```{ojs}
 //| echo: false
 //| output: false
-import {csv, json, pct, num, count, routeLabel, longDate, isoDate, serviceDays, SERIES, DATA_URL} from "./lib.js"
+import {csv, json, pct, num, count, routeLabel, longDate, isoDate, serviceDays, recentDays, dateAxis, RECENT_DAYS, DOTS_UP_TO, SERIES, DATA_URL} from "./lib.js"
 daily = csv(d3, "data/quality/daily.csv")
 // Days with scheduled service; a holiday is archived and listed under "All
 // days" but not graded or charted.
@@ -64,6 +64,16 @@ Hover over or tap each term for a plain explanation, or see the
 
 ```{ojs}
 //| echo: false
+// Shown only once there are more days than the charts hold by default.
+viewof showAll = days.length > RECENT_DAYS
+  ? Inputs.toggle({label: "All days"})
+  : Object.assign(html`<span hidden></span>`, {value: false})
+```
+
+```{ojs}
+//| echo: false
+shownDays = recentDays(days, showAll)
+axis = dateAxis(shownDays.map(d => d.date), 5, half)
 series = [
   {key: "trip_coverage", title: "Scheduled trips seen in the feed", unit: "share"},
   {key: "vehicle_uptime", title: "Collector uptime (vehicle locations)", unit: "share"},
@@ -78,17 +88,18 @@ html`${days.length === 0 ? noData() : days.length < 2 ? html`<p class="empty">Ch
   <h3 class="chart-title">${s.title}</h3>
   ${Plot.plot({
     ariaLabel: `${s.title}, by service day`,
-    ariaDescription: `From ${longDate(days[0].day)} to ${longDate(latestDate)}. Latest value: ${shown(s, days.at(-1))}.`,
+    ariaDescription: `From ${longDate(shownDays[0].day)} to ${longDate(latestDate)}. Latest value: ${shown(s, days.at(-1))}.`,
     style: {background: "transparent"},
     width: half, height: 200, marginLeft: 50, marginRight: 30,
-    x: {type: "utc", label: null, ticks: days.length <= 5 ? days.map(d => d.date) : 5, tickFormat: "%b %-d"},
+    marginBottom: axis.marginBottom,
+    x: axis.x,
     y: {grid: true, label: null, tickFormat: s.unit === "share" ? (d => `${Math.round(d * 100)}%`) : undefined,
         domain: s.unit === "share" ? [0, 1] : undefined},
     marks: [
       Plot.ruleY([0]),
-      Plot.lineY(days, {x: "date", y: s.key, stroke: SERIES, strokeWidth: 2}),
-      Plot.dot(days, {x: "date", y: s.key, fill: SERIES, r: 4}),
-      Plot.tip(days, Plot.pointerX({x: "date", y: s.key,
+      Plot.lineY(shownDays, {x: "date", y: s.key, stroke: SERIES, strokeWidth: 2}),
+      ...(shownDays.length <= DOTS_UP_TO ? [Plot.dot(shownDays, {x: "date", y: s.key, fill: SERIES, r: 4})] : []),
+      Plot.tip(shownDays, Plot.pointerX({x: "date", y: s.key,
         title: d => `${longDate(d.day)}\n${shown(s, d)}`})),
     ],
   })}</div>`)}</div>`}`
@@ -237,9 +248,8 @@ When the feed misses a trip, is that bad luck spread evenly, or does it
 tend to happen at certain hours, on certain routes, or when lots of buses
 are out at once? The tables below show the share of scheduled trips that
 sent no position report around the time they were due, over every day so
-far. Once there are
-14 days and 30 missed trips, a statistical model called a logistic
-regression will test all of these at the same time.
+far. Once there are enough days and enough missed trips, a statistical model
+called a logistic regression will test all of these at the same time.
 
 ```{ojs}
 //| echo: false
