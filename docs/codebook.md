@@ -13,7 +13,7 @@ quality metrics, on-time measures) will be added here as they are published.
   `manifest/static.json`: static GTFS versions and the version pinned to each
   service day. `crosswalk/`: links between the Passio and Trillium static
   feeds. `timepoints/`: true timepoints from the printed timetables.
-  `quality/`: daily feed-quality metrics. `ontime/`: experimental daily
+  `quality/`: daily feed-quality metrics. `ontime/`: daily
   on-time summaries. `manifest/events.json`: the stop-event files.
 
 A service day is a calendar date in `America/Los_Angeles`. A row belongs to
@@ -154,11 +154,10 @@ stop, or none, are left unresolved rather than guessed.
 | `timepoints.csv` | One row per printed stop and matched Passio stop: route, day type, direction, printed order and name, `passio_route_id`, `passio_stop_id`, `passio_stop_name`, and `match` (`name <score>`, `override`, or the reason it is unresolved) |
 | `summary.json` | Reference date, printed names, resolved names, the unresolved names with reasons, and the number of timepoint route-stop pairs |
 
-## Stop events (experimental)
+## Stop events
 
 Built nightly by `pipeline/events/infer.py` (method: `docs/methods.md`,
-section 3) and stored in the `parsed-YYYY-MM` release. Experimental until
-the field validation in `docs/methods.md`, section 5.
+section 3) and stored in the `parsed-YYYY-MM` release.
 
 ### `stop-events-YYYY-MM-DD.parquet`
 
@@ -188,7 +187,7 @@ shape the bus was followed, and the parts of the shape it left out
 (`shape_skips`, `skipped_m`). `shape_length_m` is after collapsing
 retraced segments (`docs/methods.md`, section 3).
 
-## `ontime/` (experimental)
+## `ontime/`
 
 `ontime/days/YYYY-MM-DD.json` and `ontime/daily.csv`, from
 `pipeline/events/ontime.py` (`docs/methods.md`, section 4). Counts are of
@@ -220,7 +219,7 @@ file, parsed tables and pinned schedule exist. Definitions are in
 
 - `quality/days/YYYY-MM-DD.json`: every metric for the day, grouped as
   `paradata`, `nonresponse`, `coverage`, `measurement`, `processing`,
-  `events` (metrics from inferred stop events, experimental; empty if the
+  `events` (metrics from inferred stop events; empty if the
   day has no stop events), plus the schedule used (`schedule`) and the
   SHA-256 of the input files (`inputs`). A day is recomputed when
   `QUALITY_VERSION` changes or its stop events are rebuilt.
@@ -251,11 +250,11 @@ file, parsed tables and pinned schedule exist. Definitions are in
 | `longest_gap_s_median` | Median over observed trips of the longest interval between new position reports |
 | `position_age_s_median`, `position_age_s_p95` | Time from the vehicle's timestamp to the first fetch that returned it |
 | `impossible_jumps` | Consecutive reports of one vehicle implying more than 130 km/h |
-| `timepoint_coverage` | Scheduled timepoint events with an inferred time (experimental) |
-| `stop_coverage` | The same at every stop (experimental) |
+| `timepoint_coverage` | Scheduled timepoint events with an inferred time |
+| `stop_coverage` | The same at every stop |
 | `off_shape_share` | Position reports in a trip's window more than 100 m from its shape |
-| `prediction_mae_s_5min` | Mean absolute error of arrival predictions published 5 minutes ahead, seconds (experimental) |
-| `prediction_within_60s_5min` | Share of those predictions within 60 s (experimental) |
+| `prediction_mae_s_5min` | Mean absolute error of arrival predictions published 5 minutes ahead, seconds |
+| `prediction_within_60s_5min` | Share of those predictions within 60 s |
 | `jitter_m_p95` | 95th percentile of position spread while a bus stands at a terminal, metres |
 | `unassignable_trip_ids` | Trip ids reported that are not in the static version or not scheduled that day |
 | `vehicles_missing_vs_30d` | Vehicles seen in the previous 30 days (with quality files) but not this day |

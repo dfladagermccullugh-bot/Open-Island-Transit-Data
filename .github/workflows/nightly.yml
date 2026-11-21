@@ -61,7 +61,7 @@ jobs:
               "Trillium stops, routes and Trillium timepoints for each version pair;" \
               "\`timepoints/\` holds the true timepoints from the printed timetables;" \
               "\`quality/\` holds the daily feed-quality metrics; \`ontime/\` the" \
-              "experimental on-time summaries." > README.md
+              "on-time summaries." > README.md
           fi
 
       - name: Archive pending days

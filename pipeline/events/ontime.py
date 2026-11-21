@@ -1,6 +1,6 @@
 """Daily on-time summary at true timepoints (docs/methods.md, section 4).
 
-EXPERIMENTAL until the field validation in docs/methods.md, section 5.
+Validation: docs/methods.md, section 5.
 
 For each scheduled timepoint event (a trip's scheduled time at one of its
 true timepoints):
@@ -23,7 +23,7 @@ from typing import Any
 
 from pipeline.config import PACIFIC
 
-ONTIME_VERSION = "ontime/0.1.0"
+ONTIME_VERSION = "ontime/0.1.1"
 EARLY_S = -60
 LATE_S = 300
 
@@ -83,7 +83,6 @@ def summarize(events: list[Row], collection_start: datetime) -> dict[str, Any]:
             hour_devs[hour].append(dev)
     return {
         "ontime_version": ONTIME_VERSION,
-        "experimental": True,
         "definition": {
             "window_s": [EARLY_S, LATE_S],
             "measured": "departure at timepoints; arrival at the last stop",

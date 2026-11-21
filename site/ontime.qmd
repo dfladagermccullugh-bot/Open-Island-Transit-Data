@@ -1,11 +1,13 @@
 ---
-title: "On-time performance (experimental)"
+title: "On-time performance"
 ---
 
-::: {.experimental}
-**Experimental.** These figures are inferred from bus positions, not
-reported by Island Transit, and have not yet been checked against
-arrivals timed in person. See [Methods](methods.qmd), sections 3 to 5.
+::: {.method-note}
+These figures are inferred from bus positions, not reported by Island
+Transit. Automatic checks run on every route every day; in-person checks
+are ongoing and so far cover route 60, where timed stops agreed with the
+inferred times within seconds. See [Methods](methods.qmd), sections 3 to 5,
+and the field check below.
 :::
 
 A bus is **on time** at a timepoint when it leaves between 1 minute early

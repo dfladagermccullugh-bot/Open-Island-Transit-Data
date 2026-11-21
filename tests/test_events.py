@@ -169,7 +169,7 @@ def test_summarize_skips_non_timepoints_and_events_before_collection():
     assert (s["scheduled"], s["observed"], s["on_time"], s["late"]) == (3, 2, 1, 1)
     assert s["observed_share"] == round(2 / 3, 4)
     assert s["on_time_share_of_observed"] == 0.5
-    assert s["experimental"] is True
+    assert "experimental" not in s
     assert s["by_hour"]["6"]["scheduled"] == 3  # 06:10 to 06:30 Pacific
 
 

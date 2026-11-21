@@ -7,8 +7,7 @@ Inputs for one service day:
   vehicles      the parsed vehicles table
   terminals     (lat, lon) of every first and last stop of the day's trips
 
-Stop events are experimental (see docs/methods.md, section 5), so these
-metrics inherit that label.
+Validation of the stop events: docs/methods.md, section 5.
 """
 
 from __future__ import annotations

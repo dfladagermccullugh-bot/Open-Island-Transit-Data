@@ -29,8 +29,8 @@ series = [
   {key: "stale_in_service_rate", title: "Stale vehicle feed while buses are scheduled", unit: "share"},
   {key: "position_age_s_median", title: "Median age of positions when first seen (s)", unit: "s"},
   {key: "longest_gap_s_median", title: "Median longest gap in a trip's positions (s)", unit: "s"},
-  {key: "timepoint_coverage", title: "Timepoint events with an inferred time (experimental)", unit: "share"},
-  {key: "prediction_mae_s_5min", title: "Arrival prediction error 5 minutes ahead, mean absolute (s, experimental)", unit: "s"},
+  {key: "timepoint_coverage", title: "Timepoint events with an inferred time", unit: "share"},
+  {key: "prediction_mae_s_5min", title: "Arrival prediction error 5 minutes ahead, mean absolute (s)", unit: "s"},
 ]
 html`${days.length === 0 ? noData() : html`<div class="grid">${series.map(s => html`<div class="g-col-12 g-col-md-6">
   <h4 style="font-size:1rem">${s.title}</h4>
@@ -78,7 +78,7 @@ html`${byRoute.length === 0 ? noData() : Plot.plot({
 })}`
 ```
 
-### Timepoint events observed, by route (experimental)
+### Timepoint events observed, by route
 
 Scheduled departures at printed timepoints (arrivals at a trip's last stop)
 for which a time could be inferred from vehicle positions.
@@ -103,7 +103,7 @@ html`${stopRoute.length === 0 ? noData() : Plot.plot({
 })}`
 ```
 
-### Arrival predictions (experimental)
+### Arrival predictions
 
 The feed's predicted arrival time, as published a given number of minutes
 before the bus arrived, minus the arrival time inferred from vehicle
@@ -148,7 +148,7 @@ other = latest == null ? [] : [
   ["Median response time, vehicle positions", `${num(latest.paradata.vehiclePositions.latency_ms_median)} ms`],
   ["Distinct vehicles reporting", latest.coverage.vehicles_seen],
   ...(ev == null ? [] : [
-    ["All stop events with an inferred time (experimental)", pct(ev.stop_coverage.all_stops.coverage, 1)],
+    ["All stop events with an inferred time", pct(ev.stop_coverage.all_stops.coverage, 1)],
     ["Positions more than 100 m off the route shape", pct(ev.shape_fit.off_shape_share, 1)],
     ["Positions moving against the route shape", pct(ev.shape_fit.wrong_direction_share, 1)],
     ["Trips that left out part of the published route shape", `${ev.shape_fit.trips_skipping_part_of_shape} (${num(ev.shape_fit.skipped_km, 1)} km)`],

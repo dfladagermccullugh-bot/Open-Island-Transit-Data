@@ -34,7 +34,7 @@ Implemented in `pipeline/quality/metrics.py`. Notes on the implementation:
 - Position age is measured at the first fetch that returned a position.
 - Metrics built on inferred stop events (stop-level coverage, off-shape
   positions, prediction error) are in `pipeline/quality/stops.py`, grouped
-  under `events` in the day file, and labelled experimental like the events.
+  under `events` in the day file.
 - Stop-level coverage uses the same measured time as the on-time figures:
   departure, or arrival at a trip's last stop. Off-shape counts are of
   reports within a trip's scheduled window, from `trip-tracks`.
@@ -170,7 +170,7 @@ Known problems and how they are handled:
 
 ## 5. Validation
 
-On-time figures are labelled experimental until all three hold:
+Three checks support the inferred times and on-time figures:
 
 1. Field check: arrivals and departures timed in person with a
    network-synchronised clock, compared with the inferred times. Reported:

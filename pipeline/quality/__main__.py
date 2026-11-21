@@ -173,7 +173,6 @@ def event_metrics(
     out = data / "quality"
     today_ids = {v["vehicle_id"] for v in vehicles if v["vehicle_id"] is not None}
     metrics = {
-        "experimental": True,
         "events_version": entry["events_version"],
         "stop_coverage": stop_metrics.stop_coverage(events, COLLECTION_START),
         "shape_fit": stop_metrics.shape_fit(tracks),

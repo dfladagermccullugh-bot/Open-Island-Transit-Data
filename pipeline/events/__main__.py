@@ -259,7 +259,7 @@ def main() -> int:
             o = built["ontime"]
             print(
                 f"{day}: {entry['rows']}; timepoint events {o['scheduled']}, observed "
-                f"{o['observed_share']}, on time {o['on_time_share_of_observed']} (experimental)"
+                f"{o['observed_share']}, on time {o['on_time_share_of_observed']}"
             )
         except Exception as exc:  # keep going; one bad day must not block the rest
             failed = True

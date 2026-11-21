@@ -6,7 +6,8 @@ This site archives the real-time bus data published by
 [Island Transit](https://www.islandtransit.org/) (Whidbey and Camano
 Islands, Washington) and measures how good that data is, using the error
 framework survey researchers apply to any data source. It also estimates
-on-time performance from bus positions; those figures are experimental.
+on-time performance from bus positions, checked automatically every day
+and in person on route 60.
 
 ## Collector, live
 
@@ -60,7 +61,7 @@ html`${q == null
     <div class="stat"><div class="label">Age of positions when first seen</div>
       <div class="value">${num(q.position_age_s_median)} s</div>
       <div class="note">median; 95th percentile ${num(q.position_age_s_p95)} s</div></div>
-    <div class="stat"><div class="label">On time at timepoints (experimental)</div>
+    <div class="stat"><div class="label">On time at timepoints</div>
       <div class="value">${o ? pct(o.on_time_share_of_observed) : "–"}</div>
       <div class="note">${o ? `of observed events; ${pct(o.observed_share)} of scheduled events observed` : "not yet computed"}</div></div>
   </div>`}`

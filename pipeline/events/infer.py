@@ -42,7 +42,7 @@ from pipeline.events.geometry import Shape
 from pipeline.gtfs.schedule import day_origin, scheduled_trips
 from pipeline.gtfs.zipread import ZipContents
 
-EVENTS_VERSION = "events/0.2.0"
+EVENTS_VERSION = "events/0.2.1"
 
 WINDOW_MIN = 30
 OFF_SHAPE_M = 100.0

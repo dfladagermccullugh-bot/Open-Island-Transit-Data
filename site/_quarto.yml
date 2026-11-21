@@ -15,7 +15,7 @@ website:
       - href: quality.qmd
         text: Feed quality
       - href: ontime.qmd
-        text: On-time (experimental)
+        text: On-time
       - href: methods.qmd
         text: Methods
       - href: data.qmd
