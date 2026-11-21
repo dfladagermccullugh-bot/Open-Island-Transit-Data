@@ -5,7 +5,7 @@ title: "On-time performance"
 ::: {.method-note}
 These figures are calculated by this project from two things Island
 Transit publishes: its real-time bus positions and its schedule. The
-feed shows where each bus is every few seconds and which stop it is heading
+feed shows where each bus is about every 20 seconds and which stop it is heading
 to, but it keeps no record of the moment a bus reached a stop and has no
 "minutes late" field. This project works out those moments from the
 positions on either side of each stop and compares them with the schedule. They are not official Island Transit figures.
