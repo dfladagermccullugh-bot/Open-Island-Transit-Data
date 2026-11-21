@@ -15,6 +15,12 @@ when a route has no unobserved trips at all (ordinary maximum likelihood
 does not). The joint likelihood-ratio test of all predictors asks whether
 gaps depend on when, where and how busy service is; a small p-value means
 they are not missing completely at random.
+
+Limits: the model treats every trip as independent. Trips on the same day or
+run by the same bus tend to be lost together (one bus with a failed tracker
+loses a whole block of trips), so the standard errors are too small and the
+p-values too confident. The rates do not have this problem. Days on which
+Island Transit runs no service are left out (``pipeline/gtfs/holidays.py``).
 """
 
 from __future__ import annotations
@@ -28,7 +34,7 @@ from typing import Any
 
 import numpy as np
 
-GAPS_VERSION = "gaps/0.1.0"
+GAPS_VERSION = "gaps/0.2.0"
 MIN_DAYS = 14
 MIN_UNOBSERVED = 30
 MIN_ROUTE_TRIPS = 30  # routes with fewer scheduled trips are pooled as "other"
@@ -58,8 +64,8 @@ def collect(days_dir: Path) -> tuple[list[dict[str, Any]], list[str]]:
     for f in sorted(days_dir.glob("*.json")):
         m = json.loads(f.read_text())
         trips = (m.get("coverage") or {}).get("trips")
-        if not trips:
-            continue
+        if not trips or not (m.get("schedule") or {}).get("service_expected", True):
+            continue  # no trip rows, or a day with no service: nothing to explain
         d = date.fromisoformat(m["service_date"])
         cols = trips["columns"]
         for r in trips["rows"]:
@@ -268,6 +274,9 @@ def summarise(days_dir: Path) -> dict[str, Any]:
         "rates": rates(rows) if rows else None,
         "model": None,
         "model_status": None,
+        "limits": "The model treats trips as independent. Trips lost together on one day or "
+        "one bus make its standard errors too small and its p-values too confident. Days with "
+        "no service are left out.",
     }
     if len(used) < MIN_DAYS or unobserved < MIN_UNOBSERVED:
         out["model_status"] = (

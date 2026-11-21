@@ -22,8 +22,9 @@ from typing import Any
 from pipeline.archive.days import day_bounds
 from pipeline.config import PACIFIC
 from pipeline.gtfs.schedule import ServiceWindows, Trip
+from pipeline.stats import quantile as _quantile
 
-QUALITY_VERSION = "quality/0.3.0"
+QUALITY_VERSION = "quality/0.4.0"
 
 Row = dict[str, Any]
 
@@ -31,6 +32,7 @@ SLOT_SECONDS = {"vehiclePositions": 20, "tripUpdates": 20, "serviceAlerts": 300}
 STALE_SECONDS = 120
 GAP_SECONDS = 90
 MAX_KMH = 130
+WINDOW_MIN = 30  # a trip is observed if a report carries its id this close to its schedule
 VEHICLE_FIELDS = (
     "vehicle_id",
     "vehicle_label",
@@ -59,16 +61,6 @@ def _ok(f: Row) -> bool:
     return f.get("http_status") == 200 and not f.get("error_class")
 
 
-def _quantile(values: list[float], q: float) -> float | None:
-    """Linear-interpolation quantile (same as numpy's default)."""
-    if not values:
-        return None
-    v = sorted(values)
-    pos = (len(v) - 1) * q
-    lo, hi = math.floor(pos), math.ceil(pos)
-    return v[lo] + (v[hi] - v[lo]) * (pos - lo)
-
-
 def _share(num: int, den: int) -> float | None:
     return round(num / den, 6) if den else None
 
@@ -88,28 +80,68 @@ def _metres(lat1: float, lon1: float, lat2: float, lon2: float) -> float:
     return 2 * 6_371_000 * math.asin(math.sqrt(a))
 
 
+def distinct_reports(vehicles: list[Row]) -> list[Row]:
+    """One row per position report. The vehicles table has one row per run of
+    unchanged values, and a run also ends when a fetch fails or the vehicle
+    is briefly absent, so the same report (vehicle and vehicle timestamp) can
+    appear in several rows. The row first fetched is kept. Rows without a
+    vehicle timestamp cannot be told apart and are all kept."""
+    first: dict[tuple[str, datetime], Row] = {}
+    out: list[Row] = []
+    for v in sorted(vehicles, key=lambda r: r["first_fetch_id"]):
+        if v["vehicle_ts"] is None:
+            out.append(v)
+        elif (key := (v["vehicle_key"], v["vehicle_ts"])) not in first:
+            first[key] = v
+            out.append(v)
+    return out
+
+
 # --- paradata ---------------------------------------------------------------
 
 
+def _slots(times: list[datetime], step: int, phase: float) -> set[int]:
+    """Slot numbers of scheduler ticks. Slots are ``step`` seconds wide and
+    centred on the usual tick moment (``phase`` seconds into each step), so
+    a tick a little early or late still falls in its own slot."""
+    return {math.floor((t.timestamp() - phase) / step + 0.5) for t in times}
+
+
+def _phase(times: list[datetime], step: int) -> float:
+    """The usual moment within each ``step`` at which the scheduler fires:
+    the circular mean of the tick times modulo ``step``."""
+    if not times:
+        return 0.0
+    angles = [(t.timestamp() % step) / step * 2 * math.pi for t in times]
+    mean = math.atan2(sum(map(math.sin, angles)), sum(map(math.cos, angles)))
+    return (mean / (2 * math.pi) * step) % step
+
+
 def paradata(fetches: list[Row], day: date, collection_start: datetime) -> dict[str, Any]:
+    """Collector uptime by feed: the share of scheduler slots in the service
+    day that hold a successful fetch. A fetch belongs to the day its slot
+    falls in, whichever side of midnight it was logged."""
     start, end = day_bounds(day)
     observed_from = max(start, collection_start)
     out: dict[str, Any] = {"observed_from": observed_from.isoformat()}
     for feed, step in SLOT_SECONDS.items():
-        mine = [f for f in fetches if f["feed"] == feed]
-        expected = max(0, math.ceil((end - observed_from).total_seconds() / step))
-        slots = {int(f["scheduled_at"].timestamp()) // step for f in mine if f["scheduled_at"]}
-        ok_slots = {
-            int(f["scheduled_at"].timestamp()) // step for f in mine if f["scheduled_at"] and _ok(f)
-        }
+        mine = [f for f in fetches if f["feed"] == feed and f["scheduled_at"]]
+        phase = _phase([f["scheduled_at"] for f in mine], step)
+        lo = math.ceil((observed_from.timestamp() - phase) / step)
+        hi = math.ceil((end.timestamp() - phase) / step)  # slots lo .. hi-1 are centred in the day
+        in_day = set(range(lo, hi))
+        slots = _slots([f["scheduled_at"] for f in mine], step, phase) & in_day
+        ok_slots = _slots([f["scheduled_at"] for f in mine if _ok(f)], step, phase) & in_day
         latency = [f["latency_ms"] for f in mine if f.get("latency_ms") is not None]
+        expected = len(in_day)
         out[feed] = {
             "slots_expected": expected,
             "slots_logged": len(slots),
             "slots_ok": len(ok_slots),
             "uptime": _share(len(ok_slots), expected),
-            "not_logged": max(0, expected - len(slots)),
+            "not_logged": expected - len(slots),
             "logged_not_ok": len(slots - ok_slots),
+            "tick_phase_s": round(phase, 2),
             "latency_ms_median": _r(_quantile(latency, 0.5)),
             "latency_ms_p95": _r(_quantile(latency, 0.95)),
             "collector_versions": sorted(
@@ -138,7 +170,10 @@ def fetch_nonresponse(fetches: list[Row]) -> dict[str, Any]:
 
 def feed_emptiness(fetches: list[Row], windows: ServiceWindows) -> dict[str, Any]:
     """Empty and stale vehicle-position fetches while service is scheduled,
-    overall and by Pacific hour."""
+    overall and by Pacific hour. Both rates are shares of successful fetches
+    in service. A fetch is empty if it lists no vehicle, and stale if it
+    lists vehicles and the newest vehicle timestamp is more than
+    ``STALE_SECONDS`` old; an empty fetch is not also counted as stale."""
     by_hour: dict[int, Counter[str]] = defaultdict(Counter)
     total: Counter[str] = Counter()
     for f in fetches:
@@ -157,8 +192,11 @@ def feed_emptiness(fetches: list[Row], windows: ServiceWindows) -> dict[str, Any
             c["ok_in_service"] += 1
             if not f.get("entity_count"):
                 c["empty_in_service"] += 1
+                continue  # empty is counted once, not also as stale
             newest = f.get("newest_entity_ts")
-            if newest is None or (f["requested_at"] - newest).total_seconds() > STALE_SECONDS:
+            if newest is None:
+                c["no_timestamp_in_service"] += 1
+            elif (f["requested_at"] - newest).total_seconds() > STALE_SECONDS:
                 c["stale_in_service"] += 1
     return {
         "in_service_fetches": total["in_service"],
@@ -167,11 +205,14 @@ def feed_emptiness(fetches: list[Row], windows: ServiceWindows) -> dict[str, Any
         "empty_in_service_rate": _share(total["empty_in_service"], total["ok_in_service"]),
         "stale_in_service": total["stale_in_service"],
         "stale_in_service_rate": _share(total["stale_in_service"], total["ok_in_service"]),
+        "no_timestamp_in_service": total["no_timestamp_in_service"],
         "by_hour": {str(k): dict(v) for k, v in sorted(by_hour.items())},
     }
 
 
 def item_nonresponse(vehicles: list[Row]) -> dict[str, Any]:
+    """Share of position reports with each field empty (``vehicles`` should
+    be distinct reports)."""
     n = len(vehicles)
     return {
         "position_reports": n,
@@ -190,17 +231,30 @@ def _reports_by_vehicle(vehicles: list[Row]) -> dict[str, list[Row]]:
     return by
 
 
-def trip_gaps(vehicles: list[Row]) -> dict[str, Any]:
-    """For each observed trip: longest interval between successive new
-    position reports, and the share of the observed trip spent in gaps over
-    GAP_SECONDS."""
-    by_trip: dict[str, set[datetime]] = defaultdict(set)
+def reports_in_window(vehicles: list[Row], trips: list[Trip]) -> dict[str, dict[str, set]]:
+    """Scheduled trip id -> vehicle -> vehicle timestamps of the reports that
+    carry the trip's id within ``WINDOW_MIN`` minutes of its schedule. A bus
+    can show a trip id hours before or after the trip (the same ids run
+    every day, and a bus at a terminal shows its next trip), so reports
+    outside the window say nothing about whether the trip was tracked."""
+    margin = timedelta(minutes=WINDOW_MIN)
+    window = {t.trip_id: (t.start - margin, t.end + margin) for t in trips}
+    out: dict[str, dict[str, set]] = defaultdict(lambda: defaultdict(set))
     for v in vehicles:
-        if v["trip_id"] is not None and v["vehicle_ts"] is not None:
-            by_trip[v["trip_id"]].add(v["vehicle_ts"])
+        w = window.get(v["trip_id"])
+        if w and v["vehicle_ts"] is not None and w[0] <= v["vehicle_ts"] <= w[1]:
+            out[v["trip_id"]][v["vehicle_key"]].add(v["vehicle_ts"])
+    return out
+
+
+def trip_gaps(vehicles: list[Row], trips: list[Trip]) -> dict[str, Any]:
+    """For each observed scheduled trip: longest interval between successive
+    position reports, and the share of the observed trip spent in gaps over
+    GAP_SECONDS. Reports are those of the vehicle with the most reports for
+    the trip, inside the trip's window (``reports_in_window``)."""
     longest, gap_share = [], []
-    for stamps in by_trip.values():
-        s = sorted(stamps)
+    for by_vehicle in reports_in_window(vehicles, trips).values():
+        s = sorted(max(by_vehicle.values(), key=len))
         if len(s) < 2:
             continue
         steps = [(b - a).total_seconds() for a, b in zip(s, s[1:], strict=False)]
@@ -226,7 +280,7 @@ TRIP_COLUMNS = ("trip_id", "route_id", "start_hour", "scheduled_in_service", "ob
 def trip_records(trips: list[Trip], seen: set[str]) -> list[list[Any]]:
     """One row per scheduled trip: Pacific hour of its first departure, how
     many scheduled trips (itself included) are in service at that moment,
-    and whether any position carried its id. Input to the gap model
+    and whether any position carried its id within its window. Input to the gap model
     (``pipeline/quality/gaps.py``)."""
     rows = []
     for t in sorted(trips, key=lambda t: (t.start, t.trip_id)):
@@ -240,16 +294,22 @@ def coverage(
     trips: list[Trip],
     static_trip_ids: set[str],
     todays_trip_ids: set[str] | None = None,
+    reports: list[Row] | None = None,
 ) -> dict[str, Any]:
-    """Trip coverage over ``trips`` (those observable); over-coverage against
-    every trip scheduled that day (``todays_trip_ids``, default ``trips``)."""
-    seen = {v["trip_id"] for v in vehicles if v["trip_id"] is not None}
+    """Trip coverage over ``trips`` (those observable): a trip is observed
+    when at least one report carries its id within ``WINDOW_MIN`` minutes of
+    its schedule. Over-coverage is counted over distinct position reports
+    (``reports``, default ``vehicles``) against every trip scheduled that
+    day (``todays_trip_ids``, default ``trips``)."""
+    reports = vehicles if reports is None else reports
+    seen = set(reports_in_window(vehicles, trips))
+    anytime = {v["trip_id"] for v in vehicles if v["trip_id"] is not None}
     scheduled = {t.trip_id for t in trips}
     by_route: dict[str, Counter[str]] = defaultdict(Counter)
     for t in trips:
         by_route[t.route_id]["scheduled"] += 1
         by_route[t.route_id]["observed"] += t.trip_id in seen
-    ids = [v["trip_id"] for v in vehicles]
+    ids = [v["trip_id"] for v in reports]
     no_trip = sum(t is None for t in ids)
     unknown = sum(t is not None and t not in static_trip_ids for t in ids)
     today = todays_trip_ids if todays_trip_ids is not None else scheduled
@@ -258,6 +318,8 @@ def coverage(
         "scheduled_trips": len(scheduled),
         "observed_scheduled_trips": len(scheduled & seen),
         "trip_coverage": _share(len(scheduled & seen), len(scheduled)),
+        "window_min": WINDOW_MIN,
+        "trips_seen_only_outside_window": len((scheduled & anytime) - seen),
         "routes_never_reporting": sorted(r for r, c in by_route.items() if not c["observed"]),
         "by_route": {
             r: {**c, "coverage": _share(c["observed"], c["scheduled"])}
@@ -269,11 +331,11 @@ def coverage(
         },
         "vehicles_seen": len({v["vehicle_key"] for v in vehicles}),
         "over_coverage": {
-            "position_reports": len(vehicles),
+            "position_reports": len(reports),
             "no_trip_id": no_trip,
             "trip_id_not_in_static": unknown,
             "trip_not_scheduled_today": off_day,
-            "share": _share(no_trip + unknown + off_day, len(vehicles)),
+            "share": _share(no_trip + unknown + off_day, len(reports)),
         },
     }
 
@@ -282,6 +344,8 @@ def coverage(
 
 
 def measurement(vehicles: list[Row]) -> dict[str, Any]:
+    """``vehicles`` should be distinct reports, so that a report's age is
+    measured at the first fetch that returned it."""
     ages = [
         (v["first_requested_at"] - v["vehicle_ts"]).total_seconds()
         for v in vehicles
@@ -349,6 +413,7 @@ def day_metrics(
 ) -> dict[str, Any]:
     fetches = list(fetches)
     vehicles = list(vehicles)
+    reports = distinct_reports(vehicles)
     # Only trips that had not ended before collection began can be observed.
     observed_from = max(day_bounds(day)[0], collection_start)
     all_trips, trips = trips, [t for t in trips if t.end >= observed_from]
@@ -374,10 +439,17 @@ def day_metrics(
         "nonresponse": {
             "fetch": fetch_nonresponse(fetches),
             "vehicle_feed": feed_emptiness(fetches, windows),
-            "items": item_nonresponse(vehicles),
-            "trip_gaps": trip_gaps(vehicles),
+            "items": item_nonresponse(reports),
+            "trip_gaps": trip_gaps(vehicles, trips),
         },
-        "coverage": coverage(vehicles, trips, static_ids["trips"], {t.trip_id for t in all_trips}),
-        "measurement": measurement(vehicles),
-        "processing": {"id_match": id_match(vehicles, static_ids), **(extra or {})},
+        "coverage": coverage(
+            vehicles, trips, static_ids["trips"], {t.trip_id for t in all_trips}, reports
+        ),
+        "measurement": measurement(reports),
+        "processing": {
+            "id_match": id_match(reports, static_ids),
+            "vehicle_table_rows": len(vehicles),
+            "distinct_position_reports": len(reports),
+            **(extra or {}),
+        },
     }

@@ -43,6 +43,8 @@ from pipeline.gtfs.zipread import ZipContents
 
 CODE_MAX_M = 150.0
 DISTANCE_MAX_M = 60.0
+CROSSWALK_VERSION = "crosswalk/0.1.0"
+
 DAYS = ("monday", "tuesday", "wednesday", "thursday", "friday", "saturday", "sunday")
 
 Row = dict[str, Any]

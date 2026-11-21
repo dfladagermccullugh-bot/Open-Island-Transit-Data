@@ -26,8 +26,9 @@ from datetime import datetime
 from typing import Any
 
 from pipeline.config import PACIFIC
+from pipeline.stats import median
 
-ONTIME_VERSION = "ontime/0.2.0"
+ONTIME_VERSION = "ontime/0.3.0"
 EARLY_S = -60
 LATE_S = 300
 
@@ -52,7 +53,7 @@ def classify(event: Row) -> tuple[str, float | None, datetime | None]:
 def _block(counts: Counter, devs: list[float]) -> dict[str, Any]:
     scheduled = sum(counts.values())
     observed = scheduled - counts["not_observed"]
-    devs = sorted(devs)
+    mid = median(devs)
     return {
         "scheduled": scheduled,
         "observed": observed,
@@ -61,7 +62,7 @@ def _block(counts: Counter, devs: list[float]) -> dict[str, Any]:
         "early": counts["early"],
         "late": counts["late"],
         "on_time_share_of_observed": round(counts["on_time"] / observed, 4) if observed else None,
-        "deviation_s_median": round(devs[len(devs) // 2], 1) if devs else None,
+        "deviation_s_median": round(mid, 1) if mid is not None else None,
     }
 
 

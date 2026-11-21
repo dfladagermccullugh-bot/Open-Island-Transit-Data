@@ -4,8 +4,9 @@
         --raw-dir work/files --tables-dir work/tables --out work/events --release
 
 A day is pending when it has parsed tables, a pinned Passio version and a
-timepoints folder, and ``manifest/events.json`` lacks it or records an older
-``EVENTS_VERSION`` or a different timepoints folder. Inputs come from local
+timepoints folder, and ``manifest/events.json`` lacks it or records another
+``EVENTS_VERSION``, ``ONTIME_VERSION`` or ``VALIDATE_VERSION``, a different
+timepoints folder, or a vehicles table that has since been rebuilt. Inputs come from local
 copies when their SHA-256 matches, otherwise from Releases.
 
 Writes ``stop-events-<date>.parquet`` and ``trip-tracks-<date>.parquet``
@@ -38,8 +39,10 @@ from pipeline.config import COLLECTION_START, REPO
 from pipeline.events.infer import EVENTS_VERSION, infer_day
 from pipeline.events.ontime import ONTIME_VERSION, summarize
 from pipeline.events.routes import write_routes
-from pipeline.events.validate import validate
+from pipeline.events.validate import VALIDATE_VERSION, validate
+from pipeline.gtfs.holidays import no_service, service_expected
 from pipeline.gtfs.schedule import route_names
+from pipeline.gtfs.timepoints import timepoint_pairs
 from pipeline.gtfs.zipread import read_zip
 
 TS = pa.timestamp("us", tz="UTC")
@@ -54,6 +57,7 @@ EVENT_SCHEMA = pa.schema(
         ("is_last_stop", pa.bool_()),
         ("is_timepoint", pa.bool_()),
         ("stop_distance_m", pa.float64()),
+        ("stop_offset_m", pa.float64()),
         ("scheduled_arrival", TS),
         ("scheduled_departure", TS),
         ("arrival_time", TS),
@@ -83,6 +87,7 @@ TRACK_SCHEMA = pa.schema(
         ("max_distance_m", pa.float64()),
         ("shape_skips", pa.int32()),
         ("skipped_m", pa.float64()),
+        ("problem", pa.string()),
     ]
 )
 DAILY = [
@@ -96,6 +101,7 @@ DAILY = [
     "on_time_share_of_observed",
     "deviation_s_median",
     "feed_agreement_share",
+    "service_expected",
     "ontime_version",
 ]
 
@@ -134,6 +140,9 @@ def pending(data: Path) -> list[date]:
             or prev.get("events_version") != EVENTS_VERSION
             or prev.get("ontime_version") != ONTIME_VERSION
             or prev.get("timepoints") != pins["timepoints"]
+            or prev.get("validate_version") != VALIDATE_VERSION
+            or prev.get("service_expected", True) != service_expected(day)
+            or prev.get("vehicles_sha256") != _sha(entry, f"vehicles-{day}.parquet")
         ):
             out.append(date.fromisoformat(day))
     return sorted(out)
@@ -157,11 +166,8 @@ def build(day: date, data: Path, raw_dir: Path, tables_dir: Path, out: Path, rep
     passio = read_zip(zpath.read_bytes())
 
     tp_file = data / "timepoints" / pins["timepoints"] / "timepoints.csv"
-    pairs = {
-        (r["passio_route_id"], r["passio_stop_id"])
-        for r in csv.DictReader(tp_file.open())
-        if r["passio_stop_id"]
-    }
+    with tp_file.open(encoding="utf-8", newline="") as fh:
+        pairs = timepoint_pairs(list(csv.DictReader(fh)), day)
 
     events, tracks = infer_day(day, passio, vehicles, pairs)
     out.mkdir(parents=True, exist_ok=True)
@@ -181,6 +187,8 @@ def build(day: date, data: Path, raw_dir: Path, tables_dir: Path, out: Path, rep
     summary.update(
         {
             "service_date": d,
+            "service_expected": service_expected(day),
+            "no_service_day": no_service(day),
             "passio_version": pins["passio"]["version"],
             "timepoints": pins["timepoints"],
             "events_version": EVENTS_VERSION,
@@ -196,6 +204,8 @@ def build(day: date, data: Path, raw_dir: Path, tables_dir: Path, out: Path, rep
             "service_date": d,
             "events_version": EVENTS_VERSION,
             "ontime_version": ONTIME_VERSION,
+            "validate_version": VALIDATE_VERSION,
+            "service_expected": service_expected(day),
             "passio_version": pins["passio"]["version"],
             "timepoints": pins["timepoints"],
             "vehicles_sha256": _sha(parsed, veh_name),

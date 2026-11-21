@@ -168,6 +168,17 @@ def build(data: Path, month: str, today: date | None = None) -> dict[str, Any]:
     ontime = {d: _load(data / "ontime" / "days" / f"{d}.json") for d in archived}
     ontime = {d: o for d, o in ontime.items() if o}
 
+    # Days with no service stay in the collection figures (the collector ran)
+    # but not in coverage or on-time figures, where they would read as a day
+    # of lost buses.
+    no_service = sorted(
+        d for d, q in quality.items() if not (q.get("schedule") or {}).get("service_expected", True)
+    )
+    all_quality = quality
+    quality = {d: q for d, q in quality.items() if d not in no_service}
+    ontime_all = ontime
+    ontime = {d: o for d, o in ontime.items() if d not in no_service}
+
     partial = [
         {
             "service_date": d,
@@ -182,10 +193,10 @@ def build(data: Path, month: str, today: date | None = None) -> dict[str, Any]:
 
     collection = {}
     for feed in FEEDS:
-        exp = sum(q["paradata"][feed]["slots_expected"] for q in quality.values())
-        ok = sum(q["paradata"][feed]["slots_ok"] for q in quality.values())
-        att = sum(q["nonresponse"]["fetch"][feed]["attempted"] for q in quality.values())
-        fail = sum(q["nonresponse"]["fetch"][feed]["failed"] for q in quality.values())
+        exp = sum(q["paradata"][feed]["slots_expected"] for q in all_quality.values())
+        ok = sum(q["paradata"][feed]["slots_ok"] for q in all_quality.values())
+        att = sum(q["nonresponse"]["fetch"][feed]["attempted"] for q in all_quality.values())
+        fail = sum(q["nonresponse"]["fetch"][feed]["failed"] for q in all_quality.values())
         collection[feed] = {
             "slots_expected": exp,
             "slots_ok": ok,
@@ -194,11 +205,11 @@ def build(data: Path, month: str, today: date | None = None) -> dict[str, Any]:
             "failed": fail,
             "failure_rate": _share(fail, att),
             "uptime_by_day": _range(
-                [(d, q["paradata"][feed]["uptime"]) for d, q in sorted(quality.items())]
+                [(d, q["paradata"][feed]["uptime"]) for d, q in sorted(all_quality.items())]
             ),
         }
     versions: set[str] = set()
-    for q in quality.values():
+    for q in all_quality.values():
         for feed in FEEDS:
             versions.update(q["paradata"][feed].get("collector_versions", []))
 
@@ -262,7 +273,7 @@ def build(data: Path, month: str, today: date | None = None) -> dict[str, Any]:
         "by_route": dict(sorted(by_route.items(), key=lambda kv: _route_key(kv[1], kv[0]))),
     }
 
-    rows = _daily_rows(data, month)
+    rows = [r for r in _daily_rows(data, month) if r["service_date"] not in no_service]
     headline = {}
     for col in rows[0].keys() if rows else []:
         values = [(r["service_date"], _number(r[col])) for r in rows]
@@ -296,8 +307,9 @@ def build(data: Path, month: str, today: date | None = None) -> dict[str, Any]:
             "last_service_date": archived[-1] if archived else None,
             "days_archived": len(archived),
             "days_missing": [d for d in expected if d not in raw],
-            "days_without_quality": [d for d in archived if d not in quality],
-            "days_without_ontime": [d for d in archived if d not in ontime],
+            "days_without_quality": [d for d in archived if d not in all_quality],
+            "days_without_ontime": [d for d in archived if d not in ontime_all],
+            "days_without_service": no_service,
             "partial_days": partial,
         },
         "collection": collection,
@@ -309,8 +321,8 @@ def build(data: Path, month: str, today: date | None = None) -> dict[str, Any]:
             "collector": sorted(versions),
             "tables": _versions(manifests["parsed"], "tables_version"),
             "events": _versions(manifests["events"], "events_version"),
-            "quality": _versions(quality, "quality_version"),
-            "ontime": _versions(ontime, "ontime_version"),
+            "quality": _versions(all_quality, "quality_version"),
+            "ontime": _versions(ontime_all, "ontime_version"),
         },
     }
 
@@ -336,6 +348,11 @@ def markdown(r: dict[str, Any]) -> str:
     lines.append(
         "Missing days: " + (", ".join(p["days_missing"]) if p["days_missing"] else "none") + "."
     )
+    if p.get("days_without_service"):
+        lines.append(
+            "Days with no service (Island Transit holidays), left out of the trip coverage and "
+            "on-time figures: " + ", ".join(p["days_without_service"]) + "."
+        )
     for d in p["partial_days"]:
         lines.append(
             f"Partial day: {d['service_date']}, collection from {_pacific(d['observed_from'])} "

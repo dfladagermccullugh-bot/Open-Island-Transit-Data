@@ -76,3 +76,14 @@ def test_model_detects_hour_dependence(tmp_path):
     assert bands == sorted(bands, key=[b[0] for b in gaps.HOUR_BANDS].index)
     assert bands[0] == "early (before 7)"
     assert {"saturday", "sunday", "weekday"} >= set(g["rates"]["by_day_type"])
+
+
+def test_a_day_with_no_service_is_left_out(tmp_path):
+    _day_file(tmp_path, "2026-11-25", [["a", "R1", 6, 2, True]])
+    _day_file(tmp_path, "2026-11-26", [["a", "R1", 6, 2, False], ["b", "R1", 7, 2, False]])
+    f = tmp_path / "2026-11-26.json"
+    m = json.loads(f.read_text())
+    m["schedule"] = {"service_expected": False}
+    f.write_text(json.dumps(m))
+    g = gaps.summarise(tmp_path)
+    assert g["days"] == ["2026-11-25"] and g["unobserved"] == 0

@@ -4,7 +4,7 @@ from datetime import UTC, date, datetime, timedelta
 
 import pytest
 
-from pipeline.events import geometry
+from pipeline.events import geometry, infer
 from pipeline.events.geometry import Shape
 from pipeline.events.infer import MAX_GAP_S, STOP_RADIUS_M, crossing, infer_day, track
 from pipeline.events.ontime import classify, summarize
@@ -218,7 +218,7 @@ def test_passes_and_stop_order_on_out_and_back():
         s.passes(LAT + 2 * mid, lon_at(500), 150),  # return
     ]
     placed = order_stops(stops)
-    assert [round(d) for d in placed] == [0, 300, 1500, 3550]
+    assert [round(d) for d, _ in placed] == [0, 300, 1500, 3550]
 
 
 def test_tracking_reanchors_past_a_branch_not_driven():
@@ -237,3 +237,50 @@ def test_tracking_reanchors_past_a_branch_not_driven():
     assert tr.off_shape == 0 and len(tr.dists) == len(rs)
     assert crossing(tr, 1000 + 1500)[2] == "skipped"  # a stop up the spur
     assert crossing(tr, s.length - 300)[2] == "observed"
+
+
+def test_last_stop_arrival_survives_a_report_just_short_of_it():
+    # The last stop is at the end of the 6 km shape; arrival is timed at
+    # 5960 m. A report at 5955 m used to end tracking (within 50 m of the
+    # end) before the bus crossed that point, losing the arrival.
+    pts = [(0, 0)] + [(k * 20, 160 * k) for k in range(1, 37)]  # 5760 m at 720 s
+    pts += [(740, 5955), (760, 5990), (780, 6000)]
+    events, _ = infer_day(DAY, read_zip(gtfs_zip()), vehicle_rows(pts), set())
+    last = next(e for e in events if e["is_last_stop"])
+    assert last["arrival_status"] == "observed"
+    # Crosses 5960 m between the reports at 5955 m (740 s) and 5990 m (760 s).
+    assert (last["arrival_time"] - ORIGIN).total_seconds() == pytest.approx(
+        6 * 3600 + 740 + 5 / 35 * 20, abs=0.1
+    )
+
+
+def test_a_stop_out_of_order_or_far_from_the_shape_is_unplaced():
+    from pipeline.events.infer import order_stops
+
+    # The second stop's only candidate lies behind the first stop.
+    placed = order_stops([[(1000.0, 1.0)], [(200.0, 4.0)], [(1500.0, 6.0)]])
+    assert placed[0] == (1000.0, 1.0) and placed[2] == (1500.0, 6.0)
+    assert placed[1] == (None, None)
+    # No candidate at all (farther than MAX_STOP_OFFSET_M from the shape).
+    assert order_stops([[(0.0, 1.0)], [], [(900.0, 2.0)]])[1] == (None, None)
+
+
+def test_unplaced_stop_gets_no_time_and_is_labelled():
+    z = read_zip(gtfs_zip())
+    static = infer.StaticData.load(z)
+    static.stops["S2"]["stop_lat"] = str(LAT + 0.02)  # about 2 km north of the road
+    pts = [(0, 0)] + [(k * 20, 160 * k) for k in range(1, 38)]
+    events, _ = infer_day(DAY, z, vehicle_rows(pts), set(), static=static)
+    by = {e["stop_id"]: e for e in events}
+    assert by["S2"]["arrival_status"] == by["S2"]["departure_status"] == "unplaced"
+    assert by["S2"]["arrival_time"] is None and by["S2"]["stop_distance_m"] is None
+    assert by["S1"]["departure_status"] == "observed" and by["S1"]["stop_offset_m"] < 1
+
+
+def test_a_trip_with_a_missing_stop_does_not_stop_the_day():
+    z = read_zip(gtfs_zip())
+    static = infer.StaticData.load(z)
+    del static.stops["S2"]
+    events, trips = infer_day(DAY, z, vehicle_rows([(0, 0), (20, 160)]), set(), static=static)
+    assert events == [] and "KeyError" in trips[0]["problem"]
+    assert trips[0]["position_reports"] == 2 and trips[0]["reports_used"] is None

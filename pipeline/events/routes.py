@@ -6,6 +6,8 @@
   recomputed from the sums; medians come from every deviation in the window
   (kept in ``by_route_stop`` since ``ontime/0.2.0``). Days made by an older
   version add to the counts but not to the medians or the stop breakdown.
+  Days on which Island Transit runs no service (``service_expected`` false,
+  see ``pipeline/gtfs/holidays.py``) are left out and listed.
 """
 
 from __future__ import annotations
@@ -16,6 +18,8 @@ from collections import defaultdict
 from datetime import date, timedelta
 from pathlib import Path
 from typing import Any
+
+from pipeline.stats import quantile
 
 WINDOW_DAYS = 28
 COUNTS = ("scheduled", "observed", "on_time", "early", "late")
@@ -35,10 +39,8 @@ def _share(num: int, den: int) -> float | None:
 
 
 def _quantile(values: list[int], q: float) -> float | None:
-    if not values:
-        return None
-    s = sorted(values)
-    return float(s[min(int(q * len(s)), len(s) - 1)])
+    x = quantile(values, q)
+    return round(x, 1) if x is not None else None
 
 
 def _summary(counts: dict[str, int], devs: list[int]) -> dict[str, Any]:
@@ -80,7 +82,11 @@ def write_routes(ontime_dir: Path, window_days: int = WINDOW_DAYS) -> int:
 
     last = date.fromisoformat(days[-1]["service_date"])
     first = last - timedelta(days=window_days - 1)
-    window = [d for d in days if date.fromisoformat(d["service_date"]) >= first]
+    in_window = [d for d in days if date.fromisoformat(d["service_date"]) >= first]
+    window = [d for d in in_window if d.get("service_expected", True)]
+    left_out = [d["service_date"] for d in in_window if not d.get("service_expected", True)]
+    if not window:
+        return len(days)
 
     def zero() -> dict[str, int]:
         return dict.fromkeys(COUNTS, 0)
@@ -137,6 +143,7 @@ def write_routes(ontime_dir: Path, window_days: int = WINDOW_DAYS) -> int:
         "first_service_date": window[0]["service_date"],
         "last_service_date": window[-1]["service_date"],
         "days": len(window),
+        "days_without_service": left_out,
         "definition": window[-1].get("definition"),
         "timepoints": window[-1].get("timepoints"),
         "passio_version": window[-1].get("passio_version"),

@@ -33,7 +33,7 @@ from typing import Any
 
 from pipeline.gtfs.zipread import ZipContents
 
-TIMEPOINTS_VERSION = "timepoints/0.1.0"
+TIMEPOINTS_VERSION = "timepoints/0.1.0"  # matching; day-type selection is applied by events
 REFERENCE_DIR = Path(__file__).resolve().parents[2] / "reference"
 THRESHOLD = 0.6
 
@@ -184,11 +184,37 @@ def match(passio: ZipContents, printed: list[Row], overrides: dict) -> list[Row]
     return out
 
 
-def timepoint_pairs(matched: list[Row]) -> set[tuple[str, str]]:
+def timepoint_pairs(matched: list[Row], day: date | None = None) -> set[tuple[str, str]]:
     """(Passio route id, Passio stop id) pairs that are true timepoints. A
     printed stop counts on every Passio route with the timetable's short name
-    that serves it (the three NAS Whidbey routes share one timetable)."""
-    return {(r["passio_route_id"], r["passio_stop_id"]) for r in matched if r["passio_stop_id"]}
+    that serves it (the three NAS Whidbey routes share one timetable).
+
+    With ``day``, a route that has a printed timetable for that kind of day
+    (weekday, Saturday, Sunday) uses only that timetable's stops; a route
+    with none for it falls back to all of its printed stops. Without
+    ``day``, every printed stop counts."""
+    rows = [r for r in matched if r["passio_stop_id"]]
+    if day is None:
+        return {(r["passio_route_id"], r["passio_stop_id"]) for r in rows}
+    by_route: dict[str, list[Row]] = defaultdict(list)
+    for r in rows:
+        by_route[r["passio_route_id"]].append(r)
+    out = set()
+    for route, mine in by_route.items():
+        todays = [r for r in mine if day_type_applies(r["day_type"], day)]
+        out |= {(route, r["passio_stop_id"]) for r in (todays or mine)}
+    return out
+
+
+def day_type_applies(day_type: str, day: date) -> bool:
+    """Whether a printed timetable's day label ("weekday", "weekday AM",
+    "saturday", "weekend", ...) covers ``day``."""
+    label = day_type.strip().lower()
+    weekday = day.weekday()
+    if weekday < 5:
+        return label.startswith("weekday") or label in ("daily", "every day")
+    name = "saturday" if weekday == 5 else "sunday"
+    return label.startswith((name, "weekend")) or label in ("daily", "every day")
 
 
 def summarize(matched: list[Row]) -> dict[str, Any]:

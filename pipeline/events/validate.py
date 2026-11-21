@@ -23,6 +23,8 @@ from collections import Counter, defaultdict
 from datetime import datetime
 from typing import Any
 
+from pipeline.stats import quantile  # noqa: E402
+
 Row = dict[str, Any]
 
 VALIDATE_VERSION = "validate/0.1.0"
@@ -31,13 +33,8 @@ MAX_SEGMENT_MS = 35.0  # 126 km/h
 
 
 def _q(values: list[float], q: float) -> float | None:
-    if not values:
-        return None
-    v = sorted(values)
-    pos = (len(v) - 1) * q
-    lo = int(pos)
-    hi = min(lo + 1, len(v) - 1)
-    return round(v[lo] + (v[hi] - v[lo]) * (pos - lo), 1)
+    x = quantile(values, q)
+    return round(x, 1) if x is not None else None
 
 
 def _share(n: int, d: int) -> float | None:

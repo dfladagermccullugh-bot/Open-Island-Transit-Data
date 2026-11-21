@@ -26,6 +26,7 @@ import pyarrow.parquet as pq
 
 from pipeline import release
 from pipeline.config import COLLECTION_START, REPO
+from pipeline.gtfs.holidays import no_service, service_expected
 from pipeline.gtfs.schedule import removed_services, route_names, scheduled_trips
 from pipeline.gtfs.zipread import read_zip
 from pipeline.quality import gaps
@@ -47,6 +48,7 @@ FETCH_COLUMNS = [
 
 HEADLINE = [
     ("service_date", ("service_date",)),
+    ("service_expected", ("schedule", "service_expected")),
     ("passio_version", ("schedule", "passio_version")),
     ("scheduled_trips", ("coverage", "scheduled_trips")),
     ("trip_coverage", ("coverage", "trip_coverage")),
@@ -96,8 +98,8 @@ def _events_sha(events: dict, day: str) -> str | None:
 
 
 def pending(parsed: dict, static: dict, out: Path, events: dict | None = None) -> list[date]:
-    """Days with no quality file, an older QUALITY_VERSION, or stop events
-    that changed since the file was computed."""
+    """Days with no quality file, another QUALITY_VERSION, or a vehicles
+    table or stop events that changed since the file was computed."""
     events = events or {"days": {}}
     days = []
     for day, entry in parsed["days"].items():
@@ -109,8 +111,12 @@ def pending(parsed: dict, static: dict, out: Path, events: dict | None = None) -
             days.append(date.fromisoformat(day))
             continue
         old = json.loads(f.read_text())
-        if old.get("quality_version") != QUALITY_VERSION or (
-            (old.get("inputs") or {}).get("stop_events_sha256") != _events_sha(events, day)
+        inputs = old.get("inputs") or {}
+        if (
+            old.get("quality_version") != QUALITY_VERSION
+            or inputs.get("stop_events_sha256") != _events_sha(events, day)
+            or inputs.get("vehicles_sha256") != _sha(entry, f"vehicles-{day}.parquet")
+            or (old.get("schedule") or {}).get("service_expected", True) != service_expected(day)
         ):
             days.append(date.fromisoformat(day))
     return sorted(days)
@@ -264,7 +270,11 @@ def compute(day: date, data: Path, raw_dir: Path, tables_dir: Path, repo: str) -
         "passio_basis": pins["passio"]["basis"],
         "trillium_version": tv,
         "trillium_removes_service_today": holidays,
-        "note": "Scheduled trips come from the Passio calendar, which has no holiday exceptions.",
+        "service_expected": service_expected(day),
+        "no_service_day": no_service(day),
+        "note": "Scheduled trips come from the Passio calendar, which has no holiday exceptions. "
+        "On a day Island Transit lists as having no service, service_expected is false and "
+        "the day is left out of figures that pool several days.",
     }
     m["inputs"] = {
         "raw_sha256": _sha(raw, raw_name),

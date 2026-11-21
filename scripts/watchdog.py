@@ -20,6 +20,7 @@ sys.path.insert(0, str(Path(__file__).resolve().parent.parent))
 
 from pipeline.archive.store import Collector  # noqa: E402
 from pipeline.config import PACIFIC  # noqa: E402
+from pipeline.gtfs.holidays import service_expected  # noqa: E402
 
 MAX_AGE_S = {"vehiclePositions": 600, "tripUpdates": 600, "serviceAlerts": 1800}
 DATABASE_WARN_BYTES = 300 * 1024 * 1024  # free tier allows 500 MB
@@ -27,9 +28,11 @@ OLDEST_RAW_WARN = timedelta(days=10)
 
 
 def in_service_hours(now: datetime) -> bool:
-    """Hours when buses are certainly scheduled on every day of the week."""
+    """Hours when buses are certainly scheduled: 8 AM to 5 PM Pacific on
+    every day of the week, except the holidays on which Island Transit runs
+    no service (``reference/no-service-days.csv``)."""
     local = now.astimezone(PACIFIC)
-    return 8 <= local.hour < 17
+    return 8 <= local.hour < 17 and service_expected(local.date())
 
 
 def problems(collector: Collector, now: datetime) -> list[str]:

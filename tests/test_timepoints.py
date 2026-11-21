@@ -114,3 +114,23 @@ def test_repository_reference_files_are_consistent():
         for o in csv.DictReader(overrides_path.open()):
             assert (o["route_short_name"], o["printed_stop"]) in names, o
             assert o["passio_stop_ids"] or o["note"], o
+
+
+def test_timepoints_follow_the_day_type_where_a_route_prints_one():
+    from datetime import date
+
+    from pipeline.gtfs.timepoints import day_type_applies, timepoint_pairs
+
+    rows = [
+        {"passio_route_id": "A", "passio_stop_id": "1", "day_type": "weekday"},
+        {"passio_route_id": "A", "passio_stop_id": "2", "day_type": "saturday"},
+        {"passio_route_id": "B", "passio_stop_id": "3", "day_type": "weekday AM"},
+        {"passio_route_id": "B", "passio_stop_id": "", "day_type": "weekday"},
+    ]
+    friday, saturday, sunday = date(2026, 11, 20), date(2026, 11, 21), date(2026, 11, 22)
+    assert timepoint_pairs(rows) == {("A", "1"), ("A", "2"), ("B", "3")}
+    assert timepoint_pairs(rows, friday) == {("A", "1"), ("B", "3")}
+    assert timepoint_pairs(rows, saturday) == {("A", "2"), ("B", "3")}  # B prints no Saturday
+    # Route A prints nothing for Sunday: every printed stop counts.
+    assert timepoint_pairs(rows, sunday) == {("A", "1"), ("A", "2"), ("B", "3")}
+    assert day_type_applies("weekend", sunday) and not day_type_applies("weekend", friday)

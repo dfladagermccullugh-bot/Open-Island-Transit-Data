@@ -27,6 +27,8 @@ static version pinned to it:
    only; the last stop an arrival only.
 
 Every scheduled stop of every scheduled trip gets a row, observed or not.
+A stop that cannot be placed on the shape in stop order, within
+``MAX_STOP_OFFSET_M`` of it, gets the status ``unplaced`` and no time.
 """
 
 from __future__ import annotations
@@ -39,10 +41,10 @@ from datetime import UTC, date, datetime, timedelta
 from typing import Any
 
 from pipeline.events.geometry import Shape
-from pipeline.gtfs.schedule import day_origin, scheduled_trips
+from pipeline.gtfs.schedule import Trip, day_origin, scheduled_trips
 from pipeline.gtfs.zipread import ZipContents
 
-EVENTS_VERSION = "events/0.2.1"
+EVENTS_VERSION = "events/0.3.0"
 
 WINDOW_MIN = 30
 OFF_SHAPE_M = 100.0
@@ -58,7 +60,8 @@ WRONG_WAY_DEG = 120.0  # bearing this far from the shape's heading: moving the o
 REANCHOR_M = 30.0  # a report this close to a later part of the shape may re-anchor there
 REANCHOR_DEG = 45.0  # ... if the bus's bearing is this close to the shape's heading
 STOP_PASS_M = 150.0  # a shape passing within this distance of a stop may serve it
-UNPLACED_COST_M = 10_000.0  # cost of leaving a stop at the previous stop's distance
+MAX_STOP_OFFSET_M = 150.0  # a stop farther than this from its shape is not placed
+UNPLACED_COST_M = 10_000.0  # cost of leaving a stop out of the placement
 
 Row = dict[str, Any]
 
@@ -106,15 +109,16 @@ class StaticData:
             stops={s["stop_id"]: s for s in _rows(contents, "stops.txt")},
         )
 
-    def place_stops(self, trip_id: str) -> list[float] | None:
-        """Distance along the shape of each stop of the trip, in order.
+    def place_stops(self, trip_id: str) -> list[Placement] | None:
+        """Where each stop of the trip lies on its shape, in stop order.
 
         A shape can pass a stop more than once (loops, out-and-back
         segments). Each stop's candidates are every pass within
-        ``STOP_PASS_M`` plus the nearest point; the placement keeps stops in
-        order along the shape and minimises the sum of their offsets
-        (dynamic programming). A stop with no candidate in order is put at
-        the previous stop's distance, at a cost of ``UNPLACED_COST_M``."""
+        ``STOP_PASS_M`` plus the nearest point, if it is within
+        ``MAX_STOP_OFFSET_M``; the placement keeps stops in order along the
+        shape and minimises the sum of their offsets (dynamic programming).
+        A stop with no candidate in order is left unplaced, at a cost of
+        ``UNPLACED_COST_M``: it gets no distance and no times."""
         trip = self.trips[trip_id]
         shape = self.shapes.get(trip.get("shape_id", ""))
         if shape is None:
@@ -123,41 +127,53 @@ class StaticData:
         key = (trip["shape_id"], ids)
         if key not in self._placed:
             cands = [
-                shape.passes(float(self.stops[s]["stop_lat"]), float(self.stops[s]["stop_lon"]),
-                             STOP_PASS_M)
+                [
+                    c
+                    for c in shape.passes(
+                        float(self.stops[s]["stop_lat"]),
+                        float(self.stops[s]["stop_lon"]),
+                        STOP_PASS_M,
+                    )
+                    if c[1] <= MAX_STOP_OFFSET_M
+                ]
                 for s in ids
-            ]  # fmt: skip
+            ]
             self._placed[key] = order_stops(cands)
         return self._placed[key]
 
 
-def order_stops(cands: list[list[tuple[float, float]]]) -> list[float]:
+Placement = tuple[float | None, float | None]  # (metres along the shape, offset), or Nones
+
+
+def order_stops(cands: list[list[tuple[float, float]]]) -> list[Placement]:
     """Choose one (distance, offset) candidate per stop so that distances
-    never decrease and the summed offset is smallest. See ``place_stops``."""
+    never decrease and the summed offset is smallest. A stop left out is
+    (None, None). See ``place_stops``."""
     if not cands:
         return []
-    # Each state: (cost, distance, back-pointer index into the previous row).
-    rows: list[list[tuple[float, float, int]]] = []
-    prev: list[tuple[float, float, int]] = [(0.0, 0.0, -1)]
+    # Each state: (cost, distance reached, back-pointer into the previous row, offset or None).
+    rows: list[list[tuple[float, float, int, float | None]]] = []
+    prev: list[tuple[float, float, int, float | None]] = [(0.0, 0.0, -1, None)]
     for opts in cands:
-        row = []
+        row: list[tuple[float, float, int, float | None]] = []
         for along, off in opts:
             best = min(
-                ((c + off, k) for k, (c, d, _) in enumerate(prev) if d <= along + 1e-6),
+                ((c + off, k) for k, (c, d, _, _) in enumerate(prev) if d <= along + 1e-6),
                 default=None,
             )
             if best is not None:
-                row.append((best[0], along, best[1]))
-        # Unplaced: stay at the cheapest previous state's distance.
+                row.append((best[0], along, best[1], off))
+        # Unplaced: carry the cheapest previous state's distance forward.
         k = min(range(len(prev)), key=lambda k: prev[k][0])
-        row.append((prev[k][0] + UNPLACED_COST_M, prev[k][1], k))
+        row.append((prev[k][0] + UNPLACED_COST_M, prev[k][1], k, None))
         rows.append(row)
         prev = row
     j = min(range(len(prev)), key=lambda k: prev[k][0])
-    out = []
+    out: list[Placement] = []
     for row in reversed(rows):
-        out.append(row[j][1])
-        j = row[j][2]
+        _, along, back, off = row[j]
+        out.append((along, off) if off is not None else (None, None))
+        j = back
     return out[::-1]
 
 
@@ -179,7 +195,9 @@ def _angle(a: float, b: float) -> float:
     return abs((a - b + 180) % 360 - 180)
 
 
-def track(shape: Shape, reports: list[tuple], scheduled_start: float) -> Track:
+def track(
+    shape: Shape, reports: list[tuple], scheduled_start: float, last_arrival_m: float | None = None
+) -> Track:
     """Follow one vehicle along a trip's shape.
 
     ``reports``: (epoch seconds, lat, lon, bearing, speed), sorted by time,
@@ -188,7 +206,10 @@ def track(shape: Shape, reports: list[tuple], scheduled_start: float) -> Track:
     often already carries the next trip's id while finishing the previous
     one). If there is none, it starts at the first report from
     ``scheduled_start`` minus ``LATE_JOIN_S``, wherever it is. It ends when
-    the bus reaches the end of the shape.
+    the bus is within ``END_ZONE_M`` of the end of the shape, but never
+    before it has reached ``last_arrival_m``, the point where arrival at the
+    last stop is timed (otherwise a report just short of that point would end
+    tracking and lose the arrival).
 
     If the bus leaves out part of the shape (the published shape has a
     branch this trip did not drive), reports stop matching the search
@@ -208,10 +229,11 @@ def track(shape: Shape, reports: list[tuple], scheduled_start: float) -> Track:
         late = scheduled_start - LATE_JOIN_S
         start = next((k for k, r in enumerate(reports) if r[0] >= late), len(reports))
     tr.before_start = start
+    end_at = max(shape.length - END_ZONE_M, min(last_arrival_m or 0.0, shape.length))
     pending: tuple[float, float, str] | None = None  # a report that may re-anchor tracking
     for k in range(start, len(reports)):
         ts, lat, lon, bearing, speed = reports[k]
-        if tr.dists and tr.dists[-1] >= shape.length - END_ZONE_M:
+        if tr.dists and tr.dists[-1] >= end_at:
             tr.after_end = len(reports) - k
             break
         if not tr.dists:
@@ -314,16 +336,32 @@ def _dt(x: float | None) -> datetime | None:
     return datetime.fromtimestamp(x, UTC) if x is not None else None
 
 
+def _reports(per_vehicle: dict[str, dict[float, Row]], key: str | None) -> list[tuple]:
+    if not key:
+        return []
+    return sorted(
+        (ts, v["lat"], v["lon"], v["bearing"], v["speed"]) for ts, v in per_vehicle[key].items()
+    )
+
+
 def infer_day(
     day: date,
     contents: ZipContents,
     vehicles: list[Row],
     timepoints: set[tuple[str, str]] | None = None,
+    static: StaticData | None = None,
+    trips: list[Trip] | None = None,
 ) -> tuple[list[Row], list[Row]]:
-    """Return (stop events, trip summaries) for every scheduled trip."""
-    static = StaticData.load(contents)
+    """Return (stop events, trip summaries) for every scheduled trip.
+
+    ``static`` and ``trips`` may be passed to reuse work already done on the
+    same schedule. A trip whose schedule rows cannot be read (a stop or trip
+    missing from the static files) still gets a trip summary, with
+    ``problem`` set, and no stop events."""
+    static = static or StaticData.load(contents)
     timepoints = timepoints or set()
     origin = day_origin(day)
+    margin = timedelta(minutes=WINDOW_MIN)
 
     by_trip: dict[str, list[Row]] = defaultdict(list)
     for v in vehicles:
@@ -332,73 +370,40 @@ def infer_day(
 
     events: list[Row] = []
     trips_out: list[Row] = []
-    for trip in scheduled_trips(contents, day):
-        meta = static.trips[trip.trip_id]
-        shape = static.shapes.get(meta.get("shape_id", ""))
-        placed = static.place_stops(trip.trip_id)
-        margin = timedelta(minutes=WINDOW_MIN)
+    for trip in trips if trips is not None else scheduled_trips(contents, day):
         lo, hi = trip.start - margin, trip.end + margin
-        mine = [v for v in by_trip.get(trip.trip_id, []) if lo <= v["vehicle_ts"] <= hi]
         per_vehicle: dict[str, dict[float, Row]] = defaultdict(dict)
-        for v in mine:
-            per_vehicle[v["vehicle_key"]].setdefault(_epoch(v["vehicle_ts"]), v)
+        for v in by_trip.get(trip.trip_id, []):
+            if lo <= v["vehicle_ts"] <= hi:
+                per_vehicle[v["vehicle_key"]].setdefault(_epoch(v["vehicle_ts"]), v)
         vehicle_key = max(per_vehicle, key=lambda k: len(per_vehicle[k]), default=None)
-        reports = (
-            sorted(
-                (ts, v["lat"], v["lon"], v["bearing"], v["speed"])
-                for ts, v in per_vehicle[vehicle_key].items()
-            )
-            if vehicle_key
-            else []
-        )
-        tr = (
-            track(shape, reports, _epoch(trip.start))
-            if shape is not None
-            else Track([], [], reports=len(reports))
-        )
-
-        stop_rows = static.stop_times.get(trip.trip_id, [])
-        n = len(stop_rows)
-        for i, st in enumerate(stop_rows):
-            sd = placed[i] if placed else None
-            arr_s, dep_s = _seconds(st["arrival_time"]), _seconds(st["departure_time"])
-            row: Row = {
-                "trip_id": trip.trip_id,
-                "route_id": trip.route_id,
-                "vehicle_key": vehicle_key,
-                "stop_sequence": int(st["stop_sequence"]),
-                "stop_id": st["stop_id"],
-                "is_first_stop": i == 0,
-                "is_last_stop": i == n - 1,
-                "is_timepoint": (trip.route_id, st["stop_id"]) in timepoints,
-                "stop_distance_m": round(sd, 1) if sd is not None else None,
-                "scheduled_arrival": _at(origin, arr_s),
-                "scheduled_departure": _at(origin, dep_s),
-            }
-            for kind, boundary, skip in (
-                ("arrival", (sd or 0.0) - STOP_RADIUS_M, i == 0),
-                ("departure", (sd or 0.0) + STOP_RADIUS_M, i == n - 1),
-            ):
-                if skip:
-                    t, gap, status = None, None, "not_applicable"
-                elif sd is None:
-                    t, gap, status = None, None, "no_shape"
-                else:
-                    t, gap, status = crossing(tr, boundary)
-                row[f"{kind}_time"] = _dt(t)
-                row[f"{kind}_gap_s"] = round(gap, 1) if gap is not None else None
-                row[f"{kind}_status"] = status
-            events.append(row)
-
-        trips_out.append(
+        reports = _reports(per_vehicle, vehicle_key)
+        summary: Row = {
+            "trip_id": trip.trip_id,
+            "route_id": trip.route_id,
+            "scheduled_start": trip.start,
+            "scheduled_end": trip.end,
+            "vehicles_with_trip_id": len(per_vehicle),
+            "vehicle_key": vehicle_key,
+            "position_reports": len(reports),
+            "problem": None,
+        }
+        try:
+            meta = static.trips[trip.trip_id]
+            shape = static.shapes.get(meta.get("shape_id", ""))
+            placed = static.place_stops(trip.trip_id)
+            stop_rows = static.stop_times.get(trip.trip_id, [])
+            rows = _trip_events(trip, stop_rows, placed, shape, reports, timepoints, origin)
+        except (KeyError, ValueError) as exc:
+            summary.update(dict.fromkeys(_TRACK_FIELDS), problem=f"{type(exc).__name__}: {exc}")
+            trips_out.append(summary)
+            continue
+        tr, stop_events = rows
+        for e in stop_events:
+            e["vehicle_key"] = vehicle_key
+        events += stop_events
+        summary.update(
             {
-                "trip_id": trip.trip_id,
-                "route_id": trip.route_id,
-                "scheduled_start": trip.start,
-                "scheduled_end": trip.end,
-                "vehicles_with_trip_id": len(per_vehicle),
-                "vehicle_key": vehicle_key,
-                "position_reports": tr.reports,
                 "reports_used": len(tr.dists),
                 "reports_before_start": tr.before_start,
                 "reports_after_end": tr.after_end,
@@ -411,4 +416,74 @@ def infer_day(
                 "skipped_m": round(sum(b - a for a, b in tr.skips), 1),
             }
         )
+        trips_out.append(summary)
     return events, trips_out
+
+
+_TRACK_FIELDS = (
+    "reports_used",
+    "reports_before_start",
+    "reports_after_end",
+    "off_shape_reports",
+    "wrong_direction_reports",
+    "shape_id",
+    "shape_length_m",
+    "max_distance_m",
+    "shape_skips",
+    "skipped_m",
+)
+
+
+def _trip_events(
+    trip: Trip,
+    stop_rows: list[Row],
+    placed: list[Placement] | None,
+    shape: Shape | None,
+    reports: list[tuple],
+    timepoints: set[tuple[str, str]],
+    origin: datetime,
+) -> tuple[Track, list[Row]]:
+    """Track one trip and time its stops."""
+    n = len(stop_rows)
+    last_sd = placed[-1][0] if placed else None
+    if shape is not None:
+        tr = track(
+            shape,
+            reports,
+            _epoch(trip.start),
+            last_sd - STOP_RADIUS_M if last_sd is not None else None,
+        )
+    else:
+        tr = Track([], [], reports=len(reports))
+    out: list[Row] = []
+    for i, st in enumerate(stop_rows):
+        sd, offset = placed[i] if placed else (None, None)
+        arr_s, dep_s = _seconds(st["arrival_time"]), _seconds(st["departure_time"])
+        row: Row = {
+            "trip_id": trip.trip_id,
+            "route_id": trip.route_id,
+            "vehicle_key": None,
+            "stop_sequence": int(st["stop_sequence"]),
+            "stop_id": st["stop_id"],
+            "is_first_stop": i == 0,
+            "is_last_stop": i == n - 1,
+            "is_timepoint": (trip.route_id, st["stop_id"]) in timepoints,
+            "stop_distance_m": round(sd, 1) if sd is not None else None,
+            "stop_offset_m": round(offset, 1) if offset is not None else None,
+            "scheduled_arrival": _at(origin, arr_s),
+            "scheduled_departure": _at(origin, dep_s),
+        }
+        for kind, sign, skip in (("arrival", -1, i == 0), ("departure", 1, i == n - 1)):
+            if skip:
+                t, gap, status = None, None, "not_applicable"
+            elif placed is None:
+                t, gap, status = None, None, "no_shape"
+            elif sd is None:
+                t, gap, status = None, None, "unplaced"
+            else:
+                t, gap, status = crossing(tr, sd + sign * STOP_RADIUS_M)
+            row[f"{kind}_time"] = _dt(t)
+            row[f"{kind}_gap_s"] = round(gap, 1) if gap is not None else None
+            row[f"{kind}_status"] = status
+        out.append(row)
+    return tr, out

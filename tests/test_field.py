@@ -60,7 +60,7 @@ def test_score():
     assert r["overall"]["bias_s"] == pytest.approx((10 + 10 - 40 - 100) / 4, abs=0.1)
     assert r["overall"]["mae_s"] == 40.0
     assert r["overall"]["within_30s_share"] == 0.5
-    assert r["meets_target"] is False
+    assert r["meets_target"] is None  # four timed moments: too few to judge the target
     assert r["timed_moments_not_inferred"] == 1
     assert r["rows_with_no_scheduled_event"] == 1
     assert r["rows_waiting_for_their_day"] == 1
@@ -90,3 +90,18 @@ def test_load_reads_pass_stop(tmp_path):
     )
     rows, problems = field.load(f)
     assert not problems and rows[0]["pass"] == T + timedelta(seconds=12)
+
+
+def test_target_is_judged_from_five_timed_moments():
+    events = {"2026-11-23": [_event("A", "S1", 0, 40)]}
+    obs = [_obs("A", "S1", 0, 40)] * 3
+    assert field.score(obs, events)["meets_target"] is True  # six moments, 10 s off
+    assert field.score(obs[:2], events)["meets_target"] is None
+
+
+def test_a_loop_trip_is_scored_against_the_nearer_visit_to_the_stop():
+    # The trip leaves S1 at 0 s and returns to it at 3000 s.
+    events = {"2026-11-23": [_event("A", "S1", None, 40), _event("A", "S1", 3000, None)]}
+    r = field.score([_obs("A", "S1", 2995, None), _obs("A", "S1", None, 30)], events)
+    assert sorted(p["difference_s"] for p in r["pairs"]) == [5.0, 10.0]
+    assert r["timed_moments_not_inferred"] == 0

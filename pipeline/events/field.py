@@ -45,13 +45,15 @@ from pipeline.config import PACIFIC, REPO, USER_AGENT
 from pipeline.gtfs import timepoints as tp
 from pipeline.gtfs.schedule import _rows, _seconds, day_origin, scheduled_trips
 from pipeline.gtfs.zipread import ZipContents, read_zip
+from pipeline.stats import median
 
-FIELD_VERSION = "field/0.2.0"
+FIELD_VERSION = "field/0.3.0"
 OBSERVATIONS = tp.REFERENCE_DIR / "field-observations.csv"
 PASSIO_ZIP = "https://passio3.com/islandtransit/passioTransit/gtfs/google_transit.zip"
 SHEET_COLUMNS = ("service_date", "stop_id", "stop_name", "route", "trip_id", "scheduled",
                  "time_this", "arrive_40m", "depart_40m", "pass_stop", "note")  # fmt: skip
 TARGET_MAE_S = 30.0
+TARGET_MIN_N = 5  # the target is not judged on fewer timed moments than this
 
 Row = dict[str, Any]
 
@@ -166,7 +168,7 @@ def _stats(diffs: list[float]) -> dict[str, Any]:
     return {
         "n": len(diffs),
         "bias_s": round(statistics.fmean(diffs), 1),
-        "median_s": round(statistics.median(diffs), 1),
+        "median_s": round(median(diffs), 1),
         "mae_s": round(statistics.fmean(abs(d) for d in diffs), 1),
         "within_30s_share": round(sum(abs(d) <= 30 for d in diffs) / len(diffs), 4),
         "within_60s_share": round(sum(abs(d) <= 60 for d in diffs) / len(diffs), 4),
@@ -188,7 +190,12 @@ def score(observations: list[Row], events: dict[str, list[Row]]) -> dict[str, An
     """Compare timed rows with inferred events. ``events`` maps a service
     date to that day's stop-event rows; dates not in it are not scored yet.
     Differences are inferred minus field time, in seconds."""
-    index = {(d, e["trip_id"], e["stop_id"]): e for d, rows in events.items() for e in rows}
+    # A loop trip serves its terminal twice, so a trip and stop can name two
+    # events; each timed moment is compared with the one nearest to it in time.
+    index: dict[tuple[str, str, str], list[Row]] = defaultdict(list)
+    for d, rows in events.items():
+        for e in rows:
+            index[(d, e["trip_id"], e["stop_id"])].append(e)
     diffs: dict[str, list[float]] = {k: [] for k in KINDS}
     by_stop: dict[str, dict[str, list[float]]] = defaultdict(lambda: {k: [] for k in KINDS})
     pending = no_event = not_inferred = 0
@@ -197,14 +204,15 @@ def score(observations: list[Row], events: dict[str, list[Row]]) -> dict[str, An
         if o["service_date"] not in events:
             pending += 1
             continue
-        e = index.get((o["service_date"], o["trip_id"], o["stop_id"]))
-        if e is None:
+        candidates = index.get((o["service_date"], o["trip_id"], o["stop_id"]))
+        if not candidates:
             no_event += 1
             continue
         for kind in KINDS:
             if o.get(kind) is None:
                 continue
-            inferred = _inferred(e, kind)
+            times = [t for e in candidates if (t := _inferred(e, kind)) is not None]
+            inferred = min(times, key=lambda t: abs((t - o[kind]).total_seconds()), default=None)
             if inferred is None:
                 not_inferred += 1
                 continue
@@ -223,7 +231,8 @@ def score(observations: list[Row], events: dict[str, list[Row]]) -> dict[str, An
         "stop along its route, departure = more than 40 m past it, pass = bus level with the "
         "stop, inferred as the midpoint of arrival and departure",
         "target_mae_s": TARGET_MAE_S,
-        "meets_target": None if not both else overall["mae_s"] <= TARGET_MAE_S,
+        "target_min_n": TARGET_MIN_N,
+        "meets_target": overall["mae_s"] <= TARGET_MAE_S if len(both) >= TARGET_MIN_N else None,
         "overall": overall,
         "arrival": _stats(diffs["arrival"]),
         "departure": _stats(diffs["departure"]),

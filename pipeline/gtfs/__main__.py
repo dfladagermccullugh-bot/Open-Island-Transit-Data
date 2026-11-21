@@ -76,7 +76,7 @@ def update(registry: dict[str, Any], raw: dict[str, Any], raw_dir: Path, repo: s
             add_download(registry, download, fingerprint(s["source"], read_zip(path.read_bytes())))
             added += 1
     archived = [day for day, e in raw["days"].items() if e.get("release_tag")]
-    registry["days"] = pin_days(registry, archived)
+    registry["days"] = pin_days(registry, archived, registry.get("days"))
     return added
 
 
@@ -84,6 +84,17 @@ def _zip(registry: dict[str, Any], version: str, raw_dir: Path, repo: str):
     ex = registry["versions"][version]["example"]
     path = release.fetch(ex["release_tag"], repo, ex["file"], raw_dir, ex["sha256"])
     return read_zip(path.read_bytes())
+
+
+def _made_by(path: Path, field: str, version: str) -> bool:
+    """True if the JSON file exists and records that code version. A file
+    from older code is rebuilt in place, so a fix reaches every folder."""
+    if not path.exists():
+        return False
+    try:
+        return json.loads(path.read_text()).get(field) == version
+    except json.JSONDecodeError:
+        return False
 
 
 def _write_csv(path: Path, rows: list[dict[str, Any]]) -> None:
@@ -131,7 +142,7 @@ def write_maps(
     written = []
     for pins in registry["days"].values():
         key = pins.get("timepoints")
-        if not key or (out / f"{key}.json").exists():
+        if not key or _made_by(out / f"{key}.json", "map_version", routemap.MAP_VERSION):
             continue
         pv = pins["passio"]["version"]
         with (tp_dir / key / "timepoints.csv").open(newline="") as fh:
@@ -151,7 +162,10 @@ def write_crosswalks(registry: dict[str, Any], out: Path, raw_dir: Path, repo: s
         pv = (pins.get("passio") or {}).get("version")
         tv = (pins.get("trillium") or {}).get("version")
         pins["crosswalk"] = f"{pv}__{tv}" if pv and tv else None
-        if not pins["crosswalk"] or (out / pins["crosswalk"] / "summary.json").exists():
+        done = out / str(pins["crosswalk"]) / "summary.json"
+        if not pins["crosswalk"] or _made_by(
+            done, "crosswalk_version", crosswalk.CROSSWALK_VERSION
+        ):
             continue
         passio, trillium = (_zip(registry, v, raw_dir, repo) for v in (pv, tv))
         built = crosswalk.build(passio, trillium)
@@ -159,7 +173,12 @@ def write_crosswalks(registry: dict[str, Any], out: Path, raw_dir: Path, repo: s
         folder.mkdir(parents=True, exist_ok=True)
         for name in ("stops", "routes", "timepoint_stops", "schedule_agreement"):
             _write_csv(folder / f"{name}.csv", built[name])
-        summary = {"passio_version": pv, "trillium_version": tv, **built["summary"]}
+        summary = {
+            "passio_version": pv,
+            "trillium_version": tv,
+            "crosswalk_version": crosswalk.CROSSWALK_VERSION,
+            **built["summary"],
+        }
         (folder / "summary.json").write_text(json.dumps(summary, indent=1) + "\n")
         written.append(pins["crosswalk"])
     return written

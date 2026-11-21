@@ -100,8 +100,15 @@ def add_download(registry: dict[str, Any], download: dict[str, Any], fp: dict[st
     registry.setdefault("downloads", {})[str(download["static_fetch_id"])] = entry
 
 
-def pin_days(registry: dict[str, Any], days: list[str]) -> dict[str, Any]:
-    """Pin each day to one version per source (see module docstring)."""
+def pin_days(
+    registry: dict[str, Any], days: list[str], previous: dict[str, Any] | None = None
+) -> dict[str, Any]:
+    """Pin each day to one version per source (see module docstring).
+
+    A pin already made (``previous``, the registry's earlier ``days``) is
+    kept: figures published for a day were computed with that version, and a
+    later download must not move the day to another one."""
+    previous = previous or {}
     versions = registry.get("versions", {})
     downloads = sorted(registry.get("downloads", {}).values(), key=lambda d: d["requested_at"])
     sources = sorted({d["source"] for d in downloads})
@@ -109,6 +116,10 @@ def pin_days(registry: dict[str, Any], days: list[str]) -> dict[str, Any]:
     for day in sorted(days):
         out[day] = {}
         for source in sources:
+            kept = (previous.get(day) or {}).get(source)
+            if kept and kept.get("version"):
+                out[day][source] = kept
+                continue
             mine = [d for d in downloads if d["source"] == source]
             today = [d for d in mine if d["day"] == day and d["complete"]]
             if today:

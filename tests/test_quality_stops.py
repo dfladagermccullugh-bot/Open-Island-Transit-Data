@@ -50,8 +50,10 @@ def test_stop_coverage_counts_measured_time_and_reasons():
     assert out["all_stops"]["not_observed_by_reason"] == {"not_reached": 1}
 
 
-def track(route, reports, off, wrong, used=None, vehicles=1, skips=0):
+def track(route, reports, off, wrong, used=None, vehicles=1, skips=0, before=0, after=0):
     return {
+        "reports_before_start": before,
+        "reports_after_end": after,
         "shape_skips": skips,
         "skipped_m": 1500.0 * skips,
         "route_id": route,
@@ -71,6 +73,12 @@ def test_shape_fit_and_assignment():
     assert fit["off_shape"] == 60
     assert fit["off_shape_share"] == 0.4
     assert fit["by_route"]["R2"]["off_shape_share"] == 1.0
+    # Reports never compared with the shape are not in the denominator.
+    waiting = shape_fit([track("R1", 100, 10, 0, before=40, after=10)])
+    assert waiting["tracked_reports"] == 50 and waiting["off_shape_share"] == 0.2
+    # A trip that could not be read is counted, not added in.
+    broken = {**track("R1", 5, 0, 0), "reports_used": None, "problem": "KeyError: 'S2'"}
+    assert shape_fit([broken])["trips_not_readable"] == 1
     vehicles = [{"trip_id": t} for t in ("A", "B", "X", None)]
     a = assignment(vehicles, tracks, static_trip_ids={"A", "B", "C"}, todays_trip_ids={"A", "C"})
     assert a["observed_trip_ids"] == 3
@@ -148,7 +156,12 @@ def test_pending_recomputes_when_stop_events_change(tmp_path):
     from pipeline.quality.metrics import QUALITY_VERSION
 
     day = "2026-11-19"
-    parsed = {"days": {day: {"release_tag": "parsed-2026-11"}}}
+
+    def tables(sha):
+        files = [{"name": f"vehicles-{day}.parquet", "sha256": sha}]
+        return {"days": {day: {"release_tag": "parsed-2026-11", "files": files}}}
+
+    parsed = tables("v1")
     static = {"days": {day: {"passio": {"version": "p1"}}}}
 
     def events(sha):
@@ -159,8 +172,11 @@ def test_pending_recomputes_when_stop_events_change(tmp_path):
     f = tmp_path / "days" / f"{day}.json"
     assert pending(parsed, static, tmp_path, events("a")) == [date(2026, 11, 19)]
     f.write_text(json.dumps({"quality_version": QUALITY_VERSION,
-                             "inputs": {"stop_events_sha256": "a"}}))  # fmt: skip
+                             "inputs": {"stop_events_sha256": "a",
+                                        "vehicles_sha256": "v1"}}))  # fmt: skip
     assert pending(parsed, static, tmp_path, events("a")) == []
+    # Rebuilt parsed tables make the day pending again.
+    assert pending(tables("v2"), static, tmp_path, events("a")) == [date(2026, 11, 19)]
     assert pending(parsed, static, tmp_path, events("b")) == [date(2026, 11, 19)]
     assert pending(parsed, static, tmp_path, {"days": {}}) == [date(2026, 11, 19)]
 

@@ -86,23 +86,31 @@ def stop_coverage(events: list[Row], collection_start: datetime) -> dict[str, An
 
 
 def shape_fit(tracks: list[Row]) -> dict[str, Any]:
-    """Position reports in each trip's scheduled window that lie more than
-    100 m from the trip's shape, or move against it."""
+    """Of the position reports that were tracked along each trip's shape,
+    the share lying more than 100 m from it, and the share moving against
+    it. Reports before tracking began or after the bus reached the end of
+    the shape were never compared with the shape, so they are left out of
+    both the count and the total."""
     by_route: dict[str, Counter[str]] = defaultdict(Counter)
     total: Counter[str] = Counter()
     for t in tracks:
+        if t.get("reports_used") is None:  # the trip could not be read
+            continue
+        tracked = t["position_reports"] - t["reports_before_start"] - t["reports_after_end"]
         for c in (total, by_route[t["route_id"]]):
             c["position_reports"] += t["position_reports"]
+            c["tracked"] += tracked
             c["off_shape"] += t["off_shape_reports"]
             c["wrong_direction"] += t["wrong_direction_reports"]
 
     def block(c: Counter[str]) -> dict[str, Any]:
         return {
             "position_reports": c["position_reports"],
+            "tracked_reports": c["tracked"],
             "off_shape": c["off_shape"],
-            "off_shape_share": _share(c["off_shape"], c["position_reports"]),
+            "off_shape_share": _share(c["off_shape"], c["tracked"]),
             "wrong_direction": c["wrong_direction"],
-            "wrong_direction_share": _share(c["wrong_direction"], c["position_reports"]),
+            "wrong_direction_share": _share(c["wrong_direction"], c["tracked"]),
         }
 
     skipped = [t for t in tracks if t.get("shape_skips")]
@@ -112,6 +120,7 @@ def shape_fit(tracks: list[Row]) -> dict[str, Any]:
         "trips_skipping_part_of_shape": len(skipped),
         "skipped_km": round(sum(t["skipped_m"] for t in skipped) / 1000, 1),
         "skipping_by_route": dict(sorted(Counter(t["route_id"] for t in skipped).items())),
+        "trips_not_readable": sum(bool(t.get("problem")) for t in tracks),
         "by_route": {r: block(c) for r, c in sorted(by_route.items())},
     }
 
@@ -125,6 +134,7 @@ def assignment(
     not_in_static = seen - static_trip_ids
     not_today = (seen & static_trip_ids) - todays_trip_ids
     with_reports = [t for t in tracks if t["position_reports"] > 0]
+    usable = [t for t in with_reports if t.get("reports_used") is not None]
     return {
         "observed_trip_ids": len(seen),
         "unassignable": len(not_in_static) + len(not_today),
@@ -132,7 +142,7 @@ def assignment(
         "trip_id_not_in_static": sorted(not_in_static),
         "trip_not_scheduled_today": sorted(not_today),
         "scheduled_trips_with_reports": len(with_reports),
-        "trips_with_no_usable_report": sum(t["reports_used"] == 0 for t in with_reports),
+        "trips_with_no_usable_report": sum(t["reports_used"] == 0 for t in usable),
         "trips_with_more_than_one_vehicle": sum(t["vehicles_with_trip_id"] > 1 for t in tracks),
     }
 

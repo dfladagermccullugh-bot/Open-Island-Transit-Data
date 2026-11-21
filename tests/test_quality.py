@@ -147,7 +147,7 @@ def report(vehicle, ts_s, lat=48.2, lon=-122.6, trip="A", seen_after=3, fid=None
 
 def test_trip_gaps():
     vehicles = [report("V", 0), report("V", 15), report("V", 30), report("V", 150)]
-    g = trip_gaps(vehicles)
+    g = trip_gaps(vehicles, [trip("A", 0, 1)])
     assert g["longest_gap_s_median"] == 120
     assert g["trips_with_gap_over_90s"] == 1
     assert g["share_of_trip_time_in_gaps_mean"] == round(120 / 150, 4)
@@ -199,3 +199,59 @@ def test_trip_records_count_trips_in_service():
     rows = [dict(zip(c["trips"]["columns"], r, strict=True)) for r in c["trips"]["rows"]]
     assert [r["scheduled_in_service"] for r in rows] == [1, 2, 2]  # A ends as C starts
     assert [r["observed"] for r in rows] == [True, False, False]
+
+
+def test_a_trip_id_seen_hours_from_its_schedule_does_not_count_as_observed():
+    trips = [trip("A", 0, 1), trip("B", 5, 6)]
+    # B's id shows 4 hours before B runs (a bus at the terminal, or yesterday's run).
+    vehicles = [report("V", 0, trip="A"), report("V", 3600, trip="B")]
+    c = coverage(vehicles, trips, {"A", "B"})
+    assert c["observed_scheduled_trips"] == 1 and c["trip_coverage"] == 0.5
+    assert c["trips_seen_only_outside_window"] == 1
+    # 29 minutes before the trip is inside the window.
+    near = [report("V", 5 * 3600 - 29 * 60, trip="B")]
+    assert coverage(near, trips, {"A", "B"})["observed_scheduled_trips"] == 1
+
+
+def test_trip_gaps_use_one_vehicle_inside_the_window():
+    # Two buses carry the id; merged, their reports would hide the 120 s gap.
+    vehicles = [report("V", 0), report("V", 30), report("V", 150), report("W", 60), report("W", 90)]
+    vehicles.append(report("V", 9 * 3600))  # hours later: not part of the trip
+    g = trip_gaps(vehicles, [trip("A", 0, 1)])
+    assert g["longest_gap_s_median"] == 120
+
+
+def test_an_empty_fetch_is_not_also_stale():
+    w = ServiceWindows([trip("A", 0, 1)])
+    empty = fetch(1, entities=0)
+    empty["newest_entity_ts"] = None  # an empty feed has no vehicle timestamp
+    e = feed_emptiness([empty, fetch(2), fetch(3, newest_age=300)], w)
+    assert (e["empty_in_service"], e["stale_in_service"]) == (1, 1)
+    assert e["stale_in_service_rate"] == round(1 / 3, 6)
+
+
+def test_the_same_report_in_two_runs_is_counted_once_at_its_first_fetch():
+    from pipeline.quality.metrics import distinct_reports
+
+    first = report("V", 0, seen_after=3, fid=1)
+    again = report("V", 0, seen_after=63, fid=4)  # the run was split by a failed fetch
+    other = report("V", 20, seen_after=5, fid=5)
+    reports = distinct_reports([again, other, first])
+    assert [r["first_fetch_id"] for r in reports] == [1, 5]
+    assert measurement(reports)["position_age_s_p95"] < 6
+
+
+def test_uptime_slots_follow_the_scheduler_phase_and_stay_within_one():
+    # Ticks fire about 19.9 s into each 20 s step, jittering either side of a
+    # slot edge. Slots on a fixed grid would put two ticks in one slot and
+    # none in the next; uptime must still be 1 and never more.
+    start = datetime(2026, 11, 21, 7, 0, tzinfo=UTC)
+    fetches = [
+        fetch(i, at=start + timedelta(seconds=20 * i + 19.9 + (0.2 if i % 2 else -0.2)))
+        for i in range(180)
+    ]
+    # A tick logged in this day but belonging to the next day's first slot.
+    fetches.append(fetch(999, at=start + timedelta(seconds=3600 + 19.9)))
+    vp = paradata(fetches, DAY, start)["vehiclePositions"]
+    assert vp["slots_expected"] == 180
+    assert (vp["slots_ok"], vp["not_logged"], vp["uptime"]) == (180, 0, 1.0)

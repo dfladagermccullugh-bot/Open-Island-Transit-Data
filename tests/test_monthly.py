@@ -172,3 +172,17 @@ def test_check_reports_missing_checksum_file(tmp_path):
     for tag, rel in r["releases"].items():
         releases[tag][rel["checksums_file"]] = rel["checksums_bytes"]
     assert check(tmp_path, lambda tag: releases[tag])[0] == []
+
+
+def test_a_holiday_stays_in_collection_but_not_in_coverage_or_on_time(tmp_path):
+    make_branch(tmp_path, ["2026-11-25", "2026-11-26", "2026-11-30"])
+    holiday = quality_day("2026-11-26", 100, 0)
+    holiday["schedule"] = {"service_expected": False}
+    write(tmp_path / "quality/days/2026-11-26.json", holiday)
+    r = monthly.build(tmp_path, "2026-11", date(2026, 12, 1))
+    assert r["period"]["days_without_service"] == ["2026-11-26"]
+    assert r["coverage"]["scheduled_trips"] == 200 and r["coverage"]["trip_coverage"] == 0.9
+    assert r["ontime"]["scheduled"] == 70  # two days, not three
+    assert r["collection"]["vehiclePositions"]["slots_expected"] == 6000  # the collector ran
+    assert r["daily_headline"]["trip_coverage"]["days"] == 2
+    assert "Days with no service" in monthly.markdown(r)

@@ -128,3 +128,22 @@ def test_no_version_yet():
         "basis": "no complete version yet",
         "changed_during_day": False,
     }
+
+
+def test_a_pin_already_made_is_not_moved_by_later_downloads():
+    reg: dict = {}
+    v1, v2 = gtfs_zip(stop_name="Harbor"), gtfs_zip(stop_name="Port")
+    _add(reg, 1, "2026-11-19", 21, v1)
+    first = pin_days(reg, ["2026-11-19", "2026-11-20"])
+    assert first["2026-11-20"]["passio"]["basis"] == "carried forward from 2026-11-19"
+    # A download for day 20 turns up later (say, archived late): day 20 keeps
+    # the version its figures were computed with.
+    _add(reg, 2, "2026-11-20", 16, v2)
+    assert pin_days(reg, ["2026-11-19", "2026-11-20"], first) == first
+    assert (
+        pin_days(reg, ["2026-11-19", "2026-11-20"])["2026-11-20"]["passio"]["version"]
+        == (fp(v2)["version"])
+    )
+    # A day with no version yet is still pinned once one exists.
+    empty = {"2026-11-18": {"passio": {"version": None, "basis": "no complete version yet"}}}
+    assert pin_days(reg, ["2026-11-19"], empty)["2026-11-19"]["passio"]["version"]
