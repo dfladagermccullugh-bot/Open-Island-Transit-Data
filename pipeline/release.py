@@ -2,13 +2,14 @@
 
 from __future__ import annotations
 
-import hashlib
 import json
 import os
 import subprocess
 import time
 from pathlib import Path
 from typing import Any
+
+from pipeline.common import sha256_file
 
 RETRY_WAITS_S = (5, 20, 60)
 
@@ -77,20 +78,11 @@ def fetch(tag: str, repo: str, name: str, dest: Path, sha256: str) -> Path:
     """Download one release asset into ``dest`` (unless a matching copy is
     already there) and check its SHA-256."""
     path = dest / name
-    if not (path.exists() and hashlib.sha256(path.read_bytes()).hexdigest() == sha256):
-        dest.mkdir(parents=True, exist_ok=True)
-        gh(
-            "release",
-            "download",
-            tag,
-            "--repo",
-            repo,
-            "--pattern",
-            name,
-            "--dir",
-            str(dest),
-            "--clobber",
-        )
-    if hashlib.sha256(path.read_bytes()).hexdigest() != sha256:
+    if path.exists() and sha256_file(path) == sha256:
+        return path
+    dest.mkdir(parents=True, exist_ok=True)
+    gh("release", "download", tag, "--repo", repo, "--pattern", name, "--dir", str(dest),
+       "--clobber")  # fmt: skip
+    if sha256_file(path) != sha256:
         raise RuntimeError(f"{name}: downloaded file does not match the manifest's SHA-256")
     return path

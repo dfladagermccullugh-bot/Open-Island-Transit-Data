@@ -16,6 +16,7 @@ import argparse
 import json
 import os
 import sys
+import traceback
 from datetime import UTC, date, datetime
 from pathlib import Path
 from typing import Any
@@ -104,7 +105,8 @@ def main() -> int:
             )
         except Exception as exc:  # keep going; one bad day must not block the rest
             failed = True
-            print(f"{day}: FAILED: {exc}", file=sys.stderr)
+            print(f"{day}: FAILED: {exc!r}", file=sys.stderr)
+            traceback.print_exc()
     return 1 if failed else 0
 
 

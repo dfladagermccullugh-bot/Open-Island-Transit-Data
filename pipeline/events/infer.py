@@ -33,8 +33,6 @@ A stop that cannot be placed on the shape in stop order, within
 
 from __future__ import annotations
 
-import csv
-import io
 from collections import defaultdict
 from dataclasses import dataclass, field
 from datetime import UTC, date, datetime, timedelta
@@ -42,6 +40,8 @@ from typing import Any
 
 from pipeline.events.geometry import Shape
 from pipeline.gtfs.schedule import Trip, day_origin, scheduled_trips
+from pipeline.gtfs.tables import rows as _rows
+from pipeline.gtfs.tables import seconds as _seconds
 from pipeline.gtfs.zipread import ZipContents
 
 EVENTS_VERSION = "events/0.3.0"
@@ -64,18 +64,6 @@ MAX_STOP_OFFSET_M = 150.0  # a stop farther than this from its shape is not plac
 UNPLACED_COST_M = 10_000.0  # cost of leaving a stop out of the placement
 
 Row = dict[str, Any]
-
-
-def _rows(contents: ZipContents, name: str) -> list[Row]:
-    body = contents.files.get(name, b"")
-    return list(csv.DictReader(io.StringIO(body.decode("utf-8-sig", errors="replace"))))
-
-
-def _seconds(hms: str) -> int | None:
-    if not hms:
-        return None
-    h, m, s = (int(x) for x in hms.strip().split(":"))
-    return h * 3600 + m * 60 + s
 
 
 @dataclass

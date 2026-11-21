@@ -21,12 +21,11 @@ from __future__ import annotations
 
 import argparse
 import csv
-import hashlib
-import io
 import json
 import os
 import re
 import sys
+import traceback
 from datetime import UTC, date, datetime
 from pathlib import Path
 from typing import Any
@@ -35,6 +34,9 @@ import pyarrow as pa
 import pyarrow.parquet as pq
 
 from pipeline import release
+from pipeline.common import file_entry as _file_entry
+from pipeline.common import load_json
+from pipeline.common import sha_of as _sha
 from pipeline.config import COLLECTION_START, REPO
 from pipeline.events.infer import EVENTS_VERSION, infer_day
 from pipeline.events.ontime import ONTIME_VERSION, summarize
@@ -42,6 +44,7 @@ from pipeline.events.routes import write_routes
 from pipeline.events.validate import VALIDATE_VERSION, validate
 from pipeline.gtfs.holidays import no_service, service_expected
 from pipeline.gtfs.schedule import route_names
+from pipeline.gtfs.tables import rows as gtfs_rows
 from pipeline.gtfs.timepoints import timepoint_pairs
 from pipeline.gtfs.zipread import read_zip
 
@@ -90,6 +93,17 @@ TRACK_SCHEMA = pa.schema(
         ("problem", pa.string()),
     ]
 )
+# The columns of the vehicles table that tracking and validation read.
+VEHICLE_COLUMNS = [
+    "vehicle_key",
+    "trip_id",
+    "vehicle_ts",
+    "lat",
+    "lon",
+    "bearing",
+    "speed",
+    "current_stop_sequence",
+]
 DAILY = [
     "service_date",
     "scheduled",
@@ -107,22 +121,13 @@ DAILY = [
 
 
 def _load(path: Path) -> dict[str, Any]:
-    return json.loads(path.read_text()) if path.exists() else {"version": 1, "days": {}}
+    return load_json(path, {"version": 1, "days": {}})
 
 
 def _save(path: Path, manifest: dict[str, Any]) -> None:
     path.parent.mkdir(parents=True, exist_ok=True)
     manifest["days"] = dict(sorted(manifest["days"].items()))
     path.write_text(json.dumps(manifest, indent=1, default=str) + "\n")
-
-
-def _sha(entry: dict[str, Any], name: str) -> str:
-    return next(f["sha256"] for f in entry["files"] if f["name"] == name)
-
-
-def _file_entry(path: Path) -> dict[str, Any]:
-    data = path.read_bytes()
-    return {"name": path.name, "bytes": len(data), "sha256": hashlib.sha256(data).hexdigest()}
 
 
 def pending(data: Path) -> list[date]:
@@ -158,7 +163,7 @@ def build(day: date, data: Path, raw_dir: Path, tables_dir: Path, out: Path, rep
     veh_path = release.fetch(
         parsed["release_tag"], repo, veh_name, tables_dir, _sha(parsed, veh_name)
     )
-    vehicles = pq.read_table(veh_path).to_pylist()
+    vehicles = pq.read_table(veh_path, columns=VEHICLE_COLUMNS).to_pylist()
 
     version = static["versions"][pins["passio"]["version"]]
     ex = version["example"]
@@ -182,7 +187,7 @@ def build(day: date, data: Path, raw_dir: Path, tables_dir: Path, out: Path, rep
         pq.write_table(table, path, compression="zstd", compression_level=9)
         files.append(_file_entry(path))
 
-    names = {s["stop_id"]: s.get("stop_name", "") for s in _stops(passio)}
+    names = {s["stop_id"]: s.get("stop_name", "") for s in gtfs_rows(passio, "stops.txt")}
     summary = summarize(events, COLLECTION_START, names)
     summary.update(
         {
@@ -223,11 +228,6 @@ def dumps_day(obj: dict[str, Any]) -> str:
     """Indented JSON with lists of numbers kept on one line."""
     text = json.dumps(obj, indent=1)
     return _NUMBER_LIST.sub(lambda m: "[" + re.sub(r"\s+", "", m.group(1)) + "]", text) + "\n"
-
-
-def _stops(passio) -> list[dict[str, str]]:
-    raw = passio.files.get("stops.txt")
-    return list(csv.DictReader(io.StringIO(raw.decode("utf-8-sig")))) if raw else []
 
 
 def write_daily(ontime_dir: Path) -> int:
@@ -298,6 +298,7 @@ def main() -> int:
         except Exception as exc:  # keep going; one bad day must not block the rest
             failed = True
             print(f"{day}: FAILED: {exc!r}", file=sys.stderr)
+            traceback.print_exc()
     if (ontime_dir / "days").exists():
         print(f"ontime/daily.csv: {write_daily(ontime_dir)} days")
         print(f"ontime/routes.csv and recent.json: {write_routes(ontime_dir)} days")

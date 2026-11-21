@@ -24,13 +24,13 @@ from __future__ import annotations
 
 import csv
 import difflib
-import io
 import re
 from collections import defaultdict
 from datetime import date
 from pathlib import Path
 from typing import Any
 
+from pipeline.gtfs.tables import rows as _rows
 from pipeline.gtfs.zipread import ZipContents
 
 TIMEPOINTS_VERSION = "timepoints/0.1.0"  # matching; day-type selection is applied by events
@@ -77,22 +77,16 @@ def reference_for(day: date, folder: Path = REFERENCE_DIR) -> date | None:
 
 def load_reference(effective: date, folder: Path = REFERENCE_DIR) -> tuple[list[Row], dict]:
     printed_path, overrides_path = references(folder)[effective]
-    printed = list(csv.DictReader(printed_path.open()))
+    with printed_path.open(encoding="utf-8", newline="") as fh:
+        printed = list(csv.DictReader(fh))
     overrides = {}
     if overrides_path.exists():
-        overrides = {
-            (o["route_short_name"], o["printed_stop"]): o
-            for o in csv.DictReader(overrides_path.open())
-        }
+        with overrides_path.open(encoding="utf-8", newline="") as fh:
+            overrides = {(o["route_short_name"], o["printed_stop"]): o for o in csv.DictReader(fh)}
     return printed, overrides
 
 
 # --- matching -----------------------------------------------------------------------
-
-
-def _rows(contents: ZipContents, name: str) -> list[Row]:
-    body = contents.files.get(name, b"")
-    return list(csv.DictReader(io.StringIO(body.decode("utf-8-sig", errors="replace"))))
 
 
 def _fit(seq: dict[str, int], printed_ids: list[list[str]]) -> tuple[int, int]:
@@ -149,7 +143,6 @@ def match(passio: ZipContents, printed: list[Row], overrides: dict) -> list[Row]
             else:
                 cands[p["printed_stop"]] = ([], "unresolved: no name match")
 
-        # The trips containing the most printed stops decide between same-named stops.
         # The trips containing the most printed stops, in the printed order,
         # decide between same-named stops.
         printed_ids = [cands[p["printed_stop"]][0] for p in stops]

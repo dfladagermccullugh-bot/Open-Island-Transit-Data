@@ -7,12 +7,12 @@ zone, which is midnight except on the two days a year the clocks change.
 from __future__ import annotations
 
 import bisect
-import csv
-import io
 from dataclasses import dataclass
 from datetime import UTC, date, datetime, time, timedelta
 
 from pipeline.config import PACIFIC
+from pipeline.gtfs.tables import rows as _rows
+from pipeline.gtfs.tables import seconds as _seconds
 from pipeline.gtfs.zipread import ZipContents
 
 DAYS = ("monday", "tuesday", "wednesday", "thursday", "friday", "saturday", "sunday")
@@ -25,13 +25,6 @@ class Trip:
     service_id: str
     start: datetime  # first scheduled departure, UTC-aware
     end: datetime  # last scheduled arrival
-
-
-def _rows(contents: ZipContents, name: str) -> list[dict[str, str]]:
-    body = contents.files.get(name)
-    if body is None:
-        return []
-    return list(csv.DictReader(io.StringIO(body.decode("utf-8-sig", errors="replace"))))
 
 
 def route_names(contents: ZipContents) -> dict[str, dict[str, str]]:
@@ -77,11 +70,6 @@ def day_origin(day: date) -> datetime:
     # Subtract in UTC: arithmetic on a Pacific-aware datetime is wall-clock
     # arithmetic and would ignore a clock change.
     return datetime.combine(day, time(12), tzinfo=PACIFIC).astimezone(UTC) - timedelta(hours=12)
-
-
-def _seconds(hms: str) -> int:
-    h, m, s = (int(x) for x in hms.strip().split(":"))
-    return h * 3600 + m * 60 + s
 
 
 def scheduled_trips(contents: ZipContents, day: date) -> list[Trip]:

@@ -5,6 +5,7 @@ from __future__ import annotations
 import base64
 import gzip
 import hashlib
+import time
 from collections.abc import Iterator
 from datetime import date, datetime
 from typing import Any
@@ -15,6 +16,7 @@ from pipeline.archive.days import day_bounds, pacific_date
 from pipeline.config import SUPABASE_PUBLISHABLE_KEY, SUPABASE_URL, USER_AGENT
 
 Row = dict[str, Any]
+RETRY_WAITS_S = (1, 4, 16)
 
 
 class Collector:
@@ -23,21 +25,33 @@ class Collector:
         self.session = requests.Session()
         self.session.headers.update({"apikey": key, "User-Agent": USER_AGENT})
 
-    def _get(self, path: str, params: dict[str, str] | list[tuple[str, str]]) -> Any:
+    def _request(self, method: str, path: str, **kwargs: Any) -> Any:
+        """One REST call, retried on a transport error or a 5xx/429 reply
+        after 1, 4 and 16 seconds. Both calls used here only read, so a
+        repeat is safe."""
         last: Exception | None = None
-        for _attempt in range(4):
+        for attempt in range(len(RETRY_WAITS_S) + 1):
+            if attempt:
+                time.sleep(RETRY_WAITS_S[attempt - 1])
             try:
-                r = self.session.get(f"{self.url}/rest/v1/{path}", params=params, timeout=120)
-                r.raise_for_status()
-                return r.json()
-            except requests.RequestException as exc:  # retry transient failures
+                r = self.session.request(
+                    method, f"{self.url}/rest/v1/{path}", timeout=120, **kwargs
+                )
+                if r.status_code < 500 and r.status_code != 429:
+                    r.raise_for_status()  # a 4xx will not get better: fail now
+                    return r.json()
+                last = requests.HTTPError(f"HTTP {r.status_code}", response=r)
+            except requests.HTTPError:
+                raise
+            except requests.RequestException as exc:
                 last = exc
-        raise RuntimeError(f"GET {path} failed after retries: {last}")
+        raise RuntimeError(f"{method} {path} failed after retries: {last}")
+
+    def _get(self, path: str, params: dict[str, str] | list[tuple[str, str]]) -> Any:
+        return self._request("GET", path, params=params)
 
     def _rpc(self, name: str, args: dict[str, Any]) -> Any:
-        r = self.session.post(f"{self.url}/rest/v1/rpc/{name}", json=args, timeout=120)
-        r.raise_for_status()
-        return r.json()
+        return self._request("POST", f"rpc/{name}", json=args)
 
     def _pages(self, table: str, day: date, key: str, page: int) -> Iterator[Row]:
         start, end = day_bounds(day)

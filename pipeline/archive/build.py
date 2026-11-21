@@ -22,6 +22,7 @@ import pyarrow as pa
 import pyarrow.parquet as pq
 
 from pipeline.archive.store import Collector, Row
+from pipeline.common import file_entry as _file_entry
 
 FETCH_LOG_COLUMNS = [
     "fetch_id",
@@ -86,11 +87,6 @@ def raw_digest(rows: list[Row]) -> str:
 
 def _ts(value: str | None) -> datetime | None:
     return datetime.fromisoformat(value).astimezone(UTC) if value else None
-
-
-def _file_entry(path: Path) -> dict[str, Any]:
-    data = path.read_bytes()
-    return {"name": path.name, "bytes": len(data), "sha256": hashlib.sha256(data).hexdigest()}
 
 
 def merge_rows(log_rows: list[Row], raw_rows: list[Row]) -> list[Row]:

@@ -18,6 +18,7 @@ import argparse
 import json
 import os
 import sys
+import traceback
 from datetime import UTC, date, datetime
 from pathlib import Path
 from typing import Any
@@ -96,7 +97,7 @@ def main() -> int:
         try:
             raw_entry = raw["days"][day.isoformat()]
             path = raw_file(day, raw_entry, args.raw_dir, args.repo)
-            entry = write_tables(day, build_tables(read_raw(path)), args.out)
+            entry = write_tables(day, build_tables(read_raw(path), presorted=True), args.out)
             entry["raw_sha256"] = next(
                 f["sha256"] for f in raw_entry["files"] if f["name"] == path.name
             )
@@ -121,7 +122,8 @@ def main() -> int:
             print(f"{day}: {entry['rows']}")
         except Exception as exc:  # keep going; one bad day must not block the rest
             failed = True
-            print(f"{day}: FAILED: {exc}", file=sys.stderr)
+            print(f"{day}: FAILED: {exc!r}", file=sys.stderr)
+            traceback.print_exc()
     return 1 if failed else 0
 
 

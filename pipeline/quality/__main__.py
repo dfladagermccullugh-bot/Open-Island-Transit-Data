@@ -18,6 +18,7 @@ import csv
 import json
 import os
 import sys
+import traceback
 from datetime import date, datetime, timedelta
 from pathlib import Path
 from typing import Any
@@ -25,9 +26,12 @@ from typing import Any
 import pyarrow.parquet as pq
 
 from pipeline import release
+from pipeline.common import load_json
+from pipeline.common import sha_of as _sha
 from pipeline.config import COLLECTION_START, REPO
 from pipeline.gtfs.holidays import no_service, service_expected
 from pipeline.gtfs.schedule import removed_services, route_names, scheduled_trips
+from pipeline.gtfs.tables import rows as _csv
 from pipeline.gtfs.zipread import read_zip
 from pipeline.quality import gaps
 from pipeline.quality import stops as stop_metrics
@@ -44,6 +48,17 @@ FETCH_COLUMNS = [
     "entity_count",
     "newest_entity_ts",
     "collector_version",
+]
+
+# The columns of trip-update-stops that prediction error reads (the table is
+# the largest of the day; reading it whole took most of this stage's time).
+PREDICTION_COLUMNS = [
+    "trip_id",
+    "stop_sequence",
+    "first_requested_at",
+    "last_requested_at",
+    "arrival_time",
+    "departure_time",
 ]
 
 HEADLINE = [
@@ -83,11 +98,7 @@ HEADLINE = [
 
 
 def _load(path: Path) -> dict[str, Any]:
-    return json.loads(path.read_text()) if path.exists() else {"days": {}}
-
-
-def _sha(entry: dict[str, Any], name: str) -> str:
-    return next(f["sha256"] for f in entry["files"] if f["name"] == name)
+    return load_json(path, {"days": {}})
 
 
 def _events_sha(events: dict, day: str) -> str | None:
@@ -168,14 +179,14 @@ def event_metrics(
     if not entry or not entry.get("release_tag"):
         return None, {}
 
-    def table(name: str, source: dict) -> list[dict]:
+    def table(name: str, source: dict, columns: list[str] | None = None) -> list[dict]:
         f = f"{name}-{d}.parquet"
         path = release.fetch(source["release_tag"], repo, f, tables_dir, _sha(source, f))
-        return pq.read_table(path).to_pylist()
+        return pq.read_table(path, columns=columns).to_pylist()
 
     events = table("stop-events", entry)
     tracks = table("trip-tracks", entry)
-    predictions = table("trip-update-stops", parsed)
+    predictions = table("trip-update-stops", parsed, PREDICTION_COLUMNS)
     out = data / "quality"
     today_ids = {v["vehicle_id"] for v in vehicles if v["vehicle_id"] is not None}
     metrics = {
@@ -287,11 +298,6 @@ def compute(day: date, data: Path, raw_dir: Path, tables_dir: Path, repo: str) -
     return m
 
 
-def _csv(contents, name: str) -> list[dict[str, str]]:
-    body = contents.files.get(name, b"")
-    return list(csv.DictReader(body.decode("utf-8-sig", errors="replace").splitlines()))
-
-
 def _get(obj: Any, path: tuple[str, ...]) -> Any:
     for key in path:
         if not isinstance(obj, dict):
@@ -350,6 +356,7 @@ def main() -> int:
         except Exception as exc:  # keep going; one bad day must not block the rest
             failed = True
             print(f"{day}: FAILED: {exc!r}", file=sys.stderr)
+            traceback.print_exc()
     if (out / "days").exists():
         print(f"daily.csv: {write_daily_csv(out)} days")
         g = gaps.write(out)

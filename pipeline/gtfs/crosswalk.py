@@ -33,12 +33,12 @@ Schedule agreement
 
 from __future__ import annotations
 
-import csv
-import io
 import math
 from collections import Counter, defaultdict
 from typing import Any
 
+from pipeline.gtfs.tables import rows as _rows
+from pipeline.gtfs.tables import seconds as _seconds
 from pipeline.gtfs.zipread import ZipContents
 
 CODE_MAX_M = 150.0
@@ -57,9 +57,7 @@ NEEDED = ("stops", "routes", "trips", "stop_times", "calendar")
 def tables(contents: ZipContents) -> Tables:
     out: Tables = {}
     for name in NEEDED:
-        body = contents.files.get(f"{name}.txt")
-        text = body.decode("utf-8-sig", errors="replace") if body is not None else ""
-        out[name] = list(csv.DictReader(io.StringIO(text)))
+        out[name] = _rows(contents, f"{name}.txt")
     return out
 
 
@@ -135,13 +133,6 @@ def route_crosswalk(passio: list[Row], trillium: list[Row]) -> list[Row]:
             }
         )
     return out
-
-
-def _seconds(hms: str) -> int | None:
-    if not hms:
-        return None
-    h, m, s = (int(x) for x in hms.strip().split(":"))
-    return h * 3600 + m * 60 + s
 
 
 def _weekdays(calendar: list[Row]) -> dict[str, set[int]]:

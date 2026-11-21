@@ -22,7 +22,6 @@ Files written for day D:
 
 from __future__ import annotations
 
-import hashlib
 from collections.abc import Iterable, Iterator
 from dataclasses import dataclass, field
 from datetime import UTC, date, datetime
@@ -33,6 +32,7 @@ import pyarrow as pa
 import pyarrow.parquet as pq
 from google.protobuf.message import DecodeError
 
+from pipeline.common import file_entry as _file_entry
 from pipeline.parse.realtime import Row, parse_feed
 
 TABLES_VERSION = "tables/0.1.0"
@@ -282,15 +282,21 @@ def _ok(row: Row) -> bool:
     )
 
 
-def build_tables(rows: Iterable[Row]) -> DayTables:
-    """Collapse one day's raw rows (in any order) into the parsed tables."""
+def build_tables(rows: Iterable[Row], presorted: bool = False) -> DayTables:
+    """Collapse one day's raw rows (in any order) into the parsed tables.
+
+    Rows are handled in ``fetch_id`` order. With ``presorted`` the caller
+    states they already are, as in an archived raw file; they are then read
+    one at a time instead of all being held in memory to sort, and a row out
+    of order is an error."""
     collapsers = {s.name: _Collapser(s) for s in SPECS}
     by_feed: dict[str, list[_Collapser]] = {f: [] for f in FEEDS}
     for s in SPECS:
         by_feed[s.feed].append(collapsers[s.name])
     counts = {f: {"attempted": 0, "parsed": 0, "failed": 0, "decode_errors": 0} for f in FEEDS}
 
-    for row in sorted(rows, key=lambda r: r["fetch_id"]):
+    ordered = in_fetch_order(rows) if presorted else sorted(rows, key=lambda r: r["fetch_id"])
+    for row in ordered:
         feed = row["feed"]
         if feed not in counts:
             continue
@@ -317,16 +323,21 @@ def build_tables(rows: Iterable[Row]) -> DayTables:
     )
 
 
+def in_fetch_order(rows: Iterable[Row]) -> Iterator[Row]:
+    """Pass rows through, checking that they arrive in ``fetch_id`` order."""
+    last = None
+    for row in rows:
+        if last is not None and row["fetch_id"] < last:
+            raise ValueError("raw rows are not in fetch_id order")
+        last = row["fetch_id"]
+        yield row
+
+
 def read_raw(path: Path) -> Iterator[Row]:
     """Rows of an archived raw Parquet file, a batch at a time."""
     columns = ["fetch_id", "feed", "requested_at", "http_status", "error_class", "body"]
     for batch in pq.ParquetFile(path).iter_batches(batch_size=500, columns=columns):
         yield from batch.to_pylist()
-
-
-def _file_entry(path: Path) -> dict[str, Any]:
-    data = path.read_bytes()
-    return {"name": path.name, "bytes": len(data), "sha256": hashlib.sha256(data).hexdigest()}
 
 
 def write_tables(day: date, built: DayTables, out: Path) -> dict[str, Any]:

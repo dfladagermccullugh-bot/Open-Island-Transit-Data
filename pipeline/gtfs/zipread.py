@@ -29,6 +29,8 @@ class ZipContents:
     files: dict[str, bytes] = field(default_factory=dict)
     has_directory: bool = False
     problems: list[str] = field(default_factory=list)
+    # Parsed text tables, filled by ``pipeline.gtfs.tables.rows``.
+    tables: dict[str, list[dict[str, str]]] = field(default_factory=dict, repr=False, compare=False)
 
     @property
     def missing_required(self) -> list[str]:
@@ -46,14 +48,14 @@ def read_zip(data: bytes) -> ZipContents:
     """Return every recoverable file in ``data`` plus a list of defects."""
     try:
         with zipfile.ZipFile(io.BytesIO(data)) as z:
-            bad = z.testzip()
             out = ZipContents(has_directory=True)
-            if bad is not None:
-                out.problems.append(f"CRC mismatch in {bad}")
             for info in z.infolist():
-                if info.is_dir() or info.filename == bad:
+                if info.is_dir():
                     continue
-                out.files[info.filename] = z.read(info)
+                try:  # reading an entry checks its CRC, so each is read once
+                    out.files[info.filename] = z.read(info)
+                except (zipfile.BadZipFile, zlib.error):
+                    out.problems.append(f"CRC mismatch in {info.filename}")
             return out
     except zipfile.BadZipFile as exc:
         out = _walk_local_headers(data)

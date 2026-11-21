@@ -10,25 +10,19 @@ forth, back and forth again are collapsed (as for stop events, see
 
 from __future__ import annotations
 
-import csv
-import io
 from collections import Counter, defaultdict
 from typing import Any
 
 import numpy as np
 
 from pipeline.events.geometry import drop_retraced, to_xy
+from pipeline.gtfs.tables import rows as _rows
 from pipeline.gtfs.zipread import ZipContents
 
 MAP_VERSION = "map/0.1.0"
 SIMPLIFY_M = 5.0
 
 Row = dict[str, str]
-
-
-def _rows(contents: ZipContents, name: str) -> list[Row]:
-    raw = contents.files.get(name)
-    return list(csv.DictReader(io.StringIO(raw.decode("utf-8-sig")))) if raw else []
 
 
 def simplify(lats: list[float], lons: list[float], tol_m: float = SIMPLIFY_M) -> list[int]:
