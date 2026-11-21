@@ -3,7 +3,7 @@ title: "Routes"
 subtitle: "On time, route by route and stop by stop"
 ---
 
-Tap a route on the map or pick one from the list to see how its buses did.
+Pick a route on the map or from the list to see how its buses did.
 We count departures only at the stops whose times are printed in Island
 Transit's timetables, called
 [timepoints]{.term tabindex="0" tip="The stops whose times are printed in Island Transit's timetables. These are the times the agency publishes for riders."},

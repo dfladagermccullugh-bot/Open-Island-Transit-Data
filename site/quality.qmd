@@ -37,7 +37,7 @@ html`${lq == null ? noData() : html`<p class="note">These grades are for ${longD
     <div class="note">average miss, for predictions made 5 minutes before the bus arrived</div></div>
   <div class="stat"><div class="label">Are buses where the route says?</div>
     <div class="value">${pct(1 - lq.off_shape_share)}</div>
-    <div class="note">of locations were within 100 m of the bus's published route</div></div>
+    <div class="note">of locations were within 100 meters (about 330 feet) of the bus's published route</div></div>
 </div>`}`
 ```
 
@@ -56,12 +56,12 @@ Hover over or tap each term for a plain explanation, or see the
 //| echo: false
 series = [
   {key: "trip_coverage", title: "Scheduled trips seen in the feed", unit: "share"},
-  {key: "vehicle_uptime", title: "Collector uptime, vehicle positions", unit: "share"},
-  {key: "stale_in_service_rate", title: "Stale vehicle feed while buses are scheduled", unit: "share"},
-  {key: "position_age_s_median", title: "Median age of positions when first seen (s)", unit: "s"},
-  {key: "longest_gap_s_median", title: "Median longest gap in a trip's positions (s)", unit: "s"},
-  {key: "timepoint_coverage", title: "Timepoint events with an inferred time", unit: "share"},
-  {key: "prediction_mae_s_5min", title: "Arrival prediction error 5 minutes ahead, mean absolute (s)", unit: "s"},
+  {key: "vehicle_uptime", title: "Collector uptime (vehicle locations)", unit: "share"},
+  {key: "stale_in_service_rate", title: "Stale feed during scheduled service", unit: "share"},
+  {key: "position_age_s_median", title: "Typical age of a bus location when first seen (seconds)", unit: "s"},
+  {key: "longest_gap_s_median", title: "Typical longest tracking gap per trip (seconds)", unit: "s"},
+  {key: "timepoint_coverage", title: "Departures at timetable stops we could time", unit: "share"},
+  {key: "prediction_mae_s_5min", title: "Average arrival prediction error, 5 minutes ahead (seconds)", unit: "s"},
 ]
 html`${days.length === 0 ? noData() : days.length < 2 ? html`<p class="empty">Charts that follow each measure over time will appear once there is a second day of data.</p>` : html`<div class="grid">${series.map(s => html`<div class="g-col-12 g-col-md-6">
   <h4 style="font-size:1rem">${s.title}</h4>
@@ -141,7 +141,7 @@ html`${stopRoute.length === 0 ? noData() : Plot.plot({
 <details class="more"><summary>Arrival predictions</summary>
 
 For each prediction, we take the arrival time the feed was showing a given
-number of minutes ahead and subtract the arrival time we worked out from the
+number of minutes ahead and subtract the arrival time we estimated from the
 bus's locations. A positive error means the bus showed up earlier than the
 feed said it would. Some predictions carry the wrong day's date, so we count
 those separately and leave them out of the error figures.
@@ -181,7 +181,7 @@ other = latest == null ? [] : [
   ["Fetch failures, vehicle positions", pct(latest.nonresponse.fetch.vehiclePositions.rate, 2)],
   ["Empty vehicle feed while buses are scheduled", pct(latest.nonresponse.vehicle_feed.empty_in_service_rate, 2)],
   ["Positions with no trip, an unknown trip, or a trip not scheduled that day", pct(latest.coverage.over_coverage.share, 2)],
-  ["Impossible jumps (over 130 km/h)", latest.measurement.impossible_jumps_over_130_kmh],
+  ["Impossible jumps (over 130 km/h, about 80 mph)", latest.measurement.impossible_jumps_over_130_kmh],
   ["Vehicle timestamps in the future / going backwards", `${latest.measurement.timestamps_in_future} / ${latest.measurement.timestamps_going_backwards}`],
   ["Trip ids found in the schedule", pct(latest.processing.id_match.trip_id.match_rate, 1)],
   ["Stop ids found in the schedule", pct(latest.processing.id_match.stop_id.match_rate, 1)],
@@ -189,12 +189,12 @@ other = latest == null ? [] : [
   ["Distinct vehicles reporting", latest.coverage.vehicles_seen],
   ...(ev == null ? [] : [
     ["All stop events with an inferred time", pct(ev.stop_coverage.all_stops.coverage, 1)],
-    ["Positions more than 100 m off the route shape", pct(ev.shape_fit.off_shape_share, 1)],
+    ["Positions more than 100 meters (330 ft) off the route shape", pct(ev.shape_fit.off_shape_share, 1)],
     ["Positions moving against the route shape", pct(ev.shape_fit.wrong_direction_share, 1)],
     ["Trips that left out part of the published route shape", `${ev.shape_fit.trips_skipping_part_of_shape} (${num(ev.shape_fit.skipped_km, 1)} km)`],
     ["Route shapes that draw segments three times (corrected)", `${ev.retraced_shapes.shapes_retraced} of ${ev.retraced_shapes.shapes_used}`],
     ["Trip ids seen that are not scheduled that day", `${ev.assignment.unassignable} of ${ev.assignment.observed_trip_ids}`],
-    ["Position jitter at terminals, 95th percentile", `${num(ev.jitter.jitter_m_p95, 1)} m`],
+    ["Position jitter at terminals, 95th percentile", `${num(ev.jitter.jitter_m_p95, 1)} meters`],
     ["Vehicles seen in the previous 30 days but not this day",
       ev.missing_vehicles.missing_count == null ? "no earlier days" : ev.missing_vehicles.missing_count],
   ]),

@@ -1,6 +1,6 @@
 ---
 pagetitle: "Open Island Transit Data"
-description: "How often Island Transit's buses run on time, worked out from their live locations, with every number and file free to check."
+description: "How often Island Transit's buses run on time, figured out from their live locations, with every number and file free to check."
 ---
 
 ::: {.hero}
@@ -8,7 +8,7 @@ description: "How often Island Transit's buses run on time, worked out from thei
 
 [Every few seconds, each Island Transit bus reports where it is, and each
 report vanishes as soon as the next one arrives. This site saves all of them
-and uses them to work out how often the buses leave on time.]{.lede}
+and uses them to figure out how often the buses leave on time.]{.lede}
 
 ```{ojs}
 //| echo: false
@@ -65,7 +65,7 @@ html`${o == null || o.observed === 0
 
 ## Every route at a glance
 
-Tap any route to see how it did at each stop.
+Pick any route on the map to see how it did at each stop.
 
 ```{ojs}
 //| echo: false
@@ -92,7 +92,7 @@ html`${homeMap == null ? html`<p class="empty">The route map will appear once th
 ```{=html}
 <svg viewBox="0 0 1000 190" role="img" aria-labelledby="how-title how-desc">
   <title id="how-title">How the data flows</title>
-  <desc id="how-desc">Each bus reports its location to Island Transit's live feed. Every 20 seconds, our collector saves the latest update. Each night, our scripts check those updates and turn them into on-time figures, which end up on this site and in free downloads.</desc>
+  <desc id="how-desc">Each bus reports its location to Island Transit's live feed. Every 20 seconds, our collector saves the latest update. Each night, our script checks those updates and turns them into on-time figures, which end up on this site and in free downloads.</desc>
   <defs>
     <marker id="arrowhead" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
       <path class="arrowhead" d="M0,0 L10,5 L0,10 z"/>
@@ -120,7 +120,7 @@ html`${homeMap == null ? html`<p class="empty">The route map will appear once th
 
     <rect class="box ours" x="617" y="0" width="175" height="120" rx="10"/>
     <text class="t1" x="704" y="42" text-anchor="middle">Nightly checks</text>
-    <text class="t2" x="704" y="68" text-anchor="middle">work out when buses</text>
+    <text class="t2" x="704" y="68" text-anchor="middle">figure out when buses</text>
     <text class="t2" x="704" y="86" text-anchor="middle">left each stop; grade</text>
     <text class="t2" x="704" y="104" text-anchor="middle">the tracking data</text>
 
@@ -143,21 +143,19 @@ Each bus carries a GPS unit that reports where it is. Island Transit passes
 those reports along to trip-planning apps through a live feed, and every new
 update wipes out the one before it. Every 20 seconds, day and night, our
 collector asks the feed for its latest update and saves it. Each night, our
-scripts work out when every bus left each stop and grade how good the
-tracking was. The results end up here in the charts and the map, along with
-every file for you to download.
+script turns the saved updates into the charts, the map and the files you
+can download here.
 :::
 :::
 
 The feed tells us where a bus is, but it never says when the bus left a
-stop. So each night our script traces every bus along its route, finds the
-moment it passed each stop, and compares that moment with the printed
-timetable. The same saved data also shows how often the tracking itself
-breaks down, which you can see on the [Data quality](quality.qmd) page.
+stop. So the script traces every bus along its route, finds the moment it
+passed each stop, and compares that moment with the printed timetable. The
+same saved data also shows how often the tracking itself breaks down, which
+you can see on the [Data quality](quality.qmd) page.
 
 ## Why this exists
 
 Island Transit doesn't publish on-time figures, and once the live feed moves
-on, its data is gone for good. By saving it, we make it possible for anyone
-to answer a question like "Was route 60 late last week?" and to check our
-answer against the code that produced it.
+on, its data is gone for good. Saving it lets anyone ask "Was route 60 late
+last week?" and check the code behind the answer.

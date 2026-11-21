@@ -105,7 +105,7 @@ one row for each position report a vehicle sends (`vehicle_ts`).
 | `vehicle_id`, `vehicle_label` | Vehicle id and the label shown on the bus |
 | `vehicle_ts` | Time of the position report, as sent by the vehicle |
 | `trip_id`, `route_id`, `direction_id`, `start_date`, `start_time`, `trip_schedule_relationship` | The trip the vehicle reports. `direction_id`, `start_date` and `start_time` have not been sent so far |
-| `lat`, `lon`, `bearing`, `speed`, `odometer` | Position; speed in metres per second |
+| `lat`, `lon`, `bearing`, `speed`, `odometer` | Position; speed in meters per second |
 | `current_stop_sequence`, `stop_id`, `current_status` | The stop the vehicle reports. `current_status` has not been sent so far |
 | `congestion_level`, `occupancy_status`, `occupancy_percentage` | As sent |
 
@@ -310,7 +310,7 @@ still short.
 | `off_shape_share` | Position reports in a trip's window more than 100 m from its shape |
 | `prediction_mae_s_5min` | Mean absolute error of arrival predictions published 5 minutes ahead, seconds |
 | `prediction_within_60s_5min` | Share of those predictions within 60 s |
-| `jitter_m_p95` | 95th percentile of position spread while a bus stands at a terminal, metres |
+| `jitter_m_p95` | 95th percentile of position spread while a bus stands at a terminal, meters |
 | `unassignable_trip_ids` | Trip ids reported that are not in the static version or not scheduled that day |
 | `vehicles_missing_vs_30d` | Vehicles seen in the previous 30 days (with quality files) but not this day |
 | `trip_id_match_rate` | Positions whose `trip_id` exists in the static version |

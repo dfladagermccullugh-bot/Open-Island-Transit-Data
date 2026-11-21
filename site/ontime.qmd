@@ -6,10 +6,10 @@ subtitle: "The whole system, day by day and hour by hour"
 ::: {.method-note}
 We calculate these figures ourselves from Island Transit's bus locations and
 schedule, so they aren't official numbers. The feed has no "minutes late"
-field, which means our script has to work out the moment each bus left a
-stop from where the bus was just before and just after. A computer checks
-that work on every route every day, and we have also timed buses in person
-on route 60. The [Methods](methods.qmd) page explains it all, and
+field, which means our script has to figure out the moment each bus left a
+stop from where the bus was just before and just after. Automated checks
+verify those times on every route every day, and we have also timed buses
+in person on route 60. The [Methods](methods.qmd) page explains it all, and
 [Routes](routes.qmd) shows one route at a time.
 :::
 
@@ -30,7 +30,7 @@ noData = () => html`<p class="empty">No day has been processed yet.</p>`
 //| echo: false
 html`${days.length === 0 ? noData() : days.length < 2
   ? html`<p class="empty">So far there is one day of data, ${longDate(latestDate)}, and ${pct(days[0].on_time_share_of_observed)} of the departures we saw that day were on time.
-      A day-by-day line will appear once a second day comes in.</p>`
+      A day-by-day trend line will appear once a second day comes in.</p>`
   : Plot.plot({
     style: {background: "transparent"},
     width: Math.min(width, 960), height: 240, marginLeft: 50,
@@ -73,15 +73,15 @@ html`${hours.length === 0 ? noData() : html`<p class="note">This chart shows ${l
 
 <details class="more"><summary>Automatic checks, every route, every day</summary>
 
-A computer runs two checks every day, without anyone needing to go out and
-watch the buses ([Methods](methods.qmd), section 5). The first check uses a
+Our script runs two automatic checks every day, without anyone needing to go
+out and watch the buses ([Methods](methods.qmd), section 5). The first check uses a
 clue the feed already gives us. Each bus report names the stop the bus is
 heading for, and that name switches to the next stop once the bus passes. If
 our departure time lands between the last report naming a stop and the first
 report naming a later one, give or take 30 seconds, it agrees with the feed.
 The second check looks at the time it took to get from one stop to the next.
 That time should never run backwards, and it should never mean the bus went
-faster than 126 km/h.
+faster than 126 km/h (about 78 mph).
 
 ```{ojs}
 //| echo: false
@@ -94,7 +94,7 @@ checks = val == null ? [] : [
   ["Times the feed's stop sequence went backwards within a trip", val.feed_agreement.feed_sequence_going_backwards],
   ["Segments between inferred times", val.travel_times.segments],
   ["Segments running backwards in time", val.travel_times.negative],
-  ["Segments faster than 126 km/h", val.travel_times.over_max_speed],
+  ["Segments faster than 126 km/h (78 mph)", val.travel_times.over_max_speed],
 ].map(([check, value]) => ({check, value}))
 html`${checks.length === 0 ? noData() : Inputs.table(checks, {header: {check: "Check", value: "Result"}, rows: 10})}`
 ```
@@ -109,15 +109,15 @@ seconds or less on average. So far we have done this only on route 60,
 riding on board, so it doesn't yet cover other routes, buses leaving after they have
 waited at a timepoint, or buses leaving a terminal. The two automatic checks
 above still cover every route every day. The person timing the bus notes the
-same moments our method looks for: when the bus comes within 40 m of the
-stop, and when it gets more than 40 m past it. From on board, it is often
+same moments our method looks for: when the bus comes within 40 meters
+(about 130 feet) of the stop, and when it gets more than 40 meters past it. From on board, it is often
 easier to note the moment the bus is level with the stop, and we compare
 that with the midpoint of our two times.
 
 ```{ojs}
 //| echo: false
 fc = json("data/ontime/field-check.json")
-fcRows = fc == null || fc.overall.n === 0 ? [] : [["All", fc.overall], ["Arrivals (40 m before)", fc.arrival], ["Departures (40 m past)", fc.departure], ["Level with the stop", fc.pass ?? {n: 0}]]
+fcRows = fc == null || fc.overall.n === 0 ? [] : [["All", fc.overall], ["Arrivals (130 ft before the stop)", fc.arrival], ["Departures (130 ft past the stop)", fc.departure], ["Level with the stop", fc.pass ?? {n: 0}]]
   .filter(([, s]) => s.n > 0)
   .map(([moment, s]) => ({moment, n: s.n, bias: s.bias_s, mae: s.mae_s, w30: s.within_30s_share, w60: s.within_60s_share}))
 html`${fcRows.length === 0
@@ -139,5 +139,5 @@ yourself.
 
 [The daily figures are in
 [`ontime/daily.csv`](https://github.com/dfladagermccullugh-bot/Open-Island-Transit-Data/blob/data/ontime/daily.csv),
-and every arrival and departure we worked out is in the `stop-events` files
+and every arrival and departure we estimated is in the `stop-events` files
 in [Releases](https://github.com/dfladagermccullugh-bot/Open-Island-Transit-Data/releases).]{.note}

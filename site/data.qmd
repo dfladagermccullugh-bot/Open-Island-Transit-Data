@@ -1,6 +1,6 @@
 ---
 title: "Download the data"
-subtitle: "Every saved update and every table, free"
+subtitle: "Free downloads of every saved update and table"
 ---
 
 Every number on this site can be rebuilt from these files, and all of them
@@ -14,8 +14,9 @@ are free to download.
 
 Each release on GitHub holds one month of files, with one file per day: the
 raw archive is in `raw-YYYY-MM` and the parsed tables are in
-`parsed-YYYY-MM`. When we started collecting, Island Transit's feeds came
-with no license or terms of use.
+`parsed-YYYY-MM`. When we started collecting, Island Transit's feeds carried
+no published license or terms of use. Our [license file](https://github.com/dfladagermccullugh-bot/Open-Island-Transit-Data/blob/main/LICENSE-DATA.md) explains how
+we share the archived data.
 
 ## Archived days
 
@@ -34,8 +35,9 @@ html`${rows.length === 0 ? html`<p>No day has been archived yet.</p>` : Inputs.t
 
 ## Monthly reports
 
-Once a month is over, we write up a summary of it and add a checksum file
-to its downloads, so you can confirm that your copies match ours.
+Once a month is over, we write up a summary of it and add a checksum
+verification file to its downloads, so you can confirm that your copies
+match ours exactly.
 
 ```{ojs}
 //| echo: false
