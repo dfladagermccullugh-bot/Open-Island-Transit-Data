@@ -6,10 +6,9 @@ description: "How often Island Transit's buses run on time, worked out from thei
 ::: {.hero}
 # How on time are Island Transit's buses?
 
-[Island Transit's buses send out their location every few seconds, but nobody
-keeps those updates. This site saves every one, works out how often each bus
-left its stops on time, and checks how trustworthy the tracking data is.
-Everything is free to download.]{.lede}
+[Island Transit's buses report where they are every few seconds, and nobody
+keeps those reports. This site saves them all and works out how often each
+bus left on time.]{.lede}
 
 ```{ojs}
 //| echo: false
@@ -22,7 +21,7 @@ status = {
   } catch (e) { return null; }
 }
 vp = status?.find(d => d.feed === "vehiclePositions") ?? null
-ago = s => s < 120 ? `${s} seconds ago` : s < 7200 ? `${Math.round(s / 60)} minutes ago` : `${Math.round(s / 3600)} hours ago`
+ago = s => s < 120 ? `${s} second${s === 1 ? "" : "s"} ago` : s < 7200 ? `${Math.round(s / 60)} minutes ago` : `${Math.round(s / 3600)} hours ago`
 html`${vp == null
   ? html`<a class="live" href="#how-it-works"><span class="dot"></span>Saving bus locations every 20 seconds</a>`
   : vp.last_ok_age_s < 120
@@ -51,27 +50,22 @@ html`${o == null || o.observed === 0
   ? html`<p class="empty">The first numbers appear after the first full day is processed, shortly after midnight Pacific.</p>`
   : html`<div class="headline">
       <div class="big">${pct(o.on_time_share_of_observed)}</div>
-      <div class="big-label">of bus departures we could see left on time ${period}.
-        <span class="note">On time means no more than 1 minute early or 5 minutes late.
-        The typical departure was ${lateness(o.deviation_s_median)}.</span></div>
+      <div class="big-label">of departures left on time ${period}.
+        <span class="note">On time: up to 1 minute early or 5 minutes late.</span></div>
     </div>
     <div class="stat-row">
+      <div class="stat"><div class="label">Typical departure</div>
+        <div class="value">${lateness(o.deviation_s_median)}</div></div>
+      <div class="stat"><div class="label">More than 5 minutes late</div>
+        <div class="value">${pct(o.late_share_of_observed)}</div></div>
       <div class="stat"><div class="label">Departures checked</div>
-        <div class="value">${o.observed.toLocaleString("en-US")}</div>
-        <div class="note">at the stops printed in the timetables</div></div>
-      <div class="stat"><div class="label">Late departures</div>
-        <div class="value">${pct(o.late_share_of_observed)}</div>
-        <div class="note">more than 5 minutes behind schedule</div></div>
-      ${q == null ? "" : html`<div class="stat"><div class="label">Trips that showed up in the tracking</div>
-        <div class="value">${pct(q.trip_coverage)}</div>
-        <div class="note">of ${q.scheduled_trips.toLocaleString("en-US")} scheduled trips on ${longDate(q.service_date instanceof Date ? q.service_date.toISOString().slice(0, 10) : q.service_date)}</div></div>`}
+        <div class="value">${o.observed.toLocaleString("en-US")}</div></div>
     </div>`}`
 ```
 
 ## Every route at a glance
 
-Each line is a bus route, colored by how often its buses left on time. Tap a
-route to see it stop by stop.
+Tap a route to see it stop by stop.
 
 ```{ojs}
 //| echo: false
@@ -83,7 +77,7 @@ html`<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/leaflet@1.9.4/dis
 L = require("leaflet@1.9.4")
 mapData = routeMap(recent?.timepoints)
 homeMap = mapData == null ? null : drawRouteMap(L, mapData, recent, {
-  height: width < 640 ? 420 : 580,
+  height: width < 640 ? 440 : 640,
   onSelect: id => {
     const r = mapData.routes.find(r => r.route_id === id);
     location.href = `routes.html#${routeSlug(r, id)}`;
@@ -155,36 +149,13 @@ html`${homeMap == null ? html`<p class="empty">The route map appears after the f
 :::
 :::
 
-The feed never says "the bus left the stop." It only says where the bus is.
-So each night the saved locations are connected along the route to find the
-moment each bus passed each stop, and that moment is compared with the
-printed timetable. The same saved data also shows how often the tracking
-itself fails: buses that never appear, gaps, stale locations, and arrival
-predictions that miss.
-
-## Explore
-
-::: {.card-grid}
-[**Routes**<br>[Each route on a map, stop by stop: where buses fall behind.]{.card-text}](routes.qmd){.card}
-
-[**On time**<br>[Every route and every hour, day by day, and how the method is checked.]{.card-text}](ontime.qmd){.card}
-
-[**Can the data be trusted?**<br>[How often the tracking drops out, goes stale or misses buses.]{.card-text}](quality.qmd){.card}
-
-[**Download the data**<br>[Every saved update and every table, free, one file per day.]{.card-text}](data.qmd){.card}
-
-[**How it's calculated**<br>[Exact definitions behind every number on this site.]{.card-text}](methods.qmd){.card}
-
-[**Plain words**<br>[What "timepoint," "feed" and the other terms here mean.]{.card-text}](glossary.qmd){.card}
-:::
+The feed only says where a bus is, never when it left a stop. Each night the
+saved locations are followed along the route to find that moment, which is
+then compared with the timetable. The same data shows how often the tracking
+itself fails: see [Data quality](quality.qmd).
 
 ## Why this exists
 
-Live bus data disappears the moment it is replaced, and Island Transit does
-not publish on-time figures. Keeping every update makes questions like "Was
-route 60 late last week?" or "Does the tracking fail more at rush hour?"
-answerable, by anyone, with the code to check the answer.
-
-[Collecting since November 19, 2026. Not affiliated with Island Transit; the
-figures are this project's own, calculated from Island Transit's public
-data.]{.note}
+Island Transit does not publish on-time figures, and live bus data is gone
+once replaced. Saving it lets anyone answer questions like "Was route 60 late
+last week?", with the code to check the answer.

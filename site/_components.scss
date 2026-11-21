@@ -15,9 +15,8 @@ body { background: var(--surface); }
 .headline .big-label .note { display: block; margin-top: .25rem; }
 
 // Live collector badge
-.live { text-decoration: none; display: inline-flex; align-items: center; gap: .5rem; font-size: .9rem; color: var(--text-secondary);
-  border: 1px solid var(--border); border-radius: 999px; padding: .2rem .75rem; margin-top: .75rem; }
-.live:hover { color: var(--text-primary); border-color: var(--border-strong); }
+.live { text-decoration: none; display: inline-flex; align-items: center; gap: .5rem; font-size: .9rem; color: var(--text-secondary); margin-top: .75rem; }
+.live:hover { color: var(--text-primary); }
 .live .dot { width: .6rem; height: .6rem; border-radius: 50%; background: var(--status-good); }
 .live.ok .dot { animation: pulse 2s ease-in-out infinite; }
 .live.down .dot { background: var(--status-critical); }
@@ -25,8 +24,8 @@ body { background: var(--surface); }
 @media (prefers-reduced-motion: reduce) { .live.ok .dot { animation: none; } }
 
 // Stat tiles
-.stat-row { display: flex; flex-wrap: wrap; gap: 1rem; margin: 1rem 0; }
-.stat { flex: 1 1 12rem; background: var(--card); border: 1px solid var(--border); border-radius: 8px; padding: .8rem 1rem; }
+.stat-row { display: flex; flex-wrap: wrap; gap: 1.25rem 2.5rem; margin: 1.25rem 0 1.75rem; }
+.stat { flex: 1 1 10rem; max-width: 18rem; }
 .stat .label { font-size: .85rem; color: var(--text-secondary); }
 .stat .value { font-size: 1.6rem; font-weight: 650; line-height: 1.25; }
 .stat .note { font-size: .82rem; color: var(--text-secondary); margin-top: .2rem; }
@@ -44,8 +43,8 @@ body { background: var(--surface); }
 // How it works diagram
 .how { margin: 1rem 0 1.5rem; }
 .how svg { width: 100%; height: auto; display: block; }
-.how .box { fill: var(--card); stroke: var(--border-strong); stroke-width: 1.5; }
-.how .box.ours { stroke: var(--series-1); stroke-width: 2; }
+.how .box { fill: var(--panel); stroke: none; }
+.how .box.ours { fill: var(--panel-accent); }
 .how .t1 { fill: var(--text-primary); font-weight: 650; font-size: 15px; }
 .how .t2 { fill: var(--text-secondary); font-size: 12.5px; }
 .how .arrow { stroke: var(--text-secondary); stroke-width: 1.75; fill: none; }
@@ -63,13 +62,13 @@ body { background: var(--surface); }
 .band-tag { white-space: nowrap; }
 
 // Route map
-.route-map { width: 100%; border: 1px solid var(--border); border-radius: 8px; margin: .5rem 0 1rem; z-index: 0; }
+.route-map { width: 100%; border-radius: 6px; margin: .5rem 0 1rem; z-index: 0; }
 .route-casing { stroke: var(--map-casing); stroke-opacity: .55; }
 .route-line { stroke: var(--band); cursor: pointer; }
 .route-line.dim { stroke: var(--status-none); stroke-opacity: .55; }
 .route-casing.dim { stroke-opacity: 0; }
 .stop-dot { fill: var(--band); fill-opacity: 1; stroke: var(--map-casing); }
-.map-legend { background: var(--card); color: var(--text-primary); border: 1px solid var(--border); border-radius: 6px;
+.map-legend { background: var(--card); color: var(--text-primary); border-radius: 4px; box-shadow: 0 1px 4px rgba(0,0,0,.18);
   padding: .45rem .6rem; font-size: .8rem; line-height: 1.6; }
 .map-legend-title { font-weight: 650; }
 .leaflet-tooltip.map-tip { background: var(--card); color: var(--text-primary); border: 1px solid var(--border); font-size: .85rem; }
@@ -86,14 +85,32 @@ body { background: var(--surface); }
 }
 
 // Notes about the method
-.method-note { border-left: 4px solid var(--series-1); padding: .6rem 1rem; background: var(--card); border-radius: 0 6px 6px 0; }
+.method-note { color: var(--text-secondary); font-size: .92rem; }
 .glossary dt { margin-top: 1rem; }
 .glossary dd { margin-left: 0; color: var(--text-secondary); }
 
 @media (max-width: 640px) {
+  .stat-row { display: grid; grid-template-columns: 1fr 1fr; gap: 1rem 1.25rem; }
+  .stat .value { font-size: 1.3rem; }
+  .stat-big .value { font-size: 1.8rem; }
   .map-legend { font-size: .7rem; line-height: 1.45; padding: .3rem .45rem; }
   .route-title .route-sub { display: block; margin-left: 0; }
 }
 
 // Observable Plot draws its text at 10px inline; make every chart's text legible.
 svg[class^="plot-"], svg[class*=" plot-"] { font-size: 12px !important; }
+
+// Minimal headings: no rule under section titles.
+h2 { border-bottom: none !important; padding-bottom: 0; margin-top: 2.5rem; }
+h3 { margin-top: 1.75rem; }
+.quarto-title .subtitle { color: var(--text-secondary); }
+
+// Detail sections folded away; the summary reads like a heading.
+details.more { margin: .5rem 0; border-top: 1px solid var(--border); padding: .6rem 0; }
+details.more:last-of-type { border-bottom: 1px solid var(--border); }
+details.more > summary { cursor: pointer; font-weight: 600; font-size: 1.05rem; list-style-position: outside; }
+details.more > summary .note { font-weight: 400; margin-left: .4rem; }
+details.more[open] > summary { margin-bottom: .75rem; }
+
+// Plain text links in a row
+.link-row p { display: flex; flex-wrap: wrap; gap: .5rem 1.75rem; margin: 1rem 0 1.5rem; font-weight: 600; }

@@ -1,0 +1,5 @@
+---
+pagetitle: "Codebook"
+---
+
+{{< include ../docs/codebook.md >}}

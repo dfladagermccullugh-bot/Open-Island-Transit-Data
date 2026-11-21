@@ -42,7 +42,7 @@ export function drawRouteMap(L, mapData, recent, {height = 460, onSelect = null,
   L.tileLayer(TILES, {maxZoom: 18, attribution: ATTRIBUTION}).addTo(m);
   const [w, s, e, n] = mapData.bbox;
   const all = L.latLngBounds([[s, w], [n, e]]);
-  let view = {bounds: all, padding: [12, 12], maxZoom: 12};
+  let view = {bounds: all, padding: [4, 4], maxZoom: 12};
   const fit = () => m.fitBounds(view.bounds, {padding: view.padding, maxZoom: view.maxZoom});
   m.setView(all.getCenter(), 10);
 
@@ -99,7 +99,7 @@ export function drawRouteMap(L, mapData, recent, {height = 460, onSelect = null,
       }
     }
     if (id == null || !layers[id]) {
-      view = {bounds: all, padding: [12, 12], maxZoom: 12};
+      view = {bounds: all, padding: [4, 4], maxZoom: 12};
       fit();
       return;
     }

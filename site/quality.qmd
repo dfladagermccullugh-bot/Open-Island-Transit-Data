@@ -3,10 +3,8 @@ title: "Can the data be trusted?"
 subtitle: "How reliable Island Transit's bus-tracking feed is, checked every day"
 ---
 
-Trip apps, this site, and anyone studying Island Transit rely on the same
-live feed. If buses go missing from it, or their locations arrive late or
-wrong, every number built on it suffers. So the feed is graded every day,
-the way a researcher grades a survey.
+Everything built on the live feed, trip apps included, is only as good as
+the feed. These are its daily grades.
 
 ```{ojs}
 //| echo: false
@@ -42,15 +40,13 @@ html`${lq == null ? noData() : html`<p class="note">Latest day: ${longDate(lates
 </div>`}`
 ```
 
-The rest of this page is the detailed version, grouped the way survey
-researchers grade any data source:
+Details below follow the way survey researchers grade any data source:
 [coverage]{.term tabindex="0" tip="Whether every scheduled trip shows up in the tracking at all."},
 [nonresponse]{.term tabindex="0" tip="Data that should be there but is missing: failed requests, empty feeds, gaps in a bus's reports."},
 [measurement error]{.term tabindex="0" tip="Data that is there but wrong: GPS wobble, buses that seem to jump, old locations, predictions that miss."},
 [processing error]{.term tabindex="0" tip="Data that cannot be matched up, such as a trip in the feed that is not in the schedule."}
 and [paradata]{.term tabindex="0" tip="Data about the collection itself: every request the collector made, how long it took and whether it worked."}.
-Exact definitions are on the [Methods](methods.qmd) page; plain ones in
-[Plain words](glossary.qmd).
+Definitions: [Methods](methods.qmd).
 
 ## Over time
 
@@ -65,7 +61,7 @@ series = [
   {key: "timepoint_coverage", title: "Timepoint events with an inferred time", unit: "share"},
   {key: "prediction_mae_s_5min", title: "Arrival prediction error 5 minutes ahead, mean absolute (s)", unit: "s"},
 ]
-html`${days.length === 0 ? noData() : html`<div class="grid">${series.map(s => html`<div class="g-col-12 g-col-md-6">
+html`${days.length === 0 ? noData() : days.length < 2 ? html`<p class="empty">Charts of each measure over time appear from the second day.</p>` : html`<div class="grid">${series.map(s => html`<div class="g-col-12 g-col-md-6">
   <h4 style="font-size:1rem">${s.title}</h4>
   ${Plot.plot({
     style: {background: "transparent"},
@@ -83,7 +79,7 @@ html`${days.length === 0 ? noData() : html`<div class="grid">${series.map(s => h
   })}</div>`)}</div>`}`
 ```
 
-## Latest day in detail
+## Details
 
 ```{ojs}
 //| echo: false
@@ -91,7 +87,7 @@ html`${latest == null ? noData() : html`<p>Service day <strong>${latestDate}</st
   <code>${latest.schedule.passio_version}</code>.</p>`}`
 ```
 
-### Trip coverage by route
+<details class="more"><summary>Trip coverage by route</summary>
 
 ```{ojs}
 //| echo: false
@@ -111,7 +107,9 @@ html`${byRoute.length === 0 ? noData() : Plot.plot({
 })}`
 ```
 
-### Timepoint events observed, by route
+</details>
+
+<details class="more"><summary>Timepoint events observed, by route</summary>
 
 Scheduled departures at printed timepoints (arrivals at a trip's last stop)
 for which a time could be inferred from vehicle positions.
@@ -136,7 +134,9 @@ html`${stopRoute.length === 0 ? noData() : Plot.plot({
 })}`
 ```
 
-### Arrival predictions
+</details>
+
+<details class="more"><summary>Arrival predictions</summary>
 
 The feed's predicted arrival time, as published a given number of minutes
 before the bus arrived, minus the arrival time inferred from vehicle
@@ -152,7 +152,9 @@ pred = ev == null ? [] : Object.entries(ev.prediction_error.by_horizon_min).map(
 html`${pred.length === 0 ? noData() : Inputs.table(pred, {format: {"Within 60 s": d => pct(d, 1)}, rows: 10})}`
 ```
 
-### Fields the feed leaves empty
+</details>
+
+<details class="more"><summary>Fields the feed leaves empty</summary>
 
 Share of position reports in which each field is missing. A field missing
 from every report is not sent by the feed at all.
@@ -166,7 +168,9 @@ html`${items.length === 0 ? noData() : Inputs.table(items, {
   format: {share: d => pct(d, 1)}, rows: 25})}`
 ```
 
-### Other figures for the day
+</details>
+
+<details class="more"><summary>Other figures for the day</summary>
 
 ```{ojs}
 //| echo: false
@@ -195,7 +199,9 @@ other = latest == null ? [] : [
 html`${other.length === 0 ? noData() : Inputs.table(other, {header: {measure: "Measure", value: "Value"}, rows: 30})}`
 ```
 
-## Randomness of gaps
+</details>
+
+<details class="more"><summary>Randomness of gaps</summary>
 
 Are the trips the feed misses spread at random, or concentrated at certain
 hours, on certain routes, or when many buses are out? Shares of scheduled
@@ -243,7 +249,9 @@ html`${gaps == null ? "" : gaps.model == null ? html`<p><em>Model ${gaps.model_s
 
 The model and its inputs: [`quality/gaps.json`](https://github.com/dfladagermccullugh-bot/Open-Island-Transit-Data/blob/data/quality/gaps.json).
 
-## All days
+</details>
+
+<details class="more"><summary>All days</summary>
 
 ```{ojs}
 //| echo: false
@@ -251,3 +259,5 @@ html`${daily.length === 0 ? noData() : Inputs.table(daily, {rows: 15})}`
 ```
 
 The same table as a file: [`quality/daily.csv`](https://github.com/dfladagermccullugh-bot/Open-Island-Transit-Data/blob/data/quality/daily.csv).
+
+</details>

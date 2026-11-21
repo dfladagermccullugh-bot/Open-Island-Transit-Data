@@ -1,107 +1,75 @@
 ---
 title: "On time"
-subtitle: "Day by day, for the whole system and every route"
+subtitle: "The whole system, day by day and hour by hour"
 ---
 
-How often buses left their stops on time, each day since collection began.
-For one route at a time, stop by stop, see [Routes](routes.qmd).
-
 ::: {.method-note}
-These figures are calculated by this project from two things Island
-Transit publishes: its real-time bus positions and its schedule. The
-feed shows where each bus is about every 20 seconds and which stop it is heading
-to, but it keeps no record of the moment a bus reached a stop and has no
-"minutes late" field. This project works out those moments from the
-positions on either side of each stop and compares them with the schedule. They are not official Island Transit figures.
-Automatic checks run on every route every day; in-person checks
-are ongoing and so far cover route 60, where timed stops agreed with the
-inferred times within seconds. See [Methods](methods.qmd), sections 3 to 5,
-and the field check below.
+Calculated by this project from Island Transit's bus positions and schedule;
+not official figures. The feed has no "minutes late" field, so the moment
+each bus left a stop is worked out from its positions. Checked automatically
+on every route each day and in person on route 60 ([how](methods.qmd)).
+For one route at a time, see [Routes](routes.qmd).
 :::
-
-A bus is **on time** at a timepoint when it leaves between 1 minute early
-and 5 minutes late (at the last stop of a trip, its arrival counts, and an
-early arrival is on time). Timepoints are the stops printed in Island
-Transit's timetables. Events with no inferred time are **not observed**:
-they are reported separately and never counted as late.
 
 ```{ojs}
 //| echo: false
 //| output: false
-import {csv, json, pct, num, routeLabel, SERIES} from "./lib.js"
+import {csv, json, pct, num, band, lateness, longDate, MIN_OBSERVED, SERIES} from "./lib.js"
 daily = csv(d3, "data/ontime/daily.csv")
 days = daily.map(d => ({...d, date: new Date(d.service_date)}))
 latestDate = days.length ? days.at(-1).date.toISOString().slice(0, 10) : null
 latest = latestDate ? json(`data/ontime/days/${latestDate}.json`) : null
-noData = () => html`<p>No processed days yet.</p>`
+noData = () => html`<p class="empty">No processed days yet.</p>`
 ```
 
-## Over time
+## Day by day
 
 ```{ojs}
 //| echo: false
-pair = [
-  {key: "on_time_share_of_observed", title: "On time, share of observed timepoint events"},
-  {key: "observed_share", title: "Observed, share of scheduled timepoint events"},
-]
-html`${days.length === 0 ? noData() : html`<div class="grid">${pair.map(s => html`<div class="g-col-12 g-col-md-6">
-  <h4 style="font-size:1rem">${s.title}</h4>
-  ${Plot.plot({
+html`${days.length === 0 ? noData() : days.length < 2
+  ? html`<p class="empty">One day so far (${longDate(latestDate)}): ${pct(days[0].on_time_share_of_observed)} of departures seen were on time.
+      A day-by-day line appears from the second day.</p>`
+  : Plot.plot({
     style: {background: "transparent"},
-    height: 200, marginLeft: 50,
+    width: Math.min(width, 960), height: 240, marginLeft: 50,
     x: {type: "utc", label: null},
-    y: {grid: true, label: null, domain: [0, 1], tickFormat: d => `${Math.round(d * 100)}%`},
+    y: {grid: true, label: "On time", domain: [0, 1], tickFormat: d => `${Math.round(d * 100)}%`},
     marks: [
       Plot.ruleY([0]),
-      Plot.lineY(days, {x: "date", y: s.key, stroke: SERIES, strokeWidth: 2}),
-      Plot.dot(days, {x: "date", y: s.key, fill: SERIES, r: 4}),
-      Plot.tip(days, Plot.pointerX({x: "date", y: s.key,
-        title: d => `${d.date.toISOString().slice(0, 10)}\n${pct(d[s.key], 1)}`})),
+      Plot.lineY(days, {x: "date", y: "on_time_share_of_observed", stroke: SERIES, strokeWidth: 2}),
+      Plot.dot(days, {x: "date", y: "on_time_share_of_observed", fill: SERIES, r: 4}),
+      Plot.tip(days, Plot.pointerX({x: "date", y: "on_time_share_of_observed",
+        title: d => `${longDate(d.service_date)}\n${pct(d.on_time_share_of_observed, 1)} on time\n${pct(d.observed_share)} of departures seen`})),
     ],
-  })}</div>`)}</div>`}`
+  })}`
 ```
 
-## Latest day by route
+## Hour by hour
 
 ```{ojs}
 //| echo: false
-routes = latest == null ? [] : Object.entries(latest.by_route).map(([id, r]) => ({
-  route: routeLabel(latest.routes, id), ...r}))
-html`${latest == null ? noData() : html`<p>Service day <strong>${latestDate}</strong>:
-  ${latest.scheduled} scheduled timepoint events, ${pct(latest.observed_share)} observed,
-  ${pct(latest.on_time_share_of_observed)} of those on time; median deviation
-  ${num(latest.deviation_s_median / 60, 1)} minutes.</p>`}`
-```
-
-```{ojs}
-//| echo: false
-MIN_OBSERVED = 10
-charted = routes.filter(d => d.observed >= MIN_OBSERVED)
-html`${routes.length === 0 ? "" : html`${Plot.plot({
+hours = latest == null ? [] : Object.entries(latest.by_hour).map(([h, b]) => ({
+  hour: +h, ...b, band: band(b.on_time_share_of_observed, b.observed),
+  label: `${(+h % 12) || 12} ${+h < 12 ? "AM" : "PM"}`}))
+  .filter(d => d.observed >= MIN_OBSERVED)
+html`${hours.length === 0 ? noData() : html`<p class="note">${longDate(latestDate)}, by scheduled departure hour (Pacific). Hours with fewer than ${MIN_OBSERVED} departures seen are left out.</p>
+  ${Plot.plot({
     style: {background: "transparent"},
-  marginLeft: 220, height: 28 * charted.length + 40,
-  x: {domain: [0, 1], grid: true, label: "On time, share of observed timepoint events", tickFormat: d => `${Math.round(d * 100)}%`},
-  y: {label: null},
-  marks: [
-    Plot.barX(charted, {y: "route", x: "on_time_share_of_observed", fill: SERIES, rx: 2, sort: {y: "x", reverse: true}}),
-    Plot.ruleX([0]),
-    Plot.tip(charted, Plot.pointerY({y: "route", x: "on_time_share_of_observed",
-      title: d => `${d.route}\non time ${d.on_time}, early ${d.early}, late ${d.late}\nobserved ${d.observed} of ${d.scheduled} (${pct(d.observed_share)})`})),
-  ],
-})}<p class="small">Routes with fewer than ${MIN_OBSERVED} observed timepoint events that day are left out of the chart; all routes are in the table below.</p>`}`
+    width: Math.min(width, 960), height: 240, marginLeft: 50,
+    x: {label: null, domain: hours.map(d => d.label), padding: 0.25},
+    y: {grid: true, label: "On time", domain: [0, 1], tickFormat: d => `${Math.round(d * 100)}%`},
+    marks: [
+      Plot.barY(hours, {x: "label", y: "on_time_share_of_observed", fill: d => d.band.color, rx: 3}),
+      Plot.ruleY([0]),
+      Plot.tip(hours, Plot.pointerX({x: "label", y: "on_time_share_of_observed",
+        title: d => `${d.label}\n${pct(d.on_time_share_of_observed)} on time\nTypically ${lateness(d.deviation_s_median)}\n${d.observed} of ${d.scheduled} departures seen`})),
+    ],
+  })}`}`
 ```
 
-```{ojs}
-//| echo: false
-html`${routes.length === 0 ? "" : Inputs.table(routes, {
-  columns: ["route", "scheduled", "observed", "observed_share", "on_time", "early", "late", "on_time_share_of_observed", "deviation_s_median"],
-  header: {route: "Route", scheduled: "Scheduled", observed: "Observed", observed_share: "Observed share",
-           on_time: "On time", early: "Early", late: "Late", on_time_share_of_observed: "On-time share",
-           deviation_s_median: "Median deviation (s)"},
-  format: {observed_share: d => pct(d), on_time_share_of_observed: d => pct(d)}, rows: 30})}`
-```
+## How these numbers are checked
 
-## Automatic checks of the method
+<details class="more"><summary>Automatic checks, every route, every day</summary>
 
 Two checks run every day without field data ([Methods](methods.qmd),
 section 5). Each bus report names the stop the bus is heading for; when the
@@ -127,7 +95,9 @@ checks = val == null ? [] : [
 html`${checks.length === 0 ? noData() : Inputs.table(checks, {header: {check: "Check", value: "Result"}, rows: 10})}`
 ```
 
-## Field check
+</details>
+
+<details class="more"><summary>Timed in person on route 60</summary>
 
 A spot check of whether the inferred times match what happens on the
 street: arrivals and departures timed in person, with a target mean absolute
@@ -154,10 +124,11 @@ html`${fcRows.length === 0
       format: {bias: d => num(d, 1), mae: d => num(d, 1), w30: d => pct(d), w60: d => pct(d)}, rows: 5})}`}`
 ```
 
-The timed observations: [`reference/field-observations.csv`](https://github.com/dfladagermccullugh-bot/Open-Island-Transit-Data/blob/main/reference/field-observations.csv);
-every pair compared: [`ontime/field-check.json`](https://github.com/dfladagermccullugh-bot/Open-Island-Transit-Data/blob/data/ontime/field-check.json).
+[Timed observations](https://github.com/dfladagermccullugh-bot/Open-Island-Transit-Data/blob/main/reference/field-observations.csv) ·
+[every comparison](https://github.com/dfladagermccullugh-bot/Open-Island-Transit-Data/blob/data/ontime/field-check.json)
 
-Daily figures as a file:
-[`ontime/daily.csv`](https://github.com/dfladagermccullugh-bot/Open-Island-Transit-Data/blob/data/ontime/daily.csv).
-Every inferred arrival and departure is in the `stop-events` files in the
-[Releases](https://github.com/dfladagermccullugh-bot/Open-Island-Transit-Data/releases).
+</details>
+
+[Daily figures: [`ontime/daily.csv`](https://github.com/dfladagermccullugh-bot/Open-Island-Transit-Data/blob/data/ontime/daily.csv).
+Every inferred arrival and departure: the `stop-events` files in
+[Releases](https://github.com/dfladagermccullugh-bot/Open-Island-Transit-Data/releases).]{.note}

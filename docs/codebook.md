@@ -1,7 +1,6 @@
 # Codebook
 
-What each published file contains. Further derived tables (stop events,
-quality metrics, on-time measures) will be added here as they are published.
+What each published file contains.
 
 ## Where the files are
 

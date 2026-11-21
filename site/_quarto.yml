@@ -10,6 +10,7 @@ website:
   title: "Open Island Transit Data"
   site-url: "https://dfladagermccullugh-bot.github.io/Open-Island-Transit-Data/"
   repo-url: "https://github.com/dfladagermccullugh-bot/Open-Island-Transit-Data"
+  search: false
   navbar:
     left:
       - href: index.qmd
@@ -22,21 +23,18 @@ website:
         text: Data quality
       - href: data.qmd
         text: Download
-      - text: About
-        menu:
-          - href: methods.qmd
-            text: How it's calculated
-          - href: glossary.qmd
-            text: Plain words
+      - href: methods.qmd
+        text: Methods
     right:
       - icon: github
         href: "https://github.com/dfladagermccullugh-bot/Open-Island-Transit-Data"
         aria-label: Source code on GitHub
   page-footer:
     center: >-
-      Every number on this site is computed by code in the
-      [repository](https://github.com/dfladagermccullugh-bot/Open-Island-Transit-Data).
-      Not affiliated with Island Transit. Map data &copy; OpenStreetMap contributors.
+      Not affiliated with Island Transit ·
+      [Plain words](glossary.qmd) ·
+      [Source code](https://github.com/dfladagermccullugh-bot/Open-Island-Transit-Data) ·
+      Map &copy; OpenStreetMap contributors
 
 format:
   html:
