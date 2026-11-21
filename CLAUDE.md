@@ -103,6 +103,7 @@ Open checks from this pass:
 
 `events/0.3.1`: `Shape.project` and `Shape.passes` (`pipeline/events/geometry.py`) no longer let the last bits of a distance choose between two equally near segments. Offsets within `TIE_M` (1e-6 m) are equal and the earlier segment wins; a point at the end of a segment gets the vertex's own distance (`cum[i+1]`), so `heading` reads the segment leaving it. Cause, counts and before/after figures are in the last 2026-11-21 row of `docs/decisions.md`. A rule that sounds simpler, "lowest index", is not enough alone: `cum[i] + seg` and `cum[i+1]` can differ by one bit, and `heading` looks the distance up in `cum`.
 
+- **Verified 2026-11-21 22:49 UTC** (nightly dispatched by hand after the push, commit `611611c`): the runner rebuilt 2026-11-19 and 2026-11-20 with `events/0.3.1`; its `stop-events` and `trip-tracks` files have the same SHA-256 as the replay made in a cloud session (a different machine); trip 1155435 is 99 used, 0 wrong way; `events.shape_fit.wrong_direction` 205; CI and Site passed.
 - To test that two machines agree: replay the published days here (`python scripts/rehearse_nightly.py --replay <folder> --from-raw`, the folder holding `data-branch/` and `releases/<tag>/`) and compare the SHA-256 of `stop-events-*` and `trip-tracks-*` with `manifest/events.json` on the `data` branch, which the GitHub runner wrote.
 - Not covered: `np.hypot` and `math.atan2` may differ in the last bit between machines. It would only show if a value fell within about 1e-9 of a threshold.
 
