@@ -96,7 +96,7 @@ html`${mapView == null
 windowNote = recent == null ? "" : recent.days === 1
   ? `These figures cover ${longDate(recent.last_service_date)}.`
   : `These figures cover the ${recent.days} days from ${longDate(recent.first_service_date)} to ${longDate(recent.last_service_date)}.`
-html`${recent == null ? html`<p class="empty">The route figures can't be shown right now.</p>` : html`<p class="note">${windowNote}${recent.days_without_service?.length ? ` Days with no service are left out (${recent.days_without_service.map(d => longDate(d)).join(", ")}).` : ""}</p>`}`
+html`${recent == null ? html`<p class="empty">The route figures can't be shown right now.</p>` : html`<p class="note">${windowNote}${recent.days_without_service?.length ? ` Days with no service are left out (${recent.days_without_service.map(d => longDate(d)).join(", ")}).` : ""}${recent.schedule_change ? ` Island Transit changed its schedule on ${longDate(recent.schedule_change.effective)}, so these figures start over from that day.` : ""}</p>`}`
 ```
 
 ```{ojs}

@@ -288,7 +288,9 @@ observed.
 
 The typical deviation we report is the median. Figures for a route over the
 last 28 days pool every departure in those days, and leave out any day on
-which Island Transit runs no service.
+which Island Transit runs no service. When Island Transit brings in a new
+timetable, the pooled figures start over on the day it takes effect, so
+that stops and times from the old timetable are not mixed with the new one.
 
 (Code: `pipeline/events/ontime.py`; the 28-day route tables are built by
 `pipeline/events/routes.py`.)

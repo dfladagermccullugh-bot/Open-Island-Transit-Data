@@ -75,6 +75,13 @@ def reference_for(day: date, folder: Path = REFERENCE_DIR) -> date | None:
     return eligible[-1] if eligible else None
 
 
+def reference_of(key: str | None) -> str | None:
+    """The timetable date in a timepoints folder name
+    (``<passio version>__timetable-<date>-<hash>``), or None."""
+    m = re.search(r"__timetable-(\d{4}-\d{2}-\d{2})-", key or "")
+    return m.group(1) if m else None
+
+
 def load_reference(effective: date, folder: Path = REFERENCE_DIR) -> tuple[list[Row], dict]:
     printed_path, overrides_path = references(folder)[effective]
     with printed_path.open(encoding="utf-8", newline="") as fh:

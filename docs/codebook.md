@@ -289,8 +289,15 @@ the median deviation.
 by route and timepoint stop. It adds up the counts, recomputes the shares
 from those sums, and gives the median and quartiles of the deviations, along
 with each route's daily on-time and observed shares. Days with no service
-are left out and listed in `days_without_service`. The site's route pages
-read from it.
+are left out and listed in `days_without_service`. Since `routes/0.2.0`
+(`routes_version`) it pools only the days measured against the printed
+timetable in effect on the last day (`timetable_reference`). When that
+leaves out earlier days of the 28, `schedule_change` gives the date the new
+timetable took effect (`effective`), how many days were left out
+(`days_left_out`) and the last of them (`last_day_left_out`); otherwise it
+is empty. One limit remains: if Passio gave its stops new ids without a new
+printed timetable, a route's stop list could show the old and the new id
+for up to 28 days. The site's route pages read from this file.
 
 ## `maps/<passio version>__timetable-<date>-<hash>.json`
 

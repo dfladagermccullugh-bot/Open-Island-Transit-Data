@@ -48,7 +48,7 @@ html`${o == null || o.observed === 0
   : html`<div class="headline">
       <div class="big">${pct(o.on_time_share_of_observed)}</div>
       <div class="big-label">of departures left on time ${period}.
-        <span class="note">A bus counts as on time if it leaves from 1 minute early to 5 minutes late.</span></div>
+        <span class="note">A bus counts as on time if it leaves from 1 minute early to 5 minutes late.${recent.schedule_change ? ` Island Transit changed its schedule on ${longDate(recent.schedule_change.effective)}, so this figure starts over from that day.` : ""}</span></div>
     </div>
     <div class="stat-row">
       <div class="stat"><div class="label">Typical departure</div>

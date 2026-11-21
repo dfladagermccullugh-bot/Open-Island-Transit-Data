@@ -134,3 +134,10 @@ def test_timepoints_follow_the_day_type_where_a_route_prints_one():
     # Route A prints nothing for Sunday: every printed stop counts.
     assert timepoint_pairs(rows, sunday) == {("A", "1"), ("A", "2"), ("B", "3")}
     assert day_type_applies("weekend", sunday) and not day_type_applies("weekend", friday)
+
+
+def test_reference_of_reads_the_timetable_date_from_a_folder_name():
+    key = "passio-9b1efa882037__timetable-2026-09-27-970aa207"
+    assert timepoints.reference_of(key) == "2026-09-27"
+    assert timepoints.reference_of(None) is None
+    assert timepoints.reference_of("something else") is None

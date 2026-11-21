@@ -58,3 +58,55 @@ def test_write_routes_pools_window(tmp_path):
     assert r["deviation_s_median"] == 60.0
     assert [x["service_date"] for x in r["daily"]] == ["2026-11-19", "2026-11-20"]
     assert r["stops"][0]["name"] == "First" and r["stops"][0]["deviations_counted"] == 3
+
+
+def test_window_restarts_at_a_new_timetable(tmp_path):
+    days = tmp_path / "days"
+    days.mkdir()
+    old, new = "passio-aaa__timetable-2026-09-27-11111111", "passio-bbb__timetable-2026-12-27-22"
+    plan = (
+        ("2026-12-25", old, "Old stop", [0]),
+        ("2026-12-26", old, "Old stop", [0]),
+        ("2026-12-27", new, "New stop", [600]),
+        ("2026-12-28", new, "New stop", [0, 60]),
+    )
+    for d, key, stop, devs in plan:
+        n = len(devs)
+        late = sum(x > 300 for x in devs)
+        day = {"service_date": d, "ontime_version": "ontime/0.3.0", "timepoints": key,
+               "definition": {"window_s": [-60, 300]},
+               **block(n, n, n - late, 0, late),
+               "routes": {"R1": {"short_name": "1", "long_name": "One"}},
+               "by_route": {"R1": block(n, n, n - late, 0, late)},
+               "by_route_stop": {"R1": {stop: block(n, n, n - late, 0, late, devs, stop)}},
+               }  # fmt: skip
+        (days / f"{d}.json").write_text(json.dumps(day))
+    assert write_routes(tmp_path) == 4
+    recent = json.loads((tmp_path / "recent.json").read_text())
+    # Only the days measured against the timetable in effect on the last day.
+    assert (recent["first_service_date"], recent["days"]) == ("2026-12-27", 2)
+    assert recent["timetable_reference"] == "2026-12-27"
+    assert recent["schedule_change"] == {
+        "effective": "2026-12-27",
+        "days_left_out": 2,
+        "last_day_left_out": "2026-12-26",
+    }
+    assert recent["routes_version"] == "routes/0.2.0"
+    r = recent["routes"]["R1"]
+    assert r["scheduled"] == 3
+    assert [x["name"] for x in r["stops"]] == ["New stop"]
+    # routes.csv still lists every day.
+    assert len((tmp_path / "routes.csv").read_text().splitlines()) == 5
+
+
+def test_window_without_a_change_reports_none(tmp_path):
+    days = tmp_path / "days"
+    days.mkdir()
+    key = "passio-aaa__timetable-2026-09-27-11111111"
+    day = {"service_date": "2026-11-20", "timepoints": key, **block(1, 1, 1, 0, 0),
+           "routes": {}, "by_route": {"R1": block(1, 1, 1, 0, 0)}}  # fmt: skip
+    (days / "2026-11-20.json").write_text(json.dumps(day))
+    write_routes(tmp_path)
+    recent = json.loads((tmp_path / "recent.json").read_text())
+    assert recent["schedule_change"] is None
+    assert recent["timetable_reference"] == "2026-09-27"

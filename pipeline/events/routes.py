@@ -8,6 +8,10 @@
   version add to the counts but not to the medians or the stop breakdown.
   Days on which Island Transit runs no service (``service_expected`` false,
   see ``pipeline/gtfs/holidays.py``) are left out and listed.
+  Since ``routes/0.2.0`` the window holds only days measured against the
+  printed timetable in effect on its last day, so after a schedule change
+  the pooled figures start over (``schedule_change`` says so) and stops and
+  times of the old timetable are not mixed with the new one.
 """
 
 from __future__ import annotations
@@ -19,8 +23,10 @@ from datetime import date, timedelta
 from pathlib import Path
 from typing import Any
 
+from pipeline.gtfs.timepoints import reference_of
 from pipeline.stats import quantile
 
+ROUTES_VERSION = "routes/0.2.0"
 WINDOW_DAYS = 28
 COUNTS = ("scheduled", "observed", "on_time", "early", "late")
 ROUTE_COLUMNS = [
@@ -83,6 +89,9 @@ def write_routes(ontime_dir: Path, window_days: int = WINDOW_DAYS) -> int:
     last = date.fromisoformat(days[-1]["service_date"])
     first = last - timedelta(days=window_days - 1)
     in_window = [d for d in days if date.fromisoformat(d["service_date"]) >= first]
+    timetable = reference_of(days[-1].get("timepoints"))
+    other = [d for d in in_window if reference_of(d.get("timepoints")) != timetable]
+    in_window = [d for d in in_window if reference_of(d.get("timepoints")) == timetable]
     window = [d for d in in_window if d.get("service_expected", True)]
     left_out = [d["service_date"] for d in in_window if not d.get("service_expected", True)]
     if not window:
@@ -139,11 +148,20 @@ def write_routes(ontime_dir: Path, window_days: int = WINDOW_DAYS) -> int:
             "stops": sorted(stops, key=lambda s: (s["order"], s["name"])),
         }
     recent = {
+        "routes_version": ROUTES_VERSION,
         "window_days": window_days,
         "first_service_date": window[0]["service_date"],
         "last_service_date": window[-1]["service_date"],
         "days": len(window),
         "days_without_service": left_out,
+        "timetable_reference": timetable,
+        "schedule_change": {
+            "effective": timetable,
+            "days_left_out": len(other),
+            "last_day_left_out": other[-1]["service_date"],
+        }
+        if other
+        else None,
         "definition": window[-1].get("definition"),
         "timepoints": window[-1].get("timepoints"),
         "passio_version": window[-1].get("passio_version"),
