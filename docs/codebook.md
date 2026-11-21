@@ -422,5 +422,7 @@ comparison only, and the true timepoints are in `timepoints/`.
 Anyone can read the collector's live tables with the public key in
 `.env.example`, until a day has been archived and pruned. `fetch_log` is
 kept permanently, while `raw_export` and `static_export` keep only recent
-days. There is also the `status_now` view and two functions,
-`day_digest(date)` and `collector_health()`.
+days. There is also the `status_now` view, the `prune_log` table, which
+records each run of the job that clears archived days, and two functions,
+`day_digest(date)` and `collector_health()`. The full list is in
+`docs/collector-setup.md`.

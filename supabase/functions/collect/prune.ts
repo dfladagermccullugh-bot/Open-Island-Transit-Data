@@ -2,7 +2,8 @@
 //
 // A day's stored responses are deleted only when all of these hold:
 //   1. the day is listed in the archive manifest on GitHub,
-//   2. every file the manifest lists for it can be downloaded at its recorded size,
+//   2. every file the manifest lists for it can be downloaded at its recorded size
+//      (a one-byte ranged GET; GitHub's file host refuses HEAD requests),
 //   3. the database's own row count and digest for the day equal the manifest's
 //      (checked again inside the database by prune_raw),
 //   4. the day is at least 3 days old.
@@ -68,4 +69,22 @@ export function daysToPrune(
 
 export function assetUrl(repo: string, tag: string, name: string): string {
   return `https://github.com/${repo}/releases/download/${tag}/${name}`;
+}
+
+/**
+ * Total size from a Content-Range header such as "bytes 0-0/1158375".
+ * Null when the header is absent or does not state a total.
+ */
+export function totalFromContentRange(header: string | null): number | null {
+  const m = header ? /^bytes\s+\d+-\d+\/(\d+)$/.exec(header.trim()) : null;
+  return m ? Number(m[1]) : null;
+}
+
+/**
+ * True only when the response proves the file exists at the recorded size:
+ * a 206 whose Content-Range total equals it. Anything else, including a
+ * response that states no size, is not a confirmation.
+ */
+export function sizeConfirmed(status: number, contentRange: string | null, bytes: number): boolean {
+  return status === 206 && totalFromContentRange(contentRange) === bytes;
 }

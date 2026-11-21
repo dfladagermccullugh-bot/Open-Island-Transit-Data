@@ -2,7 +2,13 @@
 import { assertEquals, assertThrows } from "jsr:@std/assert@1";
 import { summariseFeed } from "./protobuf.ts";
 import { scanZip } from "./zipscan.ts";
-import { daysToPrune, type Manifest, pacificDate } from "./prune.ts";
+import {
+  daysToPrune,
+  type Manifest,
+  pacificDate,
+  sizeConfirmed,
+  totalFromContentRange,
+} from "./prune.ts";
 
 const fixture = (name: string) =>
   Deno.readFileSync(new URL(`../../../tests/fixtures/${name}`, import.meta.url));
@@ -119,4 +125,19 @@ Deno.test("prune: capped per run", () => {
   const got = daysToPrune({ days }, "2026-10-01T10:00:00Z", new Date("2026-11-25T20:00:00Z"));
   assertEquals(got.length, 14);
   assertEquals(got[0], "2026-10-01");
+});
+
+Deno.test("content-range total is read; other forms give null", () => {
+  assertEquals(totalFromContentRange("bytes 0-0/1158375"), 1158375);
+  assertEquals(totalFromContentRange("bytes 0-0/*"), null);
+  assertEquals(totalFromContentRange(null), null);
+  assertEquals(totalFromContentRange("1158375"), null);
+});
+
+Deno.test("a file is confirmed only by a 206 stating the recorded size", () => {
+  assertEquals(sizeConfirmed(206, "bytes 0-0/1158375", 1158375), true);
+  assertEquals(sizeConfirmed(206, "bytes 0-0/1158374", 1158375), false);
+  assertEquals(sizeConfirmed(200, null, 1158375), false); // no size stated
+  assertEquals(sizeConfirmed(401, null, 1158375), false);
+  assertEquals(sizeConfirmed(404, "bytes 0-0/1158375", 1158375), false);
 });

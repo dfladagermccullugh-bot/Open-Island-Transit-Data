@@ -12,11 +12,11 @@
 import { encodeBase64 } from "jsr:@std/encoding@1/base64";
 import { summariseFeed } from "./protobuf.ts";
 import { scanZip } from "./zipscan.ts";
-import { assetUrl, daysToPrune, type Manifest } from "./prune.ts";
+import { assetUrl, daysToPrune, type Manifest, sizeConfirmed } from "./prune.ts";
 
-const VERSION = "collect/0.2.0";
+const VERSION = "collect/0.3.0";
 const USER_AGENT =
-  "OpenIslandTransitData/0.1 (+https://github.com/dfladagermccullugh-bot/Open-Island-Transit-Data)";
+  "OpenIslandTransitData/0.3 (+https://github.com/dfladagermccullugh-bot/Open-Island-Transit-Data)";
 
 const REPO = "dfladagermccullugh-bot/Open-Island-Transit-Data";
 const MANIFEST_URL = `https://raw.githubusercontent.com/${REPO}/data/manifest/raw.json`;
@@ -175,17 +175,25 @@ async function rpc(name: string, args: Json): Promise<unknown> {
   return await res.json();
 }
 
+// One byte is requested; the Content-Range header of the reply states the
+// file's full size. GitHub's file host answers HEAD requests with 401.
 async function assetConfirmed(tag: string, name: string, bytes: number): Promise<boolean> {
   const res = await fetch(assetUrl(REPO, tag, name), {
-    method: "HEAD",
-    headers: { "User-Agent": USER_AGENT },
+    headers: { "User-Agent": USER_AGENT, "Range": "bytes=0-0" },
     redirect: "follow",
     signal: AbortSignal.timeout(20_000),
   });
   await res.body?.cancel();
-  if (!res.ok) return false;
-  const length = res.headers.get("content-length");
-  return length === null || Number(length) === bytes;
+  return sizeConfirmed(res.status, res.headers.get("content-range"), bytes);
+}
+
+/** Keep a record of every prune run; a failure to record never stops a prune. */
+async function logPrune(rows: Json[]): Promise<void> {
+  try {
+    await rpc("record_prune", { p_rows: rows.map((r) => ({ ...r, collector_version: VERSION })) });
+  } catch (err) {
+    console.error(err);
+  }
 }
 
 async function prune(): Promise<Json> {
@@ -195,9 +203,13 @@ async function prune(): Promise<Json> {
   });
   if (res.status === 404) {
     await res.body?.cancel();
+    await logPrune([{ note: "no archive manifest yet" }]);
     return { ok: true, note: "no archive manifest yet", days: [] };
   }
-  if (!res.ok) throw new Error(`manifest: HTTP ${res.status}`);
+  if (!res.ok) {
+    await logPrune([{ error: `manifest: HTTP ${res.status}` }]);
+    throw new Error(`manifest: HTTP ${res.status}`);
+  }
   const manifest = (await res.json()) as Manifest;
 
   const health = (await rpc("collector_health", {})) as { oldest_raw_at: string | null }[];
@@ -224,12 +236,33 @@ async function prune(): Promise<Json> {
           p_sha256: archivedStatic.map((s) => s.sha256),
         })
         : 0;
-      results.push({ day, deleted, static_cleared: staticCleared });
+      results.push({
+        service_date: day,
+        files_confirmed: entry.files.length,
+        deleted,
+        static_cleared: staticCleared,
+      });
     } catch (err) {
-      results.push({ day, error: (err as Error).message.slice(0, 300) });
+      results.push({ service_date: day, error: (err as Error).message.slice(0, 300) });
     }
   }
+  await logPrune(results.length ? results : [{ note: "nothing to prune" }]);
   return { ok: true, days: results };
+}
+
+// A tick's responses cannot be fetched again, so a write the database refused
+// is tried once more before the tick is lost. A request that failed without a
+// reply is not repeated: it may have been stored, and a second copy would
+// put the same fetch in the log twice.
+async function recordFetches(rows: Json[]): Promise<void> {
+  try {
+    await rpc("record_fetches", { p_rows: rows });
+  } catch (err) {
+    if (!(err as Error).message.startsWith("rpc record_fetches failed: HTTP")) throw err;
+    console.error(err);
+    await new Promise((resolve) => setTimeout(resolve, 500));
+    await rpc("record_fetches", { p_rows: rows });
+  }
 }
 
 function sameSecret(a: string, b: string): boolean {
@@ -276,7 +309,7 @@ Deno.serve(async (req: Request) => {
     if (payload.kind === "realtime") {
       const feeds = targets.filter((t) => REALTIME_FEEDS.has(t));
       const rows = await Promise.all(feeds.map((feed) => collectRealtime(feed, scheduledAt)));
-      if (rows.length) await rpc("record_fetches", { p_rows: rows });
+      if (rows.length) await recordFetches(rows);
       return Response.json({ ok: true, recorded: rows.length });
     }
     if (payload.kind === "static") {

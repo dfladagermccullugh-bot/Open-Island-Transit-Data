@@ -50,7 +50,9 @@ repository.
   once a day the collector reads that manifest and deletes its own copy of a
   day only if the day is at least 3 days old, every listed file can be
   downloaded at its recorded size, and the database's row count and digest for
-  the day equal the manifest's. The fetch log is never deleted.
+  the day equal the manifest's. The fetch log is never deleted. Every run is
+  recorded in `prune_log`:
+  `select * from prune_log order by prune_id desc limit 5;`
 - **Watchdog** (`.github/workflows/watchdog.yml`, `scripts/watchdog.py`): every
   30 minutes; fails and opens an issue if a feed has no recent successful
   fetch, the positions feed is empty in service hours, the collector is backing
@@ -80,5 +82,8 @@ select cron.alter_job(jobid, active := false) from cron.job where jobname like '
 
 ## What is public
 
-`fetch_log`, `raw_export`, `static_export` and `status_now` are readable with
-the project's publishable key. Nothing is writable except by the function.
+The project's publishable key can read the tables `fetch_log`,
+`raw_response`, `static_gtfs_fetch`, `collector_state` and `prune_log`, the
+views `raw_export`, `static_export` and `status_now`, and the functions
+`day_digest(date)`, `pacific_day_start(date)` and `collector_health()`.
+Nothing is writable except by the function.
