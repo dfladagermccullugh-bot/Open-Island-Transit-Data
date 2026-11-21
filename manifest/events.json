@@ -3,7 +3,7 @@
  "days": {
   "2026-11-19": {
    "service_date": "2026-11-19",
-   "events_version": "events/0.2.0",
+   "events_version": "events/0.2.1",
    "passio_version": "passio-9b1efa882037",
    "timepoints": "passio-9b1efa882037__timetable-2026-09-27-970aa207",
    "vehicles_sha256": "009f7f6614c5bd983f8cd70b4eb4a4dc4afbe07bf6edb1c05c20c793291ca953",
@@ -15,17 +15,17 @@
     {
      "name": "stop-events-2026-11-19.parquet",
      "bytes": 109868,
-     "sha256": "5cc4495ff5dc492d50113e2dab30231482b529411fd00fdf676fe02be915f41a"
+     "sha256": "cd3a0cca5ebc09e021b15bfaaf8f44b530c6457f2d91318c1152c07dab3e3096"
     },
     {
      "name": "trip-tracks-2026-11-19.parquet",
      "bytes": 12242,
-     "sha256": "4f648b8519d6b258ae388136ddba74f40f4286985b3ecf64deb0ecd55ebe60c6"
+     "sha256": "b84a79fdc953e907e5469433de2065870906580f8c0f5b6ed3301e833e508a24"
     }
    ],
    "release_tag": "parsed-2026-11",
-   "built_at": "2026-11-20T09:11:30+00:00",
-   "code_sha": "98535dcb690a8964ef9f9432bc3db4a6a38e11bf"
+   "built_at": "2026-11-21T01:43:32+00:00",
+   "code_sha": "7b41d3cf21852b9231dfc22f54bfc1a179f9322f"
   }
  }
 }

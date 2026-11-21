@@ -1,6 +1,6 @@
 {
- "field_version": "field/0.1.0",
- "definition": "inferred minus field-timed, seconds; arrival = bus within 40 m of the stop along its route, departure = more than 40 m past it",
+ "field_version": "field/0.2.0",
+ "definition": "inferred minus field-timed, seconds; arrival = bus within 40 m of the stop along its route, departure = more than 40 m past it, pass = bus level with the stop, inferred as the midpoint of arrival and departure",
  "target_mae_s": 30.0,
  "meets_target": null,
  "overall": {
@@ -30,9 +30,18 @@
   "within_60s_share": null,
   "max_abs_s": null
  },
+ "pass": {
+  "n": 0,
+  "bias_s": null,
+  "median_s": null,
+  "mae_s": null,
+  "within_30s_share": null,
+  "within_60s_share": null,
+  "max_abs_s": null
+ },
  "by_stop": {},
- "timed_rows": 0,
- "rows_waiting_for_their_day": 0,
+ "timed_rows": 5,
+ "rows_waiting_for_their_day": 5,
  "rows_with_no_scheduled_event": 0,
  "timed_moments_not_inferred": 0,
  "days": [],

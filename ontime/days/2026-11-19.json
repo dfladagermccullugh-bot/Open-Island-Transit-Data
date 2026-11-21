@@ -1,6 +1,5 @@
 {
- "ontime_version": "ontime/0.1.0",
- "experimental": true,
+ "ontime_version": "ontime/0.1.1",
  "definition": {
   "window_s": [
    -60,
@@ -244,7 +243,7 @@
  "service_date": "2026-11-19",
  "passio_version": "passio-9b1efa882037",
  "timepoints": "passio-9b1efa882037__timetable-2026-09-27-970aa207",
- "events_version": "events/0.2.0",
+ "events_version": "events/0.2.1",
  "routes": {
   "7920": {
    "short_name": "2",

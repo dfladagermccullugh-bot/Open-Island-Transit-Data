@@ -1,7 +1,7 @@
 {
  "service_date": "2026-11-19",
  "quality_version": "quality/0.3.0",
- "computed_at": "2026-11-20T23:06:16+00:00",
+ "computed_at": "2026-11-21T01:43:34+00:00",
  "scheduled_service": {
   "trips": 341,
   "trips_ended_before_collection": 180,
@@ -1496,8 +1496,7 @@
   }
  },
  "events": {
-  "experimental": true,
-  "events_version": "events/0.2.0",
+  "events_version": "events/0.2.1",
   "stop_coverage": {
    "timepoints": {
     "scheduled": 1130,
@@ -1971,7 +1970,7 @@
   "raw_sha256": "9faa6e3b579028a8878c57f4fdd7a16b65c5b20b2b935f42cf750f696e55d976",
   "vehicles_sha256": "009f7f6614c5bd983f8cd70b4eb4a4dc4afbe07bf6edb1c05c20c793291ca953",
   "tables_version": "tables/0.1.0",
-  "stop_events_sha256": "5cc4495ff5dc492d50113e2dab30231482b529411fd00fdf676fe02be915f41a",
-  "code_sha": "29b3afd0125f85bcf354f6c932d4f78460b1e458"
+  "stop_events_sha256": "cd3a0cca5ebc09e021b15bfaaf8f44b530c6457f2d91318c1152c07dab3e3096",
+  "code_sha": "7b41d3cf21852b9231dfc22f54bfc1a179f9322f"
  }
 }
