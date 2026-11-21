@@ -44,7 +44,7 @@ from pipeline.gtfs.tables import rows as _rows
 from pipeline.gtfs.tables import seconds as _seconds
 from pipeline.gtfs.zipread import ZipContents
 
-EVENTS_VERSION = "events/0.3.0"
+EVENTS_VERSION = "events/0.3.1"
 
 WINDOW_MIN = 30
 OFF_SHAPE_M = 100.0

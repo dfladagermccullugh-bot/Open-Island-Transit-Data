@@ -284,3 +284,45 @@ def test_a_trip_with_a_missing_stop_does_not_stop_the_day():
     events, trips = infer_day(DAY, z, vehicle_rows([(0, 0), (20, 160)]), set(), static=static)
     assert events == [] and "KeyError" in trips[0]["problem"]
     assert trips[0]["position_reports"] == 2 and trips[0]["reports_used"] is None
+
+
+def test_equally_near_segments_resolve_to_the_earlier_one():
+    # A road drawn out (east 2 km) and back, the return line ending 2e-7 m to
+    # the north. A point 5 m north at 300 m is nearer the return leg by less
+    # than a micrometre. Differences that small used to decide the choice, and
+    # rounding makes them differ between machines; now the earlier segment wins.
+    hair = 2e-7 / geometry._KY
+    s = Shape.from_latlon([LAT, LAT, LAT + hair], [lon_at(0), lon_at(2000), lon_at(0)])
+    lat, lon = LAT + 5 / geometry._KY, lon_at(300)
+    d, off = s.project(lat, lon)
+    assert d == pytest.approx(300, abs=0.01) and off == pytest.approx(5, abs=0.01)
+    # Both legs lie within reach in one run, so the stop gets one place: the first pass.
+    assert [round(d) for d, _ in s.passes(lat, lon, 150)] == [300]
+    # A real difference still decides: 1 mm nearer the return leg.
+    near = Shape.from_latlon(
+        [LAT, LAT, LAT + 1e-3 / geometry._KY], [lon_at(0), lon_at(2000), lon_at(0)]
+    )
+    assert near.project(lat, lon)[0] == pytest.approx(3700, abs=0.01)
+
+
+def test_a_position_nearest_a_corner_is_measured_on_the_segment_leaving_it():
+    # Shape 74588 (route 7919) begins with a 2.6 m stub south, then turns west.
+    # On 2026-11-20 the first report of trip 1155435 lay 30 m from the shape,
+    # nearest to that corner, moving north at 4.6 m/s. Both segments are then
+    # equally near. The distance along came out one rounding step short of the
+    # corner's own distance on some machines, which read the stub's heading
+    # (south) and dropped the report as moving the wrong way, and exactly at
+    # it on others, which read the next segment's (west) and kept it.
+    s = Shape.from_latlon(
+        [48.463003, 48.46298, 48.46298, 48.462946, 48.462849],
+        [-122.567859, -122.56786, -122.56799, -122.568177, -122.568236],
+    )
+    lat, lon = 48.46284866333008, -122.5675048828125
+    d, off = s.project(lat, lon)
+    assert d == s.cum[1]  # exactly, not approximately
+    assert off == pytest.approx(30.1, abs=0.05)
+    assert s.project(lat, lon, 0.0, 300.0)[0] == s.cum[1]
+    assert s.heading(d) == pytest.approx(270, abs=0.01)
+    assert [p for p in s.passes(lat, lon, 150) if p[0] == s.cum[1]]
+    tr = track(s, [(T0, lat, lon, 3.0, 4.61)], T0)
+    assert (tr.wrong_direction, len(tr.dists)) == (0, 1)

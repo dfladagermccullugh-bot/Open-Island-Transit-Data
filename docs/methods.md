@@ -224,6 +224,19 @@ departure. It stops when the bus is within 50 meters (about 160 feet) of the
 end of the shape, but never before the bus has reached the point where its
 arrival at the last stop is timed.
 
+Sometimes two pieces of the shape are exactly as close to a position as each
+other. This happens when the nearest point is a corner where two pieces meet,
+and when the shape draws the same stretch of road out and back. Computers
+round the last digits of such a distance in slightly different ways, so the
+choice between the two pieces used to depend on which machine ran the script.
+Now the script treats distances within one micrometer (a millionth of a
+meter, far finer than GPS can tell apart) as equal and takes the piece that
+comes first along the route. A position nearest to a corner gets the corner's
+own distance along the route, and the script checks the bus's direction
+against the piece that leaves the corner. The same rule applies when the
+script places stops on the shape, so the same inputs give the same times on
+any computer.
+
 Third, the script insists that the bus keep moving forward, so it searches
 only a window ahead of the last distance it matched. That is how it copes
 with loops and with stops the route visits twice. Sometimes two positions in
@@ -268,7 +281,9 @@ one.
 | Schedule changes daily | Each service day is pinned to the static version in effect that day, and keeps it. If two complete downloads on one day differ, the day gets the version whose scheduled trips the live feed reported |
 | A trip the schedule files describe badly | If a trip names a stop that is missing from the schedule, that trip gets no stop times and is counted (`problem` in `trip-tracks`); the rest of the day is unaffected |
 
-(Code: `pipeline/events/infer.py`; timepoints: `pipeline/gtfs/timepoints.py`.)
+(Code: `pipeline/events/infer.py`; shapes, projection and the rule for equal
+distances: `pipeline/events/geometry.py`; timepoints:
+`pipeline/gtfs/timepoints.py`.)
 
 ## 4. On-time performance
 

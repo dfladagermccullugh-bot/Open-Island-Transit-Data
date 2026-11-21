@@ -23,6 +23,7 @@ def to_xy(lat: np.ndarray | float, lon: np.ndarray | float) -> tuple:
 
 
 RETRACE_TOL_M = 3.0
+TIE_M = 1e-6  # offsets this close are equal: far above rounding error, far below GPS error
 
 
 def drop_retraced(lats: list[float], lons: list[float]) -> tuple[list[float], list[float], float]:
@@ -45,6 +46,16 @@ def drop_retraced(lats: list[float], lons: list[float]) -> tuple[list[float], li
             removed += math.hypot(x[b] - x[a], y[b] - y[a])
             del keep[-2:]
     return [lats[i] for i in keep], [lons[i] for i in keep], removed
+
+
+def _nearest(off: np.ndarray) -> int:
+    """Index of the smallest offset; of those within ``TIE_M`` of it, the first.
+
+    Two segments are often exactly as near as each other: they meet at the
+    vertex that is the nearest point, or the shape draws a stretch out and
+    back. The last bits of the computed offsets then differ between machines,
+    so the smallest one alone is not a reproducible choice."""
+    return int(np.flatnonzero(off <= off.min() + TIE_M)[0])
 
 
 @dataclass
@@ -71,7 +82,10 @@ class Shape:
         """Nearest point on the shape between distances ``lo`` and ``hi``.
 
         Returns (distance along the shape, perpendicular offset in metres), or
-        None if the window holds no segment."""
+        None if the window holds no segment. Of segments equally near, the
+        earliest (``_nearest``). A point nearest the end of a segment gets
+        that vertex's own distance, so ``heading`` there is the heading of the
+        segment that leaves the vertex."""
         hi = self.length if hi is None else hi
         px, py = to_xy(lat, lon)
         # Segments that overlap [lo, hi].
@@ -92,29 +106,30 @@ class Shape:
             t_lo = np.where(seg > 0, (lo - start) / seg, 0.0)
             t_hi = np.where(seg > 0, (hi - start) / seg, 1.0)
         t = np.clip(t, np.maximum(t_lo, 0.0), np.minimum(t_hi, 1.0))
-        along = start + t * seg
+        along = np.where(t >= 1.0, self.cum[first + 1 : last + 1], start + t * seg)
         off = np.hypot(x0 + t * dx - px, y0 + t * dy - py)
-        i = int(np.argmin(off))
+        i = _nearest(off)
         return float(along[i]), float(off[i])
 
     def passes(self, lat: float, lon: float, max_off: float) -> list[tuple[float, float]]:
         """Every place the shape passes the point: for each run of consecutive
         segments within ``max_off`` metres, the nearest point of the run, as
         (distance along the shape, offset). The nearest point on the whole
-        shape is always included. Sorted by distance along the shape."""
+        shape is always included. Sorted by distance along the shape. Ties
+        and vertices as in ``project``."""
         px, py = to_xy(lat, lon)
         x0, y0 = self.x[:-1], self.y[:-1]
         dx, dy = np.diff(self.x), np.diff(self.y)
         seg2 = dx * dx + dy * dy
         with np.errstate(invalid="ignore", divide="ignore"):
             t = np.clip(np.where(seg2 > 0, ((px - x0) * dx + (py - y0) * dy) / seg2, 0.0), 0, 1)
-        along = self.cum[:-1] + t * np.sqrt(seg2)
+        along = np.where(t >= 1.0, self.cum[1:], self.cum[:-1] + t * np.sqrt(seg2))
         off = np.hypot(x0 + t * dx - px, y0 + t * dy - py)
-        out = {int(np.argmin(off))}
+        out = {_nearest(off)}
         near = np.flatnonzero(off <= max_off)
         if near.size:
             runs = np.split(near, np.flatnonzero(np.diff(near) > 1) + 1)
-            out |= {int(r[np.argmin(off[r])]) for r in runs}
+            out |= {int(r[_nearest(off[r])]) for r in runs}
         return sorted((float(along[i]), float(off[i])) for i in out)
 
     def heading(self, along: float) -> float:

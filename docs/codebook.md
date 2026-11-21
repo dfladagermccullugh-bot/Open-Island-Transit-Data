@@ -197,7 +197,7 @@ Passio schedule, whether or not we observed it.
 | `vehicle_key` | The vehicle whose reports were used; empty if none carried the trip id |
 | `is_first_stop`, `is_last_stop` | Position in the trip |
 | `is_timepoint` | A true timepoint (`timepoints/`) |
-| `stop_distance_m` | The stop's distance along the trip's shape; empty if the stop is `unplaced` |
+| `stop_distance_m` | The stop's distance along the trip's shape; empty if the stop is `unplaced`. Where two points on one stretch of the shape are equally near the stop, the earlier one (since `events/0.3.1`) |
 | `stop_offset_m` | How far the stop sits from the shape at that point, in meters (since `events/0.3.0`) |
 | `scheduled_arrival`, `scheduled_departure` | Passio schedule, as UTC timestamps |
 | `arrival_time` | When the bus first came within 40 m of the stop along the shape |
@@ -226,7 +226,7 @@ retraced segments (`docs/methods.md`, section 3).
 | `position_reports` | That vehicle's reports in the window |
 | `reports_used` | Reports placed on the shape |
 | `reports_before_start`, `reports_after_end` | Reports from before tracking began or after the bus reached the end; never compared with the shape |
-| `off_shape_reports`, `wrong_direction_reports` | Reports set aside while tracking |
+| `off_shape_reports`, `wrong_direction_reports` | Reports set aside while tracking. Since `events/0.3.1`, a report equally near two segments of the shape is measured on the earlier one, and one nearest a corner has its direction checked against the segment leaving the corner, so the counts are the same on any computer (`docs/methods.md`, section 3) |
 | `shape_id`, `shape_length_m` | The trip's shape and its length |
 | `max_distance_m` | How far along the shape the bus was followed |
 | `shape_skips`, `skipped_m` | Stretches of the shape the bus left out, and their total length |
