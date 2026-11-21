@@ -83,6 +83,8 @@ def main() -> int:
                 for d in complete_days(first, datetime.now(UTC))
                 if d.isoformat() not in manifest["days"]
             ]
+    # Oldest first: every pending day is new, and the oldest stored day is the
+    # one closest to being lost if the database fills.
     days = sorted(set(days))[: args.max_days]
     if not days:
         print("nothing to archive")

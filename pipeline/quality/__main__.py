@@ -26,7 +26,7 @@ from typing import Any
 import pyarrow.parquet as pq
 
 from pipeline import release
-from pipeline.common import load_json
+from pipeline.common import load_json, run_order
 from pipeline.common import sha_of as _sha
 from pipeline.config import COLLECTION_START, REPO
 from pipeline.gtfs.holidays import no_service, service_expected
@@ -351,7 +351,8 @@ def main() -> int:
             out,
             _load(args.data / "manifest" / "events.json"),
         )
-    days = sorted(set(days))[: args.max_days]
+    processed = {f.stem for f in (out / "days").glob("*.json")}
+    days = run_order(days, processed, args.max_days)
     failed = False
     for day in days:
         try:

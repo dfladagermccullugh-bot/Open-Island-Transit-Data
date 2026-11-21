@@ -24,6 +24,7 @@ from pathlib import Path
 from typing import Any
 
 from pipeline import release
+from pipeline.common import run_order
 from pipeline.config import REPO
 from pipeline.tables.build import TABLES_VERSION, build_tables, read_raw, write_tables
 
@@ -87,7 +88,7 @@ def main() -> int:
     days = list(args.date or [])
     if args.pending:
         days += pending(raw, manifest)
-    days = sorted(set(days))[: args.max_days]
+    days = run_order(days, manifest["days"], args.max_days)
     if not days:
         print("nothing to parse")
         return 0

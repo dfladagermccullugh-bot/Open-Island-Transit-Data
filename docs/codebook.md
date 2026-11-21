@@ -317,7 +317,9 @@ under `paradata`, `nonresponse`, `coverage`, `measurement`, `processing` and
 times, and it is empty when a day has none. The file also records which
 schedule we used (`schedule`) and the SHA-256 fingerprints of the input
 files (`inputs`). We recompute a day when `QUALITY_VERSION` changes or when
-its parsed tables or stop events are rebuilt. Since `quality/0.3.0`, `coverage.trips` lists
+its parsed tables or stop events are rebuilt. When many days are waiting, each
+nightly run handles new days first and then works back through the rebuilds,
+newest first, seven days at a time. Since `quality/0.3.0`, `coverage.trips` lists
 every scheduled trip we could have observed, stored as `columns` and
 `rows`. Each row gives the `trip_id` and `route_id`, the Pacific hour of the
 trip's first departure (`start_hour`), how many scheduled trips were in

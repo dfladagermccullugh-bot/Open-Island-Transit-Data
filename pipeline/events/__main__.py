@@ -35,7 +35,7 @@ import pyarrow.parquet as pq
 
 from pipeline import release
 from pipeline.common import file_entry as _file_entry
-from pipeline.common import load_json
+from pipeline.common import load_json, run_order
 from pipeline.common import sha_of as _sha
 from pipeline.config import COLLECTION_START, REPO
 from pipeline.events.infer import EVENTS_VERSION, infer_day
@@ -257,7 +257,9 @@ def main() -> int:
     days = list(args.date or [])
     if args.pending:
         days += pending(args.data)
-    days = sorted(set(days))[: args.max_days]
+    manifest_path = args.data / "manifest" / "events.json"
+    manifest = _load(manifest_path)
+    days = run_order(days, manifest["days"], args.max_days)
     ontime_dir = args.data / "ontime"
     if not days:
         print("no events to build")
@@ -265,8 +267,6 @@ def main() -> int:
             print(f"ontime/routes.csv and recent.json: {write_routes(ontime_dir)} days")
         return 0
 
-    manifest_path = args.data / "manifest" / "events.json"
-    manifest = _load(manifest_path)
     failed = False
     for day in days:
         try:
