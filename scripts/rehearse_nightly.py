@@ -1,6 +1,7 @@
 """Run every nightly step locally, with GitHub Releases replaced by a folder.
 
     python scripts/rehearse_nightly.py 2026-11-19 /path/to/empty/folder
+    python scripts/rehearse_nightly.py --replay /path/to/folder [--from-raw]
 
 Publishes nothing. Pulls the day from the collector, then runs archive,
 tables, static GTFS, events, quality, monthly reports and the final check in
@@ -8,10 +9,18 @@ the nightly order, writing the would-be data branch to <folder>/data-branch
 and the would-be release files to <folder>/releases/<tag>/. Works on the
 current, incomplete day too: the check that the collector's digest equals the
 archive's is skipped, because new fetches keep arriving while the day is read.
+
+``--replay`` skips the collector and the archive step. The folder must already
+hold ``data-branch/`` (a copy of the published data branch) and
+``releases/<tag>/`` (the published release files). With ``--from-raw``
+everything derived from the raw archive is removed first, so every later
+stage is rebuilt from the raw files; comparing the result with the published
+copy (``diff -r``) measures what a code change does to the figures.
 """
 
 from __future__ import annotations
 
+import argparse
 import hashlib
 import runpy
 import shutil
@@ -23,10 +32,38 @@ sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
 import pipeline.archive.build as archive_build  # noqa: E402
 import pipeline.release as rel  # noqa: E402
 
+RAW_KEPT = ("manifest/raw.json", "README.md")
+
+
+def forget_derived(data: Path, store: Path) -> None:
+    """Keep only the raw manifest, the README and the raw release files."""
+    for path in sorted(data.rglob("*"), reverse=True):
+        if path.is_file() and path.relative_to(data).as_posix() not in RAW_KEPT:
+            path.unlink()
+        elif path.is_dir() and not any(path.iterdir()):
+            path.rmdir()
+    for tag in store.iterdir():
+        if not tag.name.startswith("raw-"):
+            shutil.rmtree(tag) if tag.is_dir() else tag.unlink()
+        else:
+            for f in tag.glob("SHA256SUMS-*"):
+                f.unlink()
+
 
 def main() -> int:
-    day, root = sys.argv[1], Path(sys.argv[2])
+    ap = argparse.ArgumentParser(description="Run the nightly chain locally.")
+    ap.add_argument("day", nargs="?", help="service day to pull from the collector")
+    ap.add_argument("root", nargs="?", type=Path, help="empty folder to write into")
+    ap.add_argument("--replay", type=Path, help="folder with data-branch/ and releases/")
+    ap.add_argument("--from-raw", action="store_true", help="with --replay: rebuild all stages")
+    ap.add_argument("--max-days", type=int, help="days per stage and run (stage default: 7)")
+    args = ap.parse_args()
+    if bool(args.replay) == bool(args.day and args.root):
+        ap.error("give either a day and a folder, or --replay <folder>")
+    day, root = args.day, args.replay or args.root
     store = root / "releases"
+    if args.replay and args.from_raw:
+        forget_derived(root / "data-branch", store)
 
     def ensure_release(tag, repo, title, notes):
         (store / tag).mkdir(parents=True, exist_ok=True)
@@ -81,6 +118,12 @@ def main() -> int:
         ("pipeline.monthly", ["--data", str(data), "--release", "--work", f"{work}/monthly"]),
         ("pipeline.check", ["--data", str(data)]),
     ]  # fmt: skip
+    if args.replay:
+        steps = steps[1:]
+    if args.max_days:
+        for module, argv in steps:
+            if module in ("pipeline.tables", "pipeline.events", "pipeline.quality"):
+                argv += ["--max-days", str(args.max_days)]
     for module, argv in steps:
         print(f"--- {module}")
         sys.argv = [module, *argv]
