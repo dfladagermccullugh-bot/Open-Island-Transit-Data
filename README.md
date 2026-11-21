@@ -1,28 +1,33 @@
 # Open Island Transit Data
 
-**How on time are Island Transit's buses?** Island Transit (Whidbey and
-Camano Islands, Washington) publishes where its buses are every few seconds,
-but nobody keeps those updates. This project saves every one, works out how
-often each bus left its stops on time, and checks how trustworthy the
-tracking data is. Everything is free to download.
+How on time are Island Transit's buses? Every few seconds, each bus on
+Whidbey and Camano Islands in Washington reports where it is, and each
+report vanishes as soon as the next one arrives. This project saves every
+one of them, works out how often each bus left its stops on time, and checks
+how trustworthy the tracking data is. Everything is free to download.
 
-**Site: <https://dfladagermccullugh-bot.github.io/Open-Island-Transit-Data/>**
+You can see the results at
+<https://dfladagermccullugh-bot.github.io/Open-Island-Transit-Data/>.
 
-Collecting since November 19, 2026, every 20 seconds, around the clock.
+We have been collecting since November 19, 2026, every 20 seconds, around
+the clock.
 
 ## What you can find here
 
-| | |
-|---|---|
-| **Routes** | A map of every route, colored by how often its buses left on time, and each route stop by stop: where buses fall behind. |
-| **On time** | Day-by-day on-time figures for the whole system, every route and every hour. |
-| **Can the data be trusted?** | How often the tracking misses buses, drops out, goes stale, puts buses off their route, or predicts arrivals wrongly. |
-| **Download** | Every saved update and every derived table, one file per day, plus a monthly report with checksums. |
+The site has four main pages. Routes shows a map of every route, colored by
+how often its buses left on time, and lets you open any route to see the
+stops where its buses fall behind. On time follows the whole system day by
+day and hour by hour. Data quality asks whether the tracking data can be
+trusted, showing how often it misses buses, drops out, goes stale, puts
+buses off their route, or predicts arrivals wrongly. Download holds every
+saved update and every table we build from them, one file per day, plus a
+monthly report with checksums you can use to check your copies.
 
-A departure is **on time** when the bus leaves between 1 minute early and 5
-minutes late. It is measured at the stops printed in Island Transit's
-timetables. Departures the tracking could not see are counted separately and
-never counted as late.
+A departure counts as on time when the bus leaves no more than 1 minute
+early or 5 minutes late. We measure it at the stops printed in Island
+Transit's timetables, because those are the times riders are promised. When
+the tracking can't see a departure, we count it separately and never count
+it as late.
 
 ## How it works
 
@@ -34,25 +39,26 @@ flowchart LR
   N --> S[Site and free downloads]
 ```
 
-1. **Collect.** A small program asks the feed for bus locations, arrival
-   predictions and alerts every 20 seconds and saves exactly what comes back,
-   with a log of every request. It runs on a free hosted database
-   (`supabase/`).
-2. **Archive.** Each night, the previous day's saved data goes to
-   [GitHub Releases](https://github.com/dfladagermccullugh-bot/Open-Island-Transit-Data/releases),
-   one file per day, with checksums.
-3. **Work out stop times.** The feed only says where a bus is, not when it
-   left a stop. The saved locations are followed along each route to find
-   when each bus passed each stop (`pipeline/events/`).
-4. **Grade the data.** The feed is measured the way survey researchers grade
-   any data source: coverage (do all trips appear?), nonresponse (gaps and
-   failures), measurement error (GPS wobble, stale locations, wrong
-   predictions), processing error (IDs that do not match the schedule) and
-   paradata (the log of the collection itself) (`pipeline/quality/`).
-5. **Publish.** The site is rebuilt after each nightly run (`site/`).
+A small program, the collector, asks the feed for bus locations, arrival
+predictions and alerts every 20 seconds. It saves exactly what comes back
+and keeps a log of every request, and it runs on a free hosted database
+(`supabase/`). Each night, the previous day's saved data goes to
+[GitHub Releases](https://github.com/dfladagermccullugh-bot/Open-Island-Transit-Data/releases),
+one file per day, with checksums.
 
-The method is checked every day against the feed's own stop changes, and in
-person with timed observations on route 60.
+The feed tells us where a bus is, but it never says when the bus left a
+stop. So each night our script traces every bus along its route and works
+out when it passed each stop (`pipeline/events/`). The script checks that
+work every day against the stop changes the feed itself reports, and we
+also time buses in person on route 60 to compare.
+
+Our scripts then grade the feed the way survey researchers grade any source
+of data (`pipeline/quality/`). Coverage asks whether every scheduled trip
+appears at all. Nonresponse looks for gaps and failed requests. Measurement
+error covers GPS wobble, stale locations and wrong predictions. Processing
+error catches IDs that don't match the schedule, and paradata is the log of
+the collection itself. After each nightly run, the site rebuilds itself with
+the new numbers (`site/`).
 
 ## Data
 
@@ -62,11 +68,12 @@ person with timed observations on route 60.
 | Releases `parsed-YYYY-MM` | Tables of bus locations, arrival predictions, alerts, and inferred stop arrivals and departures (Parquet) |
 | [`data` branch](https://github.com/dfladagermccullugh-bot/Open-Island-Transit-Data/tree/data) | Daily quality and on-time figures (JSON and CSV), route maps, monthly reports, and manifests listing every file with its size and SHA-256 |
 
-Every field is described in the [codebook](docs/codebook.md); every
-definition in [methods](docs/methods.md); every design choice and its reason
-in [decisions](docs/decisions.md).
+The [codebook](docs/codebook.md) describes every file and column, the
+[methods](docs/methods.md) give the exact definition behind every number,
+and the [decisions](docs/decisions.md) log records every design choice and
+the reason for it.
 
-Live status of the collector:
+To see whether the collector is running right now, ask it for its status:
 
 ```bash
 curl -s "https://ekczqlmunyumtgtthppb.supabase.co/rest/v1/status_now" \
@@ -97,17 +104,18 @@ python scripts/verify_feed.py
 deno test --allow-read supabase/functions/collect/
 ```
 
-`verify_feed.py` needs to run during service hours (about 6 AM to 7 PM
-Pacific) to see buses.
+Run `verify_feed.py` during service hours, roughly 6 AM to 7 PM Pacific, so
+that there are buses on the road for it to check.
 
 ## Licenses
 
-- Code: MIT ([`LICENSE`](LICENSE)).
-- Data: see [`LICENSE-DATA.md`](LICENSE-DATA.md). No license was published for
-  the source feeds; derived tables are CC BY 4.0.
-- Map background on the site: &copy; OpenStreetMap contributors.
-- Vehicles only. The feeds contain no information about individual riders.
+The code is released under the MIT license ([`LICENSE`](LICENSE)). The data
+terms are in [`LICENSE-DATA.md`](LICENSE-DATA.md): Island Transit published
+no license for the source feeds, and the tables we derive from them are
+CC BY 4.0. The map background on the site is © OpenStreetMap contributors.
+The feeds describe vehicles only and contain no information about
+individual riders.
 
-This project is independent and is not affiliated with Island Transit or
-Passio Technologies. Every number on the site is computed by code in this
-repository from Island Transit's public data.
+This project is independent and has no connection to Island Transit or
+Passio Technologies. Every number on the site comes from code in this
+repository, run on Island Transit's public data.
