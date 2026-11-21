@@ -1,0 +1,13 @@
+# Exact versions of the libraries behind the published numbers. Every
+# workflow installs with `-c constraints.txt`, so a new release of a library
+# cannot change a figure between two nightly runs. Tested together on
+# Python 3.13. To update: change a version here, run the checks and
+# scripts/rehearse_nightly.py, and note any change in figures in
+# docs/decisions.md.
+gtfs-realtime-bindings==3.0.0
+protobuf==7.36.1
+pyarrow==26.0.1
+numpy==2.5.3
+requests==2.34.2
+pytest==9.1.1
+ruff==0.17.6

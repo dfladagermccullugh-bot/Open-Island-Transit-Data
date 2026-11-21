@@ -81,6 +81,14 @@ HEADLINE = [
     ("off_shape_share", ("events", "shape_fit", "off_shape_share")),
     ("prediction_mae_s_5min", ("events", "prediction_error", "by_horizon_min", "5", "mae_s")),
     (
+        "prediction_median_abs_s_5min",
+        ("events", "prediction_error", "by_horizon_min", "5", "median_abs_s"),
+    ),
+    (
+        "prediction_over_30min_share_5min",
+        ("events", "prediction_error", "by_horizon_min", "5", "over_30min_share"),
+    ),
+    (
         "prediction_within_60s_5min",
         ("events", "prediction_error", "by_horizon_min", "5", "within_60s_share"),
     ),

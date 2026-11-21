@@ -4,8 +4,10 @@ name: Nightly archive
 # builds the parsed daily tables from those files, updates the static GTFS
 # version registry and crosswalk, infers stop events and on-time summaries,
 # computes the daily quality metrics, and writes a report for each closed
-# month (with checksums and notes on its Releases). All
-# outputs except the Release files are committed to the `data` branch. Runs after midnight Pacific
+# month (with checksums and notes on its Releases). All outputs except the
+# Release files are committed to the `data` branch, after each stage, so a
+# stage that fails or runs out of time does not hold back the ones before
+# it. Runs after midnight Pacific
 # (08:35 UTC) with further attempts through the day, because GitHub drops
 # scheduled runs when busy (the first 08:35 run never started). Every step
 # only handles pending days, so extra attempts cost about a minute and change
@@ -33,16 +35,19 @@ concurrency:
 jobs:
   archive:
     runs-on: ubuntu-latest
-    timeout-minutes: 30
+    timeout-minutes: 60
     env:
       GH_TOKEN: ${{ github.token }}
     steps:
-      - uses: actions/checkout@v4
-      - uses: actions/setup-python@v5
+      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4.4.0
+      - uses: actions/setup-python@a26af69be951a213d495a4c3e4e4022e16d87065 # v5.6.0
         with:
-          python-version: "3.12"
+          python-version: "3.13"
           cache: pip
-      - run: pip install -e .
+          cache-dependency-path: |
+            pyproject.toml
+            constraints.txt
+      - run: pip install -e . -c constraints.txt
 
       - name: Get the data branch (create it on the first run)
         run: |
@@ -53,28 +58,28 @@ jobs:
             git checkout -q -b data FETCH_HEAD
           else
             git checkout -q --orphan data
-            printf '%s\n' "# Data branch" "" \
-              "Written by the nightly archive job. \`manifest/raw.json\` lists every" \
-              "archived service day, its files in GitHub Releases, and their hashes;" \
-              "\`manifest/parsed.json\` does the same for the parsed tables;" \
-              "\`manifest/static.json\` lists static GTFS versions and the one" \
-              "pinned to each service day; \`crosswalk/\` links Passio and" \
-              "Trillium stops, routes and Trillium timepoints for each version pair;" \
-              "\`timepoints/\` holds the true timepoints from the printed timetables;" \
-              "\`quality/\` holds the daily feed-quality metrics; \`ontime/\` the" \
-              "on-time summaries." > README.md
           fi
+          cp ../docs/data-branch-readme.md README.md
 
+      # Each stage records its exit code and the job goes on: one failing
+      # stage must not hold back the others. What it finished is published
+      # at once.
       - name: Archive pending days
         id: archive
+        timeout-minutes: 10
         run: |
           set +e
           python -m pipeline.archive --pending --release \
             --manifest data-branch/manifest/raw.json --out work/files
           echo "code=$?" >> "$GITHUB_OUTPUT"
+      - name: Publish after archive
+        if: always()
+        run: scripts/publish_data.sh "After archive:"
 
       - name: Build parsed tables for archived days
         id: tables
+        if: always()
+        timeout-minutes: 10
         run: |
           set +e
           python -m pipeline.tables --pending --release \
@@ -82,77 +87,94 @@ jobs:
             --manifest data-branch/manifest/parsed.json \
             --raw-dir work/files --out work/tables
           echo "code=$?" >> "$GITHUB_OUTPUT"
+      - name: Publish after tables
+        if: always()
+        run: scripts/publish_data.sh "After tables:"
 
       - name: Update static GTFS versions
         id: static
+        if: always()
+        timeout-minutes: 5
         run: |
           set +e
           python -m pipeline.gtfs --raw-manifest data-branch/manifest/raw.json \
             --manifest data-branch/manifest/static.json --raw-dir work/files \
             --crosswalk-dir data-branch/crosswalk --timepoints-dir data-branch/timepoints
           echo "code=$?" >> "$GITHUB_OUTPUT"
+      - name: Publish after static
+        if: always()
+        run: scripts/publish_data.sh "After static:"
 
       - name: Infer stop events and on-time summary
         id: events
+        if: always()
+        timeout-minutes: 10
         run: |
           set +e
           python -m pipeline.events --pending --release --data data-branch \
             --raw-dir work/files --tables-dir work/tables --out work/events
           echo "code=$?" >> "$GITHUB_OUTPUT"
+      - name: Publish after events
+        if: always()
+        run: scripts/publish_data.sh "After events:"
 
       - name: Score field observations
         id: field
+        if: always()
+        timeout-minutes: 3
         run: |
           set +e
-          python -m pipeline.events.field score --data data-branch --tables-dir work/tables
+          python -m pipeline.events.field score --data data-branch --tables-dir work/events
           echo "code=$?" >> "$GITHUB_OUTPUT"
+      - name: Publish after field
+        if: always()
+        run: scripts/publish_data.sh "After field:"
 
       - name: Compute quality metrics
         id: quality
+        if: always()
+        timeout-minutes: 10
         run: |
           set +e
           python -m pipeline.quality --pending --data data-branch \
             --raw-dir work/files --tables-dir work/tables
           echo "code=$?" >> "$GITHUB_OUTPUT"
+      - name: Publish after quality
+        if: always()
+        run: scripts/publish_data.sh "After quality:"
 
       - name: Monthly reports and release checksums for closed months
         id: monthly
+        if: always()
+        timeout-minutes: 5
         run: |
           set +e
           python -m pipeline.monthly --data data-branch --release --work work/monthly
           echo "code=$?" >> "$GITHUB_OUTPUT"
-
-      - name: Publish the manifests
-        id: publish
-        run: |
-          cd data-branch
-          git add -A
-          if git diff --cached --quiet; then
-            echo "manifest unchanged"
-          else
-            echo "changed=1" >> "$GITHUB_OUTPUT"
-            git -c user.name="github-actions[bot]" \
-                -c user.email="41898282+github-actions[bot]@users.noreply.github.com" \
-                commit -q -m "Archive manifest $(date -u +%Y-%m-%dT%H:%MZ)"
-            git push -q origin data
-          fi
+      - name: Publish after monthly
+        if: always()
+        run: scripts/publish_data.sh "After monthly:"
 
       - name: Redeploy the site with the new data
-        if: steps.publish.outputs.changed == '1'
+        if: always() && env.DATA_CHANGED == '1'
         run: gh workflow run pages.yml --repo "$GITHUB_REPOSITORY" --ref main
 
       - name: Check the data branch against Releases
         id: check
+        if: always()
+        timeout-minutes: 5
         run: |
           set +e
           python -m pipeline.check --data data-branch
           echo "code=$?" >> "$GITHUB_OUTPUT"
 
+      # A stage that timed out wrote no exit code, so anything but 0 fails.
       - name: Fail if any step above failed
         if: >-
+          always() && (
           steps.archive.outputs.code != '0' || steps.tables.outputs.code != '0' ||
           steps.static.outputs.code != '0' || steps.events.outputs.code != '0' ||
           steps.field.outputs.code != '0' ||
           steps.quality.outputs.code != '0' || steps.monthly.outputs.code != '0' ||
-          steps.check.outputs.code != '0'
+          steps.check.outputs.code != '0')
         run: exit 1

@@ -28,6 +28,7 @@ Row = dict[str, Any]
 HORIZONS_MIN = (1, 2, 5, 10, 15, 30)
 PREDICTION_STALE_S = 30  # a prediction counts until this long after its last fetch
 WITHIN_S = 60
+FAR_OFF_S = 1800  # a prediction this far off is counted, as it points at another run of the trip
 STATIONARY_MS = 0.5
 TERMINAL_M = 150.0
 DWELL_GAP_S = 120.0
@@ -186,7 +187,13 @@ def prediction_error(predictions: list[Row], events: list[Row]) -> dict[str, Any
     The feed sends no ``start_date``, and some predictions are clock times on
     another Pacific day than the trip's scheduled time (the same trip id runs
     every day). Those are counted as ``other_day`` and left out of the error
-    figures."""
+    figures.
+
+    Some predictions that do fall on the trip's own day are still hours off
+    (on November 20, 2026, about 2% of those made 5 minutes ahead were more
+    than 30 minutes off, some by 15 hours). They stay in the figures and are
+    counted as ``over_30min``. Because a few such values dominate a mean,
+    ``median_abs_s`` (the typical miss) is given beside ``mae_s``."""
     runs: dict[tuple[str, int], list[Row]] = defaultdict(list)
     for p in predictions:
         if p["trip_id"] is not None and p["stop_sequence"] is not None:
@@ -233,7 +240,10 @@ def prediction_error(predictions: list[Row], events: list[Row]) -> dict[str, Any
             "bias_s": _r(statistics.fmean(xs)) if xs else None,
             "median_s": _r(_quantile(xs, 0.5)),
             "mae_s": _r(statistics.fmean(abs(x) for x in xs)) if xs else None,
+            "median_abs_s": _r(_quantile([abs(x) for x in xs], 0.5)),
             "within_60s_share": _share(sum(abs(x) <= WITHIN_S for x in xs), len(xs)),
+            "over_30min": sum(abs(x) > FAR_OFF_S for x in xs),
+            "over_30min_share": _share(sum(abs(x) > FAR_OFF_S for x in xs), len(xs)),
         }
 
     return {

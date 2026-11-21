@@ -124,6 +124,17 @@ def test_prediction_error_sets_aside_other_day_predictions():
     assert out["n"] == 0 and out["other_day"] == 1 and out["other_day_share"] == 1.0
 
 
+def test_a_few_far_off_predictions_do_not_hide_the_typical_miss():
+    # Four stops predicted 1 minute late and one predicted 3 hours late (the
+    # same Pacific day): the mean is 37 minutes, the typical miss 1 minute.
+    events = [event(k, 30, arr_min=30) for k in range(2, 7)]
+    preds = [prediction(k, 31, 20, 40) for k in range(2, 6)] + [prediction(6, 210, 20, 40)]
+    out = prediction_error(preds, events)["by_horizon_min"]["5"]
+    assert out["n"] == 5 and out["mae_s"] == 2208.0
+    assert out["median_abs_s"] == 60.0
+    assert out["over_30min"] == 1 and out["over_30min_share"] == 0.2
+
+
 def report(vehicle, minute, lat, lon, speed=0.0):
     return {"vehicle_key": vehicle, "vehicle_ts": at(minute), "lat": lat, "lon": lon,
             "speed": speed}  # fmt: skip

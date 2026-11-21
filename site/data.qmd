@@ -1,4 +1,5 @@
 ---
+description: "Free downloads of every saved Island Transit feed update, the parsed tables, daily figures and monthly reports."
 title: "Download the data"
 subtitle: "Free downloads of every saved update and table"
 ---
@@ -22,15 +23,17 @@ we share the archived data.
 
 ```{ojs}
 //| echo: false
-import {json} from "./lib.js"
+import {json, count, longDate, REPO_URL, DATA_URL, RELEASES_URL} from "./lib.js"
 raw = json("data/manifest/raw.json")
 rows = raw == null ? [] : Object.values(raw.days).map(d => ({
   day: d.service_date, fetches: d.fetch_rows, ok: d.ok_rows,
-  megabytes: d.files.reduce((a, f) => a + f.bytes, 0) / 1e6,
+  megabytes: (d.files ?? []).reduce((a, f) => a + f.bytes, 0) / 1e6,
   release: d.release_tag}))
-html`${rows.length === 0 ? html`<p>No day has been archived yet.</p>` : Inputs.table(rows.reverse(), {
+html`${rows.length === 0 ? html`<p class="empty">The list of archived days can't be shown right now.</p>` : Inputs.table(rows.reverse(), {select: false,
   header: {day: "Service day", fetches: "Fetch attempts", ok: "Successful", megabytes: "Size (MB)", release: "Release"},
-  format: {megabytes: d => d.toFixed(1)}, rows: 20})}`
+  format: {day: d => longDate(d), fetches: count, ok: count, megabytes: d => d.toFixed(1),
+           release: t => t ? html`<a href="${RELEASES_URL}/tag/${t}">${t}</a>` : "not yet uploaded"},
+  rows: 20, layout: "auto"})}`
 ```
 
 ## Monthly reports
@@ -43,9 +46,9 @@ match ours exactly.
 //| echo: false
 import {pct} from "./lib.js"
 reports = json("data/reports/index.json")
-reportBase = "https://github.com/dfladagermccullugh-bot/Open-Island-Transit-Data/blob/data/reports/"
+reportBase = `${DATA_URL}/reports/`
 reportRows = (reports ?? []).map(r => ({...r, megabytes: r.bytes / 1e6})).reverse()
-html`${reportRows.length === 0 ? html`<p>No month is complete yet.</p>` : Inputs.table(reportRows, {
+html`${reportRows.length === 0 ? html`<p class="empty">No month is complete yet. The first report will cover November 2026.</p>` : Inputs.table(reportRows, {select: false,
   columns: ["month", "days_archived", "days_missing", "vehicle_uptime", "trip_coverage",
             "timepoint_observed_share", "on_time_share_of_observed", "megabytes"],
   header: {month: "Month", days_archived: "Days archived", days_missing: "Days missing",

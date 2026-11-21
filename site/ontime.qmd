@@ -1,4 +1,5 @@
 ---
+description: "How often Island Transit's buses left on time, day by day and hour by hour, and how the figures are checked."
 title: "On time"
 subtitle: "The whole system, day by day and hour by hour"
 ---
@@ -8,20 +9,23 @@ We calculate these figures ourselves from Island Transit's bus locations and
 schedule, so they aren't official numbers. The feed has no "minutes late"
 field, which means our script has to figure out the moment each bus left a
 stop from where the bus was just before and just after. Automated checks
-verify those times on every route every day, and we have also timed buses
-in person on route 60. The [Methods](methods.qmd) page explains it all, and
+compare those times with the feed's own stop reports on every route every
+day, and we have also timed buses in person on route 60. The [Methods](methods.qmd) page explains it all, and
 [Routes](routes.qmd) shows one route at a time.
 :::
 
 ```{ojs}
 //| echo: false
 //| output: false
-import {csv, json, pct, num, band, lateness, longDate, MIN_OBSERVED, SERIES} from "./lib.js"
+import {csv, json, pct, num, count, band, lateness, longDate, isoDate, serviceDays, MIN_OBSERVED, SERIES, REPO_URL, DATA_URL, RELEASES_URL} from "./lib.js"
 daily = csv(d3, "data/ontime/daily.csv")
-days = daily.map(d => ({...d, date: new Date(d.service_date)}))
-latestDate = days.length ? days.at(-1).date.toISOString().slice(0, 10) : null
+// Days with scheduled service; a holiday is archived but not charted.
+days = serviceDays(daily).map(d => ({...d, day: isoDate(d.service_date), date: new Date(`${isoDate(d.service_date)}T12:00:00Z`)}))
+latestDate = days.length ? days.at(-1).day : null
 latest = latestDate ? json(`data/ontime/days/${latestDate}.json`) : null
 noData = () => html`<p class="empty">No day has been processed yet.</p>`
+// The daily table lists the day but its detail file did not load.
+noDetail = () => days.length === 0 ? noData() : html`<p class="empty">The details for ${longDate(latestDate)} can't be shown right now.</p>`
 ```
 
 ## Day by day
@@ -32,16 +36,18 @@ html`${days.length === 0 ? noData() : days.length < 2
   ? html`<p class="empty">So far there is one day of data, ${longDate(latestDate)}, and ${pct(days[0].on_time_share_of_observed)} of the departures we saw that day were on time.
       A day-by-day trend line will appear once a second day comes in.</p>`
   : Plot.plot({
+    ariaLabel: "Share of departures on time, by service day",
+    ariaDescription: `From ${longDate(days[0].day)} to ${longDate(latestDate)}. On the latest day, ${pct(days.at(-1).on_time_share_of_observed)} of the departures seen were on time.`,
     style: {background: "transparent"},
-    width: Math.min(width, 960), height: 240, marginLeft: 50,
-    x: {type: "utc", label: null},
+    width: Math.max(320, Math.min(width, 960)), height: 240, marginLeft: 50, marginRight: 30,
+    x: {type: "utc", label: null, ticks: days.length <= 8 ? days.map(d => d.date) : 8, tickFormat: "%b %-d"},
     y: {grid: true, label: "On time", domain: [0, 1], tickFormat: d => `${Math.round(d * 100)}%`},
     marks: [
       Plot.ruleY([0]),
       Plot.lineY(days, {x: "date", y: "on_time_share_of_observed", stroke: SERIES, strokeWidth: 2}),
       Plot.dot(days, {x: "date", y: "on_time_share_of_observed", fill: SERIES, r: 4}),
       Plot.tip(days, Plot.pointerX({x: "date", y: "on_time_share_of_observed",
-        title: d => `${longDate(d.service_date)}\n${pct(d.on_time_share_of_observed, 1)} on time\n${pct(d.observed_share)} of departures seen`})),
+        title: d => `${longDate(d.day)}\n${pct(d.on_time_share_of_observed, 1)} on time\n${pct(d.observed_share)} of departures seen`})),
     ],
   })}`
 ```
@@ -54,17 +60,19 @@ hours = latest == null ? [] : Object.entries(latest.by_hour).map(([h, b]) => ({
   hour: +h, ...b, band: band(b.on_time_share_of_observed, b.observed),
   label: `${(+h % 12) || 12} ${+h < 12 ? "AM" : "PM"}`}))
   .filter(d => d.observed >= MIN_OBSERVED)
-html`${hours.length === 0 ? noData() : html`<p class="note">This chart shows ${longDate(latestDate)}, grouped by the hour each departure was scheduled, in Pacific time. We leave out any hour in which we saw fewer than ${MIN_OBSERVED} departures.</p>
+html`${hours.length === 0 ? noDetail() : html`<p class="note">This chart shows ${longDate(latestDate)}, grouped by the hour each departure was scheduled, in Pacific time. We leave out any hour in which we saw fewer than ${MIN_OBSERVED} departures.</p>
   ${Plot.plot({
+    ariaLabel: `Share of departures on time by scheduled hour, ${longDate(latestDate)}`,
+    ariaDescription: hours.map(d => `${d.label}: ${pct(d.on_time_share_of_observed)}`).join(", "),
     style: {background: "transparent"},
-    width: Math.min(width, 960), height: 240, marginLeft: 50,
+    width: Math.max(320, Math.min(width, 960)), height: 240, marginLeft: 50,
     x: {label: null, domain: hours.map(d => d.label), padding: 0.25},
     y: {grid: true, label: "On time", domain: [0, 1], tickFormat: d => `${Math.round(d * 100)}%`},
     marks: [
       Plot.barY(hours, {x: "label", y: "on_time_share_of_observed", fill: d => d.band.color, rx: 3}),
       Plot.ruleY([0]),
       Plot.tip(hours, Plot.pointerX({x: "label", y: "on_time_share_of_observed",
-        title: d => `${d.label}\n${pct(d.on_time_share_of_observed)} on time\nTypically ${lateness(d.deviation_s_median)}\n${d.observed} of ${d.scheduled} departures seen`})),
+        title: d => `${d.label}\n${pct(d.on_time_share_of_observed)} on time\nTypically ${lateness(d.deviation_s_median)}\n${count(d.observed)} of ${count(d.scheduled)} departures seen`})),
     ],
   })}`}`
 ```
@@ -87,16 +95,16 @@ faster than 126 km/h (about 78 mph).
 //| echo: false
 val = latest?.validation ?? null
 checks = val == null ? [] : [
-  ["Inferred departures compared with the feed", val.feed_agreement.compared],
+  ["Inferred departures compared with the feed", count(val.feed_agreement.compared)],
   ["Agree with the feed's change of stop (within 30 s)", pct(val.feed_agreement.within_tolerance_share, 1)],
   ["Median time from inferred departure to the first report naming the next stop",
     `${num(val.feed_agreement.feed_change_after_departure_s.median, 1)} s`],
   ["Times the feed's stop sequence went backwards within a trip", val.feed_agreement.feed_sequence_going_backwards],
-  ["Segments between inferred times", val.travel_times.segments],
+  ["Segments between inferred times", count(val.travel_times.segments)],
   ["Segments running backwards in time", val.travel_times.negative],
   ["Segments faster than 126 km/h (78 mph)", val.travel_times.over_max_speed],
 ].map(([check, value]) => ({check, value}))
-html`${checks.length === 0 ? noData() : Inputs.table(checks, {header: {check: "Check", value: "Result"}, rows: 10})}`
+html`${checks.length === 0 ? noDetail() : Inputs.table(checks, {select: false, header: {check: "Check", value: "Result"}, rows: 10})}`
 ```
 
 </details>
@@ -124,20 +132,23 @@ html`${fcRows.length === 0
   ? html`<p>No timed observations have been scored yet${fc && fc.rows_waiting_for_their_day ? `, and ${fc.rows_waiting_for_their_day} are waiting for their day to be processed` : ""}.</p>`
   : html`<p>We have scored ${fc.overall.n} timed moments over ${fc.days.length} day${fc.days.length === 1 ? "" : "s"}.
       Each difference is our time minus the timed one, in seconds, so a positive bias means our times run late.
-      ${fc.meets_target ? "The average difference meets the 30-second target." : "The average difference has not yet met the 30-second target."}</p>
-    ${Inputs.table(fcRows, {
+      ${fc.meets_target == null ? `The 30-second target is judged once there are ${fc.target_min_n ?? 5} timed moments.` : fc.meets_target ? "The average difference meets the 30-second target." : "The average difference has not yet met the 30-second target."}</p>
+    ${Inputs.table(fcRows, {select: false,
       header: {moment: "", n: "Timed", bias: "Bias (s)", mae: "Mean absolute difference (s)", w30: "Within 30 s", w60: "Within 60 s"},
       format: {bias: d => num(d, 1), mae: d => num(d, 1), w30: d => pct(d), w60: d => pct(d)}, rows: 5})}`}`
 ```
 
-You can look at
-[the timed observations](https://github.com/dfladagermccullugh-bot/Open-Island-Transit-Data/blob/main/reference/field-observations.csv)
-and [every comparison](https://github.com/dfladagermccullugh-bot/Open-Island-Transit-Data/blob/data/ontime/field-check.json)
-yourself.
+```{ojs}
+//| echo: false
+html`<p>You can look at <a href="${REPO_URL}/blob/main/reference/field-observations.csv">the timed observations</a>
+and <a href="${DATA_URL}/ontime/field-check.json">every comparison</a> yourself.</p>`
+```
 
 </details>
 
-[The daily figures are in
-[`ontime/daily.csv`](https://github.com/dfladagermccullugh-bot/Open-Island-Transit-Data/blob/data/ontime/daily.csv),
-and every arrival and departure we estimated is in the `stop-events` files
-in [Releases](https://github.com/dfladagermccullugh-bot/Open-Island-Transit-Data/releases).]{.note}
+```{ojs}
+//| echo: false
+html`<p class="note">The daily figures are in <a href="${DATA_URL}/ontime/daily.csv"><code>ontime/daily.csv</code></a>,
+and every arrival and departure we estimated is in the <code>stop-events</code> files in <a href="${RELEASES_URL}">Releases</a>.
+Hours are in Pacific time.</p>`
+```

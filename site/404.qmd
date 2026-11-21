@@ -1,0 +1,7 @@
+---
+title: "Page not found"
+description: "This page doesn't exist on Open Island Transit Data."
+---
+
+There is no page at this address. The [home page](index.qmd) shows how often
+Island Transit's buses run on time, and [Routes](routes.qmd) has every route.

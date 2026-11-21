@@ -12,32 +12,29 @@ and uses them to figure out how often the buses leave on time.]{.lede}
 
 ```{ojs}
 //| echo: false
-STATUS_URL = "https://ekczqlmunyumtgtthppb.supabase.co/rest/v1/status_now"
-PUBLIC_KEY = "sb_publishable_AWlvBYVrlTz7dEaf7RwwzA_5zRN3af-"
-status = {
-  try {
-    const r = await fetch(STATUS_URL, {headers: {apikey: PUBLIC_KEY}});
-    return r.ok ? await r.json() : null;
-  } catch (e) { return null; }
+import {liveStatus} from "./lib.js"
+// The badge says only what was just checked: saving, delayed, or unknown.
+liveBadge = {
+  const badge = (cls, text) => html`<a class="live ${cls}" href="#how-it-works" role="status"><span class="dot"></span>${text}</a>`;
+  yield badge("unknown", "Checking the collector…");
+  const status = await liveStatus();
+  const vp = status?.find(d => d.feed === "vehiclePositions") ?? null;
+  const age = vp?.last_ok_age_s;
+  const ago = s => s < 120 ? `${s} second${s === 1 ? "" : "s"} ago` : s < 7200 ? `${Math.round(s / 60)} minutes ago` : `${Math.round(s / 3600)} hours ago`;
+  if (vp == null) yield badge("unknown", "The collector's status can't be read right now");
+  else if (age == null) yield badge("down", "Collector delayed · no update in the last 2 days");
+  else if (age < 120) yield badge("ok", `Saving now · last update ${ago(age)}`);
+  else yield badge("down", `Collector delayed · last update ${ago(age)}`);
 }
-vp = status?.find(d => d.feed === "vehiclePositions") ?? null
-ago = s => s < 120 ? `${s} second${s === 1 ? "" : "s"} ago` : s < 7200 ? `${Math.round(s / 60)} minutes ago` : `${Math.round(s / 3600)} hours ago`
-html`${vp == null
-  ? html`<a class="live" href="#how-it-works"><span class="dot"></span>Saving bus locations every 20 seconds</a>`
-  : vp.last_ok_age_s < 120
-    ? html`<a class="live ok" href="#how-it-works"><span class="dot"></span>Saving now · last update ${ago(vp.last_ok_age_s)}</a>`
-    : html`<a class="live down" href="#how-it-works"><span class="dot"></span>Collector delayed · last update ${ago(vp.last_ok_age_s)}</a>`}`
 ```
 :::
 
 ```{ojs}
 //| echo: false
 //| output: false
-import {csv, json, pct, lateness, plural, longDate, routeMap, routeSlug} from "./lib.js"
+import {json, pct, count, lateness, longDate, routeMap, routeSlug} from "./lib.js"
 import {drawRouteMap} from "./map.js"
 recent = json("data/ontime/recent.json")
-quality = csv(d3, "data/quality/daily.csv")
-q = quality.at(-1) ?? null
 o = recent?.overall ?? null
 period = recent == null ? "" : recent.days === 1
   ? `on ${longDate(recent.last_service_date)}`
@@ -47,11 +44,11 @@ period = recent == null ? "" : recent.days === 1
 ```{ojs}
 //| echo: false
 html`${o == null || o.observed === 0
-  ? html`<p class="empty">The first numbers will show up here shortly after midnight Pacific, once the first full day has been processed.</p>`
+  ? html`<p class="empty">The on-time figures can't be shown right now. The saved data is still in the downloads.</p>`
   : html`<div class="headline">
       <div class="big">${pct(o.on_time_share_of_observed)}</div>
       <div class="big-label">of departures left on time ${period}.
-        <span class="note">A bus counts as on time if it leaves no more than 1 minute early or 5 minutes late.</span></div>
+        <span class="note">A bus counts as on time if it leaves from 1 minute early to 5 minutes late.</span></div>
     </div>
     <div class="stat-row">
       <div class="stat"><div class="label">Typical departure</div>
@@ -59,7 +56,7 @@ html`${o == null || o.observed === 0
       <div class="stat"><div class="label">More than 5 minutes late</div>
         <div class="value">${pct(o.late_share_of_observed)}</div></div>
       <div class="stat"><div class="label">Departures checked</div>
-        <div class="value">${o.observed.toLocaleString("en-US")}</div></div>
+        <div class="value">${count(o.observed)}</div></div>
     </div>`}`
 ```
 
@@ -83,7 +80,7 @@ homeMap = mapData == null ? null : drawRouteMap(L, mapData, recent, {
     location.href = `routes.html#${routeSlug(r, id)}`;
   },
 })
-html`${homeMap == null ? html`<p class="empty">The route map will appear once the first day has been processed.</p>` : homeMap.node}`
+html`${homeMap == null ? html`<p class="empty">The route map can't be shown right now.</p>` : homeMap.node}`
 ```
 
 ## How it works {#how-it-works}

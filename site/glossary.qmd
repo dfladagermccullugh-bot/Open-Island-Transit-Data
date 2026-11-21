@@ -1,4 +1,5 @@
 ---
+description: "Plain-language meanings of the terms used on Open Island Transit Data."
 title: "Plain words"
 subtitle: "What the terms on this site mean"
 ---

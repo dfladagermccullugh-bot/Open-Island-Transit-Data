@@ -20,6 +20,41 @@ export async function json(path) {
   }
 }
 
+// One place for the addresses the pages link to and read from. The key is a
+// publishable one: it can only read the collector's public tables.
+export const REPO_URL = "https://github.com/dfladagermccullugh-bot/Open-Island-Transit-Data";
+export const DATA_URL = `${REPO_URL}/blob/data`;
+export const RELEASES_URL = `${REPO_URL}/releases`;
+export const STATUS_URL = "https://ekczqlmunyumtgtthppb.supabase.co/rest/v1/status_now";
+export const PUBLIC_KEY = "sb_publishable_AWlvBYVrlTz7dEaf7RwwzA_5zRN3af-";
+
+// The collector's live status, or null if it cannot be read within 8 seconds.
+export async function liveStatus() {
+  try {
+    const r = await fetch(STATUS_URL, {headers: {apikey: PUBLIC_KEY}, signal: AbortSignal.timeout(8000)});
+    return r.ok ? await r.json() : null;
+  } catch (e) {
+    return null;
+  }
+}
+
+// Rows of a daily table for days on which buses were scheduled to run.
+// A holiday with no service is archived like any other day but left out of
+// trend lines, where it would look like a day of lost buses.
+export function serviceDays(rows) {
+  return rows.filter(d => d.service_expected !== false && d.service_expected !== "False");
+}
+
+// "2026-11-20" from a date string or a Date read from a CSV.
+export function isoDate(d) {
+  if (d == null) return null;
+  return d instanceof Date ? d.toISOString().slice(0, 10) : String(d).slice(0, 10);
+}
+
+export function count(n) {
+  return n == null || Number.isNaN(n) ? "–" : Number(n).toLocaleString("en-US");
+}
+
 export function pct(x, digits = 0) {
   return x == null || Number.isNaN(x) ? "–" : `${(100 * x).toFixed(digits)}%`;
 }
@@ -89,9 +124,12 @@ export function plural(n, word, many = word + "s") {
   return `${n.toLocaleString("en-US")} ${n === 1 ? word : many}`;
 }
 
-export function longDate(iso) {
+// "November 20, 2026" from "2026-11-20" or from a Date read from a CSV.
+export function longDate(value) {
+  const iso = isoDate(value);
   if (!iso) return "";
   const d = new Date(`${iso}T12:00:00Z`);
+  if (Number.isNaN(d.getTime())) return "";
   return d.toLocaleDateString("en-US", {month: "long", day: "numeric", year: "numeric", timeZone: "UTC"});
 }
 

@@ -1,4 +1,5 @@
 ---
+description: "How complete and accurate Island Transit's live bus tracking is: trips seen, gaps, location age and prediction misses."
 title: "Can the data be trusted?"
 subtitle: "How reliable Island Transit's bus-tracking feed is, checked every day"
 ---
@@ -10,22 +11,31 @@ as the feed itself. That's why we grade the feed every day.
 ```{ojs}
 //| echo: false
 //| output: false
-import {csv, json, pct, num, routeLabel, longDate, SERIES} from "./lib.js"
+import {csv, json, pct, num, count, routeLabel, longDate, isoDate, serviceDays, SERIES, DATA_URL} from "./lib.js"
 daily = csv(d3, "data/quality/daily.csv")
-days = daily.map(d => ({...d, date: new Date(d.service_date)}))
-latestDate = days.length ? days.at(-1).date.toISOString().slice(0, 10) : null
+// Days with scheduled service; a holiday is archived and listed under "All
+// days" but not graded or charted.
+days = serviceDays(daily).map(d => ({...d, prediction_min_5min: d.prediction_median_abs_s_5min == null ? null : d.prediction_median_abs_s_5min / 60,
+  day: isoDate(d.service_date), date: new Date(`${isoDate(d.service_date)}T12:00:00Z`)}))
+latestDate = days.length ? days.at(-1).day : null
 latest = latestDate ? json(`data/quality/days/${latestDate}.json`) : null
-noData = () => html`<p>No day has been processed yet.</p>`
+noData = () => days.length === 0
+  ? html`<p class="empty">No day has been processed yet.</p>`
+  : html`<p class="empty">The details for ${longDate(latestDate)} can't be shown right now.</p>`
+// Charts are drawn at the width of their column, so text keeps its size on a phone.
+half = width < 768 ? width : Math.floor((width - 24) / 2)
+clock = iso => new Date(iso).toLocaleTimeString("en-US", {hour: "numeric", minute: "2-digit", timeZone: "America/Los_Angeles"})
+partial = latest?.scheduled_service?.trips_ended_before_collection > 0
 ```
 
 ```{ojs}
 //| echo: false
 lq = days.at(-1) ?? null
-html`${lq == null ? noData() : html`<p class="note">These grades are for ${longDate(latestDate)}.${days.length === 1 ? " Collection began at 1:24 PM Pacific that day, so the grades cover only part of it." : ""}</p>
+html`${lq == null ? noData() : html`<p class="note">These grades are for ${longDate(latestDate)}.${partial ? ` Collection began at ${clock(latest.paradata.observed_from)} Pacific that day, so the grades cover only part of it.` : ""}</p>
 <div class="stat-row">
   <div class="stat"><div class="label">Did every scheduled trip show up?</div>
     <div class="value">${pct(lq.trip_coverage)}</div>
-    <div class="note">of ${lq.scheduled_trips} scheduled trips appeared in the tracking at least once</div></div>
+    <div class="note">of ${count(lq.scheduled_trips)} scheduled trips appeared in the tracking around the time they were due</div></div>
   <div class="stat"><div class="label">Did the collector keep running?</div>
     <div class="value">${pct(lq.vehicle_uptime, 1)}</div>
     <div class="note">of 20-second checks got a good answer from the feed</div></div>
@@ -33,8 +43,8 @@ html`${lq == null ? noData() : html`<p class="note">These grades are for ${longD
     <div class="value">${num(lq.position_age_s_median)} seconds</div>
     <div class="note">typical age of a location when it first appears</div></div>
   <div class="stat"><div class="label">How close are arrival predictions?</div>
-    <div class="value">${lq.prediction_mae_s_5min == null ? "–" : `${num(lq.prediction_mae_s_5min / 60, 1)} min`}</div>
-    <div class="note">average miss, for predictions made 5 minutes before the bus arrived</div></div>
+    <div class="value">${lq.prediction_min_5min == null ? "–" : `${num(lq.prediction_min_5min, 1)} min`}</div>
+    <div class="note">typical miss, for predictions made 5 minutes before the bus arrived${lq.prediction_over_30min_share_5min ? `; ${pct(lq.prediction_over_30min_share_5min, 0)} were off by more than 30 minutes` : ""}</div></div>
   <div class="stat"><div class="label">Are buses where the route says?</div>
     <div class="value">${pct(1 - lq.off_shape_share)}</div>
     <div class="note">of locations were within 100 meters (about 330 feet) of the bus's published route</div></div>
@@ -57,18 +67,21 @@ Hover over or tap each term for a plain explanation, or see the
 series = [
   {key: "trip_coverage", title: "Scheduled trips seen in the feed", unit: "share"},
   {key: "vehicle_uptime", title: "Collector uptime (vehicle locations)", unit: "share"},
-  {key: "stale_in_service_rate", title: "Stale feed during scheduled service", unit: "share"},
+  {key: "stale_in_service_rate", title: "Feed more than 2 minutes behind during service", unit: "share"},
   {key: "position_age_s_median", title: "Typical age of a bus location when first seen (seconds)", unit: "s"},
   {key: "longest_gap_s_median", title: "Typical longest tracking gap per trip (seconds)", unit: "s"},
   {key: "timepoint_coverage", title: "Departures at timetable stops we could time", unit: "share"},
-  {key: "prediction_mae_s_5min", title: "Average arrival prediction error, 5 minutes ahead (seconds)", unit: "s"},
+  {key: "prediction_min_5min", title: "Typical arrival prediction miss, 5 minutes ahead (minutes)", unit: "min"},
 ]
+shown = (s, d) => s.unit === "share" ? pct(d[s.key], 1) : `${num(d[s.key], 1)} ${s.unit === "min" ? "minutes" : "seconds"}`
 html`${days.length === 0 ? noData() : days.length < 2 ? html`<p class="empty">Charts that follow each measure over time will appear once there is a second day of data.</p>` : html`<div class="grid">${series.map(s => html`<div class="g-col-12 g-col-md-6">
-  <h4 style="font-size:1rem">${s.title}</h4>
+  <h3 class="chart-title">${s.title}</h3>
   ${Plot.plot({
+    ariaLabel: `${s.title}, by service day`,
+    ariaDescription: `From ${longDate(days[0].day)} to ${longDate(latestDate)}. Latest value: ${shown(s, days.at(-1))}.`,
     style: {background: "transparent"},
-    height: 200, marginLeft: 50,
-    x: {type: "utc", label: null},
+    width: half, height: 200, marginLeft: 50, marginRight: 30,
+    x: {type: "utc", label: null, ticks: days.length <= 5 ? days.map(d => d.date) : 5, tickFormat: "%b %-d"},
     y: {grid: true, label: null, tickFormat: s.unit === "share" ? (d => `${Math.round(d * 100)}%`) : undefined,
         domain: s.unit === "share" ? [0, 1] : undefined},
     marks: [
@@ -76,7 +89,7 @@ html`${days.length === 0 ? noData() : days.length < 2 ? html`<p class="empty">Ch
       Plot.lineY(days, {x: "date", y: s.key, stroke: SERIES, strokeWidth: 2}),
       Plot.dot(days, {x: "date", y: s.key, fill: SERIES, r: 4}),
       Plot.tip(days, Plot.pointerX({x: "date", y: s.key,
-        title: d => `${d.date.toISOString().slice(0, 10)}\n${s.unit === "share" ? pct(d[s.key], 1) : num(d[s.key], 1) + " s"}`})),
+        title: d => `${longDate(d.day)}\n${shown(s, d)}`})),
     ],
   })}</div>`)}</div>`}`
 ```
@@ -96,9 +109,11 @@ html`${latest == null ? noData() : html`<p>These details are for ${longDate(late
 byRoute = latest == null ? [] : Object.entries(latest.coverage.by_route).map(([id, c]) => ({
   route: routeLabel(latest.routes, id), ...c}))
 html`${byRoute.length === 0 ? noData() : Plot.plot({
-    style: {background: "transparent"},
-  marginLeft: 220, height: 28 * byRoute.length + 40,
-  x: {domain: [0, 1], grid: true, label: "Share of scheduled trips with at least one position", tickFormat: d => `${Math.round(d * 100)}%`},
+  ariaLabel: `Share of scheduled trips seen in the tracking, by route, ${longDate(latestDate)}`,
+  ariaDescription: byRoute.map(d => `${d.route}: ${pct(d.coverage)}`).join("; "),
+  style: {background: "transparent"},
+  width: Math.max(320, Math.min(width, 960)), marginLeft: width < 640 ? 150 : 260, height: 28 * byRoute.length + 40,
+  x: {domain: [0, 1], grid: true, label: "Share of scheduled trips seen", tickFormat: d => `${Math.round(d * 100)}%`},
   y: {label: null},
   marks: [
     Plot.barX(byRoute, {y: "route", x: "coverage", fill: SERIES, rx: 2, sort: {y: "x", reverse: true}}),
@@ -123,8 +138,10 @@ stopRoute = ev == null ? [] : Object.entries(ev.stop_coverage.timepoints.by_rout
   route: routeLabel(latest.routes, id), ...c,
   off_shape_share: ev.shape_fit.by_route[id]?.off_shape_share ?? null}))
 html`${stopRoute.length === 0 ? noData() : Plot.plot({
+  ariaLabel: `Share of scheduled timepoint events we could time, by route, ${longDate(latestDate)}`,
+  ariaDescription: stopRoute.map(d => `${d.route}: ${pct(d.coverage)}`).join("; "),
   style: {background: "transparent"},
-  marginLeft: 220, height: 28 * stopRoute.length + 40,
+  width: Math.max(320, Math.min(width, 960)), marginLeft: width < 640 ? 150 : 260, height: 28 * stopRoute.length + 40,
   x: {domain: [0, 1], grid: true, label: "Share of scheduled timepoint events observed", tickFormat: d => `${Math.round(d * 100)}%`},
   y: {label: null},
   marks: [
@@ -144,14 +161,18 @@ For each prediction, we take the arrival time the feed was showing a given
 number of minutes ahead and subtract the arrival time we estimated from the
 bus's locations. A positive error means the bus showed up earlier than the
 feed said it would. Some predictions carry the wrong day's date, so we count
-those separately and leave them out of the error figures.
+those separately and leave them out of the error figures. A few others are
+off by hours, which pulls the mean far from the typical miss, so the table
+gives both the mean and the median and counts the predictions that were off
+by more than 30 minutes.
 
 ```{ojs}
 //| echo: false
 pred = ev == null ? [] : Object.entries(ev.prediction_error.by_horizon_min).map(([h, b]) => ({
   "Minutes ahead": +h, "Predictions": b.n, "Mean error (s)": b.bias_s, "Median error (s)": b.median_s,
-  "Mean absolute error (s)": b.mae_s, "Within 60 s": b.within_60s_share, "Dated another day": b.other_day}))
-html`${pred.length === 0 ? noData() : Inputs.table(pred, {format: {"Within 60 s": d => pct(d, 1)}, rows: 10})}`
+  "Typical miss (s)": b.median_abs_s, "Mean miss (s)": b.mae_s, "Within 60 s": b.within_60s_share,
+  "Off by over 30 min": b.over_30min, "Dated another day": b.other_day}))
+html`${pred.length === 0 ? noData() : Inputs.table(pred, {select: false, format: {"Within 60 s": d => pct(d, 1)}, rows: 10})}`
 ```
 
 </details>
@@ -166,7 +187,7 @@ send it.
 //| echo: false
 items = latest == null ? [] : Object.entries(latest.nonresponse.items.missing_share)
   .map(([field, share]) => ({field, share}))
-html`${items.length === 0 ? noData() : Inputs.table(items, {
+html`${items.length === 0 ? noData() : Inputs.table(items, {select: false,
   columns: ["field", "share"], header: {field: "Field", share: "Missing"},
   format: {share: d => pct(d, 1)}, rows: 25})}`
 ```
@@ -199,7 +220,7 @@ other = latest == null ? [] : [
       ev.missing_vehicles.missing_count == null ? "no earlier days" : ev.missing_vehicles.missing_count],
   ]),
 ].map(([measure, value]) => ({measure, value}))
-html`${other.length === 0 ? noData() : Inputs.table(other, {header: {measure: "Measure", value: "Value"}, rows: 30})}`
+html`${other.length === 0 ? noData() : Inputs.table(other, {select: false, header: {measure: "Measure", value: "Value"}, rows: 30})}`
 ```
 
 </details>
@@ -209,7 +230,8 @@ html`${other.length === 0 ? noData() : Inputs.table(other, {header: {measure: "M
 When the feed misses a trip, is that bad luck spread evenly, or does it
 tend to happen at certain hours, on certain routes, or when lots of buses
 are out at once? The tables below show the share of scheduled trips that
-never sent a single position report, over every day so far. Once there are
+sent no position report around the time they were due, over every day so
+far. Once there are
 14 days and 30 missed trips, a statistical model called a logistic
 regression will test all of these at the same time.
 
@@ -225,14 +247,14 @@ gapTables = gaps == null || gaps.rates == null ? [] : [
     .map(([id, v]) => [routeLabel(latest && latest.routes, id), v]))],
 ]
 html`${gapTables.length === 0 ? noData() : html`
-  <p>Over ${gaps.days.length} day${gaps.days.length === 1 ? "" : "s"}, ${gaps.trips} trips were scheduled and
-    ${gaps.unobserved} never sent a position report.</p>
+  <p>Over ${gaps.days.length} day${gaps.days.length === 1 ? "" : "s"}, ${count(gaps.trips)} trips were scheduled and
+    ${count(gaps.unobserved)} sent no position report within 30 minutes of their scheduled time.</p>
   <div class="grid">${gapTables.map(([title, t]) => html`<div class="g-col-12 g-col-md-6">
-    <h4 style="font-size:1rem">${title}</h4>
-    ${Inputs.table(Object.entries(t).map(([group, v]) => ({group, ...v})), {
+    <h3 class="chart-title">${title}</h3>
+    ${Inputs.table(Object.entries(t).map(([group, v]) => ({group, ...v})), {select: false,
       columns: ["group", "scheduled", "unobserved", "rate"],
       header: {group: "", scheduled: "Scheduled", unobserved: "Not seen", rate: "Share not seen"},
-      format: {rate: d => pct(d, 1)}, rows: 20})}</div>`)}</div>`}`
+      format: {scheduled: count, unobserved: count, rate: d => pct(d, 1)}, rows: 20, layout: "auto"})}</div>`)}</div>`}`
 ```
 
 ```{ojs}
@@ -243,12 +265,14 @@ html`${gaps == null ? "" : gaps.model == null ? html`<p><em>${gaps.model_status.
   Testing all the predictors together gives χ² = ${num(gaps.model.lr_test_all_predictors.statistic, 1)},
   df = ${gaps.model.lr_test_all_predictors.df}, p ${pval(gaps.model.lr_test_all_predictors.p)}.
   A small p-value means the gaps are not missing completely at random, so something about the hour, the route,
-  the day or the number of buses out is tied to which trips go missing. Each odds ratio compares a group with
+  the day or the number of buses out is tied to which trips go missing. The model treats every trip as
+  separate, but trips lost on the same day or the same bus tend to go missing together, so the p-values
+  here are more confident than they should be. Each odds ratio compares a group with
   ${gaps.model.reference_levels["hour band"]}, route ${routeLabel(latest && latest.routes, gaps.model.reference_levels.route)}
   and ${gaps.model.reference_levels["day type"]}.${gaps.model.converged ? "" : " The model did not settle on a stable answer (it did not converge), so treat these numbers with caution."}</p>
   ${Inputs.table(gaps.model.terms.filter(t => t.term !== "intercept").map(t => ({...t,
       term: t.term.startsWith("route: ") ? `route: ${routeLabel(latest && latest.routes, t.term.slice(7))}` : t.term,
-      ci: `${num(t.or_95ci[0], 2)} to ${num(t.or_95ci[1], 2)}`})), {
+      ci: `${num(t.or_95ci[0], 2)} to ${num(t.or_95ci[1], 2)}`})), {select: false,
     columns: ["term", "odds_ratio", "ci", "p"],
     header: {term: "Term", odds_ratio: "Odds ratio", ci: "95% interval", p: "p"},
     format: {odds_ratio: d => num(d, 2), p: d => pval(d).replace(/^= /, "")}, rows: 30})}`}`
@@ -256,6 +280,7 @@ html`${gaps == null ? "" : gaps.model == null ? html`<p><em>${gaps.model_status.
 
 The model and the data behind it are in
 [`quality/gaps.json`](https://github.com/dfladagermccullugh-bot/Open-Island-Transit-Data/blob/data/quality/gaps.json).
+Holidays on which Island Transit runs no buses are left out.
 
 </details>
 
@@ -263,10 +288,19 @@ The model and the data behind it are in
 
 ```{ojs}
 //| echo: false
-html`${daily.length === 0 ? noData() : Inputs.table(daily, {rows: 15})}`
+allDays = daily.map(d => ({day: isoDate(d.service_date), service: d.service_expected === false ? "No service (holiday)" : "Yes",
+  trips: d.scheduled_trips, coverage: d.trip_coverage, uptime: d.vehicle_uptime, age: d.position_age_s_median,
+  timed: d.timepoint_coverage, off: d.off_shape_share, predict: d.prediction_median_abs_s_5min == null ? null : d.prediction_median_abs_s_5min / 60})).reverse()
+html`${allDays.length === 0 ? noData() : Inputs.table(allDays, {select: false,
+  header: {day: "Service day", service: "Buses scheduled", trips: "Scheduled trips", coverage: "Trips seen", uptime: "Collector uptime",
+           age: "Location age (s)", timed: "Timepoint events timed", off: "Locations off route", predict: "Typical prediction miss, 5 min ahead (min)"},
+  format: {day: d => longDate(d), trips: count, coverage: d => pct(d, 1), uptime: d => pct(d, 2), age: d => num(d, 1),
+           timed: d => pct(d, 1), off: d => pct(d, 1), predict: d => num(d, 1)},
+  rows: 15, layout: "auto"})}`
 ```
 
-You can download the same table as a file,
+The file has every column, including the version of the code behind each
+day. You can download it as
 [`quality/daily.csv`](https://github.com/dfladagermccullugh-bot/Open-Island-Transit-Data/blob/data/quality/daily.csv).
 
 </details>

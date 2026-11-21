@@ -1,4 +1,5 @@
 ---
+description: "On-time figures for each Island Transit route and each timetable stop, from saved bus locations."
 title: "Routes"
 subtitle: "On time, route by route and stop by stop"
 ---
@@ -8,13 +9,13 @@ We count departures only at the stops whose times are printed in Island
 Transit's timetables, called
 [timepoints]{.term tabindex="0" tip="The stops whose times are printed in Island Transit's timetables. These are the times the agency publishes for riders."},
 because those are the times riders are promised. A bus is
-[on time]{.term tabindex="0" tip="A bus is on time if it leaves no more than 1 minute early and no more than 5 minutes late. At the last stop of a trip, its arrival counts instead."}
-if it leaves no more than 1 minute early or 5 minutes late.
+[on time]{.term tabindex="0" tip="A bus is on time if it leaves from 1 minute early to 5 minutes late. At the last stop of a trip, its arrival counts instead."}
+if it leaves from 1 minute early to 5 minutes late.
 
 ```{ojs}
 //| echo: false
 //| output: false
-import {json, pct, band, BANDS, NO_BAND, routeTitle, routeSub, routeOrder, routeSlug, lateness, plural, longDate, routeMap, MIN_OBSERVED} from "./lib.js"
+import {json, pct, count, band, BANDS, NO_BAND, routeTitle, routeSub, routeOrder, routeSlug, lateness, plural, longDate, routeMap, MIN_OBSERVED, DATA_URL} from "./lib.js"
 import {drawRouteMap} from "./map.js"
 L = require("leaflet@1.9.4")
 recent = json("data/ontime/recent.json")
@@ -40,7 +41,7 @@ html`<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/leaflet@1.9.4/dis
 viewof routeId = Inputs.select([null, ...routeList.map(r => r.route_id)], {
   label: "Route",
   value: fromHash,
-  width: 380,
+  width: Math.min(380, width),
   format: id => id == null ? "All routes" : [routeTitle(byId[id]), routeSub(byId[id])].filter(Boolean).join(" · "),
 })
 ```
@@ -95,7 +96,7 @@ html`${mapView == null
 windowNote = recent == null ? "" : recent.days === 1
   ? `These figures cover ${longDate(recent.last_service_date)}.`
   : `These figures cover the ${recent.days} days from ${longDate(recent.first_service_date)} to ${longDate(recent.last_service_date)}.`
-html`${recent == null ? html`<p class="empty">No day has been processed yet.</p>` : html`<p class="note">${windowNote}</p>`}`
+html`${recent == null ? html`<p class="empty">The route figures can't be shown right now.</p>` : html`<p class="note">${windowNote}${recent.days_without_service?.length ? ` Days with no service are left out (${recent.days_without_service.map(d => longDate(d)).join(", ")}).` : ""}</p>`}`
 ```
 
 ```{ojs}
@@ -125,10 +126,10 @@ overview = () => {
   });
   return html`<h2>All routes</h2>
     <p class="note">We don't rate a route until we've seen at least ${MIN_OBSERVED} of its departures.</p>
-    ${Inputs.table(rows, {
+    ${Inputs.table(rows, {select: false,
       columns: ["name", "where", "on_time", "typical", "seen", "band"],
       header: {name: "Route", where: "Serves", on_time: "On time", typical: "Typical departure", seen: "Departures seen", band: "Band"},
-      format: {on_time: d => pct(d), typical: d => lateness(d), band: b => bandTag(b)},
+      format: {on_time: d => pct(d), typical: d => lateness(d), seen: count, band: b => bandTag(b)},
       sort: "seen", reverse: true, rows: rows.length + 1, height: 34 * (rows.length + 1) + 8, layout: "auto",
     })}`;
 }
@@ -146,8 +147,8 @@ detail = (r, s) => {
       <div class="value">${lateness(s.deviation_s_median)}</div>
       <div class="note">Half of departures fell between ${lateness(s.deviation_s_p25)} and ${lateness(s.deviation_s_p75)}.</div></div>
     <div class="stat"><div class="label">Departures seen</div>
-      <div class="value">${s.observed} of ${s.scheduled}</div>
-      <div class="note">The others had no tracking data to go on.</div></div>
+      <div class="value">${count(s.observed)} of ${count(s.scheduled)}</div>
+      <div class="note">We couldn't put a time on the others, most often because of a gap in the bus's tracking.</div></div>
   </div>
   ${stopChart(s)}
   ${trendChart(s)}`;
@@ -169,8 +170,10 @@ stopChart = (s) => {
     const narrow = width < 640;
     const rowH = narrow ? 46 : 34;
     return Plot.plot({
+      ariaLabel: "Typical departure at each timepoint stop, in minutes late",
+      ariaDescription: stops.map(d => `${d.label}: ${lateness(d.deviation_s_median)}`).join("; "),
       style: {background: "transparent", fontSize: "13px"},
-      width: Math.min(width, 960),
+      width: Math.max(320, Math.min(width, 960)),
       marginLeft: narrow ? 12 : 240, marginRight: 16, marginTop: narrow ? 26 : 10, marginBottom: 44,
       height: rowH * stops.length + 60,
       x: {domain: [xmin, xmax], grid: true, label: "Minutes late (negative: early)", labelAnchor: "center", labelOffset: 36},
@@ -187,10 +190,10 @@ stopChart = (s) => {
     });
   })()}
   <details><summary>Stop table</summary>
-  ${Inputs.table(stops, {
+  ${Inputs.table(stops, {select: false,
     columns: ["label", "on_time_share_of_observed", "deviation_s_median", "observed", "scheduled"],
     header: {label: "Stop", on_time_share_of_observed: "On time", deviation_s_median: "Typical departure", observed: "Seen", scheduled: "Scheduled"},
-    format: {on_time_share_of_observed: d => pct(d), deviation_s_median: d => lateness(d)},
+    format: {on_time_share_of_observed: d => pct(d), deviation_s_median: d => lateness(d), observed: count, scheduled: count},
     sort: null, rows: stops.length + 1, height: 34 * (stops.length + 1) + 8, layout: "auto"})}
   </details>`;
 }
@@ -200,10 +203,12 @@ trendChart = (s) => {
     .map(d => ({...d, date: new Date(`${d.service_date}T12:00:00Z`)}));
   if (days.length < 2) return html`<h3>Day by day</h3><p class="empty">A day-by-day line will appear once there are two days of data.</p>`;
   return html`<h3>Day by day</h3>${Plot.plot({
+    ariaLabel: "Share of this route's departures on time, by service day",
+    ariaDescription: `From ${longDate(days[0].service_date)} to ${longDate(days.at(-1).service_date)}.`,
     style: {background: "transparent", fontSize: "13px"},
-    width: Math.min(width, 960),
-    height: 220, marginLeft: 50,
-    x: {type: "utc", label: null},
+    width: Math.max(320, Math.min(width, 960)),
+    height: 220, marginLeft: 50, marginRight: 30,
+    x: {type: "utc", label: null, ticks: days.length <= 8 ? days.map(d => d.date) : 8, tickFormat: "%b %-d"},
     y: {domain: [0, 1], grid: true, label: "On time", tickFormat: d => `${Math.round(d * 100)}%`},
     marks: [
       Plot.ruleY([0]),
@@ -216,7 +221,9 @@ trendChart = (s) => {
 }
 ```
 
-[We calculate these figures ourselves from Island Transit's public data, so
-they aren't official Island Transit numbers. The [Methods](methods.qmd) page
-explains how, and you can download
-[the data behind this page](https://github.com/dfladagermccullugh-bot/Open-Island-Transit-Data/blob/data/ontime/recent.json).]{.note}
+```{ojs}
+//| echo: false
+html`<p class="note">We calculate these figures ourselves from Island Transit's public data, so
+they aren't official Island Transit numbers. The <a href="methods.html">Methods</a> page
+explains how, and you can download <a href="${DATA_URL}/ontime/recent.json">the data behind this page</a>.</p>`
+```

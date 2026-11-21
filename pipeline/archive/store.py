@@ -105,6 +105,35 @@ class Collector:
     def health(self) -> Row:
         return self._rpc("collector_health", {})[0]
 
+    def recent_fetches(self, feed: str, limit: int) -> list[Row]:
+        """The latest ``limit`` log rows of one feed, newest first."""
+        return self._get(
+            "fetch_log",
+            {
+                "select": "requested_at,http_status,error_class,entity_count,newest_entity_ts",
+                "feed": f"eq.{feed}",
+                "order": "fetch_id.desc",
+                "limit": str(limit),
+            },
+        )
+
+    def recent_static(self, limit: int = 6) -> list[Row]:
+        """The latest static GTFS downloads, newest first, without the zips."""
+        return self._get(
+            "static_gtfs_fetch",
+            {
+                "select": "source,logged_at,http_status,error_class,zip_has_directory",
+                "order": "static_fetch_id.desc",
+                "limit": str(limit),
+            },
+        )
+
+    def recent_prunes(self, limit: int = 20) -> list[Row]:
+        """The latest rows of the prune log, newest first."""
+        return self._get(
+            "prune_log", {"select": "*", "order": "prune_id.desc", "limit": str(limit)}
+        )
+
     def first_day(self) -> date | None:
         rows = self._get(
             "fetch_log", {"select": "logged_at", "order": "fetch_id.asc", "limit": "1"}
