@@ -5,9 +5,10 @@ title: "On-time performance"
 ::: {.method-note}
 These figures are calculated by this project from two things Island
 Transit publishes: its real-time bus positions and its schedule. The
-real-time feed does not say whether a bus is late or when it reached a
-stop, so arrival and departure times are worked out from the positions and
-compared with the schedule. They are not official Island Transit figures.
+feed shows where each bus is every few seconds and which stop it is heading
+to, but it keeps no record of the moment a bus reached a stop and has no
+"minutes late" field. This project works out those moments from the
+positions on either side of each stop and compares them with the schedule. They are not official Island Transit figures.
 Automatic checks run on every route every day; in-person checks
 are ongoing and so far cover route 60, where timed stops agreed with the
 inferred times within seconds. See [Methods](methods.qmd), sections 3 to 5,
