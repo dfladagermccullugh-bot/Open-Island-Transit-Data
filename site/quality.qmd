@@ -3,8 +3,9 @@ title: "Can the data be trusted?"
 subtitle: "How reliable Island Transit's bus-tracking feed is, checked every day"
 ---
 
-Everything built on the live feed, trip apps included, is only as good as
-the feed. These are its daily grades.
+Trip-planning apps, this site, and anyone else who studies Island Transit
+all lean on the same live feed, so every number built on it is only as good
+as the feed itself. That's why we grade the feed every day.
 
 ```{ojs}
 //| echo: false
@@ -14,13 +15,13 @@ daily = csv(d3, "data/quality/daily.csv")
 days = daily.map(d => ({...d, date: new Date(d.service_date)}))
 latestDate = days.length ? days.at(-1).date.toISOString().slice(0, 10) : null
 latest = latestDate ? json(`data/quality/days/${latestDate}.json`) : null
-noData = () => html`<p>No processed days yet.</p>`
+noData = () => html`<p>No day has been processed yet.</p>`
 ```
 
 ```{ojs}
 //| echo: false
 lq = days.at(-1) ?? null
-html`${lq == null ? noData() : html`<p class="note">Latest day: ${longDate(latestDate)}.${days.length === 1 ? " Collection began at 1:24 PM Pacific that day, so it is a partial day." : ""}</p>
+html`${lq == null ? noData() : html`<p class="note">These grades are for ${longDate(latestDate)}.${days.length === 1 ? " Collection began at 1:24 PM Pacific that day, so the grades cover only part of it." : ""}</p>
 <div class="stat-row">
   <div class="stat"><div class="label">Did every scheduled trip show up?</div>
     <div class="value">${pct(lq.trip_coverage)}</div>
@@ -40,13 +41,14 @@ html`${lq == null ? noData() : html`<p class="note">Latest day: ${longDate(lates
 </div>`}`
 ```
 
-Details below follow the way survey researchers grade any data source:
-[coverage]{.term tabindex="0" tip="Whether every scheduled trip shows up in the tracking at all."},
-[nonresponse]{.term tabindex="0" tip="Data that should be there but is missing: failed requests, empty feeds, gaps in a bus's reports."},
-[measurement error]{.term tabindex="0" tip="Data that is there but wrong: GPS wobble, buses that seem to jump, old locations, predictions that miss."},
-[processing error]{.term tabindex="0" tip="Data that cannot be matched up, such as a trip in the feed that is not in the schedule."}
-and [paradata]{.term tabindex="0" tip="Data about the collection itself: every request the collector made, how long it took and whether it worked."}.
-Definitions: [Methods](methods.qmd).
+We sort the details below the way survey researchers grade any source of
+data, into [coverage]{.term tabindex="0" tip="Coverage asks whether every scheduled trip shows up in the tracking at all."},
+[nonresponse]{.term tabindex="0" tip="Nonresponse is data that should be there but is missing, such as a failed request, an empty feed, or a gap in a bus's reports."},
+[measurement error]{.term tabindex="0" tip="Measurement error is data that is there but wrong, such as GPS wobble, a bus that seems to jump, an old location, or a prediction that misses."},
+[processing error]{.term tabindex="0" tip="A processing error happens when data can't be matched up, such as a trip in the feed that isn't in the schedule."}
+and [paradata]{.term tabindex="0" tip="Paradata is data about the collection itself: every request the collector made, how long it took, and whether it worked."}.
+Hover over or tap each term for a plain explanation, or see the
+[Methods](methods.qmd) page for the exact definitions.
 
 ## Over time
 
@@ -61,7 +63,7 @@ series = [
   {key: "timepoint_coverage", title: "Timepoint events with an inferred time", unit: "share"},
   {key: "prediction_mae_s_5min", title: "Arrival prediction error 5 minutes ahead, mean absolute (s)", unit: "s"},
 ]
-html`${days.length === 0 ? noData() : days.length < 2 ? html`<p class="empty">Charts of each measure over time appear from the second day.</p>` : html`<div class="grid">${series.map(s => html`<div class="g-col-12 g-col-md-6">
+html`${days.length === 0 ? noData() : days.length < 2 ? html`<p class="empty">Charts that follow each measure over time will appear once there is a second day of data.</p>` : html`<div class="grid">${series.map(s => html`<div class="g-col-12 g-col-md-6">
   <h4 style="font-size:1rem">${s.title}</h4>
   ${Plot.plot({
     style: {background: "transparent"},
@@ -83,7 +85,7 @@ html`${days.length === 0 ? noData() : days.length < 2 ? html`<p class="empty">Ch
 
 ```{ojs}
 //| echo: false
-html`${latest == null ? noData() : html`<p>Service day <strong>${latestDate}</strong>, measured against Passio schedule version
+html`${latest == null ? noData() : html`<p>These details are for ${longDate(latestDate)}, measured against Passio schedule version
   <code>${latest.schedule.passio_version}</code>.</p>`}`
 ```
 
@@ -111,8 +113,8 @@ html`${byRoute.length === 0 ? noData() : Plot.plot({
 
 <details class="more"><summary>Timepoint events observed, by route</summary>
 
-Scheduled departures at printed timepoints (arrivals at a trip's last stop)
-for which a time could be inferred from vehicle positions.
+This shows how many scheduled departures at printed timepoints (or arrivals,
+at a trip's last stop) we could put a time on, using the bus locations.
 
 ```{ojs}
 //| echo: false
@@ -138,11 +140,11 @@ html`${stopRoute.length === 0 ? noData() : Plot.plot({
 
 <details class="more"><summary>Arrival predictions</summary>
 
-The feed's predicted arrival time, as published a given number of minutes
-before the bus arrived, minus the arrival time inferred from vehicle
-positions. A positive error means the bus came earlier than predicted.
-Predictions dated on another day than the trip are counted separately and
-left out of the error figures.
+For each prediction, we take the arrival time the feed was showing a given
+number of minutes ahead and subtract the arrival time we worked out from the
+bus's locations. A positive error means the bus showed up earlier than the
+feed said it would. Some predictions carry the wrong day's date, so we count
+those separately and leave them out of the error figures.
 
 ```{ojs}
 //| echo: false
@@ -156,8 +158,9 @@ html`${pred.length === 0 ? noData() : Inputs.table(pred, {format: {"Within 60 s"
 
 <details class="more"><summary>Fields the feed leaves empty</summary>
 
-Share of position reports in which each field is missing. A field missing
-from every report is not sent by the feed at all.
+This table shows how often each field is missing from the position reports.
+When a field is missing from every single report, the feed simply doesn't
+send it.
 
 ```{ojs}
 //| echo: false
@@ -203,10 +206,12 @@ html`${other.length === 0 ? noData() : Inputs.table(other, {header: {measure: "M
 
 <details class="more"><summary>Randomness of gaps</summary>
 
-Are the trips the feed misses spread at random, or concentrated at certain
-hours, on certain routes, or when many buses are out? Shares of scheduled
-trips with no position report, over all days so far. A logistic model is
-fitted once there are 14 days and 30 unobserved trips.
+When the feed misses a trip, is that bad luck spread evenly, or does it
+tend to happen at certain hours, on certain routes, or when lots of buses
+are out at once? The tables below show the share of scheduled trips that
+never sent a single position report, over every day so far. Once there are
+14 days and 30 missed trips, a statistical model called a logistic
+regression will test all of these at the same time.
 
 ```{ojs}
 //| echo: false
@@ -220,8 +225,8 @@ gapTables = gaps == null || gaps.rates == null ? [] : [
     .map(([id, v]) => [routeLabel(latest && latest.routes, id), v]))],
 ]
 html`${gapTables.length === 0 ? noData() : html`
-  <p>${gaps.days.length} day${gaps.days.length === 1 ? "" : "s"}, ${gaps.trips} scheduled trips,
-    ${gaps.unobserved} with no position report.</p>
+  <p>Over ${gaps.days.length} day${gaps.days.length === 1 ? "" : "s"}, ${gaps.trips} trips were scheduled and
+    ${gaps.unobserved} never sent a position report.</p>
   <div class="grid">${gapTables.map(([title, t]) => html`<div class="g-col-12 g-col-md-6">
     <h4 style="font-size:1rem">${title}</h4>
     ${Inputs.table(Object.entries(t).map(([group, v]) => ({group, ...v})), {
@@ -232,13 +237,15 @@ html`${gapTables.length === 0 ? noData() : html`
 
 ```{ojs}
 //| echo: false
-html`${gaps == null ? "" : gaps.model == null ? html`<p><em>Model ${gaps.model_status}.</em></p>` : html`
-  <p>Logistic regression of "trip not observed" (Firth penalised likelihood), ${gaps.model.trips} trips.
-  Likelihood-ratio test of all predictors together: χ² = ${num(gaps.model.lr_test_all_predictors.statistic, 1)},
+html`${gaps == null ? "" : gaps.model == null ? html`<p><em>${gaps.model_status.startsWith("not fitted: needs") ? `The model hasn't been fitted yet, because it ${gaps.model_status.slice("not fitted: ".length)}.` : `Model status: ${gaps.model_status}.`}</em></p>` : html`
+  <p>This logistic regression looks at ${gaps.model.trips} trips and asks which ones the feed missed. We fit it with
+  Firth's penalized likelihood, which keeps the estimates sensible even when a route never missed a trip.
+  Testing all the predictors together gives χ² = ${num(gaps.model.lr_test_all_predictors.statistic, 1)},
   df = ${gaps.model.lr_test_all_predictors.df}, p ${pval(gaps.model.lr_test_all_predictors.p)}.
-  A small p-value means gaps are not missing completely at random.
-  Reference levels: ${gaps.model.reference_levels["hour band"]}, route ${routeLabel(latest && latest.routes, gaps.model.reference_levels.route)},
-  ${gaps.model.reference_levels["day type"]}.${gaps.model.converged ? "" : " The fit did not converge."}</p>
+  A small p-value means the gaps are not missing completely at random, so something about the hour, the route,
+  the day or the number of buses out is tied to which trips go missing. Each odds ratio compares a group with
+  ${gaps.model.reference_levels["hour band"]}, route ${routeLabel(latest && latest.routes, gaps.model.reference_levels.route)}
+  and ${gaps.model.reference_levels["day type"]}.${gaps.model.converged ? "" : " The model did not settle on a stable answer (it did not converge), so treat these numbers with caution."}</p>
   ${Inputs.table(gaps.model.terms.filter(t => t.term !== "intercept").map(t => ({...t,
       term: t.term.startsWith("route: ") ? `route: ${routeLabel(latest && latest.routes, t.term.slice(7))}` : t.term,
       ci: `${num(t.or_95ci[0], 2)} to ${num(t.or_95ci[1], 2)}`})), {
@@ -247,7 +254,8 @@ html`${gaps == null ? "" : gaps.model == null ? html`<p><em>Model ${gaps.model_s
     format: {odds_ratio: d => num(d, 2), p: d => pval(d).replace(/^= /, "")}, rows: 30})}`}`
 ```
 
-The model and its inputs: [`quality/gaps.json`](https://github.com/dfladagermccullugh-bot/Open-Island-Transit-Data/blob/data/quality/gaps.json).
+The model and the data behind it are in
+[`quality/gaps.json`](https://github.com/dfladagermccullugh-bot/Open-Island-Transit-Data/blob/data/quality/gaps.json).
 
 </details>
 
@@ -258,6 +266,7 @@ The model and its inputs: [`quality/gaps.json`](https://github.com/dfladagermccu
 html`${daily.length === 0 ? noData() : Inputs.table(daily, {rows: 15})}`
 ```
 
-The same table as a file: [`quality/daily.csv`](https://github.com/dfladagermccullugh-bot/Open-Island-Transit-Data/blob/data/quality/daily.csv).
+You can download the same table as a file,
+[`quality/daily.csv`](https://github.com/dfladagermccullugh-bot/Open-Island-Transit-Data/blob/data/quality/daily.csv).
 
 </details>

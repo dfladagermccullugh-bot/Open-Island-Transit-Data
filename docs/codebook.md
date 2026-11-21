@@ -1,29 +1,35 @@
 # Codebook
 
-What each published file contains.
+This page describes every file we publish and every column inside it.
 
 ## Where the files are
 
-- **GitHub Releases**, one release per month named `raw-YYYY-MM` for the raw
-  archive and `parsed-YYYY-MM` for the parsed tables. Each service day adds
-  the files below. Once the month is complete it also gets
-  `SHA256SUMS-<release>.txt` (see `reports/`).
-- **`data` branch**, `manifest/raw.json` and `manifest/parsed.json`: every
-  archived day, its row counts, and the size and SHA-256 of each file.
-  `manifest/static.json`: static GTFS versions and the version pinned to each
-  service day. `crosswalk/`: links between the Passio and Trillium static
-  feeds. `timepoints/`: true timepoints from the printed timetables.
-  `quality/`: daily feed-quality metrics. `ontime/`: daily
-  on-time summaries. `manifest/events.json`: the stop-event files.
-  `reports/`: one report per complete month.
+The big files live in GitHub Releases, one release per month. The raw
+archive goes in `raw-YYYY-MM` and the parsed tables go in `parsed-YYYY-MM`,
+and each service day adds the files described below. Once a month is over,
+its releases also get a checksum file, `SHA256SUMS-<release>.txt`, so you can
+check your downloads (see `reports/`).
 
-A service day is a calendar date in `America/Los_Angeles`. A row belongs to
-the day in which it was logged. All timestamps are UTC.
+The smaller files live on the `data` branch of the repository. There,
+`manifest/raw.json` and `manifest/parsed.json` list every archived day with
+its row counts and the size and SHA-256 fingerprint of each file, and
+`manifest/events.json` does the same for the stop-event files.
+`manifest/static.json` lists the versions of the static schedule and which
+one applied to each service day. The `crosswalk/` folder links the Passio and
+Trillium schedule files, `timepoints/` holds the true timepoints taken from
+the printed timetables, `quality/` holds the daily feed-quality figures,
+`ontime/` holds the daily on-time summaries, and `reports/` holds one report
+for each complete month.
+
+A service day is a calendar date in Pacific time (`America/Los_Angeles`).
+Each row belongs to the day in which it was logged, and every timestamp is
+in UTC.
 
 ## `raw-YYYY-MM-DD.parquet`
 
-One row per fetch attempt, including failed ones. This file is the source of
-truth: everything else can be rebuilt from it.
+This file has one row for every time the collector asked the feed for
+data, including the times it failed. It is the source of truth, and every
+other file can be rebuilt from it.
 
 | Column | Type | Meaning |
 |---|---|---|
@@ -45,33 +51,37 @@ truth: everything else can be rebuilt from it.
 | `logged_at` | timestamp | When the row was written |
 | `body` | bytes | The response body exactly as received (a GTFS-Realtime protobuf message when the fetch succeeded). Empty when there was no response |
 
-To decode a body, use any GTFS-Realtime library, or `pipeline/parse/realtime.py`
-in this repository.
+To decode a body, you can use any GTFS-Realtime library or
+`pipeline/parse/realtime.py` in this repository.
 
 ## `fetch-log-YYYY-MM-DD.csv`
 
-The same rows and columns as the Parquet file, without `body`.
+This file has the same rows and columns as the Parquet file, minus the
+`body` column.
 
 ## `static-YYYY-MM-DD-<source>-<id>.zip`
 
-A static GTFS download exactly as received. `source` is `passio` (downloaded
-twice a day) or `trillium` (weekly). The Passio zip has been observed
-arriving without its calendar files and central directory; such files are
-archived as they came. `pipeline/gtfs/zipread.py` reads them.
+Each of these is a schedule download saved exactly as it arrived. The
+`source` is either `passio`, which we download twice a day, or `trillium`,
+which we download weekly. The Passio zip sometimes arrives without its
+calendar files and its central directory (the index a zip file normally ends
+with). We archive those files as they came, and `pipeline/gtfs/zipread.py`
+can still read them.
 
 ## Parsed tables
 
-Built nightly from `raw-YYYY-MM-DD.parquet` by `pipeline/tables/build.py`,
-one Parquet file per table per service day, in the `parsed-YYYY-MM` release.
-Every field the feed can carry is a column; a field the feed did not send is
-empty (null), never filled in.
+Each night, `pipeline/tables/build.py` reads `raw-YYYY-MM-DD.parquet` and
+writes one Parquet file per table per service day into the `parsed-YYYY-MM`
+release. Every field the feed is able to send gets its own column. When the
+feed didn't send a field, that cell is left empty (null), and we never fill
+it in.
 
-**Runs.** The feeds are fetched every 20 seconds but most values change less
-often. Each row is a *run*: consecutive successful fetches of the same feed in
-which one item (a vehicle, a trip, a stop prediction, an alert) reported
-exactly the same values. A run ends when any value changes, when the item is
-missing from a fetch, or when a fetch of that feed fails. Every table ends
-with these columns:
+We fetch the feeds every 20 seconds, but most values change less often than
+that, so each row is a run. A run is a stretch of successful fetches in a row
+in which one item, such as a vehicle, a trip, a stop prediction or an alert,
+reported exactly the same values. The run ends when any value changes, when
+the item drops out of a fetch, or when a fetch of that feed fails. Every
+table ends with these columns:
 
 | Column | Type | Meaning |
 |---|---|---|
@@ -79,15 +89,15 @@ with these columns:
 | `first_requested_at`, `last_requested_at` | timestamp | When those fetches were requested |
 | `times_seen` | integer | Number of fetches in the run |
 
-Times sent by the feed (`vehicle_ts`, `trip_update_ts`, `arrival_time`,
-`departure_time`, alert periods) are converted from Unix seconds to UTC
-timestamps. The feed's entity ids are positions in the message and change
-when vehicles come and go, so they are not kept.
+We convert the times the feed sends (`vehicle_ts`, `trip_update_ts`,
+`arrival_time`, `departure_time` and alert periods) from Unix seconds to UTC
+timestamps. We don't keep the feed's entity ids, because they only number
+the items within each message and shift whenever vehicles come and go.
 
 ### `vehicles-YYYY-MM-DD.parquet`
 
-One row per vehicle per run, which in practice means one row per vehicle per
-position report (`vehicle_ts`).
+This table has one row per vehicle per run. In practice that works out to
+one row for each position report a vehicle sends (`vehicle_ts`).
 
 | Column | Meaning |
 |---|---|
@@ -101,7 +111,7 @@ position report (`vehicle_ts`).
 
 ### `trip-updates-YYYY-MM-DD.parquet`
 
-One row per trip per run.
+This table has one row per trip per run.
 
 | Column | Meaning |
 |---|---|
@@ -114,8 +124,9 @@ One row per trip per run.
 
 ### `trip-update-stops-YYYY-MM-DD.parquet`
 
-One row per predicted stop per run: a prediction for one stop of one trip,
-for as long as it stayed unchanged.
+This table has one row per predicted stop per run. Each row is the
+prediction for one stop on one trip, for as long as that prediction stayed
+the same.
 
 | Column | Meaning |
 |---|---|
@@ -127,7 +138,8 @@ for as long as it stayed unchanged.
 
 ### `alerts-YYYY-MM-DD.parquet`
 
-One row per alert per run, keyed by the alert's `entity_id`.
+This table has one row per alert per run, identified by the alert's
+`entity_id`.
 
 | Column | Meaning |
 |---|---|
@@ -139,16 +151,19 @@ One row per alert per run, keyed by the alert's `entity_id`.
 
 ## `timepoints/<passio version>__timetable-<date>-<hash>/`
 
-Built by `pipeline/gtfs/timepoints.py` once per pair of Passio version and
-printed timetable in effect. `<date>` is the timetable's effective date;
-`<hash>` covers the reference files and the matching code, so any change to
-either produces a new folder.
+`pipeline/gtfs/timepoints.py` builds one of these folders for each pairing of
+a Passio version with the printed timetable in effect. In the folder name,
+`<date>` is the date the timetable took effect, and `<hash>` is a fingerprint
+of the reference files and the matching code, so a change to either one
+produces a new folder.
 
-The printed timetables are Island Transit's service guides; the stops they
-print are the published timepoints. They are kept in `reference/` (see its
-README). Each printed name is matched to a Passio stop on the same route by
-name similarity, or by a reviewed override; names that fit more than one
-stop, or none, are left unresolved rather than guessed.
+The printed timetables are Island Transit's service guides, and the stops
+they print times for are the published timepoints. We keep them in
+`reference/` (its README explains how). Our code matches each printed stop
+name to a Passio stop on the same route, either because the names are
+similar or because a person reviewed the match and wrote it down as an
+override. When a name fits more than one stop, or none at all, we leave it
+unresolved instead of guessing.
 
 | File | Contents |
 |---|---|
@@ -157,13 +172,14 @@ stop, or none, are left unresolved rather than guessed.
 
 ## Stop events
 
-Built nightly by `pipeline/events/infer.py` (method: `docs/methods.md`,
-section 3) and stored in the `parsed-YYYY-MM` release.
+Each night `pipeline/events/infer.py` builds these files, using the method
+in `docs/methods.md`, section 3, and stores them in the `parsed-YYYY-MM`
+release.
 
 ### `stop-events-YYYY-MM-DD.parquet`
 
-One row per scheduled stop of every scheduled trip in the Passio schedule
-for the day, observed or not.
+This table has one row for every scheduled stop of every trip in that day's
+Passio schedule, whether or not we observed it.
 
 | Column | Meaning |
 |---|---|
@@ -180,83 +196,102 @@ for the day, observed or not.
 
 ### `trip-tracks-YYYY-MM-DD.parquet`
 
-One row per scheduled trip: the vehicles that carried its id, how many of
-their position reports were used, and why the rest were not
-(`reports_before_start`, `reports_after_end`, `off_shape_reports` more than
-100 m from the shape, `wrong_direction_reports`), how far along the
-shape the bus was followed, and the parts of the shape it left out
-(`shape_skips`, `skipped_m`). `shape_length_m` is after collapsing
+This table has one row per scheduled trip. It shows which vehicles carried
+the trip's id and how many of their position reports we used. It also shows
+why we set the rest aside: they came before the trip started
+(`reports_before_start`) or after it ended (`reports_after_end`), they were
+more than 100 m from the route's shape (`off_shape_reports`), or the bus was
+moving the wrong way (`wrong_direction_reports`). Finally, it shows how far
+along the shape we followed the bus and which parts of the shape it left out
+(`shape_skips`, `skipped_m`). We measure `shape_length_m` after collapsing
 retraced segments (`docs/methods.md`, section 3).
 
 ## `ontime/`
 
-`ontime/days/YYYY-MM-DD.json` and `ontime/daily.csv`, from
-`pipeline/events/ontime.py` (`docs/methods.md`, section 4). Counts are of
-scheduled timepoint events: a trip's scheduled time at one of its true
-timepoints. `observed_share` is always reported next to the on-time share;
-events with no inferred time are never counted as late. Events scheduled
-before collection began are left out. Each day file also breaks the counts
-down by route and by Pacific hour, and (`by_route_stop`, from `ontime/0.2.0`)
-by route and timepoint stop, with the stop's name, its median stop sequence
-and every deviation in whole seconds (`deviations_s`). `validation` holds the automatic checks of the method
-(`pipeline/events/validate.py`, `docs/methods.md`, section 5): agreement of
-inferred departures with the feed's `current_stop_sequence`, overall and by
-route, and segment travel times that run backwards or exceed 35 m/s, with
-the fastest listed. `daily.csv` carries the agreement share as
-`feed_agreement_share`.
-- `ontime/field-check.json` (`pipeline/events/field.py`): the field check
-  (`docs/methods.md`, section 5, check 1). `overall`, `arrival`,
-  `departure`, `pass` (bus level with the stop, against the midpoint of the
-  inferred arrival and departure) and `by_stop` give the number of timed moments scored, bias,
-  median and mean absolute difference (inferred minus timed, seconds) and
-  the shares within 30 s and 60 s; `meets_target` compares the mean absolute
-  difference with 30 s; `pairs` lists every comparison. Rows whose day is
-  not processed yet, that match no scheduled event, or whose moment has no
-  inferred time are counted separately.
+`pipeline/events/ontime.py` writes `ontime/days/YYYY-MM-DD.json` and
+`ontime/daily.csv`, following `docs/methods.md`, section 4. The counts are
+of scheduled timepoint events, meaning a trip's scheduled time at one of its
+true timepoints. We always report `observed_share` next to the on-time
+share, and we never count an event as late just because we have no time for
+it. Events scheduled before collection began are left out.
 
-- `ontime/routes.csv` (`pipeline/events/routes.py`): one row per service day
-  and route: counts, observed and on-time shares, median deviation.
-- `ontime/recent.json`: the last 28 calendar days pooled, overall, by route
-  and by route and timepoint stop: counts summed, shares recomputed from the
-  sums, median and quartiles of the deviations, and each route's daily
-  on-time and observed shares. Used by the site's route pages.
+Each day file breaks the counts down by route and by hour in Pacific time.
+Since `ontime/0.2.0` it also breaks them down by route and timepoint stop
+(`by_route_stop`), with the stop's name, its median stop sequence and every
+deviation in whole seconds (`deviations_s`). The `validation` section holds
+the automatic checks of the method (`pipeline/events/validate.py`,
+`docs/methods.md`, section 5). It shows how often our departures agree with
+the feed's `current_stop_sequence`, overall and by route, and how many
+travel times between stops run backwards or go faster than 35 m/s, with the
+fastest listed. `daily.csv` carries the agreement share as
+`feed_agreement_share`.
+
+`ontime/field-check.json`, written by `pipeline/events/field.py`, holds the
+field check (`docs/methods.md`, section 5, check 1). Its `overall`,
+`arrival`, `departure`, `pass` and `by_stop` sections each give the number
+of timed moments scored, the bias, and the median and mean absolute
+difference, all as our time minus the timed one in seconds, along with the
+shares within 30 and 60 seconds. The `pass` section covers moments when the
+bus was level with the stop, compared with the midpoint of our arrival and
+departure. `meets_target` compares the mean absolute difference with 30
+seconds, and `pairs` lists every comparison. We count separately any rows
+whose day hasn't been processed yet, that match no scheduled event, or whose
+moment has no inferred time.
+
+`ontime/routes.csv`, from `pipeline/events/routes.py`, has one row per
+service day and route, with the counts, the observed and on-time shares, and
+the median deviation.
+
+`ontime/recent.json` pools the last 28 calendar days, overall, by route, and
+by route and timepoint stop. It adds up the counts, recomputes the shares
+from those sums, and gives the median and quartiles of the deviations, along
+with each route's daily on-time and observed shares. The site's route pages
+read from it.
 
 ## `maps/<passio version>__timetable-<date>-<hash>.json`
 
-From `pipeline/gtfs/routemap.py`, written once per timepoints folder. For
-each route: id, short and long name, Passio color, number of trips, and its
-paths (each Passio shape with segments drawn forth, back and forth again
-collapsed, simplified to within 5 m, as `[lon, lat]` pairs rounded to 5
-decimals). `timepoint_stops`: every printed-timetable stop matched to a
-Passio stop, with its position and the routes it serves. `bbox`: west,
-south, east, north.
+`pipeline/gtfs/routemap.py` writes one of these for each timepoints folder.
+For each route it records the id, the short and long names, Passio's color
+for the route, the number of trips, and the route's paths. Each path is a
+Passio shape with any stretch drawn forward, back and forward again
+collapsed, simplified so it stays within 5 m of the original, and stored as
+`[lon, lat]` pairs rounded to 5 decimal places. `timepoint_stops` lists every
+printed-timetable stop that was matched to a Passio stop, with its position
+and the routes it serves, and `bbox` gives the map's edges as west, south,
+east and north.
 
 ## `quality/`
 
-Computed by `pipeline/quality/metrics.py`, `pipeline/quality/stops.py` and `pipeline/quality/gaps.py` for each service day once its raw
-file, parsed tables and pinned schedule exist. Definitions are in
-`docs/methods.md`, section 2.
+`pipeline/quality/metrics.py`, `pipeline/quality/stops.py` and
+`pipeline/quality/gaps.py` compute these files for each service day once
+its raw file, parsed tables and pinned schedule all exist. The definitions
+are in `docs/methods.md`, section 2.
 
-- `quality/days/YYYY-MM-DD.json`: every metric for the day, grouped as
-  `paradata`, `nonresponse`, `coverage`, `measurement`, `processing`,
-  `events` (metrics from inferred stop events; empty if the
-  day has no stop events), plus the schedule used (`schedule`) and the
-  SHA-256 of the input files (`inputs`). A day is recomputed when
-  `QUALITY_VERSION` changes or its stop events are rebuilt.
-  `coverage.trips` (from `quality/0.3.0`) lists every scheduled trip that
-  could be observed, as `columns` and `rows`: `trip_id`, `route_id`,
-  `start_hour` (Pacific hour of the first departure), `scheduled_in_service`
-  (scheduled trips in service at that moment, the trip included) and
-  `observed` (any position carried its `trip_id`).
-- `quality/daily.csv`: one row per day with the headline figures, rebuilt
-  from the day files.
-- `quality/gaps.json` (`pipeline/quality/gaps.py`): randomness of gaps over
-  all days with trip rows. `rates` gives scheduled and unobserved trips by
-  hour, hour band, route, day type and trips in service. `model` is a
-  logistic regression of "trip not observed" (Firth penalised likelihood)
-  with odds ratios, 95% intervals, p-values and a likelihood-ratio test of
-  all predictors; it stays `null` until there are 14 days and 30 unobserved
-  trips (`model_status` says which).
+`quality/days/YYYY-MM-DD.json` holds every measure for the day, grouped
+under `paradata`, `nonresponse`, `coverage`, `measurement`, `processing` and
+`events`. The `events` group holds the measures built on our inferred stop
+times, and it is empty when a day has none. The file also records which
+schedule we used (`schedule`) and the SHA-256 fingerprints of the input
+files (`inputs`). We recompute a day when `QUALITY_VERSION` changes or when
+its stop events are rebuilt. Since `quality/0.3.0`, `coverage.trips` lists
+every scheduled trip we could have observed, stored as `columns` and
+`rows`. Each row gives the `trip_id` and `route_id`, the Pacific hour of the
+trip's first departure (`start_hour`), how many scheduled trips were in
+service at that moment counting this one (`scheduled_in_service`), and
+whether any position carried the trip's id (`observed`).
+
+`quality/daily.csv` has one row per day with the headline figures, rebuilt
+from the day files.
+
+`quality/gaps.json`, from `pipeline/quality/gaps.py`, looks at whether the
+missed trips happen at random, using every day that has trip rows. Its
+`rates` section gives scheduled and unobserved trips by hour, hour band,
+route, day type and number of trips in service. Its `model` section is a
+logistic regression of "trip not observed," fitted with Firth's penalized
+likelihood, with odds ratios, 95% intervals, p-values and a likelihood-ratio
+test of all the predictors together. It stays `null` until there are 14
+days and 30 unobserved trips, and `model_status` says which of those is
+still short.
 
 | `daily.csv` column | Meaning |
 |---|---|
@@ -287,27 +322,33 @@ file, parsed tables and pinned schedule exist. Definitions are in
 
 ## `reports/`
 
-From `pipeline/monthly.py`. A month is reported once its last day is
-archived and processed, or seven days after it ended. A report is rebuilt
-when any of its inputs change (a rebuilt day, a new report version).
+`pipeline/monthly.py` writes a report for each month once its last day has
+been archived and processed, or seven days after the month ended, whichever
+comes first. It rebuilds a report whenever one of its inputs changes, such as
+a rebuilt day or a new report version.
 
-- `reports/YYYY-MM.json`: `period` (days archived, `days_missing` since
-  collection began, `partial_days` where scheduled trips ended before
-  collection started); `collection` per feed (fetch slots expected and
-  successful, pooled uptime, failure rate, daily range); `coverage` (pooled
-  trip coverage, daily range); `ontime` (counts summed over the month, shares
-  of observed events, overall and by route, daily ranges of the on-time share
-  and of the median deviation); `daily_headline` (minimum, median and maximum
-  over the month's days of every numeric column in `quality/daily.csv`);
-  `releases` (files and bytes per release, and the name, size and SHA-256 of
-  its checksum file); `versions` (collector, tables, stop events, quality and
-  on-time versions used); `inputs_digest`.
-- `reports/YYYY-MM.md`: the same in plain text; also the notes of the
-  month's Releases.
-- `reports/index.json`: one row per month with the headline figures.
-- `SHA256SUMS-<release>.txt` in each Release: `<sha256>  <file name>` for
-  every file the manifests record in that release, in the format
-  `sha256sum -c` reads.
+`reports/YYYY-MM.json` starts with `period`, which gives the days archived,
+the days missing since collection began (`days_missing`), and the partial
+days on which some scheduled trips ended before collection started
+(`partial_days`). `collection` gives, for each feed, the fetch slots
+expected and successful, the pooled uptime, the failure rate and the daily
+range. `coverage` gives the pooled trip coverage and its daily range.
+`ontime` sums the counts over the month and gives the shares of observed
+events, overall and by route, along with the daily ranges of the on-time
+share and of the median deviation. `daily_headline` gives the minimum,
+median and maximum over the month of every numeric column in
+`quality/daily.csv`. `releases` gives the files and bytes in each release,
+plus the name, size and SHA-256 of its checksum file. `versions` lists the
+collector, tables, stop-event, quality and on-time versions used, and
+`inputs_digest` fingerprints everything the report read.
+
+`reports/YYYY-MM.md` says the same thing in plain text and also serves as
+the notes on that month's Releases. `reports/index.json` has one row per
+month with the headline figures.
+
+Each Release also gets a `SHA256SUMS-<release>.txt` file. It lists
+`<sha256>  <file name>` for every file the manifests record in that release,
+in the format `sha256sum -c` can check.
 
 ## `manifest/raw.json`
 
@@ -335,14 +376,16 @@ when any of its inputs change (a rebuilt day, a new report version).
 
 ## `manifest/static.json`
 
-Built by `pipeline/gtfs/versions.py` from the static downloads in the raw
-archive.
+`pipeline/gtfs/versions.py` builds this file from the schedule downloads in
+the raw archive.
 
-A **version** is identified by the SHA-256 of every file in the zip except
-`feed_info.txt`, whose dates roll forward each day (Passio) or record when the
-file was generated (Trillium). Its id is `<source>-<first 12 hex digits>`. A
-download is **complete** when the zip is intact and has every required GTFS
-file; only complete downloads define versions.
+We identify a version of the schedule by the SHA-256 fingerprints of every
+file in the zip except `feed_info.txt`. We leave that file out because its
+dates change on their own, rolling forward each day in Passio's case and
+recording when the file was generated in Trillium's. A version's id is
+`<source>-<first 12 hex digits>`. A download counts as complete when the zip
+is intact and has every required GTFS file, and only complete downloads
+define versions.
 
 | Field | Meaning |
 |---|---|
@@ -361,9 +404,10 @@ file; only complete downloads define versions.
 
 ## `crosswalk/<passio version>__<trillium version>/`
 
-Built by `pipeline/gtfs/crosswalk.py`, once per pair of pinned versions. The
-real-time feed uses Passio ids. Trillium's timepoint flags are kept for
-comparison only; the true timepoints are in `timepoints/`.
+`pipeline/gtfs/crosswalk.py` builds one of these folders for each pair of
+pinned versions. The real-time feed uses Passio's ids, so the crosswalk is
+how you get from Passio to Trillium. We keep Trillium's timepoint flags for
+comparison only, and the true timepoints are in `timepoints/`.
 
 | File | One row per | Contents |
 |---|---|---|
@@ -375,7 +419,8 @@ comparison only; the true timepoints are in `timepoints/`.
 
 ## The collector's live tables
 
-Readable with the public key in `.env.example` until a day is archived and
-pruned: `fetch_log` (kept permanently), `raw_export` (rolling), `static_export`
-(rolling), `status_now`, and the functions `day_digest(date)` and
-`collector_health()`.
+Anyone can read the collector's live tables with the public key in
+`.env.example`, until a day has been archived and pruned. `fetch_log` is
+kept permanently, while `raw_export` and `static_export` keep only recent
+days. There is also the `status_now` view and two functions,
+`day_digest(date)` and `collector_health()`.

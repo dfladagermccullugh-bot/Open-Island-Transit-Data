@@ -3,7 +3,8 @@ title: "Download the data"
 subtitle: "Every saved update and every table, free"
 ---
 
-Everything on this site can be rebuilt from these files.
+Every number on this site can be rebuilt from these files, and all of them
+are free to download.
 
 ::: {.link-row}
 [Raw and parsed files (Releases)](https://github.com/dfladagermccullugh-bot/Open-Island-Transit-Data/releases)
@@ -11,9 +12,10 @@ Everything on this site can be rebuilt from these files.
 [License](https://github.com/dfladagermccullugh-bot/Open-Island-Transit-Data/blob/main/LICENSE-DATA.md)
 :::
 
-Releases hold one month each (`raw-YYYY-MM`, `parsed-YYYY-MM`), one file per
-day. Island Transit's feeds carried no license or terms of use when
-collection began.
+Each release on GitHub holds one month of files, with one file per day: the
+raw archive is in `raw-YYYY-MM` and the parsed tables are in
+`parsed-YYYY-MM`. When we started collecting, Island Transit's feeds came
+with no license or terms of use.
 
 ## Archived days
 
@@ -25,14 +27,15 @@ rows = raw == null ? [] : Object.values(raw.days).map(d => ({
   day: d.service_date, fetches: d.fetch_rows, ok: d.ok_rows,
   megabytes: d.files.reduce((a, f) => a + f.bytes, 0) / 1e6,
   release: d.release_tag}))
-html`${rows.length === 0 ? html`<p>No day archived yet.</p>` : Inputs.table(rows.reverse(), {
+html`${rows.length === 0 ? html`<p>No day has been archived yet.</p>` : Inputs.table(rows.reverse(), {
   header: {day: "Service day", fetches: "Fetch attempts", ok: "Successful", megabytes: "Size (MB)", release: "Release"},
   format: {megabytes: d => d.toFixed(1)}, rows: 20})}`
 ```
 
 ## Monthly reports
 
-A summary of each complete month, with a checksum file for its downloads.
+Once a month is over, we write up a summary of it and add a checksum file
+to its downloads, so you can confirm that your copies match ours.
 
 ```{ojs}
 //| echo: false
@@ -55,4 +58,4 @@ html`${reportRows.length === 0 ? html`<p>No month is complete yet.</p>` : Inputs
 
 ## What's in each file
 
-Every file and column is described in the [codebook](codebook.qmd).
+The [codebook](codebook.qmd) describes every file and every column.

@@ -4,11 +4,13 @@ subtitle: "The whole system, day by day and hour by hour"
 ---
 
 ::: {.method-note}
-Calculated by this project from Island Transit's bus positions and schedule;
-not official figures. The feed has no "minutes late" field, so the moment
-each bus left a stop is worked out from its positions. Checked automatically
-on every route each day and in person on route 60 ([how](methods.qmd)).
-For one route at a time, see [Routes](routes.qmd).
+We calculate these figures ourselves from Island Transit's bus locations and
+schedule, so they aren't official numbers. The feed has no "minutes late"
+field, which means our script has to work out the moment each bus left a
+stop from where the bus was just before and just after. A computer checks
+that work on every route every day, and we have also timed buses in person
+on route 60. The [Methods](methods.qmd) page explains it all, and
+[Routes](routes.qmd) shows one route at a time.
 :::
 
 ```{ojs}
@@ -19,7 +21,7 @@ daily = csv(d3, "data/ontime/daily.csv")
 days = daily.map(d => ({...d, date: new Date(d.service_date)}))
 latestDate = days.length ? days.at(-1).date.toISOString().slice(0, 10) : null
 latest = latestDate ? json(`data/ontime/days/${latestDate}.json`) : null
-noData = () => html`<p class="empty">No processed days yet.</p>`
+noData = () => html`<p class="empty">No day has been processed yet.</p>`
 ```
 
 ## Day by day
@@ -27,8 +29,8 @@ noData = () => html`<p class="empty">No processed days yet.</p>`
 ```{ojs}
 //| echo: false
 html`${days.length === 0 ? noData() : days.length < 2
-  ? html`<p class="empty">One day so far (${longDate(latestDate)}): ${pct(days[0].on_time_share_of_observed)} of departures seen were on time.
-      A day-by-day line appears from the second day.</p>`
+  ? html`<p class="empty">So far there is one day of data, ${longDate(latestDate)}, and ${pct(days[0].on_time_share_of_observed)} of the departures we saw that day were on time.
+      A day-by-day line will appear once a second day comes in.</p>`
   : Plot.plot({
     style: {background: "transparent"},
     width: Math.min(width, 960), height: 240, marginLeft: 50,
@@ -52,7 +54,7 @@ hours = latest == null ? [] : Object.entries(latest.by_hour).map(([h, b]) => ({
   hour: +h, ...b, band: band(b.on_time_share_of_observed, b.observed),
   label: `${(+h % 12) || 12} ${+h < 12 ? "AM" : "PM"}`}))
   .filter(d => d.observed >= MIN_OBSERVED)
-html`${hours.length === 0 ? noData() : html`<p class="note">${longDate(latestDate)}, by scheduled departure hour (Pacific). Hours with fewer than ${MIN_OBSERVED} departures seen are left out.</p>
+html`${hours.length === 0 ? noData() : html`<p class="note">This chart shows ${longDate(latestDate)}, grouped by the hour each departure was scheduled, in Pacific time. We leave out any hour in which we saw fewer than ${MIN_OBSERVED} departures.</p>
   ${Plot.plot({
     style: {background: "transparent"},
     width: Math.min(width, 960), height: 240, marginLeft: 50,
@@ -71,13 +73,15 @@ html`${hours.length === 0 ? noData() : html`<p class="note">${longDate(latestDat
 
 <details class="more"><summary>Automatic checks, every route, every day</summary>
 
-Two checks run every day without field data ([Methods](methods.qmd),
-section 5). Each bus report names the stop the bus is heading for; when the
-bus passes a stop, that changes to the next one. An inferred departure
-agrees with the feed when it falls between the last report naming that stop
-and the first naming a later one, give or take 30 seconds. Travel between
-consecutive inferred times should never run backwards or faster than
-126 km/h.
+A computer runs two checks every day, without anyone needing to go out and
+watch the buses ([Methods](methods.qmd), section 5). The first check uses a
+clue the feed already gives us. Each bus report names the stop the bus is
+heading for, and that name switches to the next stop once the bus passes. If
+our departure time lands between the last report naming a stop and the first
+report naming a later one, give or take 30 seconds, it agrees with the feed.
+The second check looks at the time it took to get from one stop to the next.
+That time should never run backwards, and it should never mean the bus went
+faster than 126 km/h.
 
 ```{ojs}
 //| echo: false
@@ -99,14 +103,16 @@ html`${checks.length === 0 ? noData() : Inputs.table(checks, {header: {check: "C
 
 <details class="more"><summary>Timed in person on route 60</summary>
 
-A spot check of whether the inferred times match what happens on the
-street: arrivals and departures timed in person, with a target mean absolute
-difference of 30 seconds or less. It was done on route 60, from on board; it
-does not cover other routes, departures after a bus has waited at a
-timepoint, or departures from terminals. The two automatic checks above
-cover every route every day. The observer times the same moments the method infers: the bus coming within
-40 m of the stop, and the bus more than 40 m past it, or the moment the bus
-is level with the stop (compared with the midpoint of the two).
+To make sure our times match what really happens on the street, we time
+buses in person and compare. The goal is for our times to be off by 30
+seconds or less on average. So far we have done this only on route 60,
+riding on board, so it doesn't yet cover other routes, buses leaving after they have
+waited at a timepoint, or buses leaving a terminal. The two automatic checks
+above still cover every route every day. The person timing the bus notes the
+same moments our method looks for: when the bus comes within 40 m of the
+stop, and when it gets more than 40 m past it. From on board, it is often
+easier to note the moment the bus is level with the stop, and we compare
+that with the midpoint of our two times.
 
 ```{ojs}
 //| echo: false
@@ -115,20 +121,23 @@ fcRows = fc == null || fc.overall.n === 0 ? [] : [["All", fc.overall], ["Arrival
   .filter(([, s]) => s.n > 0)
   .map(([moment, s]) => ({moment, n: s.n, bias: s.bias_s, mae: s.mae_s, w30: s.within_30s_share, w60: s.within_60s_share}))
 html`${fcRows.length === 0
-  ? html`<p>No timed observations yet${fc && fc.rows_waiting_for_their_day ? ` (${fc.rows_waiting_for_their_day} waiting for their day to be processed)` : ""}.</p>`
-  : html`<p>${fc.overall.n} timed moments on ${fc.days.length} day${fc.days.length === 1 ? "" : "s"}.
-      Differences are inferred minus timed, in seconds; a positive bias means the method's times are later.
-      Target met: <strong>${fc.meets_target ? "yes" : "not yet"}</strong>.</p>
+  ? html`<p>No timed observations have been scored yet${fc && fc.rows_waiting_for_their_day ? `, and ${fc.rows_waiting_for_their_day} are waiting for their day to be processed` : ""}.</p>`
+  : html`<p>We have scored ${fc.overall.n} timed moments over ${fc.days.length} day${fc.days.length === 1 ? "" : "s"}.
+      Each difference is our time minus the timed one, in seconds, so a positive bias means our times run late.
+      ${fc.meets_target ? "The average difference meets the 30-second target." : "The average difference has not yet met the 30-second target."}</p>
     ${Inputs.table(fcRows, {
       header: {moment: "", n: "Timed", bias: "Bias (s)", mae: "Mean absolute difference (s)", w30: "Within 30 s", w60: "Within 60 s"},
       format: {bias: d => num(d, 1), mae: d => num(d, 1), w30: d => pct(d), w60: d => pct(d)}, rows: 5})}`}`
 ```
 
-[Timed observations](https://github.com/dfladagermccullugh-bot/Open-Island-Transit-Data/blob/main/reference/field-observations.csv) ·
-[every comparison](https://github.com/dfladagermccullugh-bot/Open-Island-Transit-Data/blob/data/ontime/field-check.json)
+You can look at
+[the timed observations](https://github.com/dfladagermccullugh-bot/Open-Island-Transit-Data/blob/main/reference/field-observations.csv)
+and [every comparison](https://github.com/dfladagermccullugh-bot/Open-Island-Transit-Data/blob/data/ontime/field-check.json)
+yourself.
 
 </details>
 
-[Daily figures: [`ontime/daily.csv`](https://github.com/dfladagermccullugh-bot/Open-Island-Transit-Data/blob/data/ontime/daily.csv).
-Every inferred arrival and departure: the `stop-events` files in
-[Releases](https://github.com/dfladagermccullugh-bot/Open-Island-Transit-Data/releases).]{.note}
+[The daily figures are in
+[`ontime/daily.csv`](https://github.com/dfladagermccullugh-bot/Open-Island-Transit-Data/blob/data/ontime/daily.csv),
+and every arrival and departure we worked out is in the `stop-events` files
+in [Releases](https://github.com/dfladagermccullugh-bot/Open-Island-Transit-Data/releases).]{.note}

@@ -6,9 +6,9 @@ description: "How often Island Transit's buses run on time, worked out from thei
 ::: {.hero}
 # How on time are Island Transit's buses?
 
-[Island Transit's buses report where they are every few seconds, and nobody
-keeps those reports. This site saves them all and works out how often each
-bus left on time.]{.lede}
+[Every few seconds, each Island Transit bus reports where it is, and each
+report vanishes as soon as the next one arrives. This site saves all of them
+and uses them to work out how often the buses leave on time.]{.lede}
 
 ```{ojs}
 //| echo: false
@@ -47,11 +47,11 @@ period = recent == null ? "" : recent.days === 1
 ```{ojs}
 //| echo: false
 html`${o == null || o.observed === 0
-  ? html`<p class="empty">The first numbers appear after the first full day is processed, shortly after midnight Pacific.</p>`
+  ? html`<p class="empty">The first numbers will show up here shortly after midnight Pacific, once the first full day has been processed.</p>`
   : html`<div class="headline">
       <div class="big">${pct(o.on_time_share_of_observed)}</div>
       <div class="big-label">of departures left on time ${period}.
-        <span class="note">On time: up to 1 minute early or 5 minutes late.</span></div>
+        <span class="note">A bus counts as on time if it leaves no more than 1 minute early or 5 minutes late.</span></div>
     </div>
     <div class="stat-row">
       <div class="stat"><div class="label">Typical departure</div>
@@ -65,7 +65,7 @@ html`${o == null || o.observed === 0
 
 ## Every route at a glance
 
-Tap a route to see it stop by stop.
+Tap any route to see how it did at each stop.
 
 ```{ojs}
 //| echo: false
@@ -83,7 +83,7 @@ homeMap = mapData == null ? null : drawRouteMap(L, mapData, recent, {
     location.href = `routes.html#${routeSlug(r, id)}`;
   },
 })
-html`${homeMap == null ? html`<p class="empty">The route map appears after the first day is processed.</p>` : homeMap.node}`
+html`${homeMap == null ? html`<p class="empty">The route map will appear once the first day has been processed.</p>` : homeMap.node}`
 ```
 
 ## How it works {#how-it-works}
@@ -92,7 +92,7 @@ html`${homeMap == null ? html`<p class="empty">The route map appears after the f
 ```{=html}
 <svg viewBox="0 0 1000 190" role="img" aria-labelledby="how-title how-desc">
   <title id="how-title">How the data flows</title>
-  <desc id="how-desc">A bus reports its location to Island Transit's live feed. This project's collector saves every update every 20 seconds. Each night the updates are checked and turned into on-time figures. Results go to this site and into free downloads.</desc>
+  <desc id="how-desc">Each bus reports its location to Island Transit's live feed. Every 20 seconds, our collector saves the latest update. Each night, our scripts check those updates and turn them into on-time figures, which end up on this site and in free downloads.</desc>
   <defs>
     <marker id="arrowhead" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
       <path class="arrowhead" d="M0,0 L10,5 L0,10 z"/>
@@ -139,23 +139,25 @@ html`${homeMap == null ? html`<p class="empty">The route map appears after the f
 ```
 
 ::: {.how-steps}
-1. **The bus.** GPS on board reports where it is.
-2. **The live feed.** Island Transit publishes those reports for trip apps;
-   each update replaces the last one.
-3. **Our collector.** Saves every update, every 20 seconds, day and night.
-4. **Nightly checks.** Work out when buses left each stop and grade the
-   tracking data.
-5. **You.** This site's charts and map, plus every file to download.
+Each bus carries a GPS unit that reports where it is. Island Transit passes
+those reports along to trip-planning apps through a live feed, and every new
+update wipes out the one before it. Every 20 seconds, day and night, our
+collector asks the feed for its latest update and saves it. Each night, our
+scripts work out when every bus left each stop and grade how good the
+tracking was. The results end up here in the charts and the map, along with
+every file for you to download.
 :::
 :::
 
-The feed only says where a bus is, never when it left a stop. Each night the
-saved locations are followed along the route to find that moment, which is
-then compared with the timetable. The same data shows how often the tracking
-itself fails: see [Data quality](quality.qmd).
+The feed tells us where a bus is, but it never says when the bus left a
+stop. So each night our script traces every bus along its route, finds the
+moment it passed each stop, and compares that moment with the printed
+timetable. The same saved data also shows how often the tracking itself
+breaks down, which you can see on the [Data quality](quality.qmd) page.
 
 ## Why this exists
 
-Island Transit does not publish on-time figures, and live bus data is gone
-once replaced. Saving it lets anyone answer questions like "Was route 60 late
-last week?", with the code to check the answer.
+Island Transit doesn't publish on-time figures, and once the live feed moves
+on, its data is gone for good. By saving it, we make it possible for anyone
+to answer a question like "Was route 60 late last week?" and to check our
+answer against the code that produced it.

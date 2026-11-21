@@ -1,57 +1,73 @@
 # Methods
 
-Draft. Definitions are fixed here before the code that computes them is
-written; changes are recorded in `docs/decisions.md`.
+We wrote these definitions down before writing the code that computes them,
+and `docs/decisions.md` records every change made since.
 
-All times are stored in UTC. A service day is the calendar date in
-`America/Los_Angeles`; Island Transit schedules no trips across midnight.
-"Scheduled" means the Passio static GTFS version in effect on that day, with
-the service calendar taken from the Trillium feed when Passio's is missing.
+We store all times in UTC. A service day is a calendar date in Pacific time
+(`America/Los_Angeles`), which works neatly because Island Transit runs no
+trips across midnight. When we say "scheduled," we mean the Passio static
+GTFS version in effect that day. If Passio's copy is missing its service
+calendar, we take the calendar from the Trillium feed instead.
 
 ## 1. Collection
 
-- Vehicle positions and trip updates are requested every 20 seconds, service
-  alerts every 5 minutes, all day, including hours with no service.
-- Each response is stored exactly as received, with a SHA-256 hash, before
-  anything is parsed.
-- Every attempt is logged: scheduled time, request and response times,
-  HTTP status, size, and any error. Failed attempts are logged too.
-- No retries within a tick. After more than three consecutive failing ticks
-  the collector backs off (40 s, 80 s, … up to 10 minutes) and logs each
-  skipped tick as skipped.
+The collector asks for vehicle positions and trip updates every 20 seconds
+and for service alerts every 5 minutes. It does this around the clock, even
+in the hours when no buses run.
+
+The collector saves each response exactly as it arrived, before anything
+reads it, along with a SHA-256 hash. A hash is a long fingerprint of the file's
+contents, and it lets anyone confirm later that the stored copy has not
+changed by a single byte.
+
+The collector logs every attempt, including the ones that fail. Each log
+entry records when the request was scheduled, when it went out, when the
+answer came back, the HTTP status, the size of the response, and any error.
+The collector does not retry within a 20-second tick. If more than three
+ticks in a row fail, it backs off and waits 40 seconds, then 80 seconds, and
+so on up to 10 minutes, and it logs each tick it skips as skipped.
 
 ## 2. Feed-quality metrics
 
-Computed per service day, and by route and hour where that applies.
+We compute these measures for each service day, and also by route and by
+hour where that makes sense. The code is in `pipeline/quality/metrics.py`,
+and a few details of how it works matter for reading the numbers.
 
-Implemented in `pipeline/quality/metrics.py`. Notes on the implementation:
+Passio's calendar has no holiday exceptions, so a holiday looks like a
+normal service day in our "scheduled" counts. To make that visible, each
+day's figures sit next to the list of trips the Trillium feed removes for
+holidays that day (`schedule.trillium_removes_service_today`). On the first
+day of collection, we counted only the trips that had not already ended when
+collection began.
 
-- "Scheduled" uses the Passio calendar. It has no holiday exceptions; the
-  Trillium feed's holiday removals for the day are reported next to the
-  figures (`schedule.trillium_removes_service_today`).
-- On the first day of collection only trips that had not ended when
-  collection began count as scheduled.
-- Position age is measured at the first fetch that returned a position.
-- Metrics built on inferred stop events (stop-level coverage, off-shape
-  positions, prediction error) are in `pipeline/quality/stops.py`, grouped
-  under `events` in the day file.
-- Stop-level coverage uses the same measured time as the on-time figures:
-  departure, or arrival at a trip's last stop. Off-shape counts are of
-  reports within a trip's scheduled window, from `trip-tracks`.
-- Prediction error compares each observed stop event with the prediction
-  being published the given number of minutes before it (a prediction
-  counts until 30 s after the last fetch that returned it). The feed sends
-  no `start_date`, and on 2026-11-19 about 1 to 2% of predictions made 1 to
-  5 minutes ahead were clock times on the next day. Those are counted as
-  "dated another day" and left out of the error figures.
-- Jitter: a dwell is 3 or more consecutive reports of one vehicle, each
-  under 0.5 m/s and within 150 m of a trip's first or last stop, at most
-  120 s apart; jitter is each report's distance from the dwell's median
-  position. Speed is as reported by the vehicle.
-- Vehicles missing against the previous 30 days uses the days that have a
-  quality file, so it is empty on the first day.
-- Randomness of gaps is published from the first day as rates; the model
-  is fitted once there are 14 days and 30 unobserved trips.
+We measure position age at the first fetch that returned a given position.
+The measures that depend on our inferred stop times (stop-level coverage,
+positions that stray off the route, and prediction error) live in
+`pipeline/quality/stops.py` and appear under `events` in each day's file.
+Stop-level coverage uses the same moment as the on-time figures: the
+departure, or the arrival at a trip's last stop. Off-route counts include
+only reports made during a trip's scheduled window, taken from
+`trip-tracks`.
+
+To measure prediction error, we take each stop time we observed and compare
+it with the prediction the feed was publishing a given number of minutes
+earlier. A prediction counts as still published until 30 seconds after the
+last fetch that returned it. The feed sends no `start_date`, and on
+2026-11-19 about 1 to 2% of the predictions made 1 to 5 minutes ahead carried
+a clock time on the next day. We count those as "dated another day" and leave
+them out of the error figures.
+
+Jitter tells us how much a parked bus's GPS position wanders. We look for a
+dwell, which is 3 or more reports in a row from one vehicle, each moving
+slower than 0.5 m/s, within 150 m of a trip's first or last stop, and no more
+than 120 seconds apart. Jitter is the distance of each report from the
+middle (median) position of its dwell. Speed is whatever the vehicle itself
+reports.
+
+The count of vehicles missing compared with the previous 30 days uses only
+days that have a quality file, so it is empty on the first day. We publish
+the randomness-of-gaps rates from the first day, but the model behind them
+waits until there are 14 days and 30 trips that never showed up.
 
 ### Coverage
 
@@ -104,44 +120,58 @@ Implemented in `pipeline/quality/metrics.py`. Notes on the implementation:
 
 ## 3. Arrival and departure times
 
-The feed reports where a bus is, not when it reached a stop. Stop times are
-inferred with the standard approach for vehicle-location data:
+The feed tells us where a bus is, but never when it reached a stop. We work
+out stop times with the standard approach for this kind of vehicle-location
+data, in five steps.
 
-1. Place each stop on the trip's shape. A shape can pass a stop more than
-   once (loops, out-and-back roads), so every pass within 150 m is a
-   candidate, and the placement keeps the stops in order while minimising
-   their summed distance from the shape. Before this, segments a shape
-   draws forth, back and forth again are collapsed to one (Passio's route 1C
-   shapes repeat every segment this way, which made them about 21 km too
-   long); the metres removed are reported as a processing error.
-2. Project each position onto the trip's shape to get distance along the
-   route. Tracking starts at the first position within 300 m of the start of
-   the shape, because a bus often shows its next trip id while finishing the
-   previous trip; without one, it starts 2 minutes before the scheduled
-   departure. It stops when the bus reaches the end of the shape.
-3. Require forward progress, searching only a window ahead of the last
-   matched distance (this handles loops and repeated stops). If two
-   consecutive positions lie on a later part of the shape (within 30 m,
-   heading within 45 degrees of the shape's direction there), tracking moves
-   forward to it: the bus has left out part of the published shape, for
-   example an on-request loop. Stops in the stretch left out get no time
-   (status `skipped`).
-4. For each stop, interpolate the time the bus crossed the stop's distance
-   between the two positions on either side.
-5. Arrival is the first time within 40 m of the stop along the shape;
-   departure is the last, that is, the moment the bus is more than 40 m past
-   it. Distance along the shape is kept non-decreasing so GPS jitter cannot
-   produce a second crossing. Positions more than 100 m from the shape, or
-   moving against its direction above 3 m/s, are counted and not used.
+First, our script places each stop on the trip's shape, the line the route
+follows on a map. A shape can pass the same stop more than once, on loops or
+out-and-back roads, so every pass within 150 m counts as a candidate, and
+the script picks the placements that keep the stops in order while keeping
+them as close to the shape as possible overall. Before doing that, it
+collapses any stretch that a shape draws forward, back and forward again.
+Passio's route 1C shapes repeat every segment this way, which made them
+about 21 km too long, and we report the metres removed as a processing
+error.
 
-Implemented in `pipeline/events/infer.py`; the stops used for on-time
-figures are the printed timetable timepoints (`pipeline/gtfs/timepoints.py`).
+Second, the script projects each bus position onto the shape to find how far
+along the route the bus has traveled. Tracking starts at the first position
+within 300 m of the start of the shape, because a bus often shows its next
+trip's id while it is still finishing the last one. If there is no such
+position, tracking starts 2 minutes before the scheduled departure. It stops
+when the bus reaches the end of the shape.
 
-Each inferred event keeps the time gap between the two positions it was
-interpolated from. If that gap exceeds 120 s the event is recorded as not
-observed.
+Third, the script insists that the bus keep moving forward, so it searches
+only a window ahead of the last distance it matched. That is how it copes
+with loops and with stops the route visits twice. Sometimes two positions in
+a row land on a later part of the shape, within 30 m of it and heading
+within 45 degrees of the shape's direction there. When that happens, the
+script concludes that the bus left out part of the published route, such as
+a loop it only drives on request, and moves tracking forward. Stops in the
+stretch the bus left out get no time, and the script marks them `skipped`.
 
-Known problems and how they are handled:
+Fourth, for each stop the script estimates the moment the bus crossed it by
+interpolating, that is, by drawing a straight line in time between the
+positions just before and just after the stop.
+
+Fifth, it turns those crossings into an arrival and a departure. The arrival
+is the first moment the bus is within 40 m of the stop along the shape, and
+the departure is the last, the moment the bus gets more than 40 m past it.
+The script never lets distance along the shape go backwards, so GPS wobble
+cannot make a bus seem to cross a stop twice. It also sets aside, and
+counts, any position more than 100 m from the shape or moving against the
+route's direction faster than 3 m/s.
+
+The code for all of this is in `pipeline/events/infer.py`. For the on-time
+figures we use only the timepoints printed in Island Transit's timetables
+(`pipeline/gtfs/timepoints.py`).
+
+Each inferred stop time remembers how far apart in time its two positions
+were. If they were more than 120 seconds apart, we don't trust a straight
+line across the gap, and we record the stop as not observed.
+
+The table below lists the problems we know about and what we do about each
+one.
 
 | Problem | Handling |
 |---|---|
@@ -156,57 +186,69 @@ Known problems and how they are handled:
 
 ## 4. On-time performance
 
-- **Schedule deviation**: actual departure minus scheduled departure at a
-  timepoint; at the final stop, actual arrival minus scheduled arrival.
-- **On time**: deviation from 60 s early to 300 s late, inclusive. Early
-  arrival at the final stop counts as on time.
-- **Early / late**: outside that window.
-- **Not observed**: a scheduled timepoint event with no inferred time. These
-  are reported as their own category and are never counted as late. The feed
-  cannot distinguish a canceled trip from one that ran without reporting,
-  unless an alert or a `CANCELED` flag says so.
-- On-time figures are always shown next to the share of scheduled events
-  that were observed.
+A bus's schedule deviation is how far its actual departure from a timepoint
+was from the scheduled departure. At the last stop of a trip we use the
+arrival instead.
+
+A departure counts as on time if it falls anywhere from 60 seconds early to
+300 seconds late, with both ends included. An early arrival at the last stop
+also counts as on time, because a bus that reaches the end of its line early
+has not made anyone miss it. Anything outside that window is early or late.
+
+When we could not work out a time for a scheduled timepoint, we call it not
+observed. We report those separately and never count them as late. The feed
+cannot tell a canceled trip apart from one that ran without reporting,
+unless an alert or a `CANCELED` flag says so, which is why we always show
+the on-time figures next to the share of scheduled departures we actually
+observed.
 
 ## 5. Validation
 
-Three checks support the inferred times and on-time figures:
+Three checks back up the inferred times and the on-time figures.
 
-1. Field check: arrivals and departures timed in person with a
-   network-synchronised clock, compared with the inferred times. Reported:
-   bias, mean absolute error, share within 30 s and 60 s. Target: mean
-   absolute error of 30 s or less. It is a spot check of whether the
-   tracking matches what happens on the street, done on route 60 (the route
-   the observer rides). It does not cover other routes, departures after a
-   bus has waited at a timepoint, or terminal departures; checks 2 and 3
-   cover all routes every day.
-2. Inferred stop events agree with the feed's own `current_stop_sequence`
-   changes.
-3. No negative segment travel times or impossible speeds remain unexplained.
+Check 1 is the field check. Someone times arrivals and departures in person,
+using a clock synced to the network, and we compare those times with ours.
+We report the bias (whether our times tend to run early or late), the mean
+absolute error (the average size of the difference), and the share within 30
+and 60 seconds. The target is a mean absolute error of 30 seconds or less.
+It is a spot check of whether the tracking matches what happens on the
+street, and it has been done on route 60, the route the observer rides. So
+it does not yet cover other routes, departures after a bus has waited at a
+timepoint, or departures from a terminal. Checks 2 and 3 cover every route
+every day.
 
-Check 1 is scored every night by `pipeline/events/field.py` from
-`reference/field-observations.csv` into `ontime/field-check.json`. The
-observer times the moments the method infers: the bus coming within 40 m
-of the stop and the bus more than 40 m past it (`docs/field-check.md`), or
-the moment the bus is level with the stop, which is compared with the
-midpoint of the inferred arrival and departure.
-Each timed moment is matched to the inferred event with the same service
-date, trip and stop; differences are inferred minus timed. Timed moments
-with no inferred time are counted, not scored.
+Check 2 asks whether our stop times agree with the stop sequence the feed
+itself reports (`current_stop_sequence`). Check 3 asks whether any travel
+time between stops runs backwards or implies an impossible speed without a
+good explanation.
 
-Checks 2 and 3 run every night (`pipeline/events/validate.py`) and are
-written to `validation` in `ontime/days/<date>.json`:
+Every night, `pipeline/events/field.py` scores check 1 from
+`reference/field-observations.csv` and writes the result to
+`ontime/field-check.json`. The observer times the same moments our method
+looks for: the bus coming within 40 m of the stop, and the bus getting more
+than 40 m past it (`docs/field-check.md`). Riding on board, it is often
+easier to note the moment the bus is level with the stop, and we compare
+that with the midpoint of our inferred arrival and departure. The script
+matches each timed moment to our stop time for the same service date, trip
+and stop, and each difference is our time minus the timed one. When we have
+no inferred time for a timed moment, we count it but don't score it.
 
-- Check 2: the feed's `current_stop_sequence` is the stop the bus is
-  heading for. When the bus passes stop k it changes to k + 1, somewhere
-  between the last report showing k or less and the first showing more. An
-  inferred departure agrees if it lies in that interval, widened by 30 s.
-  First and last stops are left out. On 2026-11-19, 95% of 2,902 inferred
-  departures agreed; the first report naming the next stop came a median
-  3.8 s after the inferred departure.
-- Check 3: consecutive inferred times along a trip (departure from one stop,
-  arrival at the next) must not run backwards or exceed 35 m/s. Segments
-  across a stretch the bus left out are not measured. On 2026-11-19 none ran
-  backwards; 29 of 5,919 exceeded 35 m/s, all within single 16 to 40 s
-  gaps between reports on fast roads, where the projection can advance up
-  to the 35 m/s search limit. The fastest are listed in the day file.
+Checks 2 and 3 also run every night (`pipeline/events/validate.py`), and
+their results go into `validation` in `ontime/days/<date>.json`.
+
+For check 2, it helps to know that `current_stop_sequence` names the stop a
+bus is heading for. When the bus passes stop k, that number changes to k + 1
+somewhere between the last report showing k or less and the first report
+showing more. Our departure time agrees with the feed if it falls inside
+that interval, widened by 30 seconds on each side. We leave out first and
+last stops. On 2026-11-19, 95% of 2,902 inferred departures agreed, and the
+first report naming the next stop came a median of 3.8 seconds after our
+departure time.
+
+For check 3, our times along a trip, from the departure at one stop to the
+arrival at the next, must never run backwards or imply a speed above
+35 m/s. We don't measure segments across a stretch the bus left out. On
+2026-11-19 none ran backwards, and 29 of 5,919 went faster than 35 m/s. Every
+one of those fell within a single 16 to 40 second gap between reports on a
+fast road, where the projection can jump ahead as far as the 35 m/s search
+limit allows. The day file lists the fastest ones.

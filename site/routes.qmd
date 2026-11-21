@@ -3,12 +3,13 @@ title: "Routes"
 subtitle: "On time, route by route and stop by stop"
 ---
 
-Tap a route or pick one from the list. Departures are counted at the stops
-printed in the timetables
-([timepoints]{.term tabindex="0" tip="The stops whose times are printed in Island Transit's timetables. These are the times the agency publishes for riders."})
-and are
-[on time]{.term tabindex="0" tip="Leaving no more than 1 minute early and no more than 5 minutes late. At the last stop of a trip, arriving counts instead of leaving."}
-from 1 minute early to 5 minutes late.
+Tap a route on the map or pick one from the list to see how its buses did.
+We count departures only at the stops whose times are printed in Island
+Transit's timetables, called
+[timepoints]{.term tabindex="0" tip="The stops whose times are printed in Island Transit's timetables. These are the times the agency publishes for riders."},
+because those are the times riders are promised. A bus is
+[on time]{.term tabindex="0" tip="A bus is on time if it leaves no more than 1 minute early and no more than 5 minutes late. At the last stop of a trip, its arrival counts instead."}
+if it leaves no more than 1 minute early or 5 minutes late.
 
 ```{ojs}
 //| echo: false
@@ -55,7 +56,7 @@ mapView = mapData == null ? null : drawRouteMap(L, mapData, recent, {
   },
 })
 html`${mapView == null
-  ? html`<p class="empty">The route map appears after the first day is processed.</p>`
+  ? html`<p class="empty">The route map will appear once the first day has been processed.</p>`
   : mapView.node}`
 ```
 
@@ -92,8 +93,8 @@ html`${mapView == null
 ```{ojs}
 //| echo: false
 windowNote = recent == null ? "" : recent.days === 1
-  ? `Based on ${longDate(recent.last_service_date)}.`
-  : `Based on the ${recent.days} days from ${longDate(recent.first_service_date)} to ${longDate(recent.last_service_date)}.`
+  ? `These figures cover ${longDate(recent.last_service_date)}.`
+  : `These figures cover the ${recent.days} days from ${longDate(recent.first_service_date)} to ${longDate(recent.last_service_date)}.`
 html`${recent == null ? html`<p class="empty">No day has been processed yet.</p>` : html`<p class="note">${windowNote}</p>`}`
 ```
 
@@ -123,7 +124,7 @@ overview = () => {
     };
   });
   return html`<h2>All routes</h2>
-    <p class="note">Routes with fewer than ${MIN_OBSERVED} departures seen are not rated.</p>
+    <p class="note">We don't rate a route until we've seen at least ${MIN_OBSERVED} of its departures.</p>
     ${Inputs.table(rows, {
       columns: ["name", "where", "on_time", "typical", "seen", "band"],
       header: {name: "Route", where: "Serves", on_time: "On time", typical: "Typical departure", seen: "Departures seen", band: "Band"},
@@ -134,7 +135,7 @@ overview = () => {
 
 detail = (r, s) => {
   if (s == null) return html`<h2>${routeTitle(r)}</h2><p>${routeSub(r)}</p>
-    <p class="empty">No departures from this route's timepoints were scheduled in this period.</p>`;
+    <p class="empty">None of this route's timepoint departures were scheduled during this period.</p>`;
   const b = band(s.on_time_share_of_observed, s.observed);
   return html`<h2 class="route-title">${routeTitle(r)} <span class="route-sub">${routeSub(r)}</span></h2>
   <div class="stat-row">
@@ -143,10 +144,10 @@ detail = (r, s) => {
       <div class="note">${bandTag(b)}</div></div>
     <div class="stat"><div class="label">Typical departure</div>
       <div class="value">${lateness(s.deviation_s_median)}</div>
-      <div class="note">half between ${lateness(s.deviation_s_p25)} and ${lateness(s.deviation_s_p75)}</div></div>
+      <div class="note">Half of departures fell between ${lateness(s.deviation_s_p25)} and ${lateness(s.deviation_s_p75)}.</div></div>
     <div class="stat"><div class="label">Departures seen</div>
       <div class="value">${s.observed} of ${s.scheduled}</div>
-      <div class="note">the rest had no tracking data</div></div>
+      <div class="note">The others had no tracking data to go on.</div></div>
   </div>
   ${stopChart(s)}
   ${trendChart(s)}`;
@@ -156,13 +157,13 @@ stopChart = (s) => {
   const stops = s.stops.filter(d => d.deviations_counted > 0).map(d => ({
     ...d, label: d.name, med: d.deviation_s_median / 60, lo: d.deviation_s_p25 / 60, hi: d.deviation_s_p75 / 60,
     band: band(d.on_time_share_of_observed, d.observed)}));
-  if (stops.length === 0) return html`<p class="empty">No stop has enough departures yet.</p>`;
+  if (stops.length === 0) return html`<p class="empty">No stop on this route has enough departures yet.</p>`;
   const xmin = Math.min(-2, ...stops.map(d => d.lo)) - 0.5;
   const xmax = Math.max(8, ...stops.map(d => d.hi)) + 0.5;
   const ids = stops.map(d => d.stop_id);
   const names = Object.fromEntries(stops.map(d => [d.stop_id, d.label]));
   return html`<h3>Stop by stop</h3>
-  <p class="note">Dot: typical departure. Bar: middle half of departures. Shaded: on time.</p>
+  <p class="note">Each dot shows the typical departure at that stop, and the gray bar covers the middle half of all departures there. Anything inside the shaded band counts as on time.</p>
   ${(() => {
     // On narrow screens, stop names go above each row instead of beside it.
     const narrow = width < 640;
@@ -197,7 +198,7 @@ stopChart = (s) => {
 trendChart = (s) => {
   const days = s.daily.filter(d => d.on_time_share_of_observed != null)
     .map(d => ({...d, date: new Date(`${d.service_date}T12:00:00Z`)}));
-  if (days.length < 2) return html`<h3>Day by day</h3><p class="empty">A day-by-day line appears once there are two days of data.</p>`;
+  if (days.length < 2) return html`<h3>Day by day</h3><p class="empty">A day-by-day line will appear once there are two days of data.</p>`;
   return html`<h3>Day by day</h3>${Plot.plot({
     style: {background: "transparent", fontSize: "13px"},
     width: Math.min(width, 960),
@@ -215,6 +216,7 @@ trendChart = (s) => {
 }
 ```
 
-[Calculated by this project from Island Transit's public data, not official
-figures. [How](methods.qmd) ·
-[Data](https://github.com/dfladagermccullugh-bot/Open-Island-Transit-Data/blob/data/ontime/recent.json)]{.note}
+[We calculate these figures ourselves from Island Transit's public data, so
+they aren't official Island Transit numbers. The [Methods](methods.qmd) page
+explains how, and you can download
+[the data behind this page](https://github.com/dfladagermccullugh-bot/Open-Island-Transit-Data/blob/data/ontime/recent.json).]{.note}
