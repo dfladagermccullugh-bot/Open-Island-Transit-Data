@@ -14,7 +14,9 @@ For each pair of pinned Passio and Trillium versions, the crosswalk
 ``<crosswalk-dir>/<passio version>__<trillium version>/``. For each pair of
 Passio version and printed timetable in effect, the true timepoints
 (``pipeline/gtfs/timepoints.py``) are written once to
-``<timepoints-dir>/<passio version>__timetable-<date>-<hash>/``.
+``<timepoints-dir>/<passio version>__timetable-<date>-<hash>/``, and the
+route map for the site (``pipeline/gtfs/routemap.py``) to
+``<maps-dir>/<same key>.json``.
 """
 
 from __future__ import annotations
@@ -31,7 +33,7 @@ from typing import Any
 
 from pipeline import release
 from pipeline.config import REPO
-from pipeline.gtfs import crosswalk, timepoints
+from pipeline.gtfs import crosswalk, routemap, timepoints
 from pipeline.gtfs.versions import add_download, fingerprint, pin_days
 from pipeline.gtfs.zipread import read_zip
 
@@ -122,6 +124,25 @@ def write_timepoints(registry: dict[str, Any], out: Path, raw_dir: Path, repo: s
     return written
 
 
+def write_maps(
+    registry: dict[str, Any], tp_dir: Path, out: Path, raw_dir: Path, repo: str
+) -> list[str]:
+    """Write the route map once for every timepoints folder in use."""
+    written = []
+    for pins in registry["days"].values():
+        key = pins.get("timepoints")
+        if not key or (out / f"{key}.json").exists():
+            continue
+        pv = pins["passio"]["version"]
+        with (tp_dir / key / "timepoints.csv").open(newline="") as fh:
+            rows = list(csv.DictReader(fh))
+        built = routemap.build(_zip(registry, pv, raw_dir, repo), rows)
+        out.mkdir(parents=True, exist_ok=True)
+        (out / f"{key}.json").write_text(json.dumps({"passio_version": pv, **built}) + "\n")
+        written.append(key)
+    return written
+
+
 def write_crosswalks(registry: dict[str, Any], out: Path, raw_dir: Path, repo: str) -> list[str]:
     """Write the crosswalk for every pinned version pair that lacks one, and
     record which crosswalk applies to each day. Returns the pairs written."""
@@ -151,6 +172,7 @@ def main() -> int:
     ap.add_argument("--raw-dir", type=Path, default=Path("work/files"))
     ap.add_argument("--crosswalk-dir", type=Path, default=Path("work/crosswalk"))
     ap.add_argument("--timepoints-dir", type=Path, default=Path("work/timepoints"))
+    ap.add_argument("--maps-dir", type=Path, help="default: maps/ beside the timepoints dir")
     ap.add_argument("--repo", default=os.environ.get("GITHUB_REPOSITORY", REPO))
     args = ap.parse_args()
 
@@ -162,10 +184,12 @@ def main() -> int:
     added = update(registry, raw, args.raw_dir, args.repo)
     written = write_crosswalks(registry, args.crosswalk_dir, args.raw_dir, args.repo)
     tps = write_timepoints(registry, args.timepoints_dir, args.raw_dir, args.repo)
+    maps_dir = args.maps_dir or args.timepoints_dir.parent / "maps"
+    maps = write_maps(registry, args.timepoints_dir, maps_dir, args.raw_dir, args.repo)
     save(args.manifest, registry)
     print(f"{added} downloads added; {len(registry['versions'])} versions; ", end="")
     print(f"{len(registry['days'])} days pinned; crosswalks written: {written or 'none'}; ", end="")
-    print(f"timepoints written: {tps or 'none'}")
+    print(f"timepoints written: {tps or 'none'}; maps written: {maps or 'none'}")
     return 0
 
 

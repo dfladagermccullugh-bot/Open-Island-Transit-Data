@@ -142,11 +142,12 @@ def test_infer_day_without_reports():
     assert trips[0]["position_reports"] == 0
 
 
-def event(sched_min, actual_min, last=False, timepoint=True, route="R1"):
+def event(sched_min, actual_min, last=False, timepoint=True, route="R1", stop="S1", seq=1):
     s = ORIGIN + timedelta(hours=6, minutes=sched_min)
     a = ORIGIN + timedelta(hours=6, minutes=actual_min) if actual_min is not None else None
     key = "arrival" if last else "departure"
     return {"is_last_stop": last, "is_timepoint": timepoint, "route_id": route,
+            "stop_id": stop, "stop_sequence": seq,
             "arrival_time": a if last else None, "departure_time": None if last else a,
             f"scheduled_{key}": s,
             "scheduled_arrival" if not last else "scheduled_departure": None}  # fmt: skip
@@ -171,6 +172,16 @@ def test_summarize_skips_non_timepoints_and_events_before_collection():
     assert s["on_time_share_of_observed"] == 0.5
     assert "experimental" not in s
     assert s["by_hour"]["6"]["scheduled"] == 3  # 06:10 to 06:30 Pacific
+
+
+def test_summarize_by_route_stop_keeps_deviations():
+    events = [event(10, 12, stop="A", seq=1), event(20, 30, stop="B", seq=5),
+              event(30, None, stop="B", seq=5), event(40, 39.5, stop="A", seq=1)]  # fmt: skip
+    s = summarize(events, collection_start=ORIGIN, stop_names={"A": "Stop A"})
+    a, b = s["by_route_stop"]["R1"]["A"], s["by_route_stop"]["R1"]["B"]
+    assert a["name"] == "Stop A" and b["name"] == ""
+    assert a["deviations_s"] == [-30, 120]
+    assert (b["scheduled"], b["observed"], b["late"], b["stop_sequence_median"]) == (2, 1, 1, 5)
 
 
 def test_drop_retraced_collapses_forth_back_forth():

@@ -27,9 +27,11 @@ def test_check_finds_missing_and_wrong_size_files(tmp_path):
     assert any("vehicles-2026-11-19.parquet in parsed-2026-11 is None bytes" in x for x in problems)
     assert any("timepoints folder tp1 missing" in x for x in problems)
     assert any("quality 2026-11-19: day file missing" in x for x in problems)
-    assert len(problems) == 3
+    assert any("route map maps/tp1.json missing" in x for x in problems)
+    assert len(problems) == 4
 
     releases["parsed-2026-11"][f"vehicles-{day}.parquet"] = 50
     (tmp_path / "timepoints/tp1").mkdir(parents=True)
+    write(tmp_path / "maps/tp1.json", {})
     write(tmp_path / f"quality/days/{day}.json", {})
     assert check(tmp_path, lambda tag: releases[tag])[0] == []

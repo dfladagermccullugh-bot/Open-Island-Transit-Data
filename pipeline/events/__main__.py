@@ -11,7 +11,9 @@ copies when their SHA-256 matches, otherwise from Releases.
 Writes ``stop-events-<date>.parquet`` and ``trip-tracks-<date>.parquet``
 (uploaded with --release to ``parsed-YYYY-MM``), the day's entry in
 ``manifest/events.json``, and ``ontime/days/<date>.json`` plus
-``ontime/daily.csv`` on the data branch.
+``ontime/daily.csv``, ``ontime/routes.csv`` and ``ontime/recent.json``
+(``pipeline/events/routes.py``) on the data branch. A day is also rebuilt
+when its on-time summary was made by an older ``ONTIME_VERSION``.
 """
 
 from __future__ import annotations
@@ -19,8 +21,10 @@ from __future__ import annotations
 import argparse
 import csv
 import hashlib
+import io
 import json
 import os
+import re
 import sys
 from datetime import UTC, date, datetime
 from pathlib import Path
@@ -32,7 +36,8 @@ import pyarrow.parquet as pq
 from pipeline import release
 from pipeline.config import COLLECTION_START, REPO
 from pipeline.events.infer import EVENTS_VERSION, infer_day
-from pipeline.events.ontime import summarize
+from pipeline.events.ontime import ONTIME_VERSION, summarize
+from pipeline.events.routes import write_routes
 from pipeline.events.validate import validate
 from pipeline.gtfs.schedule import route_names
 from pipeline.gtfs.zipread import read_zip
@@ -127,6 +132,7 @@ def pending(data: Path) -> list[date]:
         if (
             prev is None
             or prev.get("events_version") != EVENTS_VERSION
+            or prev.get("ontime_version") != ONTIME_VERSION
             or prev.get("timepoints") != pins["timepoints"]
         ):
             out.append(date.fromisoformat(day))
@@ -170,7 +176,8 @@ def build(day: date, data: Path, raw_dir: Path, tables_dir: Path, out: Path, rep
         pq.write_table(table, path, compression="zstd", compression_level=9)
         files.append(_file_entry(path))
 
-    summary = summarize(events, COLLECTION_START)
+    names = {s["stop_id"]: s.get("stop_name", "") for s in _stops(passio)}
+    summary = summarize(events, COLLECTION_START, names)
     summary.update(
         {
             "service_date": d,
@@ -188,6 +195,7 @@ def build(day: date, data: Path, raw_dir: Path, tables_dir: Path, out: Path, rep
         "entry": {
             "service_date": d,
             "events_version": EVENTS_VERSION,
+            "ontime_version": ONTIME_VERSION,
             "passio_version": pins["passio"]["version"],
             "timepoints": pins["timepoints"],
             "vehicles_sha256": _sha(parsed, veh_name),
@@ -196,6 +204,20 @@ def build(day: date, data: Path, raw_dir: Path, tables_dir: Path, out: Path, rep
         },
         "ontime": summary,
     }
+
+
+_NUMBER_LIST = re.compile(r"\[\s*(-?\d+(?:\.\d+)?(?:,\s*-?\d+(?:\.\d+)?)*)\s*\]")
+
+
+def dumps_day(obj: dict[str, Any]) -> str:
+    """Indented JSON with lists of numbers kept on one line."""
+    text = json.dumps(obj, indent=1)
+    return _NUMBER_LIST.sub(lambda m: "[" + re.sub(r"\s+", "", m.group(1)) + "]", text) + "\n"
+
+
+def _stops(passio) -> list[dict[str, str]]:
+    raw = passio.files.get("stops.txt")
+    return list(csv.DictReader(io.StringIO(raw.decode("utf-8-sig")))) if raw else []
 
 
 def write_daily(ontime_dir: Path) -> int:
@@ -254,7 +276,7 @@ def main() -> int:
                 _save(manifest_path, manifest)
                 (ontime_dir / "days").mkdir(parents=True, exist_ok=True)
                 (ontime_dir / "days" / f"{day.isoformat()}.json").write_text(
-                    json.dumps(built["ontime"], indent=1) + "\n"
+                    dumps_day(built["ontime"])
                 )
             o = built["ontime"]
             print(
@@ -266,6 +288,7 @@ def main() -> int:
             print(f"{day}: FAILED: {exc!r}", file=sys.stderr)
     if (ontime_dir / "days").exists():
         print(f"ontime/daily.csv: {write_daily(ontime_dir)} days")
+        print(f"ontime/routes.csv and recent.json: {write_routes(ontime_dir)} days")
     return 1 if failed else 0
 
 

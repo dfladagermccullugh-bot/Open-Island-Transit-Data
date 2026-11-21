@@ -39,7 +39,7 @@ jobs:
       - name: Copy the published metrics into the site
         run: |
           mkdir -p site/data
-          for d in manifest quality ontime reports; do
+          for d in manifest quality ontime reports maps; do
             if [ -d "data-branch/$d" ]; then cp -r "data-branch/$d" site/data/; fi
           done
           ls -R site/data | head -50

@@ -5,7 +5,7 @@
 For every day in ``manifest/raw.json``, ``parsed.json`` and ``events.json``
 that has a release tag, each listed file must be in that release at the
 recorded size. Every day pinned in ``static.json`` must have its crosswalk
-and timepoints folders. Every day with parsed tables must have
+and timepoints folders and its route map. Every day with parsed tables must have
 ``quality/days/<date>.json``, and every day with stop events
 ``ontime/days/<date>.json``. Every monthly report's checksum files must be
 in their releases at the recorded size. Prints one line per problem; exits 1 if there
@@ -73,6 +73,9 @@ def check(data: Path, assets: Assets) -> tuple[list[str], dict[str, int]]:
             folder = pins.get(kind)
             if folder and not (data / kind / folder).is_dir():
                 problems.append(f"static {day}: {kind} folder {folder} missing")
+        key = pins.get("timepoints")
+        if key and not (data / "maps" / f"{key}.json").exists():
+            problems.append(f"static {day}: route map maps/{key}.json missing")
     for day in manifests["parsed"]["days"]:
         if not (data / "quality" / "days" / f"{day}.json").exists():
             problems.append(f"quality {day}: day file missing")

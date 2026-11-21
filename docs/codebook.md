@@ -197,7 +197,9 @@ scheduled timepoint events: a trip's scheduled time at one of its true
 timepoints. `observed_share` is always reported next to the on-time share;
 events with no inferred time are never counted as late. Events scheduled
 before collection began are left out. Each day file also breaks the counts
-down by route and by Pacific hour. `validation` holds the automatic checks of the method
+down by route and by Pacific hour, and (`by_route_stop`, from `ontime/0.2.0`)
+by route and timepoint stop, with the stop's name, its median stop sequence
+and every deviation in whole seconds (`deviations_s`). `validation` holds the automatic checks of the method
 (`pipeline/events/validate.py`, `docs/methods.md`, section 5): agreement of
 inferred departures with the feed's `current_stop_sequence`, overall and by
 route, and segment travel times that run backwards or exceed 35 m/s, with
@@ -212,6 +214,23 @@ the fastest listed. `daily.csv` carries the agreement share as
   difference with 30 s; `pairs` lists every comparison. Rows whose day is
   not processed yet, that match no scheduled event, or whose moment has no
   inferred time are counted separately.
+
+- `ontime/routes.csv` (`pipeline/events/routes.py`): one row per service day
+  and route: counts, observed and on-time shares, median deviation.
+- `ontime/recent.json`: the last 28 calendar days pooled, overall, by route
+  and by route and timepoint stop: counts summed, shares recomputed from the
+  sums, median and quartiles of the deviations, and each route's daily
+  on-time and observed shares. Used by the site's route pages.
+
+## `maps/<passio version>__timetable-<date>-<hash>.json`
+
+From `pipeline/gtfs/routemap.py`, written once per timepoints folder. For
+each route: id, short and long name, Passio color, number of trips, and its
+paths (each Passio shape with segments drawn forth, back and forth again
+collapsed, simplified to within 5 m, as `[lon, lat]` pairs rounded to 5
+decimals). `timepoint_stops`: every printed-timetable stop matched to a
+Passio stop, with its position and the routes it serves. `bbox`: west,
+south, east, north.
 
 ## `quality/`
 
