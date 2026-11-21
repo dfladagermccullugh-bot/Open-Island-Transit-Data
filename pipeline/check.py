@@ -7,7 +7,8 @@ that has a release tag, each listed file must be in that release at the
 recorded size. Every day pinned in ``static.json`` must have its crosswalk
 and timepoints folders. Every day with parsed tables must have
 ``quality/days/<date>.json``, and every day with stop events
-``ontime/days/<date>.json``. Prints one line per problem; exits 1 if there
+``ontime/days/<date>.json``. Every monthly report's checksum files must be
+in their releases at the recorded size. Prints one line per problem; exits 1 if there
 are any.
 """
 
@@ -78,6 +79,19 @@ def check(data: Path, assets: Assets) -> tuple[list[str], dict[str, int]]:
     for day in manifests["events"]["days"]:
         if not (data / "ontime" / "days" / f"{day}.json").exists():
             problems.append(f"ontime {day}: day file missing")
+    for path in sorted((data / "reports").glob("????-??.json")):
+        report = json.loads(path.read_text())
+        for tag, rel in report.get("releases", {}).items():
+            try:
+                size = assets(tag).get(rel["checksums_file"])
+            except Exception as exc:
+                problems.append(f"report {report['month']}: release {tag} not readable: {exc}")
+                continue
+            if size != rel["checksums_bytes"]:
+                problems.append(
+                    f"report {report['month']}: {rel['checksums_file']} in {tag} is {size} "
+                    f"bytes, report {rel['checksums_bytes']}"
+                )
     counts["days"] = len(days)
     return problems, counts
 

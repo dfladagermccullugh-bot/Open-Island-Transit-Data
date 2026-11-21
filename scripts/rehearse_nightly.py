@@ -3,11 +3,11 @@
     python scripts/rehearse_nightly.py 2026-11-19 /path/to/empty/folder
 
 Publishes nothing. Pulls the day from the collector, then runs archive,
-tables, static GTFS, events, quality and the final check in the nightly order, writing the
-would-be data branch to <folder>/data-branch and the would-be release files
-to <folder>/releases/<tag>/. Works on the current, incomplete day too: the
-check that the collector's digest equals the archive's is skipped, because
-new fetches keep arriving while the day is read.
+tables, static GTFS, events, quality, monthly reports and the final check in
+the nightly order, writing the would-be data branch to <folder>/data-branch
+and the would-be release files to <folder>/releases/<tag>/. Works on the
+current, incomplete day too: the check that the collector's digest equals the
+archive's is skipped, because new fetches keep arriving while the day is read.
 """
 
 from __future__ import annotations
@@ -52,7 +52,11 @@ def main() -> int:
     def assets(tag, repo):
         return {f.name: f.stat().st_size for f in (store / tag).glob("*")}
 
+    def set_notes(tag, repo, notes):
+        (store / f"{tag}.notes.md").write_text(notes)
+
     rel.ensure_release, rel.upload, rel.fetch, rel.assets = ensure_release, upload, fetch, assets
+    rel.set_notes = set_notes
     archive_build.build_day = build_day
 
     data, work = root / "data-branch", root / "work"
@@ -74,6 +78,7 @@ def main() -> int:
                                    f"{work}/tables"]),
         ("pipeline.quality", ["--pending", "--data", str(data), "--raw-dir", f"{work}/files",
                               "--tables-dir", f"{work}/tables"]),
+        ("pipeline.monthly", ["--data", str(data), "--release", "--work", f"{work}/monthly"]),
         ("pipeline.check", ["--data", str(data)]),
     ]  # fmt: skip
     for module, argv in steps:

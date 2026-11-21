@@ -7,7 +7,8 @@ quality metrics, on-time measures) will be added here as they are published.
 
 - **GitHub Releases**, one release per month named `raw-YYYY-MM` for the raw
   archive and `parsed-YYYY-MM` for the parsed tables. Each service day adds
-  the files below.
+  the files below. Once the month is complete it also gets
+  `SHA256SUMS-<release>.txt` (see `reports/`).
 - **`data` branch**, `manifest/raw.json` and `manifest/parsed.json`: every
   archived day, its row counts, and the size and SHA-256 of each file.
   `manifest/static.json`: static GTFS versions and the version pinned to each
@@ -15,6 +16,7 @@ quality metrics, on-time measures) will be added here as they are published.
   feeds. `timepoints/`: true timepoints from the printed timetables.
   `quality/`: daily feed-quality metrics. `ontime/`: daily
   on-time summaries. `manifest/events.json`: the stop-event files.
+  `reports/`: one report per complete month.
 
 A service day is a calendar date in `America/Los_Angeles`. A row belongs to
 the day in which it was logged. All timestamps are UTC.
@@ -264,6 +266,30 @@ file, parsed tables and pinned schedule exist. Definitions are in
 | `vehicles_seen` | Distinct vehicles reporting |
 | `timetable_reference` | Effective date of the printed timetable used for timepoints |
 | `timepoint_names_resolved_share` | Printed timepoint names tied to a Passio stop |
+
+## `reports/`
+
+From `pipeline/monthly.py`. A month is reported once its last day is
+archived and processed, or seven days after it ended. A report is rebuilt
+when any of its inputs change (a rebuilt day, a new report version).
+
+- `reports/YYYY-MM.json`: `period` (days archived, `days_missing` since
+  collection began, `partial_days` where scheduled trips ended before
+  collection started); `collection` per feed (fetch slots expected and
+  successful, pooled uptime, failure rate, daily range); `coverage` (pooled
+  trip coverage, daily range); `ontime` (counts summed over the month, shares
+  of observed events, overall and by route, daily ranges of the on-time share
+  and of the median deviation); `daily_headline` (minimum, median and maximum
+  over the month's days of every numeric column in `quality/daily.csv`);
+  `releases` (files and bytes per release, and the name, size and SHA-256 of
+  its checksum file); `versions` (collector, tables, stop events, quality and
+  on-time versions used); `inputs_digest`.
+- `reports/YYYY-MM.md`: the same in plain text; also the notes of the
+  month's Releases.
+- `reports/index.json`: one row per month with the headline figures.
+- `SHA256SUMS-<release>.txt` in each Release: `<sha256>  <file name>` for
+  every file the manifests record in that release, in the format
+  `sha256sum -c` reads.
 
 ## `manifest/raw.json`
 

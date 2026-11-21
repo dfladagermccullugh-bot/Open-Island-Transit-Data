@@ -25,4 +25,29 @@ html`${rows.length === 0 ? html`<p>No day archived yet.</p>` : Inputs.table(rows
   format: {megabytes: d => d.toFixed(1)}, rows: 20})}`
 ```
 
+## Monthly reports
+
+Once a month is complete, a report pools its days and lists the checksum
+file (`SHA256SUMS-<release>.txt`) added to each of its Releases. The
+report is also the release notes.
+
+```{ojs}
+//| echo: false
+import {pct} from "./lib.js"
+reports = json("data/reports/index.json")
+reportBase = "https://github.com/dfladagermccullugh-bot/Open-Island-Transit-Data/blob/data/reports/"
+reportRows = (reports ?? []).map(r => ({...r, megabytes: r.bytes / 1e6})).reverse()
+html`${reportRows.length === 0 ? html`<p>No month is complete yet.</p>` : Inputs.table(reportRows, {
+  columns: ["month", "days_archived", "days_missing", "vehicle_uptime", "trip_coverage",
+            "timepoint_observed_share", "on_time_share_of_observed", "megabytes"],
+  header: {month: "Month", days_archived: "Days archived", days_missing: "Days missing",
+           vehicle_uptime: "Collector uptime", trip_coverage: "Trip coverage",
+           timepoint_observed_share: "Timepoint events observed",
+           on_time_share_of_observed: "On time (of observed)", megabytes: "Size (MB)"},
+  format: {month: m => html`<a href="${reportBase}${m}.md">${m}</a>`,
+           vehicle_uptime: x => pct(x, 2), trip_coverage: x => pct(x, 1),
+           timepoint_observed_share: x => pct(x, 1), on_time_share_of_observed: x => pct(x, 1),
+           megabytes: d => d.toFixed(1)}})}`
+```
+
 {{< include ../docs/codebook.md >}}

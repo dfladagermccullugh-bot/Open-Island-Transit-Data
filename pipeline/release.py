@@ -63,6 +63,10 @@ def upload(tag: str, repo: str, out: Path, files: list[dict[str, Any]]) -> None:
             raise RuntimeError(f"{f['name']}: upload not confirmed ({sizes.get(f['name'])} bytes)")
 
 
+def set_notes(tag: str, repo: str, notes: str) -> None:
+    gh("release", "edit", tag, "--repo", repo, "--notes", notes)
+
+
 def assets(tag: str, repo: str) -> dict[str, int]:
     """Name -> size in bytes of every file in a release."""
     out = json.loads(gh("release", "view", tag, "--repo", repo, "--json", "assets"))

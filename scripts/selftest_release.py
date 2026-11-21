@@ -1,9 +1,9 @@
 """Exercise the Release upload path with the Actions token, then clean up.
 
 Creates a throwaway release, uploads two small files (twice, to test
---clobber), confirms their sizes, downloads one and checks its hash, then
-deletes the release and its tag. Run by the manual `Release self-test`
-workflow; publishes nothing that stays.
+--clobber), confirms their sizes, downloads one and checks its hash, replaces
+the release notes and reads them back, then deletes the release and its tag.
+Run by the manual `Release self-test` workflow; publishes nothing that stays.
 
     python scripts/selftest_release.py <owner/repo> <work dir>
 """
@@ -34,6 +34,12 @@ def main(repo: str, work: Path) -> None:
         print("assets:", release.assets(TAG, repo))
         got = release.fetch(TAG, repo, files[0]["name"], work / "down", files[0]["sha256"])
         print("downloaded and verified:", got)
+        notes = "# Self-test notes\n\n| a | b |\n|---|---|\n| 1 | 2 |\n"
+        release.set_notes(TAG, repo, notes)
+        body = release.gh("release", "view", TAG, "--repo", repo, "--json", "body", "-q", ".body")
+        if body.strip() != notes.strip():
+            raise RuntimeError(f"release notes not replaced: {body!r}")
+        print("release notes replaced")
     finally:
         release.gh("release", "delete", TAG, "--repo", repo, "--yes", "--cleanup-tag")
     print("release self-test OK")

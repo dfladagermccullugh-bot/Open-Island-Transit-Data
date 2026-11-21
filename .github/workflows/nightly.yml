@@ -3,7 +3,8 @@ name: Nightly archive
 # Copies every complete service day from the collector to GitHub Releases,
 # builds the parsed daily tables from those files, updates the static GTFS
 # version registry and crosswalk, infers stop events and on-time summaries,
-# and computes the daily quality metrics. All
+# computes the daily quality metrics, and writes a report for each closed
+# month (with checksums and notes on its Releases). All
 # outputs except the Release files are committed to the `data` branch. Runs after midnight Pacific
 # (08:35 UTC) with further attempts through the day, because GitHub drops
 # scheduled runs when busy (the first 08:35 run never started). Every step
@@ -114,6 +115,13 @@ jobs:
             --raw-dir work/files --tables-dir work/tables
           echo "code=$?" >> "$GITHUB_OUTPUT"
 
+      - name: Monthly reports and release checksums for closed months
+        id: monthly
+        run: |
+          set +e
+          python -m pipeline.monthly --data data-branch --release --work work/monthly
+          echo "code=$?" >> "$GITHUB_OUTPUT"
+
       - name: Publish the manifests
         id: publish
         run: |
@@ -145,5 +153,6 @@ jobs:
           steps.archive.outputs.code != '0' || steps.tables.outputs.code != '0' ||
           steps.static.outputs.code != '0' || steps.events.outputs.code != '0' ||
           steps.field.outputs.code != '0' ||
-          steps.quality.outputs.code != '0' || steps.check.outputs.code != '0'
+          steps.quality.outputs.code != '0' || steps.monthly.outputs.code != '0' ||
+          steps.check.outputs.code != '0'
         run: exit 1
