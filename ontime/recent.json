@@ -3,6 +3,7 @@
  "first_service_date": "2026-11-19",
  "last_service_date": "2026-11-20",
  "days": 2,
+ "days_without_service": [],
  "definition": {
   "window_s": [
    -60,
@@ -14,22 +15,22 @@
  "timepoints": "passio-9b1efa882037__timetable-2026-09-27-970aa207",
  "passio_version": "passio-9b1efa882037",
  "ontime_versions": [
-  "ontime/0.2.0"
+  "ontime/0.3.0"
  ],
  "overall": {
   "scheduled": 3681,
-  "observed": 2877,
-  "on_time": 1938,
+  "observed": 2887,
+  "on_time": 1948,
   "early": 61,
   "late": 878,
-  "observed_share": 0.7816,
-  "on_time_share_of_observed": 0.6736,
-  "early_share_of_observed": 0.0212,
-  "late_share_of_observed": 0.3052,
-  "deviation_s_median": 192.0,
-  "deviation_s_p25": 80.0,
+  "observed_share": 0.7843,
+  "on_time_share_of_observed": 0.6747,
+  "early_share_of_observed": 0.0211,
+  "late_share_of_observed": 0.3041,
+  "deviation_s_median": 191.0,
+  "deviation_s_p25": 79.0,
   "deviation_s_p75": 338.0,
-  "deviations_counted": 2877
+  "deviations_counted": 2887
  },
  "routes": {
   "6737": {
@@ -37,18 +38,18 @@
    "short_name": "1C",
    "long_name": "West Camano Shuttle",
    "scheduled": 208,
-   "observed": 97,
-   "on_time": 87,
+   "observed": 98,
+   "on_time": 88,
    "early": 1,
    "late": 9,
-   "observed_share": 0.4663,
-   "on_time_share_of_observed": 0.8969,
-   "early_share_of_observed": 0.0103,
-   "late_share_of_observed": 0.0928,
-   "deviation_s_median": 124.0,
-   "deviation_s_p25": 34.0,
+   "observed_share": 0.4712,
+   "on_time_share_of_observed": 0.898,
+   "early_share_of_observed": 0.0102,
+   "late_share_of_observed": 0.0918,
+   "deviation_s_median": 123.0,
+   "deviation_s_p25": 33.2,
    "deviation_s_p75": 231.0,
-   "deviations_counted": 97,
+   "deviations_counted": 98,
    "daily": [
     {
      "service_date": "2026-11-19",
@@ -58,9 +59,9 @@
     },
     {
      "service_date": "2026-11-20",
-     "observed_share": 0.5,
-     "on_time_share_of_observed": 0.9306,
-     "deviation_s_median": 138.7
+     "observed_share": 0.5069,
+     "on_time_share_of_observed": 0.9315,
+     "deviation_s_median": 131.1
     }
    ],
    "stops": [
@@ -77,9 +78,9 @@
      "on_time_share_of_observed": 0.9444,
      "early_share_of_observed": 0.0,
      "late_share_of_observed": 0.0556,
-     "deviation_s_median": 77.0,
-     "deviation_s_p25": 57.0,
-     "deviation_s_p75": 94.0,
+     "deviation_s_median": 76.5,
+     "deviation_s_p25": 57.8,
+     "deviation_s_p75": 93.0,
      "deviations_counted": 18
     },
     {
@@ -95,9 +96,9 @@
      "on_time_share_of_observed": 0.7778,
      "early_share_of_observed": 0.0,
      "late_share_of_observed": 0.2222,
-     "deviation_s_median": 257.0,
-     "deviation_s_p25": 213.0,
-     "deviation_s_p75": 299.0,
+     "deviation_s_median": 251.0,
+     "deviation_s_p25": 217.5,
+     "deviation_s_p75": 298.5,
      "deviations_counted": 18
     },
     {
@@ -131,9 +132,9 @@
      "on_time_share_of_observed": 0.9444,
      "early_share_of_observed": 0.0,
      "late_share_of_observed": 0.0556,
-     "deviation_s_median": 156.0,
-     "deviation_s_p25": 98.0,
-     "deviation_s_p75": 232.0,
+     "deviation_s_median": 152.0,
+     "deviation_s_p25": 104.5,
+     "deviation_s_p75": 227.0,
      "deviations_counted": 18
     },
     {
@@ -185,9 +186,9 @@
      "on_time_share_of_observed": 0.5,
      "early_share_of_observed": 0.0,
      "late_share_of_observed": 0.5,
-     "deviation_s_median": 548.0,
-     "deviation_s_p25": 253.0,
-     "deviation_s_p75": 548.0,
+     "deviation_s_median": 400.5,
+     "deviation_s_p25": 326.8,
+     "deviation_s_p75": 474.2,
      "deviations_counted": 2
     },
     {
@@ -195,18 +196,18 @@
      "name": "Terry's Corner",
      "order": 39,
      "scheduled": 47,
-     "observed": 24,
-     "on_time": 23,
+     "observed": 25,
+     "on_time": 24,
      "early": 1,
      "late": 0,
-     "observed_share": 0.5106,
-     "on_time_share_of_observed": 0.9583,
-     "early_share_of_observed": 0.0417,
+     "observed_share": 0.5319,
+     "on_time_share_of_observed": 0.96,
+     "early_share_of_observed": 0.04,
      "late_share_of_observed": 0.0,
-     "deviation_s_median": 6.0,
+     "deviation_s_median": -1.0,
      "deviation_s_p25": -124.0,
-     "deviation_s_p75": 28.0,
-     "deviations_counted": 24
+     "deviation_s_p75": 20.0,
+     "deviations_counted": 25
     }
    ]
   },
@@ -215,18 +216,18 @@
    "short_name": "9",
    "long_name": "West Oak Harbor",
    "scheduled": 235,
-   "observed": 138,
-   "on_time": 67,
+   "observed": 140,
+   "on_time": 69,
    "early": 0,
    "late": 71,
-   "observed_share": 0.5872,
-   "on_time_share_of_observed": 0.4855,
+   "observed_share": 0.5957,
+   "on_time_share_of_observed": 0.4929,
    "early_share_of_observed": 0.0,
-   "late_share_of_observed": 0.5145,
-   "deviation_s_median": 304.0,
-   "deviation_s_p25": 170.0,
-   "deviation_s_p75": 457.0,
-   "deviations_counted": 138,
+   "late_share_of_observed": 0.5071,
+   "deviation_s_median": 303.0,
+   "deviation_s_p25": 167.8,
+   "deviation_s_p75": 451.0,
+   "deviations_counted": 140,
    "daily": [
     {
      "service_date": "2026-11-19",
@@ -236,9 +237,9 @@
     },
     {
      "service_date": "2026-11-20",
-     "observed_share": 0.6303,
-     "on_time_share_of_observed": 0.5288,
-     "deviation_s_median": 293.6
+     "observed_share": 0.6424,
+     "on_time_share_of_observed": 0.5377,
+     "deviation_s_median": 276.6
     }
    ],
    "stops": [
@@ -256,8 +257,8 @@
      "early_share_of_observed": 0.0,
      "late_share_of_observed": 0.0909,
      "deviation_s_median": 118.0,
-     "deviation_s_p25": 108.0,
-     "deviation_s_p75": 215.0,
+     "deviation_s_p25": 109.0,
+     "deviation_s_p75": 193.0,
      "deviations_counted": 11
     },
     {
@@ -274,8 +275,8 @@
      "early_share_of_observed": 0.0,
      "late_share_of_observed": 0.1818,
      "deviation_s_median": 143.0,
-     "deviation_s_p25": 75.0,
-     "deviation_s_p75": 299.0,
+     "deviation_s_p25": 92.0,
+     "deviation_s_p75": 255.5,
      "deviations_counted": 11
     },
     {
@@ -292,8 +293,8 @@
      "early_share_of_observed": 0.0,
      "late_share_of_observed": 0.3636,
      "deviation_s_median": 243.0,
-     "deviation_s_p25": 170.0,
-     "deviation_s_p75": 391.0,
+     "deviation_s_p25": 182.5,
+     "deviation_s_p75": 356.5,
      "deviations_counted": 11
     },
     {
@@ -310,8 +311,8 @@
      "early_share_of_observed": 0.0,
      "late_share_of_observed": 0.5455,
      "deviation_s_median": 304.0,
-     "deviation_s_p25": 228.0,
-     "deviation_s_p75": 459.0,
+     "deviation_s_p25": 228.5,
+     "deviation_s_p75": 437.0,
      "deviations_counted": 11
     },
     {
@@ -328,8 +329,8 @@
      "early_share_of_observed": 0.0,
      "late_share_of_observed": 0.4545,
      "deviation_s_median": 294.0,
-     "deviation_s_p25": 211.0,
-     "deviation_s_p75": 446.0,
+     "deviation_s_p25": 213.5,
+     "deviation_s_p75": 425.0,
      "deviations_counted": 11
     },
     {
@@ -346,8 +347,8 @@
      "early_share_of_observed": 0.0,
      "late_share_of_observed": 0.8182,
      "deviation_s_median": 402.0,
-     "deviation_s_p25": 303.0,
-     "deviation_s_p75": 530.0,
+     "deviation_s_p25": 306.0,
+     "deviation_s_p75": 529.0,
      "deviations_counted": 11
     },
     {
@@ -364,8 +365,8 @@
      "early_share_of_observed": 0.0,
      "late_share_of_observed": 0.9091,
      "deviation_s_median": 431.0,
-     "deviation_s_p25": 335.0,
-     "deviation_s_p75": 572.0,
+     "deviation_s_p25": 336.5,
+     "deviation_s_p75": 561.0,
      "deviations_counted": 11
     },
     {
@@ -382,8 +383,8 @@
      "early_share_of_observed": 0.0,
      "late_share_of_observed": 0.8182,
      "deviation_s_median": 424.0,
-     "deviation_s_p25": 303.0,
-     "deviation_s_p75": 590.0,
+     "deviation_s_p25": 326.5,
+     "deviation_s_p75": 550.5,
      "deviations_counted": 11
     },
     {
@@ -400,8 +401,8 @@
      "early_share_of_observed": 0.0,
      "late_share_of_observed": 0.6364,
      "deviation_s_median": 389.0,
-     "deviation_s_p25": 237.0,
-     "deviation_s_p75": 562.0,
+     "deviation_s_p25": 265.5,
+     "deviation_s_p75": 520.0,
      "deviations_counted": 11
     },
     {
@@ -418,8 +419,8 @@
      "early_share_of_observed": 0.0,
      "late_share_of_observed": 0.6364,
      "deviation_s_median": 443.0,
-     "deviation_s_p25": 258.0,
-     "deviation_s_p75": 610.0,
+     "deviation_s_p25": 278.0,
+     "deviation_s_p75": 597.0,
      "deviations_counted": 11
     },
     {
@@ -436,8 +437,8 @@
      "early_share_of_observed": 0.0,
      "late_share_of_observed": 0.6364,
      "deviation_s_median": 377.0,
-     "deviation_s_p25": 243.0,
-     "deviation_s_p75": 560.0,
+     "deviation_s_p25": 251.5,
+     "deviation_s_p75": 559.5,
      "deviations_counted": 11
     },
     {
@@ -454,8 +455,8 @@
      "early_share_of_observed": 0.0,
      "late_share_of_observed": 0.6667,
      "deviation_s_median": 360.0,
-     "deviation_s_p25": 184.0,
-     "deviation_s_p75": 448.0,
+     "deviation_s_p25": 272.0,
+     "deviation_s_p75": 404.0,
      "deviations_counted": 3
     },
     {
@@ -472,8 +473,8 @@
      "early_share_of_observed": 0.0,
      "late_share_of_observed": 0.6667,
      "deviation_s_median": 337.0,
-     "deviation_s_p25": 164.0,
-     "deviation_s_p75": 425.0,
+     "deviation_s_p25": 250.5,
+     "deviation_s_p75": 381.0,
      "deviations_counted": 3
     },
     {
@@ -481,18 +482,18 @@
      "name": "Harbor Station Transfer Center Bayshore Dr",
      "order": 26,
      "scheduled": 31,
-     "observed": 11,
-     "on_time": 11,
+     "observed": 13,
+     "on_time": 13,
      "early": 0,
      "late": 0,
-     "observed_share": 0.3548,
+     "observed_share": 0.4194,
      "on_time_share_of_observed": 1.0,
      "early_share_of_observed": 0.0,
      "late_share_of_observed": 0.0,
-     "deviation_s_median": 59.0,
-     "deviation_s_p25": 26.0,
-     "deviation_s_p75": 101.0,
-     "deviations_counted": 11
+     "deviation_s_median": 38.0,
+     "deviation_s_p25": 16.0,
+     "deviation_s_p75": 67.0,
+     "deviations_counted": 13
     }
    ]
   },
@@ -501,30 +502,30 @@
    "short_name": "10",
    "long_name": "Central Oak Harbor",
    "scheduled": 411,
-   "observed": 394,
-   "on_time": 317,
+   "observed": 396,
+   "on_time": 319,
    "early": 0,
    "late": 77,
-   "observed_share": 0.9586,
-   "on_time_share_of_observed": 0.8046,
+   "observed_share": 0.9635,
+   "on_time_share_of_observed": 0.8056,
    "early_share_of_observed": 0.0,
-   "late_share_of_observed": 0.1954,
-   "deviation_s_median": 165.0,
-   "deviation_s_p25": 85.0,
-   "deviation_s_p75": 260.0,
-   "deviations_counted": 394,
+   "late_share_of_observed": 0.1944,
+   "deviation_s_median": 163.5,
+   "deviation_s_p25": 81.8,
+   "deviation_s_p75": 257.8,
+   "deviations_counted": 396,
    "daily": [
     {
      "service_date": "2026-11-19",
-     "observed_share": 0.9313,
-     "on_time_share_of_observed": 0.8197,
-     "deviation_s_median": 173.0
+     "observed_share": 0.9389,
+     "on_time_share_of_observed": 0.8211,
+     "deviation_s_median": 170.0
     },
     {
      "service_date": "2026-11-20",
-     "observed_share": 0.9714,
-     "on_time_share_of_observed": 0.7978,
-     "deviation_s_median": 161.5
+     "observed_share": 0.975,
+     "on_time_share_of_observed": 0.7985,
+     "deviation_s_median": 160.9
     }
    ],
    "stops": [
@@ -677,18 +678,18 @@
      "name": "Harbor Station Transfer Center Bayshore Dr",
      "order": 22,
      "scheduled": 83,
-     "observed": 66,
-     "on_time": 61,
+     "observed": 68,
+     "on_time": 63,
      "early": 0,
      "late": 5,
-     "observed_share": 0.7952,
-     "on_time_share_of_observed": 0.9242,
+     "observed_share": 0.8193,
+     "on_time_share_of_observed": 0.9265,
      "early_share_of_observed": 0.0,
-     "late_share_of_observed": 0.0758,
-     "deviation_s_median": 31.0,
-     "deviation_s_p25": -40.0,
-     "deviation_s_p75": 116.0,
-     "deviations_counted": 66
+     "late_share_of_observed": 0.0735,
+     "deviation_s_median": 26.5,
+     "deviation_s_p25": -72.8,
+     "deviation_s_p75": 105.5,
+     "deviations_counted": 68
     }
    ]
   },
@@ -697,29 +698,29 @@
    "short_name": "3C",
    "long_name": "Stanwood/ Camano Island",
    "scheduled": 169,
-   "observed": 125,
-   "on_time": 106,
+   "observed": 127,
+   "on_time": 108,
    "early": 0,
    "late": 19,
-   "observed_share": 0.7396,
-   "on_time_share_of_observed": 0.848,
+   "observed_share": 0.7515,
+   "on_time_share_of_observed": 0.8504,
    "early_share_of_observed": 0.0,
-   "late_share_of_observed": 0.152,
+   "late_share_of_observed": 0.1496,
    "deviation_s_median": 150.0,
-   "deviation_s_p25": 59.0,
-   "deviation_s_p75": 239.0,
-   "deviations_counted": 125,
+   "deviation_s_p25": 58.5,
+   "deviation_s_p75": 236.5,
+   "deviations_counted": 127,
    "daily": [
     {
      "service_date": "2026-11-19",
      "observed_share": 0.7347,
      "on_time_share_of_observed": 0.7778,
-     "deviation_s_median": 195.1
+     "deviation_s_median": 189.2
     },
     {
      "service_date": "2026-11-20",
-     "observed_share": 0.7417,
-     "on_time_share_of_observed": 0.8764,
+     "observed_share": 0.7583,
+     "on_time_share_of_observed": 0.8791,
      "deviation_s_median": 109.7
     }
    ],
@@ -738,8 +739,8 @@
      "early_share_of_observed": 0.0,
      "late_share_of_observed": 0.1429,
      "deviation_s_median": 145.0,
-     "deviation_s_p25": 54.0,
-     "deviation_s_p75": 203.0,
+     "deviation_s_p25": 80.5,
+     "deviation_s_p75": 181.0,
      "deviations_counted": 7
     },
     {
@@ -792,8 +793,8 @@
      "early_share_of_observed": 0.0,
      "late_share_of_observed": 0.2105,
      "deviation_s_median": 112.0,
-     "deviation_s_p25": 23.0,
-     "deviation_s_p75": 285.0,
+     "deviation_s_p25": 45.0,
+     "deviation_s_p75": 282.5,
      "deviations_counted": 19
     },
     {
@@ -819,18 +820,18 @@
      "name": "Haggen Grocery",
      "order": 12,
      "scheduled": 21,
-     "observed": 17,
-     "on_time": 15,
+     "observed": 19,
+     "on_time": 17,
      "early": 0,
      "late": 2,
-     "observed_share": 0.8095,
-     "on_time_share_of_observed": 0.8824,
+     "observed_share": 0.9048,
+     "on_time_share_of_observed": 0.8947,
      "early_share_of_observed": 0.0,
-     "late_share_of_observed": 0.1176,
+     "late_share_of_observed": 0.1053,
      "deviation_s_median": 141.0,
-     "deviation_s_p25": 97.0,
-     "deviation_s_p75": 178.0,
-     "deviations_counted": 17
+     "deviation_s_p25": 93.5,
+     "deviation_s_p75": 177.0,
+     "deviations_counted": 19
     },
     {
      "stop_id": "178376",
@@ -846,8 +847,8 @@
      "early_share_of_observed": 0.0,
      "late_share_of_observed": 0.0,
      "deviation_s_median": 21.0,
-     "deviation_s_p25": -326.0,
-     "deviation_s_p75": 47.0,
+     "deviation_s_p25": -273.5,
+     "deviation_s_p75": 45.0,
      "deviations_counted": 19
     }
    ]
@@ -857,30 +858,30 @@
    "short_name": "2C",
    "long_name": "East Camano",
    "scheduled": 231,
-   "observed": 163,
-   "on_time": 105,
+   "observed": 164,
+   "on_time": 106,
    "early": 3,
    "late": 55,
-   "observed_share": 0.7056,
-   "on_time_share_of_observed": 0.6442,
-   "early_share_of_observed": 0.0184,
-   "late_share_of_observed": 0.3374,
-   "deviation_s_median": 232.0,
-   "deviation_s_p25": 138.0,
+   "observed_share": 0.71,
+   "on_time_share_of_observed": 0.6463,
+   "early_share_of_observed": 0.0183,
+   "late_share_of_observed": 0.3354,
+   "deviation_s_median": 231.0,
+   "deviation_s_p25": 137.0,
    "deviation_s_p75": 358.0,
-   "deviations_counted": 163,
+   "deviations_counted": 164,
    "daily": [
     {
      "service_date": "2026-11-19",
-     "observed_share": 0.6338,
-     "on_time_share_of_observed": 0.7556,
-     "deviation_s_median": 205.9
+     "observed_share": 0.6479,
+     "on_time_share_of_observed": 0.7609,
+     "deviation_s_median": 205.1
     },
     {
      "service_date": "2026-11-20",
      "observed_share": 0.7375,
      "on_time_share_of_observed": 0.6017,
-     "deviation_s_median": 246.0
+     "deviation_s_median": 244.5
     }
    ],
    "stops": [
@@ -933,9 +934,9 @@
      "on_time_share_of_observed": 0.5455,
      "early_share_of_observed": 0.0,
      "late_share_of_observed": 0.4545,
-     "deviation_s_median": 284.0,
-     "deviation_s_p25": 167.0,
-     "deviation_s_p75": 467.0,
+     "deviation_s_median": 278.5,
+     "deviation_s_p25": 166.8,
+     "deviation_s_p75": 414.5,
      "deviations_counted": 44
     },
     {
@@ -997,18 +998,18 @@
      "name": "Terry's Corner",
      "order": 41,
      "scheduled": 47,
-     "observed": 34,
-     "on_time": 27,
+     "observed": 35,
+     "on_time": 28,
      "early": 3,
      "late": 4,
-     "observed_share": 0.7234,
-     "on_time_share_of_observed": 0.7941,
-     "early_share_of_observed": 0.0882,
-     "late_share_of_observed": 0.1176,
-     "deviation_s_median": 24.0,
-     "deviation_s_p25": -104.0,
-     "deviation_s_p75": 112.0,
-     "deviations_counted": 34
+     "observed_share": 0.7447,
+     "on_time_share_of_observed": 0.8,
+     "early_share_of_observed": 0.0857,
+     "late_share_of_observed": 0.1143,
+     "deviation_s_median": 16.0,
+     "deviation_s_p25": -110.0,
+     "deviation_s_p75": 100.0,
+     "deviations_counted": 35
     }
    ]
   },
@@ -1034,7 +1035,7 @@
      "service_date": "2026-11-19",
      "observed_share": 0.8333,
      "on_time_share_of_observed": 0.525,
-     "deviation_s_median": 166.0
+     "deviation_s_median": 165.1
     },
     {
      "service_date": "2026-11-20",
@@ -1058,8 +1059,8 @@
      "early_share_of_observed": 0.2727,
      "late_share_of_observed": 0.0909,
      "deviation_s_median": -44.0,
-     "deviation_s_p25": -67.0,
-     "deviation_s_p75": 56.0,
+     "deviation_s_p25": -63.0,
+     "deviation_s_p75": 36.0,
      "deviations_counted": 11
     },
     {
@@ -1076,8 +1077,8 @@
      "early_share_of_observed": 0.0,
      "late_share_of_observed": 0.0909,
      "deviation_s_median": 79.0,
-     "deviation_s_p25": 33.0,
-     "deviation_s_p75": 150.0,
+     "deviation_s_p25": 36.0,
+     "deviation_s_p75": 137.0,
      "deviations_counted": 11
     },
     {
@@ -1129,9 +1130,9 @@
      "on_time_share_of_observed": 0.7,
      "early_share_of_observed": 0.0,
      "late_share_of_observed": 0.3,
-     "deviation_s_median": 73.0,
-     "deviation_s_p25": 38.0,
-     "deviation_s_p75": 381.0,
+     "deviation_s_median": 65.0,
+     "deviation_s_p25": 38.5,
+     "deviation_s_p75": 335.8,
      "deviations_counted": 10
     },
     {
@@ -1147,9 +1148,9 @@
      "on_time_share_of_observed": 0.7,
      "early_share_of_observed": 0.0,
      "late_share_of_observed": 0.3,
-     "deviation_s_median": 81.0,
-     "deviation_s_p25": 4.0,
-     "deviation_s_p75": 348.0,
+     "deviation_s_median": 63.5,
+     "deviation_s_p25": 11.2,
+     "deviation_s_p75": 305.8,
      "deviations_counted": 10
     },
     {
@@ -1166,8 +1167,8 @@
      "early_share_of_observed": 0.0,
      "late_share_of_observed": 0.1818,
      "deviation_s_median": 49.0,
-     "deviation_s_p25": -185.0,
-     "deviation_s_p75": 169.0,
+     "deviation_s_p25": -160.5,
+     "deviation_s_p75": 127.0,
      "deviations_counted": 11
     },
     {
@@ -1183,9 +1184,9 @@
      "on_time_share_of_observed": 0.7,
      "early_share_of_observed": 0.1,
      "late_share_of_observed": 0.2,
-     "deviation_s_median": 13.0,
-     "deviation_s_p25": 2.0,
-     "deviation_s_p75": 18.0,
+     "deviation_s_median": 12.0,
+     "deviation_s_p25": 3.5,
+     "deviation_s_p75": 17.2,
      "deviations_counted": 10
     }
    ]
@@ -1195,30 +1196,30 @@
    "short_name": "412",
    "long_name": "Everett/ Camano Island",
    "scheduled": 92,
-   "observed": 48,
-   "on_time": 24,
+   "observed": 49,
+   "on_time": 25,
    "early": 3,
    "late": 21,
-   "observed_share": 0.5217,
-   "on_time_share_of_observed": 0.5,
-   "early_share_of_observed": 0.0625,
-   "late_share_of_observed": 0.4375,
-   "deviation_s_median": 282.0,
-   "deviation_s_p25": 73.0,
-   "deviation_s_p75": 403.0,
-   "deviations_counted": 48,
+   "observed_share": 0.5326,
+   "on_time_share_of_observed": 0.5102,
+   "early_share_of_observed": 0.0612,
+   "late_share_of_observed": 0.4286,
+   "deviation_s_median": 270.0,
+   "deviation_s_p25": 25.0,
+   "deviation_s_p75": 389.0,
+   "deviations_counted": 49,
    "daily": [
     {
      "service_date": "2026-11-19",
      "observed_share": 0.5,
      "on_time_share_of_observed": 0.375,
-     "deviation_s_median": 338.8
+     "deviation_s_median": 332.5
     },
     {
      "service_date": "2026-11-20",
-     "observed_share": 0.5333,
-     "on_time_share_of_observed": 0.5625,
-     "deviation_s_median": 251.3
+     "observed_share": 0.55,
+     "on_time_share_of_observed": 0.5758,
+     "deviation_s_median": 217.4
     }
    ],
    "stops": [
@@ -1236,8 +1237,8 @@
      "early_share_of_observed": 0.0,
      "late_share_of_observed": 0.5714,
      "deviation_s_median": 326.0,
-     "deviation_s_p25": 292.0,
-     "deviation_s_p75": 434.0,
+     "deviation_s_p25": 296.0,
+     "deviation_s_p75": 400.5,
      "deviations_counted": 7
     },
     {
@@ -1253,9 +1254,9 @@
      "on_time_share_of_observed": 1.0,
      "early_share_of_observed": 0.0,
      "late_share_of_observed": 0.0,
-     "deviation_s_median": 201.0,
-     "deviation_s_p25": 185.0,
-     "deviation_s_p75": 201.0,
+     "deviation_s_median": 193.0,
+     "deviation_s_p25": 189.0,
+     "deviation_s_p75": 197.0,
      "deviations_counted": 2
     },
     {
@@ -1271,9 +1272,9 @@
      "on_time_share_of_observed": 0.6667,
      "early_share_of_observed": 0.1667,
      "late_share_of_observed": 0.1667,
-     "deviation_s_median": 101.0,
-     "deviation_s_p25": -53.0,
-     "deviation_s_p75": 208.0,
+     "deviation_s_median": 96.0,
+     "deviation_s_p25": -17.0,
+     "deviation_s_p75": 181.2,
      "deviations_counted": 6
     },
     {
@@ -1289,9 +1290,9 @@
      "on_time_share_of_observed": 0.5,
      "early_share_of_observed": 0.0,
      "late_share_of_observed": 0.5,
-     "deviation_s_median": 468.0,
-     "deviation_s_p25": 282.0,
-     "deviation_s_p75": 517.0,
+     "deviation_s_median": 375.0,
+     "deviation_s_p25": 244.0,
+     "deviation_s_p75": 480.2,
      "deviations_counted": 4
     },
     {
@@ -1353,18 +1354,18 @@
      "name": "Everett Station",
      "order": 20,
      "scheduled": 16,
-     "observed": 6,
-     "on_time": 6,
+     "observed": 7,
+     "on_time": 7,
      "early": 0,
      "late": 0,
-     "observed_share": 0.375,
+     "observed_share": 0.4375,
      "on_time_share_of_observed": 1.0,
      "early_share_of_observed": 0.0,
      "late_share_of_observed": 0.0,
-     "deviation_s_median": -190.0,
-     "deviation_s_p25": -526.0,
-     "deviation_s_p75": -19.0,
-     "deviations_counted": 6
+     "deviation_s_median": -316.0,
+     "deviation_s_p25": -538.0,
+     "deviation_s_p75": -104.5,
+     "deviations_counted": 7
     }
    ]
   },
@@ -1382,15 +1383,15 @@
    "early_share_of_observed": 0.0151,
    "late_share_of_observed": 0.2161,
    "deviation_s_median": 152.0,
-   "deviation_s_p25": 64.0,
-   "deviation_s_p75": 266.0,
+   "deviation_s_p25": 65.5,
+   "deviation_s_p75": 262.5,
    "deviations_counted": 199,
    "daily": [
     {
      "service_date": "2026-11-19",
      "observed_share": 0.7952,
      "on_time_share_of_observed": 0.5909,
-     "deviation_s_median": 235.3
+     "deviation_s_median": 230.2
     },
     {
      "service_date": "2026-11-20",
@@ -1413,9 +1414,9 @@
      "on_time_share_of_observed": 0.8182,
      "early_share_of_observed": 0.0,
      "late_share_of_observed": 0.1818,
-     "deviation_s_median": 63.0,
-     "deviation_s_p25": 30.0,
-     "deviation_s_p75": 152.0,
+     "deviation_s_median": 62.0,
+     "deviation_s_p25": 32.2,
+     "deviation_s_p75": 141.8,
      "deviations_counted": 22
     },
     {
@@ -1431,9 +1432,9 @@
      "on_time_share_of_observed": 0.9,
      "early_share_of_observed": 0.0,
      "late_share_of_observed": 0.1,
-     "deviation_s_median": 64.0,
-     "deviation_s_p25": 39.0,
-     "deviation_s_p75": 71.0,
+     "deviation_s_median": 61.0,
+     "deviation_s_p25": 39.2,
+     "deviation_s_p75": 70.0,
      "deviations_counted": 10
     },
     {
@@ -1467,9 +1468,9 @@
      "on_time_share_of_observed": 0.9,
      "early_share_of_observed": 0.0,
      "late_share_of_observed": 0.1,
-     "deviation_s_median": 85.0,
-     "deviation_s_p25": 42.0,
-     "deviation_s_p75": 108.0,
+     "deviation_s_median": 83.5,
+     "deviation_s_p25": 51.5,
+     "deviation_s_p75": 103.0,
      "deviations_counted": 10
     },
     {
@@ -1612,8 +1613,8 @@
      "early_share_of_observed": 0.3333,
      "late_share_of_observed": 0.3333,
      "deviation_s_median": -59.0,
-     "deviation_s_p25": -184.0,
-     "deviation_s_p75": 571.0,
+     "deviation_s_p25": -121.5,
+     "deviation_s_p75": 256.0,
      "deviations_counted": 3
     },
     {
@@ -1682,7 +1683,7 @@
      "service_date": "2026-11-20",
      "observed_share": 0.7101,
      "on_time_share_of_observed": 0.6583,
-     "deviation_s_median": 243.2
+     "deviation_s_median": 243.0
     }
    ],
    "stops": [
@@ -1700,8 +1701,8 @@
      "early_share_of_observed": 0.0,
      "late_share_of_observed": 0.4211,
      "deviation_s_median": 247.0,
-     "deviation_s_p25": 199.0,
-     "deviation_s_p75": 318.0,
+     "deviation_s_p25": 205.0,
+     "deviation_s_p75": 316.5,
      "deviations_counted": 19
     },
     {
@@ -1718,8 +1719,8 @@
      "early_share_of_observed": 0.0,
      "late_share_of_observed": 0.4737,
      "deviation_s_median": 286.0,
-     "deviation_s_p25": 219.0,
-     "deviation_s_p75": 398.0,
+     "deviation_s_p25": 220.5,
+     "deviation_s_p75": 388.0,
      "deviations_counted": 19
     },
     {
@@ -1735,9 +1736,9 @@
      "on_time_share_of_observed": 0.9444,
      "early_share_of_observed": 0.0,
      "late_share_of_observed": 0.0556,
-     "deviation_s_median": 117.0,
-     "deviation_s_p25": 74.0,
-     "deviation_s_p75": 166.0,
+     "deviation_s_median": 115.5,
+     "deviation_s_p25": 77.5,
+     "deviation_s_p75": 159.5,
      "deviations_counted": 18
     },
     {
@@ -1754,8 +1755,8 @@
      "early_share_of_observed": 0.0,
      "late_share_of_observed": 0.7368,
      "deviation_s_median": 395.0,
-     "deviation_s_p25": 291.0,
-     "deviation_s_p75": 536.0,
+     "deviation_s_p25": 299.0,
+     "deviation_s_p75": 527.0,
      "deviations_counted": 19
     },
     {
@@ -1771,9 +1772,9 @@
      "on_time_share_of_observed": 0.8889,
      "early_share_of_observed": 0.0,
      "late_share_of_observed": 0.1111,
-     "deviation_s_median": 180.0,
-     "deviation_s_p25": 158.0,
-     "deviation_s_p75": 248.0,
+     "deviation_s_median": 179.5,
+     "deviation_s_p25": 159.5,
+     "deviation_s_p75": 245.8,
      "deviations_counted": 18
     },
     {
@@ -1791,7 +1792,7 @@
      "late_share_of_observed": 0.8421,
      "deviation_s_median": 456.0,
      "deviation_s_p25": 329.0,
-     "deviation_s_p75": 600.0,
+     "deviation_s_p75": 594.0,
      "deviations_counted": 19
     },
     {
@@ -1807,9 +1808,9 @@
      "on_time_share_of_observed": 0.5,
      "early_share_of_observed": 0.0,
      "late_share_of_observed": 0.5,
-     "deviation_s_median": 307.0,
-     "deviation_s_p25": 243.0,
-     "deviation_s_p75": 359.0,
+     "deviation_s_median": 301.0,
+     "deviation_s_p25": 244.5,
+     "deviation_s_p75": 354.0,
      "deviations_counted": 18
     },
     {
@@ -1825,9 +1826,9 @@
      "on_time_share_of_observed": 0.3333,
      "early_share_of_observed": 0.0,
      "late_share_of_observed": 0.6667,
-     "deviation_s_median": 400.0,
-     "deviation_s_p25": 273.0,
-     "deviation_s_p75": 429.0,
+     "deviation_s_median": 354.5,
+     "deviation_s_p25": 282.0,
+     "deviation_s_p75": 421.8,
      "deviations_counted": 6
     },
     {
@@ -1843,9 +1844,9 @@
      "on_time_share_of_observed": 0.75,
      "early_share_of_observed": 0.0,
      "late_share_of_observed": 0.25,
-     "deviation_s_median": 185.0,
-     "deviation_s_p25": 78.0,
-     "deviation_s_p75": 301.0,
+     "deviation_s_median": 175.5,
+     "deviation_s_p25": 65.2,
+     "deviation_s_p75": 299.5,
      "deviations_counted": 8
     },
     {
@@ -1861,9 +1862,9 @@
      "on_time_share_of_observed": 0.25,
      "early_share_of_observed": 0.0,
      "late_share_of_observed": 0.75,
-     "deviation_s_median": 459.0,
-     "deviation_s_p25": 308.0,
-     "deviation_s_p75": 506.0,
+     "deviation_s_median": 409.0,
+     "deviation_s_p25": 299.0,
+     "deviation_s_p75": 503.8,
      "deviations_counted": 8
     },
     {
@@ -1899,9 +1900,9 @@
    "on_time_share_of_observed": 0.6369,
    "early_share_of_observed": 0.0,
    "late_share_of_observed": 0.3631,
-   "deviation_s_median": 217.0,
+   "deviation_s_median": 216.5,
    "deviation_s_p25": 118.0,
-   "deviation_s_p75": 364.0,
+   "deviation_s_p75": 361.8,
    "deviations_counted": 168,
    "daily": [
     {
@@ -1932,8 +1933,8 @@
      "early_share_of_observed": 0.0,
      "late_share_of_observed": 0.2105,
      "deviation_s_median": 123.0,
-     "deviation_s_p25": 83.0,
-     "deviation_s_p75": 264.0,
+     "deviation_s_p25": 93.0,
+     "deviation_s_p75": 252.0,
      "deviations_counted": 19
     },
     {
@@ -1951,7 +1952,7 @@
      "late_share_of_observed": 0.2105,
      "deviation_s_median": 101.0,
      "deviation_s_p25": 65.0,
-     "deviation_s_p75": 225.0,
+     "deviation_s_p75": 216.0,
      "deviations_counted": 19
     },
     {
@@ -1968,8 +1969,8 @@
      "early_share_of_observed": 0.0,
      "late_share_of_observed": 0.3158,
      "deviation_s_median": 215.0,
-     "deviation_s_p25": 127.0,
-     "deviation_s_p75": 326.0,
+     "deviation_s_p25": 127.5,
+     "deviation_s_p75": 315.5,
      "deviations_counted": 19
     },
     {
@@ -1987,7 +1988,7 @@
      "late_share_of_observed": 0.3684,
      "deviation_s_median": 236.0,
      "deviation_s_p25": 153.0,
-     "deviation_s_p75": 349.0,
+     "deviation_s_p75": 335.0,
      "deviations_counted": 19
     },
     {
@@ -2004,8 +2005,8 @@
      "early_share_of_observed": 0.0,
      "late_share_of_observed": 0.4211,
      "deviation_s_median": 261.0,
-     "deviation_s_p25": 165.0,
-     "deviation_s_p75": 417.0,
+     "deviation_s_p25": 172.0,
+     "deviation_s_p75": 390.5,
      "deviations_counted": 19
     },
     {
@@ -2022,8 +2023,8 @@
      "early_share_of_observed": 0.0,
      "late_share_of_observed": 0.4211,
      "deviation_s_median": 270.0,
-     "deviation_s_p25": 167.0,
-     "deviation_s_p75": 422.0,
+     "deviation_s_p25": 176.0,
+     "deviation_s_p75": 411.0,
      "deviations_counted": 19
     },
     {
@@ -2040,8 +2041,8 @@
      "early_share_of_observed": 0.0,
      "late_share_of_observed": 0.5789,
      "deviation_s_median": 345.0,
-     "deviation_s_p25": 197.0,
-     "deviation_s_p75": 433.0,
+     "deviation_s_p25": 202.5,
+     "deviation_s_p75": 424.5,
      "deviations_counted": 19
     },
     {
@@ -2058,8 +2059,8 @@
      "early_share_of_observed": 0.0,
      "late_share_of_observed": 0.5789,
      "deviation_s_median": 360.0,
-     "deviation_s_p25": 198.0,
-     "deviation_s_p75": 500.0,
+     "deviation_s_p25": 207.0,
+     "deviation_s_p75": 493.5,
      "deviations_counted": 19
     },
     {
@@ -2075,9 +2076,9 @@
      "on_time_share_of_observed": 0.875,
      "early_share_of_observed": 0.0,
      "late_share_of_observed": 0.125,
-     "deviation_s_median": 45.0,
-     "deviation_s_p25": 22.0,
-     "deviation_s_p75": 194.0,
+     "deviation_s_median": 41.5,
+     "deviation_s_p25": 21.8,
+     "deviation_s_p75": 171.5,
      "deviations_counted": 16
     }
    ]
@@ -2095,22 +2096,22 @@
    "on_time_share_of_observed": 0.3352,
    "early_share_of_observed": 0.0192,
    "late_share_of_observed": 0.6456,
-   "deviation_s_median": 389.0,
-   "deviation_s_p25": 213.0,
-   "deviation_s_p75": 617.0,
+   "deviation_s_median": 388.0,
+   "deviation_s_p25": 212.2,
+   "deviation_s_p75": 614.8,
    "deviations_counted": 364,
    "daily": [
     {
      "service_date": "2026-11-19",
      "observed_share": 0.8116,
      "on_time_share_of_observed": 0.2589,
-     "deviation_s_median": 448.3
+     "deviation_s_median": 445.6
     },
     {
      "service_date": "2026-11-20",
      "observed_share": 0.7412,
      "on_time_share_of_observed": 0.369,
-     "deviation_s_median": 369.5
+     "deviation_s_median": 369.4
     }
    ],
    "stops": [
@@ -2127,9 +2128,9 @@
      "on_time_share_of_observed": 0.4583,
      "early_share_of_observed": 0.0833,
      "late_share_of_observed": 0.4583,
-     "deviation_s_median": 250.0,
-     "deviation_s_p25": 93.0,
-     "deviation_s_p75": 667.0,
+     "deviation_s_median": 227.5,
+     "deviation_s_p25": 80.8,
+     "deviation_s_p75": 622.8,
      "deviations_counted": 24
     },
     {
@@ -2145,9 +2146,9 @@
      "on_time_share_of_observed": 0.1944,
      "early_share_of_observed": 0.0,
      "late_share_of_observed": 0.8056,
-     "deviation_s_median": 416.0,
-     "deviation_s_p25": 327.0,
-     "deviation_s_p75": 588.0,
+     "deviation_s_median": 412.5,
+     "deviation_s_p25": 325.5,
+     "deviation_s_p75": 576.8,
      "deviations_counted": 36
     },
     {
@@ -2163,9 +2164,9 @@
      "on_time_share_of_observed": 0.1389,
      "early_share_of_observed": 0.0,
      "late_share_of_observed": 0.8611,
-     "deviation_s_median": 497.0,
-     "deviation_s_p25": 339.0,
-     "deviation_s_p75": 617.0,
+     "deviation_s_median": 467.5,
+     "deviation_s_p25": 336.0,
+     "deviation_s_p75": 601.2,
      "deviations_counted": 36
     },
     {
@@ -2181,9 +2182,9 @@
      "on_time_share_of_observed": 0.4342,
      "early_share_of_observed": 0.0132,
      "late_share_of_observed": 0.5526,
-     "deviation_s_median": 353.0,
-     "deviation_s_p25": 149.0,
-     "deviation_s_p75": 569.0,
+     "deviation_s_median": 335.5,
+     "deviation_s_p25": 147.8,
+     "deviation_s_p75": 566.8,
      "deviations_counted": 76
     },
     {
@@ -2217,9 +2218,9 @@
      "on_time_share_of_observed": 0.1667,
      "early_share_of_observed": 0.0278,
      "late_share_of_observed": 0.8056,
-     "deviation_s_median": 484.0,
+     "deviation_s_median": 466.0,
      "deviation_s_p25": 330.0,
-     "deviation_s_p75": 676.0,
+     "deviation_s_p75": 674.5,
      "deviations_counted": 36
     },
     {
@@ -2253,9 +2254,9 @@
      "on_time_share_of_observed": 0.5476,
      "early_share_of_observed": 0.0,
      "late_share_of_observed": 0.4524,
-     "deviation_s_median": 264.0,
-     "deviation_s_p25": 162.0,
-     "deviation_s_p75": 460.0,
+     "deviation_s_median": 259.0,
+     "deviation_s_p25": 166.0,
+     "deviation_s_p75": 459.5,
      "deviations_counted": 42
     }
    ]
@@ -2274,15 +2275,15 @@
    "early_share_of_observed": 0.0,
    "late_share_of_observed": 0.5041,
    "deviation_s_median": 300.0,
-   "deviation_s_p25": 183.0,
-   "deviation_s_p75": 485.0,
+   "deviation_s_p25": 184.0,
+   "deviation_s_p75": 484.0,
    "deviations_counted": 123,
    "daily": [
     {
      "service_date": "2026-11-19",
      "observed_share": 0.7,
      "on_time_share_of_observed": 0.5238,
-     "deviation_s_median": 270.9
+     "deviation_s_median": 266.7
     },
     {
      "service_date": "2026-11-20",
@@ -2305,9 +2306,9 @@
      "on_time_share_of_observed": 0.5,
      "early_share_of_observed": 0.0,
      "late_share_of_observed": 0.5,
-     "deviation_s_median": 300.0,
-     "deviation_s_p25": 128.0,
-     "deviation_s_p75": 418.0,
+     "deviation_s_median": 285.0,
+     "deviation_s_p25": 156.5,
+     "deviation_s_p75": 416.0,
      "deviations_counted": 14
     },
     {
@@ -2323,9 +2324,9 @@
      "on_time_share_of_observed": 0.6429,
      "early_share_of_observed": 0.0,
      "late_share_of_observed": 0.3571,
-     "deviation_s_median": 208.0,
-     "deviation_s_p25": 51.0,
-     "deviation_s_p75": 388.0,
+     "deviation_s_median": 196.5,
+     "deviation_s_p25": 75.8,
+     "deviation_s_p75": 372.2,
      "deviations_counted": 14
     },
     {
@@ -2341,9 +2342,9 @@
      "on_time_share_of_observed": 1.0,
      "early_share_of_observed": 0.0,
      "late_share_of_observed": 0.0,
-     "deviation_s_median": 103.0,
-     "deviation_s_p25": 35.0,
-     "deviation_s_p75": 198.0,
+     "deviation_s_median": 69.0,
+     "deviation_s_p25": 30.5,
+     "deviation_s_p75": 126.8,
      "deviations_counted": 4
     },
     {
@@ -2360,8 +2361,8 @@
      "early_share_of_observed": 0.0,
      "late_share_of_observed": 0.5714,
      "deviation_s_median": 344.0,
-     "deviation_s_p25": 253.0,
-     "deviation_s_p75": 914.0,
+     "deviation_s_p25": 262.0,
+     "deviation_s_p75": 681.5,
      "deviations_counted": 7
     },
     {
@@ -2377,9 +2378,9 @@
      "on_time_share_of_observed": 0.7,
      "early_share_of_observed": 0.0,
      "late_share_of_observed": 0.3,
-     "deviation_s_median": 174.0,
-     "deviation_s_p25": 117.0,
-     "deviation_s_p75": 352.0,
+     "deviation_s_median": 164.5,
+     "deviation_s_p25": 125.8,
+     "deviation_s_p75": 324.0,
      "deviations_counted": 10
     },
     {
@@ -2414,8 +2415,8 @@
      "early_share_of_observed": 0.0,
      "late_share_of_observed": 0.3333,
      "deviation_s_median": 246.0,
-     "deviation_s_p25": 191.0,
-     "deviation_s_p75": 444.0,
+     "deviation_s_p25": 198.0,
+     "deviation_s_p75": 409.5,
      "deviations_counted": 15
     },
     {
@@ -2449,9 +2450,9 @@
      "on_time_share_of_observed": 0.5,
      "early_share_of_observed": 0.0,
      "late_share_of_observed": 0.5,
-     "deviation_s_median": 374.0,
-     "deviation_s_p25": 233.0,
-     "deviation_s_p75": 566.0,
+     "deviation_s_median": 316.5,
+     "deviation_s_p25": 230.2,
+     "deviation_s_p75": 470.8,
      "deviations_counted": 8
     },
     {
@@ -2467,9 +2468,9 @@
      "on_time_share_of_observed": 0.3,
      "early_share_of_observed": 0.0,
      "late_share_of_observed": 0.7,
-     "deviation_s_median": 338.0,
-     "deviation_s_p25": 262.0,
-     "deviation_s_p75": 556.0,
+     "deviation_s_median": 328.5,
+     "deviation_s_p25": 271.8,
+     "deviation_s_p75": 514.2,
      "deviations_counted": 10
     },
     {
@@ -2486,8 +2487,8 @@
      "early_share_of_observed": 0.0,
      "late_share_of_observed": 0.8182,
      "deviation_s_median": 491.0,
-     "deviation_s_p25": 359.0,
-     "deviation_s_p75": 698.0,
+     "deviation_s_p25": 367.0,
+     "deviation_s_p75": 652.0,
      "deviations_counted": 11
     }
    ]
@@ -2497,30 +2498,30 @@
    "short_name": "1",
    "long_name": "Clinton / Oak Harbor",
    "scheduled": 745,
-   "observed": 675,
-   "on_time": 530,
+   "observed": 676,
+   "on_time": 531,
    "early": 26,
    "late": 119,
-   "observed_share": 0.906,
-   "on_time_share_of_observed": 0.7852,
+   "observed_share": 0.9074,
+   "on_time_share_of_observed": 0.7855,
    "early_share_of_observed": 0.0385,
-   "late_share_of_observed": 0.1763,
-   "deviation_s_median": 143.0,
-   "deviation_s_p25": 55.0,
+   "late_share_of_observed": 0.176,
+   "deviation_s_median": 142.5,
+   "deviation_s_p25": 54.5,
    "deviation_s_p75": 239.0,
-   "deviations_counted": 675,
+   "deviations_counted": 676,
    "daily": [
     {
      "service_date": "2026-11-19",
      "observed_share": 0.9406,
      "on_time_share_of_observed": 0.6893,
-     "deviation_s_median": 158.4
+     "deviation_s_median": 157.9
     },
     {
      "service_date": "2026-11-20",
-     "observed_share": 0.8916,
-     "on_time_share_of_observed": 0.8273,
-     "deviation_s_median": 141.0
+     "observed_share": 0.8935,
+     "on_time_share_of_observed": 0.8277,
+     "deviation_s_median": 140.6
     }
    ],
    "stops": [
@@ -2529,18 +2530,18 @@
      "name": "Harbor Station Transfer Center Bayshore Dr",
      "order": 1,
      "scheduled": 84,
-     "observed": 60,
-     "on_time": 55,
+     "observed": 61,
+     "on_time": 56,
      "early": 0,
      "late": 5,
-     "observed_share": 0.7143,
-     "on_time_share_of_observed": 0.9167,
+     "observed_share": 0.7262,
+     "on_time_share_of_observed": 0.918,
      "early_share_of_observed": 0.0,
-     "late_share_of_observed": 0.0833,
-     "deviation_s_median": 79.0,
+     "late_share_of_observed": 0.082,
+     "deviation_s_median": 68.0,
      "deviation_s_p25": 15.0,
-     "deviation_s_p75": 168.0,
-     "deviations_counted": 60
+     "deviation_s_p75": 162.0,
+     "deviations_counted": 61
     },
     {
      "stop_id": "197232",
@@ -2556,8 +2557,8 @@
      "early_share_of_observed": 0.0,
      "late_share_of_observed": 0.0698,
      "deviation_s_median": 109.0,
-     "deviation_s_p25": 66.0,
-     "deviation_s_p75": 197.0,
+     "deviation_s_p25": 71.5,
+     "deviation_s_p75": 194.0,
      "deviations_counted": 43
     },
     {
@@ -2574,8 +2575,8 @@
      "early_share_of_observed": 0.0233,
      "late_share_of_observed": 0.0233,
      "deviation_s_median": 114.0,
-     "deviation_s_p25": 59.0,
-     "deviation_s_p75": 140.0,
+     "deviation_s_p25": 61.0,
+     "deviation_s_p75": 138.0,
      "deviations_counted": 43
     },
     {
@@ -2592,8 +2593,8 @@
      "early_share_of_observed": 0.0,
      "late_share_of_observed": 0.1628,
      "deviation_s_median": 163.0,
-     "deviation_s_p25": 128.0,
-     "deviation_s_p75": 222.0,
+     "deviation_s_p25": 130.5,
+     "deviation_s_p75": 221.5,
      "deviations_counted": 43
     },
     {
@@ -2610,8 +2611,8 @@
      "early_share_of_observed": 0.0213,
      "late_share_of_observed": 0.1277,
      "deviation_s_median": 120.0,
-     "deviation_s_p25": 27.0,
-     "deviation_s_p75": 211.0,
+     "deviation_s_p25": 37.0,
+     "deviation_s_p75": 205.5,
      "deviations_counted": 47
     },
     {
@@ -2628,8 +2629,8 @@
      "early_share_of_observed": 0.0,
      "late_share_of_observed": 0.186,
      "deviation_s_median": 193.0,
-     "deviation_s_p25": 147.0,
-     "deviation_s_p75": 247.0,
+     "deviation_s_p25": 148.0,
+     "deviation_s_p75": 245.5,
      "deviations_counted": 43
     },
     {
@@ -2645,9 +2646,9 @@
      "on_time_share_of_observed": 0.7,
      "early_share_of_observed": 0.0,
      "late_share_of_observed": 0.3,
-     "deviation_s_median": 206.0,
-     "deviation_s_p25": 157.0,
-     "deviation_s_p75": 326.0,
+     "deviation_s_median": 200.5,
+     "deviation_s_p25": 157.8,
+     "deviation_s_p75": 319.8,
      "deviations_counted": 30
     },
     {
@@ -2664,8 +2665,8 @@
      "early_share_of_observed": 0.1304,
      "late_share_of_observed": 0.0435,
      "deviation_s_median": 39.0,
-     "deviation_s_p25": 12.0,
-     "deviation_s_p75": 161.0,
+     "deviation_s_p25": 12.5,
+     "deviation_s_p75": 156.0,
      "deviations_counted": 23
     },
     {
@@ -2682,8 +2683,8 @@
      "early_share_of_observed": 0.1304,
      "late_share_of_observed": 0.0435,
      "deviation_s_median": 71.0,
-     "deviation_s_p25": 31.0,
-     "deviation_s_p75": 205.0,
+     "deviation_s_p25": 31.5,
+     "deviation_s_p75": 189.0,
      "deviations_counted": 23
     },
     {
@@ -2699,8 +2700,8 @@
      "on_time_share_of_observed": 0.85,
      "early_share_of_observed": 0.05,
      "late_share_of_observed": 0.1,
-     "deviation_s_median": 141.0,
-     "deviation_s_p25": 94.0,
+     "deviation_s_median": 132.5,
+     "deviation_s_p25": 85.8,
      "deviation_s_p75": 216.0,
      "deviations_counted": 20
     },
@@ -2718,8 +2719,8 @@
      "early_share_of_observed": 0.1739,
      "late_share_of_observed": 0.0,
      "deviation_s_median": 1.0,
-     "deviation_s_p25": -108.0,
-     "deviation_s_p75": 46.0,
+     "deviation_s_p25": -107.0,
+     "deviation_s_p75": 44.2,
      "deviations_counted": 46
     },
     {
@@ -2736,8 +2737,8 @@
      "early_share_of_observed": 0.0465,
      "late_share_of_observed": 0.2558,
      "deviation_s_median": 164.0,
-     "deviation_s_p25": 73.0,
-     "deviation_s_p75": 320.0,
+     "deviation_s_p25": 76.5,
+     "deviation_s_p75": 305.0,
      "deviations_counted": 43
     },
     {
@@ -2754,8 +2755,8 @@
      "early_share_of_observed": 0.0465,
      "late_share_of_observed": 0.1628,
      "deviation_s_median": 163.0,
-     "deviation_s_p25": 87.0,
-     "deviation_s_p75": 226.0,
+     "deviation_s_p25": 88.5,
+     "deviation_s_p75": 219.0,
      "deviations_counted": 43
     },
     {
@@ -2790,8 +2791,8 @@
      "early_share_of_observed": 0.0233,
      "late_share_of_observed": 0.3256,
      "deviation_s_median": 206.0,
-     "deviation_s_p25": 124.0,
-     "deviation_s_p75": 318.0,
+     "deviation_s_p25": 126.0,
+     "deviation_s_p75": 310.5,
      "deviations_counted": 43
     },
     {
@@ -2808,7 +2809,7 @@
      "early_share_of_observed": 0.0698,
      "late_share_of_observed": 0.1628,
      "deviation_s_median": 159.0,
-     "deviation_s_p25": 65.0,
+     "deviation_s_p25": 68.0,
      "deviation_s_p75": 261.0,
      "deviations_counted": 43
     },
@@ -2846,8 +2847,8 @@
    "early_share_of_observed": 0.2093,
    "late_share_of_observed": 0.0,
    "deviation_s_median": 28.0,
-   "deviation_s_p25": -26.0,
-   "deviation_s_p75": 68.0,
+   "deviation_s_p25": -24.5,
+   "deviation_s_p75": 66.0,
    "deviations_counted": 43,
    "daily": [
     {
@@ -2961,9 +2962,9 @@
      "on_time_share_of_observed": 1.0,
      "early_share_of_observed": 0.0,
      "late_share_of_observed": 0.0,
-     "deviation_s_median": 100.0,
-     "deviation_s_p25": 22.0,
-     "deviation_s_p75": 242.0,
+     "deviation_s_median": 61.0,
+     "deviation_s_p25": 5.5,
+     "deviation_s_p75": 135.5,
      "deviations_counted": 4
     },
     {
@@ -3015,9 +3016,9 @@
      "on_time_share_of_observed": 0.25,
      "early_share_of_observed": 0.75,
      "late_share_of_observed": 0.0,
-     "deviation_s_median": -63.0,
-     "deviation_s_p25": -400.0,
-     "deviation_s_p75": -26.0,
+     "deviation_s_median": -231.5,
+     "deviation_s_p25": -401.8,
+     "deviation_s_p75": -53.8,
      "deviations_counted": 4
     }
    ]
@@ -3035,22 +3036,22 @@
    "on_time_share_of_observed": 0.7097,
    "early_share_of_observed": 0.0806,
    "late_share_of_observed": 0.2097,
-   "deviation_s_median": 121.0,
-   "deviation_s_p25": 33.0,
-   "deviation_s_p75": 240.0,
+   "deviation_s_median": 118.5,
+   "deviation_s_p25": 33.8,
+   "deviation_s_p75": 237.2,
    "deviations_counted": 62,
    "daily": [
     {
      "service_date": "2026-11-19",
      "observed_share": 0.8485,
      "on_time_share_of_observed": 0.5714,
-     "deviation_s_median": 228.6
+     "deviation_s_median": 215.6
     },
     {
      "service_date": "2026-11-20",
      "observed_share": 0.85,
      "on_time_share_of_observed": 0.8235,
-     "deviation_s_median": 74.0
+     "deviation_s_median": 63.7
     }
    ],
    "stops": [
@@ -3068,8 +3069,8 @@
      "early_share_of_observed": 0.0,
      "late_share_of_observed": 0.4286,
      "deviation_s_median": 240.0,
-     "deviation_s_p25": 195.0,
-     "deviation_s_p75": 439.0,
+     "deviation_s_p25": 197.5,
+     "deviation_s_p75": 381.0,
      "deviations_counted": 7
     },
     {
@@ -3086,8 +3087,8 @@
      "early_share_of_observed": 0.0,
      "late_share_of_observed": 0.1429,
      "deviation_s_median": 145.0,
-     "deviation_s_p25": 74.0,
-     "deviation_s_p75": 296.0,
+     "deviation_s_p25": 98.5,
+     "deviation_s_p75": 277.5,
      "deviations_counted": 7
     },
     {
@@ -3104,8 +3105,8 @@
      "early_share_of_observed": 0.0,
      "late_share_of_observed": 0.1429,
      "deviation_s_median": 143.0,
-     "deviation_s_p25": 53.0,
-     "deviation_s_p75": 229.0,
+     "deviation_s_p25": 71.5,
+     "deviation_s_p75": 213.5,
      "deviations_counted": 7
     },
     {
@@ -3122,8 +3123,8 @@
      "early_share_of_observed": 0.1429,
      "late_share_of_observed": 0.1429,
      "deviation_s_median": 91.0,
-     "deviation_s_p25": -36.0,
-     "deviation_s_p75": 128.0,
+     "deviation_s_p25": 3.0,
+     "deviation_s_p75": 122.0,
      "deviations_counted": 7
     },
     {
@@ -3140,8 +3141,8 @@
      "early_share_of_observed": 0.1429,
      "late_share_of_observed": 0.1429,
      "deviation_s_median": 51.0,
-     "deviation_s_p25": -29.0,
-     "deviation_s_p75": 141.0,
+     "deviation_s_p25": 10.0,
+     "deviation_s_p75": 102.0,
      "deviations_counted": 7
     },
     {
@@ -3158,8 +3159,8 @@
      "early_share_of_observed": 0.0,
      "late_share_of_observed": 0.2857,
      "deviation_s_median": 172.0,
-     "deviation_s_p25": 121.0,
-     "deviation_s_p75": 307.0,
+     "deviation_s_p25": 128.5,
+     "deviation_s_p75": 255.0,
      "deviations_counted": 7
     },
     {
@@ -3175,9 +3176,9 @@
      "on_time_share_of_observed": 0.6667,
      "early_share_of_observed": 0.1667,
      "late_share_of_observed": 0.1667,
-     "deviation_s_median": 76.0,
-     "deviation_s_p25": 36.0,
-     "deviation_s_p75": 130.0,
+     "deviation_s_median": 63.0,
+     "deviation_s_p25": 39.5,
+     "deviation_s_p75": 116.5,
      "deviations_counted": 6
     },
     {
@@ -3193,9 +3194,9 @@
      "on_time_share_of_observed": 0.6667,
      "early_share_of_observed": 0.1667,
      "late_share_of_observed": 0.1667,
-     "deviation_s_median": 33.0,
-     "deviation_s_p25": -26.0,
-     "deviation_s_p75": 66.0,
+     "deviation_s_median": 20.0,
+     "deviation_s_p25": -17.8,
+     "deviation_s_p75": 57.8,
      "deviations_counted": 6
     },
     {
@@ -3211,9 +3212,9 @@
      "on_time_share_of_observed": 0.625,
      "early_share_of_observed": 0.125,
      "late_share_of_observed": 0.25,
-     "deviation_s_median": -69.0,
-     "deviation_s_p25": -129.0,
-     "deviation_s_p75": 507.0,
+     "deviation_s_median": -79.5,
+     "deviation_s_p25": -146.0,
+     "deviation_s_p75": 265.5,
      "deviations_counted": 8
     }
    ]

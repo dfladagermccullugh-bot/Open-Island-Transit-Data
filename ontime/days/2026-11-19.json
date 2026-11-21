@@ -1,18 +1,18 @@
 {
- "ontime_version": "ontime/0.2.0",
+ "ontime_version": "ontime/0.3.0",
  "definition": {
   "window_s": [-60,300],
   "measured": "departure at timepoints; arrival at the last stop",
   "timepoints": "stops printed in Island Transit's timetables"
  },
  "scheduled": 1130,
- "observed": 876,
- "observed_share": 0.7752,
- "on_time": 525,
+ "observed": 878,
+ "observed_share": 0.777,
+ "on_time": 527,
  "early": 18,
  "late": 333,
- "on_time_share_of_observed": 0.5993,
- "deviation_s_median": 217.0,
+ "on_time_share_of_observed": 0.6002,
+ "deviation_s_median": 216.3,
  "by_route": {
   "6737": {
    "scheduled": 64,
@@ -36,13 +36,13 @@
   },
   "6744": {
    "scheduled": 131,
-   "observed": 122,
-   "observed_share": 0.9313,
-   "on_time": 100,
+   "observed": 123,
+   "observed_share": 0.9389,
+   "on_time": 101,
    "early": 0,
    "late": 22,
-   "on_time_share_of_observed": 0.8197,
-   "deviation_s_median": 173.0
+   "on_time_share_of_observed": 0.8211,
+   "deviation_s_median": 170.0
   },
   "7913": {
    "scheduled": 49,
@@ -52,17 +52,17 @@
    "early": 0,
    "late": 8,
    "on_time_share_of_observed": 0.7778,
-   "deviation_s_median": 195.1
+   "deviation_s_median": 189.2
   },
   "7914": {
    "scheduled": 71,
-   "observed": 45,
-   "observed_share": 0.6338,
-   "on_time": 34,
+   "observed": 46,
+   "observed_share": 0.6479,
+   "on_time": 35,
    "early": 0,
    "late": 11,
-   "on_time_share_of_observed": 0.7556,
-   "deviation_s_median": 205.9
+   "on_time_share_of_observed": 0.7609,
+   "deviation_s_median": 205.1
   },
   "7915": {
    "scheduled": 48,
@@ -72,7 +72,7 @@
    "early": 1,
    "late": 18,
    "on_time_share_of_observed": 0.525,
-   "deviation_s_median": 166.0
+   "deviation_s_median": 165.1
   },
   "7916": {
    "scheduled": 32,
@@ -82,7 +82,7 @@
    "early": 0,
    "late": 10,
    "on_time_share_of_observed": 0.375,
-   "deviation_s_median": 338.8
+   "deviation_s_median": 332.5
   },
   "7918": {
    "scheduled": 83,
@@ -92,7 +92,7 @@
    "early": 2,
    "late": 25,
    "on_time_share_of_observed": 0.5909,
-   "deviation_s_median": 235.3
+   "deviation_s_median": 230.2
   },
   "7919": {
    "scheduled": 72,
@@ -122,7 +122,7 @@
    "early": 1,
    "late": 82,
    "on_time_share_of_observed": 0.2589,
-   "deviation_s_median": 448.3
+   "deviation_s_median": 445.6
   },
   "7923": {
    "scheduled": 60,
@@ -132,7 +132,7 @@
    "early": 0,
    "late": 20,
    "on_time_share_of_observed": 0.5238,
-   "deviation_s_median": 270.9
+   "deviation_s_median": 266.7
   },
   "9404": {
    "scheduled": 219,
@@ -142,7 +142,7 @@
    "early": 13,
    "late": 51,
    "on_time_share_of_observed": 0.6893,
-   "deviation_s_median": 158.4
+   "deviation_s_median": 157.9
   },
   "9432": {
    "scheduled": 33,
@@ -152,7 +152,7 @@
    "early": 1,
    "late": 11,
    "on_time_share_of_observed": 0.5714,
-   "deviation_s_median": 228.6
+   "deviation_s_median": 215.6
   }
  },
  "by_hour": {
@@ -164,7 +164,7 @@
    "early": 0,
    "late": 21,
    "on_time_share_of_observed": 0.7,
-   "deviation_s_median": 162.2
+   "deviation_s_median": 161.2
   },
   "14": {
    "scheduled": 178,
@@ -178,23 +178,23 @@
   },
   "15": {
    "scheduled": 167,
-   "observed": 140,
-   "observed_share": 0.8383,
-   "on_time": 85,
+   "observed": 141,
+   "observed_share": 0.8443,
+   "on_time": 86,
    "early": 3,
    "late": 52,
-   "on_time_share_of_observed": 0.6071,
-   "deviation_s_median": 223.2
+   "on_time_share_of_observed": 0.6099,
+   "deviation_s_median": 222.1
   },
   "16": {
    "scheduled": 183,
-   "observed": 140,
-   "observed_share": 0.765,
-   "on_time": 60,
+   "observed": 141,
+   "observed_share": 0.7705,
+   "on_time": 61,
    "early": 2,
    "late": 78,
-   "on_time_share_of_observed": 0.4286,
-   "deviation_s_median": 330.1
+   "on_time_share_of_observed": 0.4326,
+   "deviation_s_median": 329.3
   },
   "17": {
    "scheduled": 187,
@@ -204,7 +204,7 @@
    "early": 1,
    "late": 79,
    "on_time_share_of_observed": 0.4805,
-   "deviation_s_median": 321.9
+   "deviation_s_median": 317.9
   },
   "18": {
    "scheduled": 189,
@@ -224,7 +224,7 @@
    "early": 5,
    "late": 10,
    "on_time_share_of_observed": 0.8171,
-   "deviation_s_median": 140.1
+   "deviation_s_median": 137.0
   },
   "20": {
    "scheduled": 16,
@@ -234,7 +234,7 @@
    "early": 0,
    "late": 0,
    "on_time_share_of_observed": 1.0,
-   "deviation_s_median": 201.9
+   "deviation_s_median": 135.0
   }
  },
  "by_route_stop": {
@@ -301,7 +301,7 @@
     "early": 0,
     "late": 1,
     "on_time_share_of_observed": 0.75,
-    "deviation_s_median": 114.5,
+    "deviation_s_median": 102.5,
     "deviations_s": [-6,90,115,669]
    },
    "178280": {
@@ -327,7 +327,7 @@
     "early": 0,
     "late": 0,
     "on_time_share_of_observed": 1.0,
-    "deviation_s_median": 5.9,
+    "deviation_s_median": 2.5,
     "deviations_s": [-333,-239,-1,6,20,147]
    },
    "218433": {
@@ -624,14 +624,14 @@
     "name": "Harbor Station Transfer Center Bayshore Dr",
     "stop_sequence_median": 22,
     "scheduled": 27,
-    "observed": 18,
-    "observed_share": 0.6667,
-    "on_time": 16,
+    "observed": 19,
+    "observed_share": 0.7037,
+    "on_time": 17,
     "early": 0,
     "late": 2,
-    "on_time_share_of_observed": 0.8889,
-    "deviation_s_median": 23.4,
-    "deviations_s": [-394,-183,-121,-117,-110,-87,-10,-3,15,23,25,50,102,116,128,269,329,417]
+    "on_time_share_of_observed": 0.8947,
+    "deviation_s_median": 15.2,
+    "deviations_s": [-394,-200,-183,-121,-117,-110,-87,-10,-3,15,23,25,50,102,116,128,269,329,417]
    },
    "197268": {
     "name": "Skagit Valley College/Library",
@@ -658,7 +658,7 @@
     "early": 0,
     "late": 1,
     "on_time_share_of_observed": 0.8333,
-    "deviation_s_median": 203.8,
+    "deviation_s_median": 193.6,
     "deviations_s": [69,112,183,204,285,300]
    },
    "178270": {
@@ -684,7 +684,7 @@
     "early": 0,
     "late": 1,
     "on_time_share_of_observed": 0.8333,
-    "deviation_s_median": 168.7,
+    "deviation_s_median": 168.3,
     "deviations_s": [90,133,168,169,283,398]
    },
    "178272": {
@@ -697,7 +697,7 @@
     "early": 0,
     "late": 2,
     "on_time_share_of_observed": 0.6667,
-    "deviation_s_median": 195.1,
+    "deviation_s_median": 177.6,
     "deviations_s": [83,150,160,195,335,467]
    },
    "178275": {
@@ -710,7 +710,7 @@
     "early": 0,
     "late": 3,
     "on_time_share_of_observed": 0.5,
-    "deviation_s_median": 307.2,
+    "deviation_s_median": 281.8,
     "deviations_s": [211,246,256,307,435,596]
    },
    "178283": {
@@ -723,7 +723,7 @@
     "early": 0,
     "late": 1,
     "on_time_share_of_observed": 0.8333,
-    "deviation_s_median": 224.4,
+    "deviation_s_median": 203.6,
     "deviations_s": [94,118,183,224,282,328]
    },
    "178376": {
@@ -764,7 +764,7 @@
     "early": 0,
     "late": 3,
     "on_time_share_of_observed": 0.75,
-    "deviation_s_median": 221.4,
+    "deviation_s_median": 219.4,
     "deviations_s": [134,145,174,179,204,217,221,223,284,316,349,363]
    },
    "178276": {
@@ -784,14 +784,14 @@
     "name": "Terry's Corner",
     "stop_sequence_median": 41,
     "scheduled": 15,
-    "observed": 7,
-    "observed_share": 0.4667,
-    "on_time": 7,
+    "observed": 8,
+    "observed_share": 0.5333,
+    "on_time": 8,
     "early": 0,
     "late": 0,
     "on_time_share_of_observed": 1.0,
-    "deviation_s_median": 6.9,
-    "deviations_s": [-165,-78,5,7,28,127,206]
+    "deviation_s_median": 6.0,
+    "deviations_s": [-189,-165,-78,5,7,28,127,206]
    },
    "188843": {
     "name": "Elger Bay Rd at Elger Bay Grocery",
@@ -803,7 +803,7 @@
     "early": 0,
     "late": 2,
     "on_time_share_of_observed": 0.6667,
-    "deviation_s_median": 295.5,
+    "deviation_s_median": 289.0,
     "deviations_s": [163,253,283,295,358,551]
    },
    "197213": {
@@ -816,7 +816,7 @@
     "early": 0,
     "late": 1,
     "on_time_share_of_observed": 0.8333,
-    "deviation_s_median": 209.8,
+    "deviation_s_median": 206.8,
     "deviations_s": [89,202,204,210,279,358]
    },
    "218433": {
@@ -844,7 +844,7 @@
     "early": 0,
     "late": 4,
     "on_time_share_of_observed": 0.5,
-    "deviation_s_median": 379.6,
+    "deviation_s_median": 272.8,
     "deviations_s": [34,48,134,166,380,527,613,622]
    },
    "178267": {
@@ -857,7 +857,7 @@
     "early": 0,
     "late": 1,
     "on_time_share_of_observed": 0.75,
-    "deviation_s_median": 287.7,
+    "deviation_s_median": 200.7,
     "deviations_s": [33,114,288,405]
    },
    "178283": {
@@ -870,7 +870,7 @@
     "early": 0,
     "late": 4,
     "on_time_share_of_observed": 0.5,
-    "deviation_s_median": 315.8,
+    "deviation_s_median": 225.7,
     "deviations_s": [7,15,77,136,316,506,541,564]
    },
    "178286": {
@@ -883,7 +883,7 @@
     "early": 1,
     "late": 1,
     "on_time_share_of_observed": 0.5,
-    "deviation_s_median": 164.2,
+    "deviation_s_median": 89.9,
     "deviations_s": [-73,16,164,319]
    },
    "178287": {
@@ -896,7 +896,7 @@
     "early": 0,
     "late": 2,
     "on_time_share_of_observed": 0.5,
-    "deviation_s_median": 616.8,
+    "deviation_s_median": 331.4,
     "deviations_s": [-2,46,617,653]
    },
    "178307": {
@@ -909,7 +909,7 @@
     "early": 0,
     "late": 2,
     "on_time_share_of_observed": 0.5,
-    "deviation_s_median": 646.5,
+    "deviation_s_median": 359.9,
     "deviations_s": [40,73,646,673]
    },
    "178371": {
@@ -922,7 +922,7 @@
     "early": 0,
     "late": 2,
     "on_time_share_of_observed": 0.5,
-    "deviation_s_median": 381.1,
+    "deviation_s_median": 122.4,
     "deviations_s": [-256,-136,381,394]
    },
    "178376": {
@@ -935,7 +935,7 @@
     "early": 0,
     "late": 2,
     "on_time_share_of_observed": 0.5,
-    "deviation_s_median": 436.4,
+    "deviation_s_median": 224.5,
     "deviations_s": [2,13,436,541]
    }
   },
@@ -963,7 +963,7 @@
     "early": 0,
     "late": 0,
     "on_time_share_of_observed": 1.0,
-    "deviation_s_median": -189.9,
+    "deviation_s_median": -357.9,
     "deviations_s": [-526,-190]
    },
    "178259": {
@@ -976,7 +976,7 @@
     "early": 0,
     "late": 1,
     "on_time_share_of_observed": 0.5,
-    "deviation_s_median": 346.9,
+    "deviation_s_median": 277.5,
     "deviations_s": [208,347]
    },
    "178260": {
@@ -1002,7 +1002,7 @@
     "early": 0,
     "late": 1,
     "on_time_share_of_observed": 0.5,
-    "deviation_s_median": 326.2,
+    "deviation_s_median": 312.9,
     "deviations_s": [300,326]
    },
    "178283": {
@@ -1028,7 +1028,7 @@
     "early": 0,
     "late": 2,
     "on_time_share_of_observed": 0.0,
-    "deviation_s_median": 517.1,
+    "deviation_s_median": 492.4,
     "deviations_s": [468,517]
    },
    "178376": {
@@ -1069,7 +1069,7 @@
     "early": 0,
     "late": 2,
     "on_time_share_of_observed": 0.5,
-    "deviation_s_median": 544.4,
+    "deviation_s_median": 361.1,
     "deviations_s": [157,178,544,585]
    },
    "178316": {
@@ -1082,7 +1082,7 @@
     "early": 0,
     "late": 1,
     "on_time_share_of_observed": 0.75,
-    "deviation_s_median": 248.8,
+    "deviation_s_median": 191.1,
     "deviations_s": [116,133,249,430]
    },
    "178319": {
@@ -1095,7 +1095,7 @@
     "early": 0,
     "late": 3,
     "on_time_share_of_observed": 0.5,
-    "deviation_s_median": 367.0,
+    "deviation_s_median": 317.7,
     "deviations_s": [-2,107,268,367,433,796]
    },
    "178321": {
@@ -1108,7 +1108,7 @@
     "early": 1,
     "late": 1,
     "on_time_share_of_observed": 0.6667,
-    "deviation_s_median": 195.7,
+    "deviation_s_median": 171.4,
     "deviations_s": [-81,54,147,196,259,551]
    },
    "178398": {
@@ -1134,7 +1134,7 @@
     "early": 1,
     "late": 2,
     "on_time_share_of_observed": 0.5,
-    "deviation_s_median": 258.3,
+    "deviation_s_median": 200.2,
     "deviations_s": [-96,0,142,258,351,720]
    },
    "178449": {
@@ -1147,7 +1147,7 @@
     "early": 0,
     "late": 3,
     "on_time_share_of_observed": 0.5,
-    "deviation_s_median": 341.4,
+    "deviation_s_median": 290.9,
     "deviations_s": [0,101,240,341,398,771]
    },
    "178450": {
@@ -1160,7 +1160,7 @@
     "early": 0,
     "late": 3,
     "on_time_share_of_observed": 0.5,
-    "deviation_s_median": 326.3,
+    "deviation_s_median": 280.8,
     "deviations_s": [4,107,235,326,390,761]
    },
    "197226": {
@@ -1173,7 +1173,7 @@
     "early": 0,
     "late": 1,
     "on_time_share_of_observed": 0.75,
-    "deviation_s_median": 258.2,
+    "deviation_s_median": 213.8,
     "deviations_s": [137,169,258,422]
    },
    "197231": {
@@ -1186,7 +1186,7 @@
     "early": 0,
     "late": 2,
     "on_time_share_of_observed": 0.5,
-    "deviation_s_median": 574.5,
+    "deviation_s_median": 399.8,
     "deviations_s": [180,225,574,726]
    },
    "197232": {
@@ -1199,7 +1199,7 @@
     "early": 0,
     "late": 1,
     "on_time_share_of_observed": 0.8333,
-    "deviation_s_median": 159.8,
+    "deviation_s_median": 146.4,
     "deviations_s": [-42,7,133,160,247,523]
    },
    "197248": {
@@ -1253,7 +1253,7 @@
     "early": 0,
     "late": 3,
     "on_time_share_of_observed": 0.5,
-    "deviation_s_median": 314.1,
+    "deviation_s_median": 280.9,
     "deviations_s": [211,247,248,314,399,460]
    },
    "178343": {
@@ -1266,7 +1266,7 @@
     "early": 0,
     "late": 5,
     "on_time_share_of_observed": 0.1667,
-    "deviation_s_median": 420.6,
+    "deviation_s_median": 407.6,
     "deviations_s": [281,315,395,421,518,610]
    },
    "178344": {
@@ -1279,7 +1279,7 @@
     "early": 0,
     "late": 3,
     "on_time_share_of_observed": 0.5,
-    "deviation_s_median": 330.2,
+    "deviation_s_median": 308.3,
     "deviations_s": [219,261,286,330,426,513]
    },
    "178346": {
@@ -1370,7 +1370,7 @@
     "early": 0,
     "late": 6,
     "on_time_share_of_observed": 0.0,
-    "deviation_s_median": 505.3,
+    "deviation_s_median": 463.4,
     "deviations_s": [306,329,421,505,588,694]
    }
   },
@@ -1385,7 +1385,7 @@
     "early": 0,
     "late": 2,
     "on_time_share_of_observed": 0.6667,
-    "deviation_s_median": 270.2,
+    "deviation_s_median": 212.7,
     "deviations_s": [118,148,155,270,422,752]
    },
    "178144": {
@@ -1398,7 +1398,7 @@
     "early": 0,
     "late": 2,
     "on_time_share_of_observed": 0.6667,
-    "deviation_s_median": 245.7,
+    "deviation_s_median": 189.3,
     "deviations_s": [93,99,133,246,417,742]
    },
    "178149": {
@@ -1411,7 +1411,7 @@
     "early": 0,
     "late": 3,
     "on_time_share_of_observed": 0.5,
-    "deviation_s_median": 367.6,
+    "deviation_s_median": 257.5,
     "deviations_s": [125,144,147,368,416,755]
    },
    "178373": {
@@ -1424,7 +1424,7 @@
     "early": 0,
     "late": 2,
     "on_time_share_of_observed": 0.6667,
-    "deviation_s_median": 228.2,
+    "deviation_s_median": 192.4,
     "deviations_s": [83,118,157,228,378,657]
    },
    "178398": {
@@ -1450,7 +1450,7 @@
     "early": 0,
     "late": 2,
     "on_time_share_of_observed": 0.6667,
-    "deviation_s_median": 131.6,
+    "deviation_s_median": 127.2,
     "deviations_s": [65,103,123,132,344,569]
    },
    "178481": {
@@ -1463,7 +1463,7 @@
     "early": 0,
     "late": 2,
     "on_time_share_of_observed": 0.6667,
-    "deviation_s_median": 226.3,
+    "deviation_s_median": 189.7,
     "deviations_s": [104,105,153,226,392,737]
    },
    "197232": {
@@ -1476,7 +1476,7 @@
     "early": 0,
     "late": 2,
     "on_time_share_of_observed": 0.6667,
-    "deviation_s_median": 105.3,
+    "deviation_s_median": 103.2,
     "deviations_s": [27,65,101,105,324,532]
    },
    "197267": {
@@ -1489,7 +1489,7 @@
     "early": 0,
     "late": 3,
     "on_time_share_of_observed": 0.5,
-    "deviation_s_median": 455.8,
+    "deviation_s_median": 327.0,
     "deviations_s": [130,151,198,456,484,900]
    }
   },
@@ -1504,7 +1504,7 @@
     "early": 0,
     "late": 14,
     "on_time_share_of_observed": 0.4167,
-    "deviation_s_median": 392.3,
+    "deviation_s_median": 384.6,
     "deviations_s": [13,24,27,27,94,101,144,189,215,264,310,377,392,420,486,492,493,524,527,693,1001,1015,1177,1200]
    },
    "178194": {
@@ -1556,7 +1556,7 @@
     "early": 0,
     "late": 16,
     "on_time_share_of_observed": 0.3333,
-    "deviation_s_median": 460.9,
+    "deviation_s_median": 428.4,
     "deviations_s": [41,56,57,79,96,166,181,286,330,338,381,396,461,472,478,513,517,531,542,778,967,1026,1158,1230]
    },
    "178406": {
@@ -1688,7 +1688,7 @@
     "early": 0,
     "late": 7,
     "on_time_share_of_observed": 0.125,
-    "deviation_s_median": 482.6,
+    "deviation_s_median": 457.2,
     "deviations_s": [262,314,332,432,483,503,521,649]
    },
    "197283": {
@@ -1729,7 +1729,7 @@
     "early": 1,
     "late": 4,
     "on_time_share_of_observed": 0.5833,
-    "deviation_s_median": 195.6,
+    "deviation_s_median": 179.1,
     "deviations_s": [-101,-58,20,48,158,163,196,299,361,369,373,386]
    },
    "178197": {
@@ -1781,7 +1781,7 @@
     "early": 0,
     "late": 3,
     "on_time_share_of_observed": 0.7,
-    "deviation_s_median": 223.4,
+    "deviation_s_median": 201.7,
     "deviations_s": [33,59,146,157,180,223,263,301,500,531]
    },
    "178384": {
@@ -1794,7 +1794,7 @@
     "early": 2,
     "late": 0,
     "on_time_share_of_observed": 0.6667,
-    "deviation_s_median": 137.7,
+    "deviation_s_median": 107.4,
     "deviations_s": [-214,-142,77,138,161,207]
    },
    "178397": {
@@ -1807,7 +1807,7 @@
     "early": 2,
     "late": 0,
     "on_time_share_of_observed": 0.6667,
-    "deviation_s_median": 172.9,
+    "deviation_s_median": 132.7,
     "deviations_s": [-217,-142,92,173,207,220]
    },
    "178398": {
@@ -1846,7 +1846,7 @@
     "early": 2,
     "late": 4,
     "on_time_share_of_observed": 0.5,
-    "deviation_s_median": 179.3,
+    "deviation_s_median": 157.4,
     "deviations_s": [-122,-64,0,21,117,135,179,261,318,412,415,716]
    },
    "178409": {
@@ -1885,7 +1885,7 @@
     "early": 0,
     "late": 1,
     "on_time_share_of_observed": 0.8333,
-    "deviation_s_median": 116.3,
+    "deviation_s_median": 75.1,
     "deviations_s": [-1,-1,34,116,256,559]
    },
    "197231": {
@@ -1911,7 +1911,7 @@
     "early": 0,
     "late": 2,
     "on_time_share_of_observed": 0.8333,
-    "deviation_s_median": 169.1,
+    "deviation_s_median": 138.9,
     "deviations_s": [27,47,66,78,87,109,169,191,233,254,419,872]
    },
    "197239": {
@@ -1924,7 +1924,7 @@
     "early": 1,
     "late": 5,
     "on_time_share_of_observed": 0.5,
-    "deviation_s_median": 242.4,
+    "deviation_s_median": 228.6,
     "deviations_s": [-85,-9,39,94,186,215,242,329,391,452,474,758]
    },
    "197245": {
@@ -1952,7 +1952,7 @@
     "early": 1,
     "late": 2,
     "on_time_share_of_observed": 0.25,
-    "deviation_s_median": 507.1,
+    "deviation_s_median": 208.8,
     "deviations_s": [-197,-90,507,512]
    },
    "197260": {
@@ -2062,9 +2062,11 @@
   }
  },
  "service_date": "2026-11-19",
+ "service_expected": true,
+ "no_service_day": null,
  "passio_version": "passio-9b1efa882037",
  "timepoints": "passio-9b1efa882037__timetable-2026-09-27-970aa207",
- "events_version": "events/0.2.1",
+ "events_version": "events/0.3.0",
  "routes": {
   "7920": {
    "short_name": "2",
@@ -2222,7 +2224,7 @@
    }
   },
   "travel_times": {
-   "segments": 7636,
+   "segments": 7638,
    "negative": 0,
    "over_max_speed": 38,
    "across_skipped_stretch": 38,

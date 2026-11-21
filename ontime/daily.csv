@@ -1,3 +1,3 @@
-service_date,scheduled,observed,observed_share,on_time,early,late,on_time_share_of_observed,deviation_s_median,feed_agreement_share,ontime_version
-2026-11-19,1130,876,0.7752,525,18,333,0.5993,217.0,0.9577,ontime/0.2.0
-2026-11-20,2551,2001,0.7844,1413,43,545,0.7061,180.7,0.9411,ontime/0.2.0
+service_date,scheduled,observed,observed_share,on_time,early,late,on_time_share_of_observed,deviation_s_median,feed_agreement_share,service_expected,ontime_version
+2026-11-19,1130,878,0.777,527,18,333,0.6002,216.3,0.9577,True,ontime/0.3.0
+2026-11-20,2551,2009,0.7875,1421,43,545,0.7073,180.0,0.9412,True,ontime/0.3.0
