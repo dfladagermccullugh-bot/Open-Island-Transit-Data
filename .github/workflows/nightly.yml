@@ -99,6 +99,7 @@ jobs:
           set +e
           python -m pipeline.gtfs --raw-manifest data-branch/manifest/raw.json \
             --manifest data-branch/manifest/static.json --raw-dir work/files \
+            --tables-dir work/tables \
             --crosswalk-dir data-branch/crosswalk --timepoints-dir data-branch/timepoints
           echo "code=$?" >> "$GITHUB_OUTPUT"
       - name: Publish after static

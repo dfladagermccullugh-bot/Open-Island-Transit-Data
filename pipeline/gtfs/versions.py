@@ -20,6 +20,17 @@ Each service day is pinned, per source, to one version:
 
 The rule used is recorded as ``basis``. ``changed_during_day`` is true when
 complete downloads on the same day disagree.
+
+When they disagree, the schedule changed during that day, and the first
+download (made at night) may still be the old one. The day is then pinned to
+the version whose trips the live feed reported that day (``choose``), and
+the figures compared are kept in ``candidates``. Until the day's parsed
+tables exist the day has no pin and waits.
+
+A pin, once made, is kept: figures published for a day were computed with
+that version. The one exception is a reviewed row in
+``reference/static-pin-overrides.csv``, which replaces the pin and is
+recorded with what it replaced (``override``).
 """
 
 from __future__ import annotations
@@ -27,11 +38,20 @@ from __future__ import annotations
 import csv
 import hashlib
 import io
+from collections.abc import Callable
+from pathlib import Path
 from typing import Any
 
 from pipeline.gtfs.zipread import ZipContents
 
 IGNORED_FILES = ("feed_info.txt",)
+PIN_VERSION = "pin/0.2.0"  # written on pins made by the live-feed rule or an override
+OVERRIDES = Path(__file__).resolve().parents[2] / "reference" / "static-pin-overrides.csv"
+
+# evidence(day, source, versions) -> one record per version (see ``choose``),
+# an empty list if the source has no live feed to compare with, or None if
+# the day's parsed tables are not available yet.
+Evidence = Callable[[str, str, list[str]], list[dict[str, Any]] | None]
 
 
 def fingerprint(source: str, contents: ZipContents) -> dict[str, Any]:
@@ -100,15 +120,114 @@ def add_download(registry: dict[str, Any], download: dict[str, Any], fp: dict[st
     registry.setdefault("downloads", {})[str(download["static_fetch_id"])] = entry
 
 
+def load_overrides(path: Path = OVERRIDES) -> dict[tuple[str, str], dict[str, str]]:
+    """(service date, source) -> reviewed row of the overrides file."""
+    if not path.exists():
+        return {}
+    with path.open(encoding="utf-8", newline="") as fh:
+        return {
+            (r["service_date"].strip(), r["source"].strip()): {k: v.strip() for k, v in r.items()}
+            for r in csv.DictReader(fh)
+            if r.get("service_date", "").strip()
+        }
+
+
+def choose(candidates: list[dict[str, Any]]) -> tuple[str, str]:
+    """The version a changed day ran on, and what decided it.
+
+    ``candidates`` are in download order, one per version, each with
+    ``scheduled_trips_seen`` (trips that version schedules for the day and
+    the live feed reported) and ``live_trip_ids_in_version`` (trip ids the
+    live feed reported that the version knows at all). The first decides; the
+    second breaks a tie; if both tie, the first download stays."""
+    for key, label in (
+        ("scheduled_trips_seen", "scheduled trips seen in the live feed"),
+        ("live_trip_ids_in_version", "live trip ids known to the version"),
+    ):
+        best = max(c[key] for c in candidates)
+        leaders = [c for c in candidates if c[key] == best]
+        if len(leaders) == 1:
+            return leaders[0]["version"], label
+        candidates = leaders
+    return candidates[0]["version"], "tie: first complete download that day"
+
+
+def _pin_today(
+    today: list[dict[str, Any]], day: str, source: str, evidence: Evidence | None
+) -> dict[str, Any]:
+    """Pin a day that has complete downloads."""
+    order = list(dict.fromkeys(d["version"] for d in today))
+    plain = {
+        "version": order[0],
+        "basis": "complete download that day",
+        "changed_during_day": len(order) > 1,
+    }
+    if len(order) == 1 or evidence is None:
+        return plain
+    found = evidence(day, source, order)
+    if found is None:
+        return {
+            "version": None,
+            "basis": "complete downloads that day disagree; waiting for the day's parsed tables",
+            "changed_during_day": True,
+        }
+    if not found:
+        return plain
+    version, chosen_by = choose(found)
+    return {
+        "version": version,
+        "basis": "complete downloads that day disagreed; chosen by match to the live feed",
+        "changed_during_day": True,
+        "chosen_by": chosen_by,
+        "candidates": found,
+        "pin_version": PIN_VERSION,
+    }
+
+
+def _overridden(
+    pin: dict[str, Any], row: dict[str, str] | None, versions: dict[str, Any], source: str
+) -> tuple[dict[str, Any], str | None]:
+    """Apply a reviewed override row to ``pin``; return the pin and a problem."""
+    if row is None or row["version"] == pin.get("version"):
+        return pin, None
+    known = versions.get(row["version"])
+    if known is None or known["source"] != source:
+        return pin, (
+            f"override for {row['service_date']} {source} names {row['version']}, "
+            "which is not a version in the registry"
+        )
+    return {
+        "version": row["version"],
+        "basis": f"override: {row['reason']}",
+        "changed_during_day": pin.get("changed_during_day", False),
+        "override": {
+            "reason": row["reason"],
+            "reviewed_on": row["reviewed_on"],
+            "replaced_version": pin.get("version"),
+            "replaced_basis": pin.get("basis"),
+        },
+        "pin_version": PIN_VERSION,
+    }, None
+
+
 def pin_days(
-    registry: dict[str, Any], days: list[str], previous: dict[str, Any] | None = None
+    registry: dict[str, Any],
+    days: list[str],
+    previous: dict[str, Any] | None = None,
+    *,
+    evidence: Evidence | None = None,
+    overrides: dict[tuple[str, str], dict[str, str]] | None = None,
+    problems: list[str] | None = None,
 ) -> dict[str, Any]:
     """Pin each day to one version per source (see module docstring).
 
     A pin already made (``previous``, the registry's earlier ``days``) is
     kept: figures published for a day were computed with that version, and a
-    later download must not move the day to another one."""
+    later download must not move the day to another one. Only a row of
+    ``overrides`` moves it. An override that cannot be applied is described
+    in ``problems`` and leaves the pin as it was."""
     previous = previous or {}
+    overrides = overrides or {}
     versions = registry.get("versions", {})
     downloads = sorted(registry.get("downloads", {}).values(), key=lambda d: d["requested_at"])
     sources = sorted({d["source"] for d in downloads})
@@ -116,41 +235,46 @@ def pin_days(
     for day in sorted(days):
         out[day] = {}
         for source in sources:
-            kept = (previous.get(day) or {}).get(source)
-            if kept and kept.get("version"):
-                out[day][source] = kept
-                continue
-            mine = [d for d in downloads if d["source"] == source]
-            today = [d for d in mine if d["day"] == day and d["complete"]]
-            if today:
-                pinned = today[0]["version"]
-                out[day][source] = {
-                    "version": pinned,
-                    "basis": "complete download that day",
-                    "changed_during_day": len({d["version"] for d in today}) > 1,
-                }
-                continue
-            partial = [
-                match_partial(d["file_hashes"], versions, source)
-                for d in mine
-                if d["day"] == day and not d["complete"]
-            ]
-            partial = [p for p in partial if p]
-            if partial:
-                out[day][source] = {
-                    "version": partial[0],
-                    "basis": "incomplete download that day, matched to a complete version",
-                    "changed_during_day": len(set(partial)) > 1,
-                }
-                continue
-            before = [d for d in mine if d["day"] < day and d["complete"]]
-            out[day][source] = {
-                "version": before[-1]["version"] if before else None,
-                "basis": (
-                    f"carried forward from {before[-1]['day']}"
-                    if before
-                    else "no complete version yet"
-                ),
-                "changed_during_day": False,
-            }
+            pin = _pin(day, source, previous, downloads, versions, evidence)
+            pin, problem = _overridden(pin, overrides.get((day, source)), versions, source)
+            if problem and problems is not None:
+                problems.append(problem)
+            out[day][source] = pin
     return out
+
+
+def _pin(
+    day: str,
+    source: str,
+    previous: dict[str, Any],
+    downloads: list[dict[str, Any]],
+    versions: dict[str, Any],
+    evidence: Evidence | None,
+) -> dict[str, Any]:
+    kept = (previous.get(day) or {}).get(source)
+    if kept and kept.get("version"):
+        return kept
+    mine = [d for d in downloads if d["source"] == source]
+    today = [d for d in mine if d["day"] == day and d["complete"]]
+    if today:
+        return _pin_today(today, day, source, evidence)
+    partial = [
+        match_partial(d["file_hashes"], versions, source)
+        for d in mine
+        if d["day"] == day and not d["complete"]
+    ]
+    partial = [p for p in partial if p]
+    if partial:
+        return {
+            "version": partial[0],
+            "basis": "incomplete download that day, matched to a complete version",
+            "changed_during_day": len(set(partial)) > 1,
+        }
+    before = [d for d in mine if d["day"] < day and d["complete"]]
+    return {
+        "version": before[-1]["version"] if before else None,
+        "basis": f"carried forward from {before[-1]['day']}"
+        if before
+        else "no complete version yet",
+        "changed_during_day": False,
+    }

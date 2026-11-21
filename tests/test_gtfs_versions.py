@@ -2,7 +2,7 @@ import io
 import zipfile
 from pathlib import Path
 
-from pipeline.gtfs.versions import add_download, fingerprint, pin_days
+from pipeline.gtfs.versions import add_download, fingerprint, load_overrides, pin_days
 from pipeline.gtfs.zipread import read_zip
 
 FIXTURES = Path(__file__).parent / "fixtures"
@@ -147,3 +147,109 @@ def test_a_pin_already_made_is_not_moved_by_later_downloads():
     # A day with no version yet is still pinned once one exists.
     empty = {"2026-11-18": {"passio": {"version": None, "basis": "no complete version yet"}}}
     assert pin_days(reg, ["2026-11-19"], empty)["2026-11-19"]["passio"]["version"]
+
+
+# --- a day on which two complete downloads disagree (a schedule change) ----------
+
+
+def _change_day():
+    reg: dict = {}
+    old, new = gtfs_zip(stop_name="Harbor"), gtfs_zip(stop_name="Port")
+    _add(reg, 1, "2026-12-27", 10, old)  # night download: still the old schedule
+    _add(reg, 2, "2026-12-27", 16, new)  # day download: the new one
+    return reg, fp(old)["version"], fp(new)["version"]
+
+
+def _match(seen: dict[str, int]):
+    """Evidence as ``pipeline.gtfs.__main__.live_match`` gives it."""
+
+    def evidence(day, source, versions):
+        return [
+            {
+                "version": v,
+                "scheduled_trips": 10,
+                "scheduled_trips_seen": seen[v],
+                "live_trip_ids": 9,
+                "live_trip_ids_in_version": seen[v],
+            }
+            for v in versions
+        ]
+
+    return evidence
+
+
+def test_the_live_feed_settles_which_version_a_changed_day_ran_on():
+    reg, old, new = _change_day()
+    pin = pin_days(reg, ["2026-12-27"], evidence=_match({old: 0, new: 9}))["2026-12-27"]["passio"]
+    assert pin["version"] == new
+    assert pin["changed_during_day"] is True
+    assert pin["basis"] == "complete downloads that day disagreed; chosen by match to the live feed"
+    assert pin["chosen_by"] == "scheduled trips seen in the live feed"
+    assert [c["version"] for c in pin["candidates"]] == [old, new]
+    assert pin["pin_version"] == "pin/0.2.0"
+
+
+def test_a_changed_day_waits_for_its_parsed_tables():
+    reg, old, new = _change_day()
+    waiting = pin_days(reg, ["2026-12-27"], evidence=lambda *a: None)
+    assert waiting["2026-12-27"]["passio"]["version"] is None
+    assert "waiting" in waiting["2026-12-27"]["passio"]["basis"]
+    # The next run has the tables and makes the pin.
+    later = pin_days(reg, ["2026-12-27"], waiting, evidence=_match({old: 0, new: 9}))
+    assert later["2026-12-27"]["passio"]["version"] == new
+
+
+def test_a_tie_keeps_the_first_download():
+    reg, old, new = _change_day()
+    pin = pin_days(reg, ["2026-12-27"], evidence=_match({old: 4, new: 4}))["2026-12-27"]["passio"]
+    assert pin["version"] == old
+    assert pin["chosen_by"] == "tie: first complete download that day"
+
+
+def test_no_evidence_for_a_source_keeps_the_first_download():
+    reg, old, _ = _change_day()
+    pin = pin_days(reg, ["2026-12-27"], evidence=lambda *a: [])["2026-12-27"]["passio"]
+    assert pin["version"] == old
+    assert pin["basis"] == "complete download that day"
+
+
+def test_an_override_replaces_a_pin_and_is_recorded(tmp_path):
+    reg, old, new = _change_day()
+    first = pin_days(reg, ["2026-12-27"])
+    assert first["2026-12-27"]["passio"]["version"] == old
+    path = tmp_path / "static-pin-overrides.csv"
+    path.write_text(
+        "service_date,source,version,reason,reviewed_on\n"
+        f"2026-12-27,passio,{new},live trip ids match the new schedule,2026-12-28\n"
+    )
+    problems: list[str] = []
+    second = pin_days(reg, ["2026-12-27"], first, overrides=load_overrides(path), problems=problems)
+    pin = second["2026-12-27"]["passio"]
+    assert problems == []
+    assert pin["version"] == new
+    assert pin["basis"] == "override: live trip ids match the new schedule"
+    assert pin["override"] == {
+        "reason": "live trip ids match the new schedule",
+        "reviewed_on": "2026-12-28",
+        "replaced_version": old,
+        "replaced_basis": "complete download that day",
+    }
+    # Applying the same file again changes nothing.
+    assert pin_days(reg, ["2026-12-27"], second, overrides=load_overrides(path)) == second
+
+
+def test_an_override_naming_an_unknown_version_is_reported_and_not_applied(tmp_path):
+    reg, old, _ = _change_day()
+    path = tmp_path / "static-pin-overrides.csv"
+    path.write_text(
+        "service_date,source,version,reason,reviewed_on\n"
+        "2026-12-27,passio,passio-000000000000,typo,2026-12-28\n"
+    )
+    problems: list[str] = []
+    pins = pin_days(reg, ["2026-12-27"], overrides=load_overrides(path), problems=problems)
+    assert pins["2026-12-27"]["passio"]["version"] == old
+    assert len(problems) == 1 and "passio-000000000000" in problems[0]
+
+
+def test_a_missing_overrides_file_is_no_overrides(tmp_path):
+    assert load_overrides(tmp_path / "none.csv") == {}

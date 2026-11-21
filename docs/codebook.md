@@ -317,7 +317,8 @@ under `paradata`, `nonresponse`, `coverage`, `measurement`, `processing` and
 times, and it is empty when a day has none. The file also records which
 schedule we used (`schedule`) and the SHA-256 fingerprints of the input
 files (`inputs`). We recompute a day when `QUALITY_VERSION` changes or when
-its parsed tables or stop events are rebuilt. When many days are waiting, each
+its parsed tables or stop events are rebuilt, or when its schedule version or
+timepoint list changes. When many days are waiting, each
 nightly run handles new days first and then works back through the rebuilds,
 newest first, seven days at a time. Since `quality/0.3.0`, `coverage.trips` lists
 every scheduled trip we could have observed, stored as `columns` and
@@ -465,9 +466,13 @@ define versions.
 | `versions.<id>.example` | A release file holding this version |
 | `versions.<id>.downloads` | Ids of the complete downloads with this content |
 | `downloads.<id>` | Each download: day, time, release file, `complete`, `problems`, `missing` files, and `version` (empty if incomplete) |
-| `days.<date>.<source>.version` | The version pinned to that service day. Once set it does not change |
-| `days.<date>.<source>.basis` | Which rule chose it: `complete download that day` (the first one); `incomplete download that day, matched to a complete version` (every file it had was identical to that version's); `carried forward from <date>` (the latest earlier complete download); `no complete version yet` |
+| `days.<date>.<source>.version` | The version pinned to that service day. Once set it does not change, except by an override recorded in `override`. It is empty while a day whose downloads disagree waits for its parsed tables |
+| `days.<date>.<source>.basis` | Which rule chose it: `complete download that day` (the first one); `incomplete download that day, matched to a complete version` (every file it had was identical to that version's); `carried forward from <date>` (the latest earlier complete download); `no complete version yet`; `complete downloads that day disagreed; chosen by match to the live feed`; `override: <reason>` |
 | `days.<date>.<source>.changed_during_day` | True when downloads on that day disagree |
+| `days.<date>.<source>.candidates` | Only when complete downloads on that day disagreed: one entry per version, in download order, with the number of trips that version schedules for the day (`scheduled_trips`), how many of them the live feed reported (`scheduled_trips_seen`), how many trip ids the live feed reported (`live_trip_ids`) and how many of those the version contains (`live_trip_ids_in_version`) |
+| `days.<date>.<source>.chosen_by` | Which of those figures decided: `scheduled trips seen in the live feed`, `live trip ids known to the version`, or `tie: first complete download that day` |
+| `days.<date>.<source>.override` | Only when a row of `reference/static-pin-overrides.csv` replaced the pin: `reason`, `reviewed_on`, and the version and basis it replaced |
+| `days.<date>.<source>.pin_version` | Version of the pinning rules, written on pins made by the live-feed rule or by an override (`pin/0.2.0`) |
 | `days.<date>.crosswalk` | Folder under `crosswalk/` for that day's pair of versions |
 | `days.<date>.timepoints` | Folder under `timepoints/` for that day's Passio version and printed timetable |
 

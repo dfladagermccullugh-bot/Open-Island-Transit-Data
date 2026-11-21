@@ -14,9 +14,15 @@ We store all times in UTC. A service day is a calendar date in Pacific time
 trips across midnight. When we say "scheduled," we mean the Passio schedule
 version in effect that day. Passio's download sometimes arrives incomplete,
 without its service calendar. When that happens, we use the complete Passio
-download that has exactly the same files. Once a day has been matched to a
-schedule version, it keeps that version, so a figure we have published is
-never recomputed against a different schedule.
+download that has exactly the same files. On a day when the schedule
+changes, the download we make at night can still be the old schedule while
+the buses already run on the new one. When two complete downloads on the
+same day differ, we count how many of each version's scheduled trips the
+live feed reported that day, and we use the version with more. Once a day
+has been matched to a schedule version, it keeps that version, so a figure
+we have published is never recomputed against a different schedule. The one
+exception is a correction we make by hand, which we write down with its
+reason in `reference/static-pin-overrides.csv` and record beside the day.
 
 ## 1. Collection
 
@@ -257,7 +263,7 @@ one.
 | Parts of the shape not driven | Tracking moves past them once two positions agree; their stops are `skipped`, counted as not observed |
 | Gaps in positions | No interpolation across more than 120 s |
 | Interpolated schedule times | On-time figures use true timepoints only: the stops printed in Island Transit's public timetables for the service period, matched to Passio stops on the same route. Where a route prints separate timetables for weekdays and Saturdays, each day uses the stops of its own timetable. Printed names that cannot be tied to one stop are left out and counted. Scheduled times are Passio's, the schedule the real-time feed follows (`pipeline/gtfs/timepoints.py`, `reference/`, `timepoints/`) |
-| Schedule changes daily | Each service day is pinned to the static version in effect that day, and keeps it |
+| Schedule changes daily | Each service day is pinned to the static version in effect that day, and keeps it. If two complete downloads on one day differ, the day gets the version whose scheduled trips the live feed reported |
 | A trip the schedule files describe badly | If a trip names a stop that is missing from the schedule, that trip gets no stop times and is counted (`problem` in `trip-tracks`); the rest of the day is unaffected |
 
 (Code: `pipeline/events/infer.py`; timepoints: `pipeline/gtfs/timepoints.py`.)

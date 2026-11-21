@@ -117,8 +117,9 @@ def _events_sha(events: dict, day: str) -> str | None:
 
 
 def pending(parsed: dict, static: dict, out: Path, events: dict | None = None) -> list[date]:
-    """Days with no quality file, another QUALITY_VERSION, or a vehicles
-    table or stop events that changed since the file was computed."""
+    """Days with no quality file, another QUALITY_VERSION, or parsed tables,
+    stop events, a schedule version or a timepoints list that changed since
+    the file was computed."""
     events = events or {"days": {}}
     days = []
     for day, entry in parsed["days"].items():
@@ -130,12 +131,16 @@ def pending(parsed: dict, static: dict, out: Path, events: dict | None = None) -
             days.append(date.fromisoformat(day))
             continue
         old = json.loads(f.read_text())
-        inputs = old.get("inputs") or {}
+        inputs, schedule = old.get("inputs") or {}, old.get("schedule") or {}
+        used_timepoints = (old.get("processing") or {}).get("timepoints") or {}
         if (
             old.get("quality_version") != QUALITY_VERSION
             or inputs.get("stop_events_sha256") != _events_sha(events, day)
             or inputs.get("vehicles_sha256") != _sha(entry, f"vehicles-{day}.parquet")
-            or (old.get("schedule") or {}).get("service_expected", True) != service_expected(day)
+            or inputs.get("tables_version") != entry.get("tables_version")
+            or schedule.get("service_expected", True) != service_expected(day)
+            or schedule.get("passio_version") != pins["passio"]["version"]
+            or used_timepoints.get("folder") != pins.get("timepoints")
         ):
             days.append(date.fromisoformat(day))
     return sorted(days)

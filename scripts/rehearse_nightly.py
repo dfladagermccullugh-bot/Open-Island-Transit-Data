@@ -57,6 +57,8 @@ def main() -> int:
     ap.add_argument("--replay", type=Path, help="folder with data-branch/ and releases/")
     ap.add_argument("--from-raw", action="store_true", help="with --replay: rebuild all stages")
     ap.add_argument("--max-days", type=int, help="days per stage and run (stage default: 7)")
+    ap.add_argument("--reference-dir", help="timetable reference folder for the static stage")
+    ap.add_argument("--pin-overrides", help="schedule pin overrides file for the static stage")
     args = ap.parse_args()
     if bool(args.replay) == bool(args.day and args.root):
         ap.error("give either a day and a folder, or --replay <folder>")
@@ -97,6 +99,13 @@ def main() -> int:
     archive_build.build_day = build_day
 
     data, work = root / "data-branch", root / "work"
+    static_args = [
+        x
+        for flag, value in (("--reference-dir", args.reference_dir),
+                            ("--pin-overrides", args.pin_overrides))
+        if value
+        for x in (flag, value)
+    ]  # fmt: skip
     steps = [
         ("pipeline.archive", ["--date", day, "--release", "--manifest",
                               f"{data}/manifest/raw.json", "--out", f"{work}/files"]),
@@ -106,6 +115,7 @@ def main() -> int:
                              "--out", f"{work}/tables"]),
         ("pipeline.gtfs", ["--raw-manifest", f"{data}/manifest/raw.json", "--manifest",
                            f"{data}/manifest/static.json", "--raw-dir", f"{work}/files",
+                           "--tables-dir", f"{work}/tables", *static_args,
                            "--crosswalk-dir", f"{data}/crosswalk", "--timepoints-dir",
                            f"{data}/timepoints"]),
         ("pipeline.events", ["--pending", "--release", "--data", str(data), "--raw-dir",

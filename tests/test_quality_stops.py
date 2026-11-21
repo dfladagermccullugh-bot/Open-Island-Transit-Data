@@ -160,7 +160,7 @@ def test_missing_vehicles():
     assert first["missing_count"] is None and first["new_today"] == []
 
 
-def test_pending_recomputes_when_stop_events_change(tmp_path):
+def test_pending_recomputes_when_an_input_changes(tmp_path):
     import json
 
     from pipeline.quality.__main__ import pending
@@ -168,12 +168,15 @@ def test_pending_recomputes_when_stop_events_change(tmp_path):
 
     day = "2026-11-19"
 
-    def tables(sha):
+    def tables(sha, version="tables/1"):
         files = [{"name": f"vehicles-{day}.parquet", "sha256": sha}]
-        return {"days": {day: {"release_tag": "parsed-2026-11", "files": files}}}
+        entry = {"release_tag": "parsed-2026-11", "files": files, "tables_version": version}
+        return {"days": {day: entry}}
 
-    parsed = tables("v1")
-    static = {"days": {day: {"passio": {"version": "p1"}}}}
+    def pins(version="p1", timepoints="p1__timetable-a"):
+        return {"days": {day: {"passio": {"version": version}, "timepoints": timepoints}}}
+
+    parsed, static = tables("v1"), pins()
 
     def events(sha):
         files = [{"name": f"stop-events-{day}.parquet", "sha256": sha}]
@@ -183,13 +186,21 @@ def test_pending_recomputes_when_stop_events_change(tmp_path):
     f = tmp_path / "days" / f"{day}.json"
     assert pending(parsed, static, tmp_path, events("a")) == [date(2026, 11, 19)]
     f.write_text(json.dumps({"quality_version": QUALITY_VERSION,
-                             "inputs": {"stop_events_sha256": "a",
-                                        "vehicles_sha256": "v1"}}))  # fmt: skip
+                             "schedule": {"passio_version": "p1"},
+                             "processing": {"timepoints": {"folder": "p1__timetable-a"}},
+                             "inputs": {"stop_events_sha256": "a", "vehicles_sha256": "v1",
+                                        "tables_version": "tables/1"}}))  # fmt: skip
     assert pending(parsed, static, tmp_path, events("a")) == []
     # Rebuilt parsed tables make the day pending again.
     assert pending(tables("v2"), static, tmp_path, events("a")) == [date(2026, 11, 19)]
+    assert pending(tables("v1", "tables/2"), static, tmp_path, events("a")) == [date(2026, 11, 19)]
     assert pending(parsed, static, tmp_path, events("b")) == [date(2026, 11, 19)]
     assert pending(parsed, static, tmp_path, {"days": {}}) == [date(2026, 11, 19)]
+    # So does a schedule version moved by an override, or a new timetable list.
+    assert pending(parsed, pins(version="p2"), tmp_path, events("a")) == [date(2026, 11, 19)]
+    assert pending(parsed, pins(timepoints="p1__timetable-b"), tmp_path, events("a")) == [
+        date(2026, 11, 19)
+    ]
 
 
 def test_retraced_shapes():
