@@ -45,7 +45,11 @@ repository.
 - **Nightly archive** (`.github/workflows/nightly.yml`, `python -m pipeline.archive`):
   after midnight Pacific, each complete service day is pulled from the
   collector, written to files, uploaded to the month's GitHub Release, checked,
-  and then listed in `manifest/raw.json` on the `data` branch.
+  and then listed in `manifest/raw.json` on the `data` branch. The later
+  stages (parsed tables, schedule versions, stop events, field check, quality,
+  monthly reports) follow in the same job. The `data` branch is committed and
+  pushed after every stage (`scripts/publish_data.sh`), so a stage that fails
+  or runs out of time does not hold back the ones before it.
 - **Prune** (`prune-archived` cron job, `supabase/functions/collect/prune.ts`):
   once a day the collector reads that manifest and deletes its own copy of a
   day only if the day is at least 3 days old, every listed file can be
@@ -55,8 +59,13 @@ repository.
   `select * from prune_log order by prune_id desc limit 5;`
 - **Watchdog** (`.github/workflows/watchdog.yml`, `scripts/watchdog.py`): every
   30 minutes; fails and opens an issue if a feed has no recent successful
-  fetch, the positions feed is empty in service hours, the collector is backing
-  off, or the database is filling up.
+  fetch, the positions feed is empty for nine fetches in a row in service
+  hours (holidays in `reference/no-service-days.csv` excepted), its vehicle
+  timestamps have stopped moving, the collector is backing off, the last two
+  Passio schedule downloads failed, the database is filling up, the prune job
+  failed or stopped running, or the service day before yesterday is still
+  not processed. It comments on the issue only when the list of problems
+  changes, and closes it when the collector is healthy again.
 - **Starting the workflows** (`supabase/migrations/0004_dispatch_workflows.sql`):
   GitHub's own schedule skipped runs for this repository, so pg_cron also
   starts the nightly archive (`dispatch-nightly`, 08:40 and 14:40 UTC) and the

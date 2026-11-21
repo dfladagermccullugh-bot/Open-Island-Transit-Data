@@ -1,0 +1,12 @@
+name: Data question or removal request
+description: Ask about the data, its terms, or ask for something to be removed.
+title: "Data: "
+labels: ["data"]
+body:
+  - type: textarea
+    id: question
+    attributes:
+      label: Your question or request
+      description: For a removal request, say which files or records and why.
+    validations:
+      required: true

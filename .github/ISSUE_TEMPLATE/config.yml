@@ -1,0 +1,5 @@
+blank_issues_enabled: true
+contact_links:
+  - name: Questions about the bus service
+    url: https://www.islandtransit.org/
+    about: This project is independent. Island Transit answers questions about its service.

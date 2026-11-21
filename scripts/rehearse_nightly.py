@@ -75,7 +75,7 @@ def main() -> int:
                              f"{work}/files", "--tables-dir", f"{work}/tables", "--out",
                              f"{work}/events"]),
         ("pipeline.events.field", ["score", "--data", str(data), "--tables-dir",
-                                   f"{work}/tables"]),
+                                   f"{work}/events"]),
         ("pipeline.quality", ["--pending", "--data", str(data), "--raw-dir", f"{work}/files",
                               "--tables-dir", f"{work}/tables"]),
         ("pipeline.monthly", ["--data", str(data), "--release", "--work", f"{work}/monthly"]),

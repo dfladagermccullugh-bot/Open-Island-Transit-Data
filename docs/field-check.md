@@ -1,9 +1,9 @@
 # Field check: timing buses in person
 
 Check 1 of the validation (`docs/methods.md`, section 5): a spot check of
-whether the inferred stop times match what happens on the street. Target: a
+whether the inferred stop times match what happens on the street. The target is a
 mean absolute difference of 30 seconds or less between the timed and the
-inferred times. Done on route 60, the route the observer rides; more
+inferred times, judged once at least five moments have been timed. Done on route 60, the route the observer rides; more
 timings on any trip can be added at any time.
 
 ## Before going out
@@ -17,7 +17,6 @@ timings on any trip can be added at any time.
    python -m pipeline.events.field sheet --date 2026-11-23 --stop "Clinton Ferry" --from 07:00 --to 09:00 > sheet.csv
    ```
 
-   Claude can make the sheet; ask for the day, stops and window.
 3. Use a clock that shows seconds and is set from the network, for example a
    phone's clock or time.gov.
 

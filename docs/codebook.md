@@ -21,6 +21,11 @@ the printed timetables, `quality/` holds the daily feed-quality figures,
 `ontime/` holds the daily on-time summaries, and `reports/` holds one report
 for each complete month.
 
+`reference/no-service-days.csv`, in the main branch, lists the holidays on
+which Island Transit runs no service. On those days the day files carry
+`service_expected: false`, and every figure that pools several days leaves
+them out.
+
 A service day is a calendar date in Pacific time (`America/Los_Angeles`).
 Each row belongs to the day in which it was logged, and every timestamp is
 in UTC.
@@ -96,7 +101,7 @@ the items within each message and shift whenever vehicles come and go.
 
 ### `vehicles-YYYY-MM-DD.parquet`
 
-This table has one row per vehicle per run. In practice that works out to
+This table has one row per vehicle per run. In practice that comes to
 one row for each position report a vehicle sends (`vehicle_ts`).
 
 | Column | Meaning |
@@ -170,6 +175,11 @@ unresolved instead of guessing.
 | `timepoints.csv` | One row per printed stop and matched Passio stop: route, day type, direction, printed order and name, `passio_route_id`, `passio_stop_id`, `passio_stop_name`, and `match` (`name <score>`, `override`, or the reason it is unresolved) |
 | `summary.json` | Reference date, printed names, resolved names, the unresolved names with reasons, and the number of timepoint route-stop pairs |
 
+Where a route prints separate timetables for different kinds of day (the
+`day_type` column: weekday, Saturday and so on), a service day uses only the
+rows for its own kind of day. A route that prints nothing for that kind of
+day uses all of its rows.
+
 ## Stop events
 
 Each night `pipeline/events/infer.py` builds these files, using the method
@@ -187,12 +197,13 @@ Passio schedule, whether or not we observed it.
 | `vehicle_key` | The vehicle whose reports were used; empty if none carried the trip id |
 | `is_first_stop`, `is_last_stop` | Position in the trip |
 | `is_timepoint` | A true timepoint (`timepoints/`) |
-| `stop_distance_m` | The stop's distance along the trip's shape |
+| `stop_distance_m` | The stop's distance along the trip's shape; empty if the stop is `unplaced` |
+| `stop_offset_m` | How far the stop sits from the shape at that point, in meters (since `events/0.3.0`) |
 | `scheduled_arrival`, `scheduled_departure` | Passio schedule, as UTC timestamps |
 | `arrival_time` | When the bus first came within 40 m of the stop along the shape |
 | `departure_time` | When it moved more than 40 m past the stop |
 | `arrival_gap_s`, `departure_gap_s` | Seconds between the two position reports the time was interpolated from |
-| `arrival_status`, `departure_status` | `observed`; `gap` (reports more than 120 s apart, no time given); `not_reached` (tracking ended before the stop); `past_when_first_seen`; `skipped` (the bus left out the part of the shape the stop is on); `no_shape` (the trip has no shape); `no_reports` (no vehicle carried the trip id); `not_applicable` (no arrival at the first stop, no departure at the last) |
+| `arrival_status`, `departure_status` | `observed`; `gap` (reports more than 120 s apart, no time given); `not_reached` (tracking ended before the stop); `past_when_first_seen`; `skipped` (the bus left out the part of the shape the stop is on); `no_shape` (the trip has no shape); `unplaced` (the stop could not be placed on the shape in stop order within 150 m of it); `no_reports` (no vehicle carried the trip id); `not_applicable` (no arrival at the first stop, no departure at the last) |
 
 ### `trip-tracks-YYYY-MM-DD.parquet`
 
@@ -205,6 +216,21 @@ moving the wrong way (`wrong_direction_reports`). Finally, it shows how far
 along the shape we followed the bus and which parts of the shape it left out
 (`shape_skips`, `skipped_m`). We measure `shape_length_m` after collapsing
 retraced segments (`docs/methods.md`, section 3).
+
+| Column | Meaning |
+|---|---|
+| `trip_id`, `route_id` | Passio ids |
+| `scheduled_start`, `scheduled_end` | First scheduled departure and last scheduled arrival, UTC |
+| `vehicles_with_trip_id` | Vehicles that carried the trip's id within 30 minutes of its schedule |
+| `vehicle_key` | The one whose reports were used (the one with the most) |
+| `position_reports` | That vehicle's reports in the window |
+| `reports_used` | Reports placed on the shape |
+| `reports_before_start`, `reports_after_end` | Reports from before tracking began or after the bus reached the end; never compared with the shape |
+| `off_shape_reports`, `wrong_direction_reports` | Reports set aside while tracking |
+| `shape_id`, `shape_length_m` | The trip's shape and its length |
+| `max_distance_m` | How far along the shape the bus was followed |
+| `shape_skips`, `skipped_m` | Stretches of the shape the bus left out, and their total length |
+| `problem` | Empty, or why the trip could not be read from the schedule files (since `events/0.3.0`); such a trip has no stop events |
 
 ## `ontime/`
 
@@ -226,6 +252,22 @@ travel times between stops run backwards or go faster than 35 m/s, with the
 fastest listed. `daily.csv` carries the agreement share as
 `feed_agreement_share`.
 
+| `daily.csv` column | Meaning |
+|---|---|
+| `service_date` | The service day |
+| `scheduled` | Scheduled timepoint events |
+| `observed`, `observed_share` | Those we could put a time on, and their share of `scheduled` |
+| `on_time`, `early`, `late` | Observed events from 1 minute early to 5 minutes late, earlier, and later |
+| `on_time_share_of_observed` | `on_time` divided by `observed` |
+| `deviation_s_median` | Median of measured minus scheduled time, seconds; positive is late |
+| `feed_agreement_share` | Share of inferred departures that agree with the feed's change of stop (check 2) |
+| `service_expected` | False on a holiday with no service (`reference/no-service-days.csv`) |
+| `ontime_version` | Version of the on-time code |
+
+Every median here is the middle value, or the average of the two middle
+values when the count is even (since `ontime/0.3.0`; before that it was the
+upper of the two).
+
 `ontime/field-check.json`, written by `pipeline/events/field.py`, holds the
 field check (`docs/methods.md`, section 5, check 1). Its `overall`,
 `arrival`, `departure`, `pass` and `by_stop` sections each give the number
@@ -234,7 +276,8 @@ difference, all as our time minus the timed one in seconds, along with the
 shares within 30 and 60 seconds. The `pass` section covers moments when the
 bus was level with the stop, compared with the midpoint of our arrival and
 departure. `meets_target` compares the mean absolute difference with 30
-seconds, and `pairs` lists every comparison. We count separately any rows
+seconds once at least `target_min_n` moments (five) have been timed, and is
+empty before that. `pairs` lists every comparison. We count separately any rows
 whose day hasn't been processed yet, that match no scheduled event, or whose
 moment has no inferred time.
 
@@ -245,7 +288,8 @@ the median deviation.
 `ontime/recent.json` pools the last 28 calendar days, overall, by route, and
 by route and timepoint stop. It adds up the counts, recomputes the shares
 from those sums, and gives the median and quartiles of the deviations, along
-with each route's daily on-time and observed shares. The site's route pages
+with each route's daily on-time and observed shares. Days with no service
+are left out and listed in `days_without_service`. The site's route pages
 read from it.
 
 ## `maps/<passio version>__timetable-<date>-<hash>.json`
@@ -273,12 +317,13 @@ under `paradata`, `nonresponse`, `coverage`, `measurement`, `processing` and
 times, and it is empty when a day has none. The file also records which
 schedule we used (`schedule`) and the SHA-256 fingerprints of the input
 files (`inputs`). We recompute a day when `QUALITY_VERSION` changes or when
-its stop events are rebuilt. Since `quality/0.3.0`, `coverage.trips` lists
+its parsed tables or stop events are rebuilt. Since `quality/0.3.0`, `coverage.trips` lists
 every scheduled trip we could have observed, stored as `columns` and
 `rows`. Each row gives the `trip_id` and `route_id`, the Pacific hour of the
 trip's first departure (`start_hour`), how many scheduled trips were in
 service at that moment counting this one (`scheduled_in_service`), and
-whether any position carried the trip's id (`observed`).
+whether any position carried the trip's id within 30 minutes of its schedule
+(`observed`).
 
 `quality/daily.csv` has one row per day with the headline figures, rebuilt
 from the day files.
@@ -291,24 +336,29 @@ logistic regression of "trip not observed," fitted with Firth's penalized
 likelihood, with odds ratios, 95% intervals, p-values and a likelihood-ratio
 test of all the predictors together. It stays `null` until there are 14
 days and 30 unobserved trips, and `model_status` says which of those is
-still short.
+still short. `limits` states what the model assumes: it treats trips as
+independent, so its p-values are more confident than they should be.
 
 | `daily.csv` column | Meaning |
 |---|---|
+| `service_date` | The service day |
+| `service_expected` | False on a holiday with no service (`reference/no-service-days.csv`) |
 | `passio_version` | Static version the day was measured against |
 | `scheduled_trips` | Passio trips scheduled that day (on the first day, only those still running when collection began) |
-| `trip_coverage` | Share of those trips with at least one vehicle position |
-| `vehicle_uptime`, `trip_update_uptime` | Share of 20-second slots with a successful fetch |
+| `trip_coverage` | Share of those trips with at least one vehicle position within 30 minutes of the trip's schedule |
+| `vehicle_uptime`, `trip_update_uptime` | Share of 20-second slots with a successful fetch. Slots are centered on the moment the scheduler usually fires |
 | `vehicle_fetch_failure_rate` | Share of vehicle-position fetches that failed |
 | `empty_in_service_rate` | Successful vehicle-position fetches with no vehicles, while a trip was scheduled |
-| `stale_in_service_rate` | Successful vehicle-position fetches whose newest vehicle timestamp was over 120 s old, while a trip was scheduled |
-| `longest_gap_s_median` | Median over observed trips of the longest interval between new position reports |
-| `position_age_s_median`, `position_age_s_p95` | Time from the vehicle's timestamp to the first fetch that returned it |
+| `stale_in_service_rate` | Successful vehicle-position fetches that listed vehicles but whose newest vehicle timestamp was over 120 s old, while a trip was scheduled. An empty fetch is counted as empty, not stale |
+| `longest_gap_s_median` | Median over observed trips of the longest interval between new position reports from the trip's main vehicle, within 30 minutes of its schedule |
+| `position_age_s_median`, `position_age_s_p95` | Time from the vehicle's timestamp to the first fetch that returned it; each position counted once |
 | `impossible_jumps` | Consecutive reports of one vehicle implying more than 130 km/h |
 | `timepoint_coverage` | Scheduled timepoint events with an inferred time |
 | `stop_coverage` | The same at every stop |
-| `off_shape_share` | Position reports in a trip's window more than 100 m from its shape |
+| `off_shape_share` | Position reports more than 100 m from the trip's shape, divided by the reports tracked along it |
 | `prediction_mae_s_5min` | Mean absolute error of arrival predictions published 5 minutes ahead, seconds |
+| `prediction_median_abs_s_5min` | The typical miss of those predictions: the median absolute error, seconds |
+| `prediction_over_30min_share_5min` | Share of those predictions off by more than 30 minutes |
 | `prediction_within_60s_5min` | Share of those predictions within 60 s |
 | `jitter_m_p95` | 95th percentile of position spread while a bus stands at a terminal, meters |
 | `unassignable_trip_ids` | Trip ids reported that are not in the static version or not scheduled that day |
@@ -319,6 +369,12 @@ still short.
 | `vehicles_seen` | Distinct vehicles reporting |
 | `timetable_reference` | Effective date of the printed timetable used for timepoints |
 | `timepoint_names_resolved_share` | Printed timepoint names tied to a Passio stop |
+| `quality_version` | Version of the quality code |
+
+Counts of positions (`over_coverage_share`, `trip_id_match_rate`, the share
+of positions missing each field) count each position once, by vehicle and
+vehicle timestamp. The parsed tables can hold the same position in two rows
+when a failed fetch falls between two fetches that returned it.
 
 ## `reports/`
 
@@ -363,6 +419,17 @@ in the format `sha256sum -c` can check.
 | `days.<date>.release_tag` | The release holding the files |
 | `days.<date>.code_sha` | Commit of the code that built the files |
 
+## `manifest/events.json`
+
+| Field | Meaning |
+|---|---|
+| `days.<date>.events_version`, `ontime_version`, `validate_version` | Versions of the code behind the stop events, the on-time summary and the automatic checks. A day is rebuilt when any of them changes |
+| `days.<date>.service_expected` | False on a holiday with no service |
+| `days.<date>.passio_version`, `timepoints` | The schedule version and timepoints folder used |
+| `days.<date>.vehicles_sha256` | SHA-256 of the vehicles table the events were built from. A day is rebuilt when that table is |
+| `days.<date>.rows` | Rows in `stop-events` and `trip-tracks` |
+| `days.<date>.files`, `release_tag`, `code_sha` | As in `manifest/raw.json` |
+
 ## `manifest/parsed.json`
 
 | Field | Meaning |
@@ -396,7 +463,7 @@ define versions.
 | `versions.<id>.example` | A release file holding this version |
 | `versions.<id>.downloads` | Ids of the complete downloads with this content |
 | `downloads.<id>` | Each download: day, time, release file, `complete`, `problems`, `missing` files, and `version` (empty if incomplete) |
-| `days.<date>.<source>.version` | The version pinned to that service day |
+| `days.<date>.<source>.version` | The version pinned to that service day. Once set it does not change |
 | `days.<date>.<source>.basis` | Which rule chose it: `complete download that day` (the first one); `incomplete download that day, matched to a complete version` (every file it had was identical to that version's); `carried forward from <date>` (the latest earlier complete download); `no complete version yet` |
 | `days.<date>.<source>.changed_during_day` | True when downloads on that day disagree |
 | `days.<date>.crosswalk` | Folder under `crosswalk/` for that day's pair of versions |

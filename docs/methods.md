@@ -12,8 +12,11 @@ live feed uses its real-time version, GTFS-Realtime.
 We store all times in UTC. A service day is a calendar date in Pacific time
 (`America/Los_Angeles`), which works neatly because Island Transit runs no
 trips across midnight. When we say "scheduled," we mean the Passio schedule
-version in effect that day. If Passio's copy is missing its service calendar,
-we take the calendar from Trillium's instead.
+version in effect that day. Passio's download sometimes arrives incomplete,
+without its service calendar. When that happens, we use the complete Passio
+download that has exactly the same files. Once a day has been matched to a
+schedule version, it keeps that version, so a figure we have published is
+never recomputed against a different schedule.
 
 ## 1. Collection
 
@@ -31,7 +34,12 @@ entry records when the request was scheduled, when it went out, when the
 answer came back, the HTTP status, the size of the response, and any error.
 The collector does not retry within a 20-second tick. If more than three
 ticks in a row fail, it backs off and waits 40 seconds, then 80 seconds, and
-so on up to 10 minutes, and it logs each tick it skips as skipped.
+so on up to 10 minutes, and it logs each tick it skips as skipped. If the
+database refuses to store a tick's responses, the collector tries the write
+once more before giving up on that tick.
+
+(Code: `supabase/functions/collect/` and `supabase/migrations/`; setup in
+`docs/collector-setup.md`.)
 
 ## 2. Feed-quality metrics
 
@@ -44,16 +52,29 @@ with a plain name beside the researchers' term.
 
 | Metric | Definition |
 |---|---|
-| Trip coverage | Scheduled trips with at least one vehicle position carrying that `trip_id`, divided by scheduled trips |
+| Trip coverage | Scheduled trips with at least one vehicle position carrying that `trip_id` within 30 minutes of the trip's scheduled time, divided by scheduled trips |
 | Stop-level coverage | Scheduled timepoint events with an inferred stop event, divided by scheduled timepoint events |
 | Never-reporting units | Routes with scheduled service and no observations; vehicles seen in the previous 30 days but not today |
-| Over-coverage | Positions whose `trip_id` is not in the schedule, or that have no `trip_id` |
+| Over-coverage | Positions whose `trip_id` is not in the schedule or not scheduled that day, or that have no `trip_id`, divided by positions |
+
+A trip id on its own is not enough to say a trip was tracked. The same ids
+run every day, and a bus waiting at a terminal often shows its next trip's
+id long before that trip starts. So a trip counts as seen only when a
+position carries its id between 30 minutes before its first scheduled
+departure and 30 minutes after its last scheduled arrival.
 
 Passio's calendar has no holiday exceptions, so a holiday looks like a
-normal service day in our "scheduled" counts. To make that visible, each
-day's figures sit next to the list of trips Trillium removes for holidays
-that day (`schedule.trillium_removes_service_today`). On the first day of
-collection, we counted only the trips that had not already ended when
+normal service day in our "scheduled" counts. Island Transit's website says
+it runs no service on New Year's Day, Memorial Day, Independence Day, Labor
+Day, Thanksgiving Day and Christmas Day. We keep those dates in
+`reference/no-service-days.csv`, each with the page it came from. A listed
+day is archived and measured like any other, and its files carry
+`service_expected: false`. Figures that pool several days, which are the
+28-day route tables, the randomness-of-gaps rates and model, and the monthly
+reports, leave it out, so a holiday does not read as a day of lost buses.
+Each day's figures also sit next to the list of trips Trillium removes for
+holidays that day (`schedule.trillium_removes_service_today`). On the first
+day of collection, we counted only the trips that had not already ended when
 collection began.
 
 Stop-level coverage uses the same moment as the on-time figures: the
@@ -66,28 +87,46 @@ quality file, so it is empty on the first day.
 | Metric | Definition |
 |---|---|
 | Fetch nonresponse | Fetches with an error, timeout, non-200 status or undecodable body, divided by fetches attempted |
-| Empty-in-service rate | Fetches with zero vehicles while at least one trip is scheduled, divided by fetches while at least one trip is scheduled |
-| Stale feed | Fetches whose newest vehicle timestamp is more than 120 s old while service is scheduled |
+| Empty-in-service rate | Successful fetches with zero vehicles while at least one trip is scheduled, divided by successful fetches while at least one trip is scheduled |
+| Stale feed | Successful fetches that list vehicles but whose newest vehicle timestamp is more than 120 s old, while service is scheduled, divided by the same successful fetches |
 | Trip gaps | For each observed trip: the longest interval with no new position, and the share of the trip spent in gaps over 90 s |
 | Item nonresponse | Share of positions missing each field |
-| Randomness of gaps | Checks whether missed trips happen at random or cluster around certain routes, times of day or busy hours. Rates: the share of scheduled trips with no position report by hour, route, day type and number of trips in service, over all days. Model: a logistic regression of "trip not observed" on hour band (before 7, 7–9, 9–15 reference, 15–18, 18 on), route (routes with under 30 trips pooled), day type and the number of scheduled trips in service at the trip's start. Firth's penalized likelihood keeps estimates finite when a route has no unobserved trips. The likelihood-ratio test of all predictors together tests whether gaps are missing completely at random. Fitted from 14 days and 30 unobserved trips |
+| Randomness of gaps | Checks whether missed trips happen at random or cluster around certain routes, times of day or busy hours. Rates: the share of scheduled trips with no position report within 30 minutes of their schedule, by hour, route, day type and number of trips in service, over all days. Model: a logistic regression of "trip not observed" on hour band (before 7, 7–9, 9–15 reference, 15–18, 18 on), route (routes with under 30 trips pooled), day type and the number of scheduled trips in service at the trip's start. Firth's penalized likelihood keeps estimates finite when a route has no unobserved trips. The likelihood-ratio test of all predictors together tests whether gaps are missing completely at random. Fitted from 14 days and 30 unobserved trips |
 
 We publish the randomness-of-gaps rates from the first day, but the model
 behind them waits until there are 14 days and 30 trips that never showed up.
+The model treats every trip as separate. In practice, trips lost on the same
+day or by the same bus tend to go missing together, as when one bus's
+tracker fails for a whole shift. That makes the model's p-values more
+confident than they should be, and we say so wherever it is shown. The rates
+do not have this problem.
+
+An empty fetch is counted as empty and not also as stale, because it has no
+vehicle timestamp to be old. Trip gaps use the positions of one vehicle, the
+one with the most reports for the trip, inside the trip's 30-minute window.
+When two buses carry the same trip id, mixing their reports would hide the
+gaps in each.
 
 ### Wrong data (measurement error)
 
 | Metric | Definition |
 |---|---|
 | Position age | Fetch time minus vehicle timestamp: median and 95th percentile |
-| Impossible jumps | Consecutive positions implying more than 130 km/h (about 80 mph), or lying more than 100 meters (about 330 feet) from the trip's shape |
+| Impossible jumps | Consecutive positions from one vehicle implying more than 130 km/h (about 80 mph) |
+| Off-route positions | Positions more than 100 meters (about 330 feet) from the trip's shape, divided by the positions tracked along that shape |
 | Jitter | Displacement while the bus is stationary at a terminal: 95th percentile, meters |
 | Clock anomalies | Vehicle timestamps in the future or going backwards |
-| Prediction error | Predicted minus inferred actual arrival at 1, 2, 5, 10, 15 and 30 minutes ahead: bias, mean absolute error, share within 60 s. Only if trip updates are published |
+| Prediction error | Predicted minus inferred actual arrival at 1, 2, 5, 10, 15 and 30 minutes ahead: bias, typical miss (median absolute error), mean absolute error, share within 60 s, and the number off by more than 30 minutes |
 
 We measure position age at the first fetch that returned a given position.
-Positions that stray off the route are counted only during a trip's
-scheduled window, using the trip tracks (`trip-tracks`).
+Our tables can hold the same position twice, because a failed fetch in
+between splits it into two rows, so we count each position once, by vehicle
+and vehicle timestamp, at the first fetch that returned it. Positions that
+stray off the route are counted only while a bus is being tracked along its
+trip's shape, using the trip tracks (`trip-tracks`). Positions reported
+before tracking began or after the bus reached the end of the line were
+never compared with the shape, so they are in neither the count nor the
+total.
 
 To measure prediction error, we take each stop time we observed and compare
 it with the prediction the feed was publishing a given number of minutes
@@ -97,6 +136,14 @@ a prediction on the wrong day. For example, on November 19, 2026, about 1 to
 2% of the predictions made 1 to 5 minutes ahead carried a clock time on the
 next day. We count those as "dated another day" and leave them out of the
 error figures.
+
+Some predictions that do fall on the right day are still off by hours. On
+November 20, 2026, about 2% of the predictions made 5 minutes ahead were off
+by more than 30 minutes, and a few by 15 hours. They stay in the figures and
+we count them. A handful of values that large pulls the mean far away from
+what a rider would usually see: that day the mean miss was 9.2 minutes and
+the typical miss, the median, was 2.4 minutes. So we report both, and the
+site shows the typical miss.
 
 Jitter tells us how much a parked bus's GPS position wanders. We look for a
 dwell, which is 3 or more reports in a row from one vehicle, each moving
@@ -114,17 +161,29 @@ Speed is whatever the vehicle itself reports.
 | Static feed integrity | Each day: is the zip valid, and are the required files present |
 | Schedule agreement | Passio stop times at Trillium timepoints whose time matches a Trillium timepoint time at the same stop and route (exactly, within 1 minute, within 5 minutes). The two published schedules are not the same; Trillium's is out of date |
 | Timepoint resolution | Printed timetable stop names tied to a Passio stop, divided by printed names. Falls if a service change renames or moves stops before the reference is updated |
-| Parser rejects | Entities dropped by validation, divided by entities read |
+| Parser rejects | Fetches whose body could not be decoded as a feed message, divided by fetches attempted |
 
 ### Collector health (paradata)
 
 | Metric | Definition |
 |---|---|
-| Collector uptime | 20-second slots with a logged fetch, divided by slots in the day; split by cause (scheduler did not fire, function failed, feed failed) |
+| Collector uptime | 20-second slots that hold a successful fetch, divided by slots in the day. The other slots are split into those with no logged fetch and those whose fetch failed |
 | Latency | Response time: median and 95th percentile |
 | Instrument changes | Dated log of static GTFS versions, collector versions and configuration changes |
 
-(Code: `pipeline/quality/metrics.py`. The measures built on our inferred stop
+The scheduler does not fire exactly on the 20-second mark, and its timing
+drifts by a fraction of a second. If slots were cut at fixed clock times, a
+tick a little early and the next a little late could land in the same slot
+and leave the one between them looking empty. So the slots are centered on
+the moment the scheduler usually fires that day, and a fetch belongs to the
+day its slot falls in.
+
+Every median and percentile in these files is computed the same way, by
+straight-line interpolation between the two nearest values, so the median of
+an even number of values is the average of the middle two.
+
+(Code: `pipeline/quality/metrics.py`; medians and shares in
+`pipeline/stats.py`; holidays in `pipeline/gtfs/holidays.py`. The measures built on our inferred stop
 times, which are stop-level coverage, off-route positions and prediction
 error, are in `pipeline/quality/stops.py` and appear under `events` in each
 day's file. Randomness of gaps is in `pipeline/quality/gaps.py`.)
@@ -143,14 +202,19 @@ doing that, it fixes any stretch where the map line doubles back on itself,
 drawing the same piece of road forward, backward and forward again, by
 keeping just one copy. Passio's route 1C shapes repeat every segment this
 way, which made them about 21 km (13 miles) too long, and we report the
-meters removed as a processing error.
+meters removed as a processing error. If a stop cannot be placed in order
+within 150 meters (about 490 feet) of the shape, the script marks it
+`unplaced` and gives it no time, and each placed stop's distance from the
+shape is written beside it.
 
 Second, the script projects each bus position onto the shape to find how far
 along the route the bus has traveled. Tracking starts at the first position
 within 300 meters (about 1,000 feet) of the start of the shape, because a bus
 often shows its next trip's id while it is still finishing the last one. If
 there is no such position, tracking starts 2 minutes before the scheduled
-departure. It stops when the bus reaches the end of the shape.
+departure. It stops when the bus is within 50 meters (about 160 feet) of the
+end of the shape, but never before the bus has reached the point where its
+arrival at the last stop is timed.
 
 Third, the script insists that the bus keep moving forward, so it searches
 only a window ahead of the last distance it matched. That is how it copes
@@ -189,11 +253,12 @@ one.
 | Layovers at terminals | First stop: departure only. Last stop: arrival only |
 | Vehicles with no trip | Excluded; counted as over-coverage |
 | Trip label changes early or late at a layover | Positions accepted only within the trip's scheduled window ± 30 minutes and on its shape |
-| Detours | Events more than 100 meters (about 330 feet) off the shape are flagged and excluded from on-time figures |
+| Detours | Positions more than 100 meters (about 330 feet) off the shape are set aside and counted. A stop the bus passed while off the shape gets no time and counts as not observed |
 | Parts of the shape not driven | Tracking moves past them once two positions agree; their stops are `skipped`, counted as not observed |
 | Gaps in positions | No interpolation across more than 120 s |
-| Interpolated schedule times | On-time figures use true timepoints only: the stops printed in Island Transit's public timetables for the service period, matched to Passio stops on the same route. Printed names that cannot be tied to one stop are left out and counted. Scheduled times are Passio's, the schedule the real-time feed follows (`pipeline/gtfs/timepoints.py`, `reference/`, `timepoints/`) |
-| Schedule changes daily | Each service day is pinned to the static version in effect that day |
+| Interpolated schedule times | On-time figures use true timepoints only: the stops printed in Island Transit's public timetables for the service period, matched to Passio stops on the same route. Where a route prints separate timetables for weekdays and Saturdays, each day uses the stops of its own timetable. Printed names that cannot be tied to one stop are left out and counted. Scheduled times are Passio's, the schedule the real-time feed follows (`pipeline/gtfs/timepoints.py`, `reference/`, `timepoints/`) |
+| Schedule changes daily | Each service day is pinned to the static version in effect that day, and keeps it |
+| A trip the schedule files describe badly | If a trip names a stop that is missing from the schedule, that trip gets no stop times and is counted (`problem` in `trip-tracks`); the rest of the day is unaffected |
 
 (Code: `pipeline/events/infer.py`; timepoints: `pipeline/gtfs/timepoints.py`.)
 
@@ -215,6 +280,13 @@ unless an alert or a `CANCELED` flag says so, which is why we always show
 the on-time figures next to the share of scheduled departures we actually
 observed.
 
+The typical deviation we report is the median. Figures for a route over the
+last 28 days pool every departure in those days, and leave out any day on
+which Island Transit runs no service.
+
+(Code: `pipeline/events/ontime.py`; the 28-day route tables are built by
+`pipeline/events/routes.py`.)
+
 ## 5. Validation
 
 Three checks back up the inferred times and the on-time figures.
@@ -223,7 +295,8 @@ Check 1 is the field check. We time arrivals and departures in person, using
 a clock synced to the network, and compare those times with ours. We report
 the bias (whether our times tend to run early or late), the mean absolute
 error (the average size of the difference), and the share within 30 and 60
-seconds. The target is a mean absolute error of 30 seconds or less. It is a
+seconds. The target is a mean absolute error of 30 seconds or less, and we
+judge it only once at least five moments have been timed. It is a
 spot check of whether the tracking matches what happens on the street, and
 so far we have only timed route 60, the route we ride. That means it does
 not yet cover other routes, departures after a bus has waited at a
@@ -242,7 +315,8 @@ it. Riding on board, it is often easier to note the moment the bus is level
 with the stop, and we compare that with the midpoint of our inferred arrival
 and departure. The script matches each timed moment to our stop time for
 the same service date, trip and stop, and each difference is our time minus
-the timed one. When we have no inferred time for a timed moment, we count it
+the timed one. A loop trip visits its terminal twice, so there the script
+uses whichever visit is nearer in time to the timed moment. When we have no inferred time for a timed moment, we count it
 but don't score it.
 
 Checks 2 and 3 also run every night, and their results go into each day's

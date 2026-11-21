@@ -8,6 +8,7 @@ produced by the collector.
 |---|---|
 | `timetable-timepoints-<date>.csv` | The stops printed in each route timetable of the service guides effective `<date>`, in printed order, without times. 2026-09-27: Whidbey, Camano and NAS Whidbey guide PDFs from islandtransit.org/download-digital-schedules, read on 2026-11-19 with an automated PDF reader and checked by hand |
 | `timetable-overrides-<date>.csv` | Reviewed links from printed names to Passio stop ids where name matching fails, and names deliberately left unresolved, with the reason |
+| `no-service-days.csv` | The holidays on which Island Transit runs no service, each with the page it was read from and the date. Passio's schedule has no holiday exceptions, so these days are flagged `service_expected: false` and left out of figures that pool several days (`pipeline/gtfs/holidays.py`). The file lists the holidays themselves; add the day of observance when a holiday falls on a weekend and Island Transit announces one |
 | `field-observations.csv` | Arrivals and departures timed in person at timepoints for the field check (`docs/field-check.md`), one row per bus and stop, in the sheet format of `python -m pipeline.events.field sheet`. Scored nightly by `pipeline/events/field.py` |
 | `timetable-timepoints-matched.csv` | Output of `scripts/check_timepoints.py`: each printed stop, its Passio stop, and whether Trillium marks it as a timepoint. For checking only |
 

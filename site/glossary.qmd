@@ -17,7 +17,8 @@ Live feed
 
 Collector
 : The collector is this project's program. Every 20 seconds it asks the feed
-  for its latest data and saves exactly what comes back.
+  for its latest bus locations and arrival predictions, and every 5 minutes
+  for service alerts, and it saves exactly what comes back.
 
 Schedule (static GTFS)
 : The schedule is Island Transit's timetable written in a standard file
@@ -37,8 +38,7 @@ Departure
   trip, we use the arrival instead.
 
 On time
-: A bus is on time if it leaves no more than 1 minute early and no more than
-  5 minutes late. At the last stop, an early arrival also counts as on time.
+: A bus is on time if it leaves from 1 minute early to 5 minutes late. At the last stop, an early arrival also counts as on time.
 
 Typical departure
 : The typical departure is the middle value of how early or late the buses
@@ -46,7 +46,7 @@ Typical departure
   call it the median.
 
 Seen (observed)
-: A departure is seen when the tracking data was good enough for us to work
+: A departure is seen when the tracking data was good enough for us to figure
   out a time for it. We report the departures we couldn't see separately,
   and we never count them as late.
 

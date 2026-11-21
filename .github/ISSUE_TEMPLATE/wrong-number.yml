@@ -1,0 +1,24 @@
+name: Report a wrong number
+description: A figure on the site or in a file looks wrong.
+title: "Wrong number: "
+labels: ["correction"]
+body:
+  - type: input
+    id: where
+    attributes:
+      label: Where is the number?
+      description: The page address, or the file and column.
+    validations:
+      required: true
+  - type: input
+    id: what
+    attributes:
+      label: Which day and route?
+      placeholder: "November 20, 2026, route 60"
+  - type: textarea
+    id: why
+    attributes:
+      label: What do you think it should be, and why?
+      description: If you rode or timed the bus yourself, say so and give the times.
+    validations:
+      required: true
