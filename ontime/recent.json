@@ -1,9 +1,12 @@
 {
+ "routes_version": "routes/0.2.0",
  "window_days": 28,
  "first_service_date": "2026-11-19",
  "last_service_date": "2026-11-20",
  "days": 2,
  "days_without_service": [],
+ "timetable_reference": "2026-09-27",
+ "schedule_change": null,
  "definition": {
   "window_s": [
    -60,
