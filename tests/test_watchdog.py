@@ -1,5 +1,5 @@
 import importlib.util
-from datetime import UTC, datetime, timedelta
+from datetime import UTC, date, datetime, timedelta
 from pathlib import Path
 
 spec = importlib.util.spec_from_file_location(
@@ -98,3 +98,89 @@ def test_feed_age_check():
     status["serviceAlerts"]["last_ok_age_s"] = None
     out = watchdog.feed_problems(status)
     assert "20 minutes ago" in out[0] and "no successful fetch" in out[1]
+
+
+# --- checks on the published figures ------------------------------------------------
+
+TODAY = date(2026, 12, 29)
+
+
+def row(day, **over):
+    base = {
+        "service_date": day, "service_expected": "True", "passio_version": "passio-aaa",
+        "scheduled_trips": "341", "trip_coverage": "0.97", "trip_id_match_rate": "1.0",
+        "timepoint_names_resolved_share": "0.9932", "canceled_trips": "0",
+        "passio_basis": "complete download that day", "passio_changed_during_day": "False",
+    }  # fmt: skip
+    return {**base, **{k: str(v) for k, v in over.items()}}
+
+
+def history(n=7, **last):
+    days = [(date(2026, 12, 21) + timedelta(days=k)).isoformat() for k in range(n)]
+    return [row(d) for d in days[:-1]] + [row(days[-1], **last)]
+
+
+def data_problems(rows):
+    return watchdog.data_problems(rows, TODAY, last_holiday=date(2027, 12, 25))
+
+
+def test_ordinary_figures_raise_nothing():
+    assert data_problems(history()) == []
+    assert data_problems([]) == []
+
+
+def test_trip_ids_that_stop_matching_the_schedule_are_reported():
+    (line,) = data_problems(history(trip_id_match_rate=0.41))
+    assert "2026-12-27" in line and "41%" in line
+    assert "reference/static-pin-overrides.csv" in line
+
+
+def test_a_service_day_with_no_scheduled_trips_is_reported():
+    out = data_problems(history(scheduled_trips=0, trip_coverage=""))
+    assert out == ["2026-12-27: the schedule lists no trips, on a day when service is expected"]
+
+
+def test_trip_coverage_far_below_recent_days_is_reported():
+    (line,) = data_problems(history(trip_coverage=0.70))
+    assert "70.0%" in line and "97.0%" in line
+    assert data_problems(history(trip_coverage=0.90)) == []
+    # With fewer than MIN_HISTORY earlier service days there is nothing to compare with.
+    assert data_problems(history(n=4, trip_coverage=0.70)) == []
+
+
+def test_a_drop_in_resolved_timepoint_names_is_reported():
+    (line,) = data_problems(history(timepoint_names_resolved_share=0.95))
+    assert "timepoint names" in line and "95.0%" in line
+
+
+def test_a_holiday_row_is_skipped_and_not_used_as_history():
+    rows = history()
+    rows.append(row("2026-12-28", service_expected="False", scheduled_trips=0, trip_coverage=0.0))
+    assert data_problems(rows) == []
+
+
+def test_notes_for_a_new_schedule_version_a_change_day_and_cancellations():
+    basis = "complete downloads that day disagreed; chosen by match to the live feed"
+    out = data_problems(
+        history(passio_version="passio-bbb", passio_changed_during_day="True",
+                passio_basis=basis, canceled_trips=2)
+    )  # fmt: skip
+    assert len(out) == 3
+    assert any("new Passio schedule version passio-bbb" in x for x in out)
+    assert any("downloads disagreed" in x and "chosen by match" in x for x in out)
+    assert any("2 trips as canceled" in x for x in out)
+
+
+def test_rows_from_before_the_new_columns_do_not_break_the_checks():
+    old = [{k: v for k, v in r.items() if not k.startswith(("canceled", "passio_b", "passio_c"))}
+           for r in history()]  # fmt: skip
+    assert data_problems(old) == []
+
+
+def test_the_holiday_list_running_out_is_reported():
+    out = watchdog.data_problems(history(), TODAY, last_holiday=date(2027, 1, 1))
+    assert out == [
+        "the list of no-service holidays ends on 2027-01-01: "
+        "add next year's dates to reference/no-service-days.csv"
+    ]
+    assert watchdog.data_problems([], TODAY, last_holiday=None) == []

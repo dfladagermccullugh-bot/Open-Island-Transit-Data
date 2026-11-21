@@ -2,7 +2,7 @@ import json
 from datetime import date
 
 from pipeline.events.routes import write_routes
-from pipeline.gtfs.holidays import no_service, service_expected
+from pipeline.gtfs.holidays import last_listed, no_service, service_expected
 
 
 def test_listed_days_have_no_service(tmp_path):
@@ -35,3 +35,14 @@ def test_route_summary_leaves_out_days_without_service(tmp_path):
     assert recent["days"] == 1 and recent["days_without_service"] == ["2026-11-26"]
     assert recent["overall"]["scheduled"] == 10 and recent["overall"]["observed_share"] == 0.8
     assert len(recent["routes"]["R1"]["daily"]) == 1
+
+
+def test_last_listed_is_the_latest_date_in_the_file(tmp_path):
+    assert last_listed() >= date(2027, 12, 25)
+    f = tmp_path / "days.csv"
+    f.write_text(
+        "service_date,holiday,source,read_on\n"
+        "2027-02-15,Snow,https://x,2027-02-15\n2026-12-25,Christmas Day,https://x,2026-11-21\n"
+    )
+    assert last_listed(f) == date(2027, 2, 15)
+    assert last_listed(tmp_path / "missing.csv") is None

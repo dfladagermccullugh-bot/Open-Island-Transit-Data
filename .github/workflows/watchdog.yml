@@ -21,6 +21,7 @@ jobs:
     env:
       GH_TOKEN: ${{ github.token }}
       TITLE: "Collector problem"
+      DATA_TITLE: "Data check"
     steps:
       - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4.4.0
       - uses: actions/setup-python@a26af69be951a213d495a4c3e4e4022e16d87065 # v5.6.0
@@ -58,6 +59,38 @@ jobs:
           number=$(gh issue list --state open --search "in:title \"$TITLE\"" --json number --jq '.[0].number')
           if [ -n "$number" ]; then
             gh issue close "$number" --comment "Collector is healthy again. $(cat report.txt)"
+          fi
+      # The published figures, in an issue of their own: a finding there
+      # lasts until the next service day is processed, and must neither fail
+      # every run in between nor hold back "Collector is healthy again".
+      # Exit code 2 (figures unreadable) leaves the issue as it is.
+      - name: Check the published figures
+        id: data
+        if: always()
+        run: |
+          set +e
+          python scripts/watchdog.py --data | tee data-report.txt
+          echo "code=${PIPESTATUS[0]}" >> "$GITHUB_OUTPUT"
+      - name: Open or update the data issue while there is something to look at
+        if: always() && steps.data.outputs.code == '1'
+        continue-on-error: true
+        run: |
+          number=$(gh issue list --state open --search "in:title \"$DATA_TITLE\"" --json number --jq '.[0].number')
+          if [ -z "$number" ]; then
+            gh issue create --title "$DATA_TITLE" --body-file data-report.txt
+          else
+            last=$(gh issue view "$number" --json body,comments --jq '(.comments | last | .body) // .body')
+            if [ "$(tail -n +2 data-report.txt)" != "$(printf '%s\n' "$last" | tail -n +2)" ]; then
+              gh issue comment "$number" --body-file data-report.txt
+            fi
+          fi
+      - name: Close the data issue once the figures raise nothing
+        if: always() && steps.data.outputs.code == '0'
+        continue-on-error: true
+        run: |
+          number=$(gh issue list --state open --search "in:title \"$DATA_TITLE\"" --json number --jq '.[0].number')
+          if [ -n "$number" ]; then
+            gh issue close "$number" --comment "Nothing to report any more. $(cat data-report.txt)"
           fi
       - name: Fail the run so GitHub sends a notification
         if: steps.check.outputs.code != '0'

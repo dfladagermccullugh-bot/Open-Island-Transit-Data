@@ -43,3 +43,10 @@ def no_service(day: date | str, path: Path = REFERENCE) -> dict[str, str] | None
 
 def service_expected(day: date | str, path: Path = REFERENCE) -> bool:
     return no_service(day, path) is None
+
+
+def last_listed(path: Path = REFERENCE) -> date | None:
+    """The latest date in the file, or None if it lists none. The watchdog
+    warns when it is near, so that next year's holidays get added."""
+    days = _table(path)
+    return date.fromisoformat(max(days)) if days else None

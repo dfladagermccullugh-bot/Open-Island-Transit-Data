@@ -11,12 +11,29 @@ Checks:
   - the latest Passio schedule download worked
   - the database is not filling up, and the prune job is running cleanly
   - the nightly job has processed the service day before yesterday
+
+With ``--data`` it checks the published figures instead (``quality/daily.csv``
+on the data branch), for signs that the numbers of the latest service day
+cannot be trusted or that something needs a person's attention:
+  - trip ids in the live feed no longer match the schedule the day was
+    measured against (the mark of a schedule change pinned to the wrong
+    version)
+  - the schedule lists no trips on a day when service is expected
+  - trip coverage far below recent days
+  - fewer printed timepoint names tied to a stop than the day before
+  - notes: a new Passio schedule version, a day whose schedule downloads
+    disagreed, trips the feed marked as canceled, and the list of no-service
+    holidays about to run out
+It exits 1 with the list, 0 if there is nothing to say, and 2 if the figures
+could not be read (then the workflow leaves its issue as it is).
 """
 
 from __future__ import annotations
 
+import csv
+import io
 import sys
-from datetime import UTC, datetime, timedelta
+from datetime import UTC, date, datetime, timedelta
 from pathlib import Path
 from typing import Any
 
@@ -26,7 +43,8 @@ import requests  # noqa: E402
 
 from pipeline.archive.store import Collector  # noqa: E402
 from pipeline.config import PACIFIC, REPO, USER_AGENT  # noqa: E402
-from pipeline.gtfs.holidays import service_expected  # noqa: E402
+from pipeline.gtfs.holidays import last_listed, service_expected  # noqa: E402
+from pipeline.stats import median  # noqa: E402
 
 MAX_AGE_S = {"vehiclePositions": 600, "tripUpdates": 600, "serviceAlerts": 1800}
 DATABASE_WARN_BYTES = 300 * 1024 * 1024  # free tier allows 500 MB
@@ -36,6 +54,15 @@ FROZEN_AFTER = timedelta(minutes=10)  # newest vehicle timestamp this old: posit
 STATIC_MAX_AGE = timedelta(hours=36)  # Passio's schedule is downloaded twice a day
 PRUNE_MAX_AGE = timedelta(hours=36)  # the prune job runs once a day
 DAILY_CSV = f"https://raw.githubusercontent.com/{REPO}/data/quality/daily.csv"
+
+# Checks on the published figures (``--data``).
+MATCH_RATE_MIN = 0.95  # share of position reports whose trip id is in the day's schedule
+COVERAGE_DROP = 0.15  # trip coverage this far below the recent median is reported
+MEDIAN_DAYS = 14  # service days the recent median is taken over
+MIN_HISTORY = 5  # earlier service days needed before coverage is compared
+RESOLVED_DROP = 0.005  # fall in the share of printed timepoint names tied to a stop
+HOLIDAY_LIST_WARN_DAYS = 60
+PIN_OVERRIDES = "reference/static-pin-overrides.csv"
 
 Row = dict[str, Any]
 
@@ -141,14 +168,86 @@ def nightly_problems(processed: set[str] | None, first_day: str | None, now: dat
     return []
 
 
-def processed_days() -> set[str] | None:
+def daily_rows() -> list[dict[str, str]] | None:
+    """The rows of quality/daily.csv on the data branch, or None if it could
+    not be read."""
     try:
         r = requests.get(DAILY_CSV, headers={"User-Agent": USER_AGENT}, timeout=30)
         if r.status_code != 200:
             return None
-        return {line.split(",", 1)[0] for line in r.text.splitlines()[1:] if line}
+        return list(csv.DictReader(io.StringIO(r.text)))
     except requests.RequestException:
         return None
+
+
+def processed_days() -> set[str] | None:
+    rows = daily_rows()
+    return None if rows is None else {r["service_date"] for r in rows}
+
+
+def _num(row: dict[str, str], key: str) -> float | None:
+    try:
+        return float(row.get(key) or "")
+    except ValueError:
+        return None
+
+
+def data_problems(
+    rows: list[dict[str, str]], today: date, last_holiday: date | None = None
+) -> list[str]:
+    """What the published figures say needs attention. ``rows``: daily.csv
+    in date order. The checks look at the latest day on which service was
+    expected; days without service are neither checked nor used for
+    comparison. A column that an older row lacks is skipped."""
+    out: list[str] = []
+    service = [r for r in rows if r.get("service_expected", "True") == "True"]
+    if service:
+        last, earlier = service[-1], service[:-1]
+        day = last["service_date"]
+        match, trips = _num(last, "trip_id_match_rate"), _num(last, "scheduled_trips")
+        coverage = _num(last, "trip_coverage")
+        if trips == 0:
+            out.append(f"{day}: the schedule lists no trips, on a day when service is expected")
+        if match is not None and match < MATCH_RATE_MIN:
+            out.append(
+                f"{day}: only {match:.0%} of position reports carry a trip id found in the "
+                f"schedule version used ({last.get('passio_version')}). If the schedule changed "
+                f"that day, add a row for the right version to {PIN_OVERRIDES}"
+            )
+        recent = [c for r in earlier[-MEDIAN_DAYS:] if (c := _num(r, "trip_coverage")) is not None]
+        if coverage is not None and len(recent) >= MIN_HISTORY:
+            usual = median(recent)
+            if coverage < usual - COVERAGE_DROP:
+                out.append(
+                    f"{day}: trip coverage was {coverage:.1%}, against a median of {usual:.1%} "
+                    f"over the {len(recent)} service days before"
+                )
+        resolved = _num(last, "timepoint_names_resolved_share")
+        before = _num(earlier[-1], "timepoint_names_resolved_share") if earlier else None
+        if resolved is not None and before is not None and resolved < before - RESOLVED_DROP:
+            out.append(
+                f"{day}: {resolved:.1%} of printed timepoint names are tied to a stop, down from "
+                f"{before:.1%} the day before. Check the timetable list and its overrides"
+            )
+        if earlier and last.get("passio_version") != earlier[-1].get("passio_version"):
+            out.append(
+                f"note: {day} is the first day on a new Passio schedule version "
+                f"{last.get('passio_version')}"
+            )
+        if last.get("passio_changed_during_day") == "True":
+            out.append(
+                f"note: {day}: the schedule downloads disagreed that day, and the version was "
+                f"pinned as: {last.get('passio_basis')}"
+            )
+        canceled = _num(last, "canceled_trips")
+        if canceled:
+            out.append(f"note: {day}: the feed marked {canceled:.0f} trips as canceled")
+    if last_holiday is not None and (last_holiday - today).days <= HOLIDAY_LIST_WARN_DAYS:
+        out.append(
+            f"the list of no-service holidays ends on {last_holiday.isoformat()}: "
+            "add next year's dates to reference/no-service-days.csv"
+        )
+    return out
 
 
 def problems(collector: Collector, now: datetime, processed: set[str] | None = None) -> list[str]:
@@ -168,8 +267,26 @@ def problems(collector: Collector, now: datetime, processed: set[str] | None = N
     return out
 
 
+def data_main(now: datetime) -> int:
+    rows = daily_rows()
+    stamp = now.isoformat(timespec="seconds")
+    if rows is None:
+        print("data check: quality/daily.csv could not be read at " + stamp)
+        return 2
+    found = data_problems(rows, now.astimezone(PACIFIC).date(), last_listed())
+    if found:
+        print("Data check at " + stamp)
+        for p in found:
+            print(f"- {p}")
+        return 1
+    print("data OK at " + stamp)
+    return 0
+
+
 def main() -> int:
     now = datetime.now(UTC)
+    if "--data" in sys.argv[1:]:
+        return data_main(now)
     try:
         found = problems(Collector(), now, processed_days())
     except Exception as exc:
