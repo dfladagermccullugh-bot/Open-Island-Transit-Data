@@ -34,7 +34,7 @@ from typing import Any
 
 import numpy as np
 
-GAPS_VERSION = "gaps/0.2.0"
+GAPS_VERSION = "gaps/0.3.0"
 MIN_DAYS = 14
 MIN_UNOBSERVED = 30
 MIN_ROUTE_TRIPS = 30  # routes with fewer scheduled trips are pooled as "other"
@@ -264,19 +264,25 @@ def model(rows: list[dict[str, Any]]) -> dict[str, Any]:
 
 
 def summarise(days_dir: Path) -> dict[str, Any]:
-    rows, used = collect(days_dir)
+    every, used = collect(days_dir)
+    # A trip the feed said was canceled, and that no bus reported, is not a
+    # gap in the data: there was nothing to report.
+    rows = [r for r in every if r["observed"] or not r.get("canceled", False)]
     unobserved = sum(not r["observed"] for r in rows)
     out: dict[str, Any] = {
         "gaps_version": GAPS_VERSION,
         "days": used,
         "trips": len(rows),
         "unobserved": unobserved,
+        "canceled_left_out": len(every) - len(rows),
+        "thresholds": {"min_days": MIN_DAYS, "min_unobserved": MIN_UNOBSERVED},
         "rates": rates(rows) if rows else None,
         "model": None,
         "model_status": None,
         "limits": "The model treats trips as independent. Trips lost together on one day or "
         "one bus make its standard errors too small and its p-values too confident. Days with "
-        "no service are left out.",
+        "no service are left out, and so are trips the feed marked as canceled that no bus "
+        "reported.",
     }
     if len(used) < MIN_DAYS or unobserved < MIN_UNOBSERVED:
         out["model_status"] = (

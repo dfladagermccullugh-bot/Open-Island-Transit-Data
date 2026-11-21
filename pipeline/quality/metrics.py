@@ -15,7 +15,7 @@ from __future__ import annotations
 import math
 import statistics
 from collections import Counter, defaultdict
-from collections.abc import Iterable
+from collections.abc import Container, Iterable
 from datetime import UTC, date, datetime, timedelta
 from typing import Any
 
@@ -24,7 +24,7 @@ from pipeline.config import PACIFIC
 from pipeline.gtfs.schedule import ServiceWindows, Trip
 from pipeline.stats import quantile as _quantile
 
-QUALITY_VERSION = "quality/0.4.0"
+QUALITY_VERSION = "quality/0.5.0"
 
 Row = dict[str, Any]
 
@@ -151,6 +151,46 @@ def paradata(fetches: list[Row], day: date, collection_start: datetime) -> dict[
     return out
 
 
+def refresh(runs: Iterable[Row], poll_s: int = SLOT_SECONDS["tripUpdates"]) -> dict[str, Any]:
+    """How often the feed's trip updates really change, from the runs of the
+    trip-updates table (one row per trip and stretch of fetches in which
+    nothing about its update changed).
+
+    A *pair* is two consecutive fetches that both listed a trip. The pair
+    *changed* when the trip's update differed between them, that is, when one
+    run ends and the next begins at the following fetch. A trip that drops
+    out of the feed and comes back later is not a pair. The interval is the
+    time between the feed's own timestamps of two successive updates of a
+    trip. (The response body cannot be used for this: its header timestamp
+    is the request time, so every body differs.)"""
+    by_trip: dict[str, list[Row]] = defaultdict(list)
+    for r in runs:
+        by_trip[r["trip_key"]].append(r)
+    repeats = changed = 0
+    intervals: list[float] = []
+    for mine in by_trip.values():
+        mine.sort(key=lambda r: r["first_requested_at"])
+        repeats += sum(r["times_seen"] - 1 for r in mine)
+        for a, b in zip(mine, mine[1:], strict=False):
+            gap = (b["first_requested_at"] - a["last_requested_at"]).total_seconds()
+            if gap > 1.5 * poll_s:
+                continue
+            changed += 1
+            if a["trip_update_ts"] and b["trip_update_ts"]:
+                step = (b["trip_update_ts"] - a["trip_update_ts"]).total_seconds()
+                if step > 0:
+                    intervals.append(step)
+    pairs = repeats + changed
+    return {
+        "pairs": pairs,
+        "changed": changed,
+        "changed_share": _share(changed, pairs),
+        "update_interval_s_median": _r(_quantile(intervals, 0.5)),
+        "update_interval_s_p90": _r(_quantile(intervals, 0.9)),
+        "poll_interval_s": poll_s,
+    }
+
+
 # --- nonresponse --------------------------------------------------------------
 
 
@@ -274,18 +314,30 @@ def trip_gaps(vehicles: list[Row], trips: list[Trip]) -> dict[str, Any]:
 
 # --- coverage -----------------------------------------------------------------
 
-TRIP_COLUMNS = ("trip_id", "route_id", "start_hour", "scheduled_in_service", "observed")
+TRIP_COLUMNS = (
+    "trip_id",
+    "route_id",
+    "start_hour",
+    "scheduled_in_service",
+    "observed",
+    "canceled",
+)
 
 
-def trip_records(trips: list[Trip], seen: set[str]) -> list[list[Any]]:
+def trip_records(
+    trips: list[Trip], seen: set[str], canceled: Container[str] = ()
+) -> list[list[Any]]:
     """One row per scheduled trip: Pacific hour of its first departure, how
     many scheduled trips (itself included) are in service at that moment,
-    and whether any position carried its id within its window. Input to the gap model
+    whether any position carried its id within its window, and whether the
+    feed said it was canceled. Input to the gap model
     (``pipeline/quality/gaps.py``)."""
     rows = []
     for t in sorted(trips, key=lambda t: (t.start, t.trip_id)):
         busy = sum(o.start <= t.start < o.end or o is t for o in trips)
-        rows.append([t.trip_id, t.route_id, _hour(t.start), busy, t.trip_id in seen])
+        rows.append(
+            [t.trip_id, t.route_id, _hour(t.start), busy, t.trip_id in seen, t.trip_id in canceled]
+        )
     return rows
 
 
@@ -295,20 +347,29 @@ def coverage(
     static_trip_ids: set[str],
     todays_trip_ids: set[str] | None = None,
     reports: list[Row] | None = None,
+    canceled: dict[str, str] | None = None,
 ) -> dict[str, Any]:
     """Trip coverage over ``trips`` (those observable): a trip is observed
     when at least one report carries its id within ``WINDOW_MIN`` minutes of
     its schedule. Over-coverage is counted over distinct position reports
     (``reports``, default ``vehicles``) against every trip scheduled that
-    day (``todays_trip_ids``, default ``trips``)."""
+    day (``todays_trip_ids``, default ``trips``).
+
+    ``canceled`` (``pipeline.canceled.canceled_trips``) names the trips the
+    feed said did not run. ``trip_coverage`` counts them like any other
+    trip; ``trip_coverage_excluding_canceled`` takes those that were also
+    not observed out of the scheduled count."""
     reports = vehicles if reports is None else reports
     seen = set(reports_in_window(vehicles, trips))
     anytime = {v["trip_id"] for v in vehicles if v["trip_id"] is not None}
     scheduled = {t.trip_id for t in trips}
+    canceled = {t: how for t, how in (canceled or {}).items() if t in scheduled}
+    not_run = set(canceled) - seen
     by_route: dict[str, Counter[str]] = defaultdict(Counter)
     for t in trips:
         by_route[t.route_id]["scheduled"] += 1
         by_route[t.route_id]["observed"] += t.trip_id in seen
+        by_route[t.route_id]["canceled"] += t.trip_id in canceled
     ids = [v["trip_id"] for v in reports]
     no_trip = sum(t is None for t in ids)
     unknown = sum(t is not None and t not in static_trip_ids for t in ids)
@@ -318,6 +379,13 @@ def coverage(
         "scheduled_trips": len(scheduled),
         "observed_scheduled_trips": len(scheduled & seen),
         "trip_coverage": _share(len(scheduled & seen), len(scheduled)),
+        "canceled_trips": len(canceled),
+        "canceled_by": {how: sum(v == how for v in canceled.values()) for how in ("flag", "alert")},
+        "canceled_trip_ids": sorted(canceled),
+        "canceled_but_observed": len(set(canceled) & seen),
+        "trip_coverage_excluding_canceled": _share(
+            len(scheduled & seen), len(scheduled) - len(not_run)
+        ),
         "window_min": WINDOW_MIN,
         "trips_seen_only_outside_window": len((scheduled & anytime) - seen),
         "routes_never_reporting": sorted(r for r, c in by_route.items() if not c["observed"]),
@@ -327,7 +395,7 @@ def coverage(
         },
         "trips": {
             "columns": list(TRIP_COLUMNS),
-            "rows": trip_records(trips, seen),
+            "rows": trip_records(trips, seen, canceled),
         },
         "vehicles_seen": len({v["vehicle_key"] for v in vehicles}),
         "over_coverage": {
@@ -410,6 +478,7 @@ def day_metrics(
     static_ids: dict[str, set[str]],
     collection_start: datetime,
     extra: dict[str, Any] | None = None,
+    canceled: dict[str, str] | None = None,
 ) -> dict[str, Any]:
     fetches = list(fetches)
     vehicles = list(vehicles)
@@ -443,7 +512,7 @@ def day_metrics(
             "trip_gaps": trip_gaps(vehicles, trips),
         },
         "coverage": coverage(
-            vehicles, trips, static_ids["trips"], {t.trip_id for t in all_trips}, reports
+            vehicles, trips, static_ids["trips"], {t.trip_id for t in all_trips}, reports, canceled
         ),
         "measurement": measurement(reports),
         "processing": {

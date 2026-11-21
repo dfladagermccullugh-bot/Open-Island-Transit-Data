@@ -59,6 +59,7 @@ with a plain name beside the researchers' term.
 | Metric | Definition |
 |---|---|
 | Trip coverage | Scheduled trips with at least one vehicle position carrying that `trip_id` within 30 minutes of the trip's scheduled time, divided by scheduled trips |
+| Canceled trips | Scheduled trips the feed itself says did not run: the trip carries a `CANCELED` or `DELETED` flag in a trip update or a vehicle position, or a service alert with the effect `NO_SERVICE` names the trip while the trip is scheduled. Counted beside trip coverage. A second coverage figure takes the canceled trips that no bus reported out of the scheduled trips |
 | Stop-level coverage | Scheduled timepoint events with an inferred stop event, divided by scheduled timepoint events |
 | Never-reporting units | Routes with scheduled service and no observations; vehicles seen in the previous 30 days but not today |
 | Over-coverage | Positions whose `trip_id` is not in the schedule or not scheduled that day, or that have no `trip_id`, divided by positions |
@@ -175,6 +176,7 @@ Speed is whatever the vehicle itself reports.
 |---|---|
 | Collector uptime | 20-second slots that hold a successful fetch, divided by slots in the day. The other slots are split into those with no logged fetch and those whose fetch failed |
 | Latency | Response time: median and 95th percentile |
+| Trip-update refresh | Of all pairs of consecutive 20-second fetches that both listed a trip, the share in which that trip's update had changed; and the typical time between the feed's own timestamps on two successive updates of a trip |
 | Instrument changes | Dated log of static GTFS versions, collector versions and configuration changes |
 
 The scheduler does not fire exactly on the 20-second mark, and its timing
@@ -282,9 +284,12 @@ has not made anyone miss it. Anything outside that window is early or late.
 When we could not figure out a time for a scheduled timepoint, we call it not
 observed. We report those separately and never count them as late. The feed
 cannot tell a canceled trip apart from one that ran without reporting,
-unless an alert or a `CANCELED` flag says so, which is why we always show
-the on-time figures next to the share of scheduled departures we actually
-observed.
+unless an alert or a `CANCELED` flag says so. We look for both every day and
+publish the count of canceled trips with the data quality figures. Through
+November 20, 2026 the feed had sent no such flag and no alert at all, so a
+bus that did not run still looks the same as a bus that did not report.
+That is why we always show the on-time figures next to the share of
+scheduled departures we actually observed.
 
 The typical deviation we report is the median. Figures for a route over the
 last 28 days pool every departure in those days, and leave out any day on

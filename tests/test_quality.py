@@ -2,6 +2,7 @@ import io
 import zipfile
 from datetime import UTC, date, datetime, timedelta
 
+from pipeline.canceled import canceled_trips
 from pipeline.gtfs.schedule import ServiceWindows, Trip, day_origin, scheduled_trips
 from pipeline.gtfs.zipread import read_zip
 from pipeline.quality.metrics import (
@@ -12,6 +13,7 @@ from pipeline.quality.metrics import (
     feed_emptiness,
     measurement,
     paradata,
+    refresh,
     trip_gaps,
 )
 
@@ -255,3 +257,92 @@ def test_uptime_slots_follow_the_scheduler_phase_and_stay_within_one():
     vp = paradata(fetches, DAY, start)["vehiclePositions"]
     assert vp["slots_expected"] == 180
     assert (vp["slots_ok"], vp["not_logged"], vp["uptime"]) == (180, 0, 1.0)
+
+
+# --- canceled trips -----------------------------------------------------------------
+
+
+def test_a_flagged_trip_is_counted_and_set_aside_in_the_second_figure():
+    trips = [trip("A", 0, 1), trip("B", 1, 2), trip("C", 2, 3, route="R2")]
+    vehicles = [report("V", 0, trip="A")]
+    updates = [
+        {"trip_id": "B", "trip_schedule_relationship": "CANCELED"},
+        {"trip_id": "A", "trip_schedule_relationship": None},
+        {"trip_id": "Z", "trip_schedule_relationship": "CANCELED"},  # not scheduled today
+    ]
+    canceled = canceled_trips(updates, [], trips)
+    assert canceled == {"B": "flag"}
+    c = coverage(vehicles, trips, {"A", "B", "C"}, canceled=canceled)
+    assert c["trip_coverage"] == round(1 / 3, 6)  # the headline figure does not move
+    assert c["canceled_trips"] == 1 and c["canceled_by"] == {"flag": 1, "alert": 0}
+    assert c["canceled_trip_ids"] == ["B"]
+    assert c["trip_coverage_excluding_canceled"] == 0.5
+    assert c["by_route"]["R1"]["canceled"] == 1 and c["by_route"]["R2"]["canceled"] == 0
+    rows = [dict(zip(c["trips"]["columns"], r, strict=True)) for r in c["trips"]["rows"]]
+    assert [r["canceled"] for r in rows] == [False, True, False]
+
+
+def test_without_cancellations_the_two_figures_agree():
+    trips = [trip("A", 0, 1), trip("B", 1, 2)]
+    c = coverage([report("V", 0, trip="A")], trips, {"A", "B"})
+    assert c["canceled_trips"] == 0 and c["canceled_but_observed"] == 0
+    assert c["trip_coverage_excluding_canceled"] == c["trip_coverage"] == 0.5
+
+
+def test_a_flagged_trip_that_ran_stays_observed():
+    trips = [trip("A", 0, 1), trip("B", 1, 2)]
+    canceled = canceled_trips(
+        [{"trip_id": "A", "trip_schedule_relationship": "CANCELED"}], [], trips
+    )
+    c = coverage([report("V", 0, trip="A")], trips, {"A", "B"}, canceled=canceled)
+    assert c["canceled_trips"] == 1 and c["canceled_but_observed"] == 1
+    assert c["trip_coverage_excluding_canceled"] == 0.5  # nothing unobserved was canceled
+
+
+def test_an_alert_cancels_a_trip_only_while_it_is_active():
+    trips = [trip("A", 0, 1), trip("B", 5, 6)]
+
+    def alert(effect, start_h, end_h, trip_ids=("A", "B")):
+        period = {"start": T + timedelta(hours=start_h), "end": T + timedelta(hours=end_h)}
+        return {"effect": effect, "trip_ids": list(trip_ids), "active_periods": [period]}
+
+    assert canceled_trips([], [alert("NO_SERVICE", -1, 2)], trips) == {"A": "alert"}
+    assert canceled_trips([], [alert("DETOUR", -1, 9)], trips) == {}
+    # No period means the alert applies for as long as it is shown.
+    always = {"effect": "NO_SERVICE", "trip_ids": ["B"], "active_periods": []}
+    assert canceled_trips([], [always], trips) == {"B": "alert"}
+    # An alert that names only a route does not cancel a trip.
+    route_only = {"effect": "NO_SERVICE", "trip_ids": [], "route_ids": ["R1"], "active_periods": []}
+    assert canceled_trips([], [route_only], trips) == {}
+    # A flag outranks an alert for the same trip.
+    flagged = [{"trip_id": "B", "trip_schedule_relationship": "DELETED"}]
+    assert canceled_trips(flagged, [always], trips) == {"B": "flag"}
+
+
+# --- how often trip updates change --------------------------------------------------
+
+
+def test_refresh_counts_changes_between_consecutive_fetches():
+    def run(key, first_s, seen, stamp_s):
+        first = T + timedelta(seconds=first_s)
+        return {
+            "trip_key": key,
+            "trip_update_ts": T + timedelta(seconds=stamp_s),
+            "first_requested_at": first,
+            "last_requested_at": first + timedelta(seconds=20 * (seen - 1)),
+            "times_seen": seen,
+        }
+
+    runs = [
+        run("A", 0, 3, 0),  # seen at 0, 20, 40 s unchanged ...
+        run("A", 60, 3, 58),  # ... changed at the next fetch, then unchanged twice
+        run("A", 120, 1, 121),  # changed again
+        run("A", 600, 2, 590),  # back after a gap: not a pair of consecutive fetches
+        run("B", 0, 2, 1),
+    ]
+    r = refresh(runs)
+    # Pairs of consecutive fetches listing the same trip: A 2+1+2+1+0+1, B 1.
+    assert (r["pairs"], r["changed"]) == (8, 2)
+    assert r["changed_share"] == 0.25
+    assert r["update_interval_s_median"] == 60.5  # 58 s and 63 s between timestamps
+    assert refresh([])["changed_share"] is None

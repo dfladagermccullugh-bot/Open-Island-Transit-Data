@@ -87,3 +87,19 @@ def test_a_day_with_no_service_is_left_out(tmp_path):
     f.write_text(json.dumps(m))
     g = gaps.summarise(tmp_path)
     assert g["days"] == ["2026-11-25"] and g["unobserved"] == 0
+
+
+def test_a_canceled_trip_that_was_not_seen_is_left_out(tmp_path):
+    cols = ["trip_id", "route_id", "start_hour", "scheduled_in_service", "observed", "canceled"]
+    rows = [["a", "R1", 6, 2, True, False], ["b", "R1", 6, 3, False, True],
+            ["c", "R1", 6, 3, False, False], ["d", "R1", 6, 3, True, True]]  # fmt: skip
+    (tmp_path / "2026-12-01.json").write_text(
+        json.dumps(
+            {"service_date": "2026-12-01", "coverage": {"trips": {"columns": cols, "rows": rows}}}
+        )
+    )
+    # A day file from before the column existed still loads.
+    _day_file(tmp_path, "2026-11-19", [["a", "R1", 6, 2, True], ["b", "R1", 6, 3, False]])
+    g = gaps.summarise(tmp_path)
+    assert (g["trips"], g["unobserved"], g["canceled_left_out"]) == (5, 2, 1)
+    assert g["thresholds"] == {"min_days": gaps.MIN_DAYS, "min_unobserved": gaps.MIN_UNOBSERVED}

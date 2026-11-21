@@ -26,6 +26,7 @@ from typing import Any
 import pyarrow.parquet as pq
 
 from pipeline import release
+from pipeline.canceled import canceled_trips
 from pipeline.common import load_json, run_order
 from pipeline.common import sha_of as _sha
 from pipeline.config import COLLECTION_START, REPO
@@ -35,7 +36,7 @@ from pipeline.gtfs.tables import rows as _csv
 from pipeline.gtfs.zipread import read_zip
 from pipeline.quality import gaps
 from pipeline.quality import stops as stop_metrics
-from pipeline.quality.metrics import QUALITY_VERSION, day_metrics
+from pipeline.quality.metrics import QUALITY_VERSION, day_metrics, refresh
 
 FETCH_COLUMNS = [
     "fetch_id",
@@ -59,6 +60,18 @@ PREDICTION_COLUMNS = [
     "last_requested_at",
     "arrival_time",
     "departure_time",
+]
+
+# The columns of trip-updates that the cancellation count and the refresh
+# rate read.
+TRIP_UPDATE_COLUMNS = [
+    "trip_key",
+    "trip_id",
+    "trip_schedule_relationship",
+    "trip_update_ts",
+    "first_requested_at",
+    "last_requested_at",
+    "times_seen",
 ]
 
 HEADLINE = [
@@ -101,6 +114,15 @@ HEADLINE = [
     ("vehicles_seen", ("coverage", "vehicles_seen")),
     ("timetable_reference", ("processing", "timepoints", "reference")),
     ("timepoint_names_resolved_share", ("processing", "timepoints", "resolved_share")),
+    ("canceled_trips", ("coverage", "canceled_trips")),
+    ("trip_coverage_excluding_canceled", ("coverage", "trip_coverage_excluding_canceled")),
+    ("trip_update_changed_share", ("paradata", "tripUpdates", "refresh", "changed_share")),
+    (
+        "trip_update_interval_s_median",
+        ("paradata", "tripUpdates", "refresh", "update_interval_s_median"),
+    ),
+    ("passio_basis", ("schedule", "passio_basis")),
+    ("passio_changed_during_day", ("schedule", "passio_changed_during_day")),
     ("quality_version", ("quality_version",)),
 ]
 
@@ -233,6 +255,18 @@ def compute(day: date, data: Path, raw_dir: Path, tables_dir: Path, repo: str) -
     )
     vehicles = pq.read_table(veh_path).to_pylist()
 
+    def parsed_table(name: str, columns: list[str] | None = None) -> list[dict]:
+        f = f"{name}-{d}.parquet"
+        path = release.fetch(parsed["release_tag"], repo, f, tables_dir, _sha(parsed, f))
+        return pq.read_table(path, columns=columns).to_pylist()
+
+    trip_updates = parsed_table("trip-updates", TRIP_UPDATE_COLUMNS)
+    alerts = parsed_table("alerts")
+    skipped = sum(
+        r["stop_schedule_relationship"] == "SKIPPED"
+        for r in parsed_table("trip-update-stops", ["stop_schedule_relationship"])
+    )
+
     pins = static["days"][d]
     version = static["versions"][pins["passio"]["version"]]
     ex = version["example"]
@@ -280,7 +314,11 @@ def compute(day: date, data: Path, raw_dir: Path, tables_dir: Path, repo: str) -
         }
     else:
         extra["timepoints"] = None
-    m = day_metrics(day, fetches, vehicles, trips, ids, COLLECTION_START, extra)
+    canceled = canceled_trips(trip_updates, alerts, trips, vehicles)
+    m = day_metrics(day, fetches, vehicles, trips, ids, COLLECTION_START, extra, canceled)
+    m["coverage"]["stop_updates_flagged_skipped"] = skipped
+    m["coverage"]["alerts_seen"] = len(alerts)
+    m["paradata"]["tripUpdates"]["refresh"] = refresh(trip_updates)
     m["coverage"]["vehicle_ids"] = sorted(
         {v["vehicle_id"] for v in vehicles if v["vehicle_id"] is not None}
     )
@@ -292,6 +330,7 @@ def compute(day: date, data: Path, raw_dir: Path, tables_dir: Path, repo: str) -
     m["schedule"] = {
         "passio_version": pins["passio"]["version"],
         "passio_basis": pins["passio"]["basis"],
+        "passio_changed_during_day": pins["passio"].get("changed_during_day", False),
         "trillium_version": tv,
         "trillium_removes_service_today": holidays,
         "service_expected": service_expected(day),

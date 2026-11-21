@@ -333,7 +333,21 @@ every scheduled trip we could have observed, stored as `columns` and
 trip's first departure (`start_hour`), how many scheduled trips were in
 service at that moment counting this one (`scheduled_in_service`), and
 whether any position carried the trip's id within 30 minutes of its schedule
-(`observed`).
+(`observed`). Since `quality/0.5.0` each row also says whether the feed
+marked the trip as canceled (`canceled`), and `coverage` carries the number
+of such trips (`canceled_trips`), how they were marked (`canceled_by`, by a
+`flag` on the trip or by an `alert`), their ids (`canceled_trip_ids`), how
+many of them a bus reported anyway (`canceled_but_observed`), and
+`trip_coverage_excluding_canceled`, which is trip coverage with the canceled
+trips that no bus reported taken out of the scheduled trips. `trip_coverage`
+itself still counts every scheduled trip. Two more counts show whether the
+feed uses these signals at all: `stop_updates_flagged_skipped` is the number
+of stop predictions marked `SKIPPED`, and `alerts_seen` is the number of
+alert rows that day. Under `paradata.tripUpdates.refresh` we record how
+often trip updates really change. A pair is two consecutive fetches that
+both listed a trip (`pairs`); it `changed` when the trip's update differed
+between them. `update_interval_s_median` and `update_interval_s_p90` are the
+time between the feed's own timestamps on two successive updates of a trip.
 
 `quality/daily.csv` has one row per day with the headline figures, rebuilt
 from the day files.
@@ -346,7 +360,10 @@ logistic regression of "trip not observed," fitted with Firth's penalized
 likelihood, with odds ratios, 95% intervals, p-values and a likelihood-ratio
 test of all the predictors together. It stays `null` until there are 14
 days and 30 unobserved trips, and `model_status` says which of those is
-still short. `limits` states what the model assumes: it treats trips as
+still short; the two numbers are also given as `thresholds`. Since
+`gaps/0.3.0` a trip the feed marked as canceled, and that no bus reported, is
+left out, because there was nothing to report; `canceled_left_out` counts
+them. `limits` states what the model assumes: it treats trips as
 independent, so its p-values are more confident than they should be.
 
 | `daily.csv` column | Meaning |
@@ -379,6 +396,12 @@ independent, so its p-values are more confident than they should be.
 | `vehicles_seen` | Distinct vehicles reporting |
 | `timetable_reference` | Effective date of the printed timetable used for timepoints |
 | `timepoint_names_resolved_share` | Printed timepoint names tied to a Passio stop |
+| `canceled_trips` | Scheduled trips the feed marked as canceled, by a flag on the trip or by a `NO_SERVICE` alert naming it |
+| `trip_coverage_excluding_canceled` | Trip coverage with the canceled trips that no bus reported taken out of the scheduled trips. Equal to `trip_coverage` when nothing was canceled |
+| `trip_update_changed_share` | Of the pairs of consecutive fetches that both listed a trip, the share in which the trip's update had changed |
+| `trip_update_interval_s_median` | Typical time between the feed's timestamps on two successive updates of a trip, seconds |
+| `passio_basis` | How the day's Passio version was chosen (see `manifest/static.json`) |
+| `passio_changed_during_day` | True when complete Passio downloads on that day differed, which marks a schedule change |
 | `quality_version` | Version of the quality code |
 
 Counts of positions (`over_coverage_share`, `trip_id_match_rate`, the share

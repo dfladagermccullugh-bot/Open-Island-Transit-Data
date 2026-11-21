@@ -202,11 +202,17 @@ other = latest == null ? [] : [
   ["Fetch failures, vehicle positions", pct(latest.nonresponse.fetch.vehiclePositions.rate, 2)],
   ["Empty vehicle feed while buses are scheduled", pct(latest.nonresponse.vehicle_feed.empty_in_service_rate, 2)],
   ["Positions with no trip, an unknown trip, or a trip not scheduled that day", pct(latest.coverage.over_coverage.share, 2)],
+  ["Trips the feed marked as canceled",
+    latest.coverage.canceled_trips == null ? "not measured for this day" : latest.coverage.canceled_trips === 0 ? "none" : latest.coverage.canceled_trips],
   ["Impossible jumps (over 130 km/h, about 80 mph)", latest.measurement.impossible_jumps_over_130_kmh],
   ["Vehicle timestamps in the future / going backwards", `${latest.measurement.timestamps_in_future} / ${latest.measurement.timestamps_going_backwards}`],
   ["Trip ids found in the schedule", pct(latest.processing.id_match.trip_id.match_rate, 1)],
   ["Stop ids found in the schedule", pct(latest.processing.id_match.stop_id.match_rate, 1)],
   ["Median response time, vehicle positions", `${num(latest.paradata.vehiclePositions.latency_ms_median)} ms`],
+  ...(latest.paradata.tripUpdates.refresh == null ? [] : [
+    ["Checks 20 seconds apart in which a trip's prediction had changed", pct(latest.paradata.tripUpdates.refresh.changed_share, 1)],
+    ["Typical time between new predictions for a trip", `${num(latest.paradata.tripUpdates.refresh.update_interval_s_median)} seconds`],
+  ]),
   ["Distinct vehicles reporting", latest.coverage.vehicles_seen],
   ...(ev == null ? [] : [
     ["All stop events with an inferred time", pct(ev.stop_coverage.all_stops.coverage, 1)],
