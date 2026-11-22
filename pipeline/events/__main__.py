@@ -264,9 +264,8 @@ def main() -> int:
     if not days:
         print("no events to build")
         if (ontime_dir / "days").exists():
-            print(
-                f"ontime/routes.csv and recent.json: {write_routes(ontime_dir, files=day_files)} days"
-            )
+            n = write_routes(ontime_dir, files=day_files)
+            print(f"ontime/routes.csv and recent.json: {n} days")
         return 0
 
     failed = False
@@ -300,9 +299,8 @@ def main() -> int:
             traceback.print_exc()
     if (ontime_dir / "days").exists():
         print(f"ontime/daily.csv: {write_daily(ontime_dir, day_files)} days")
-        print(
-            f"ontime/routes.csv and recent.json: {write_routes(ontime_dir, files=day_files)} days"
-        )
+        n = write_routes(ontime_dir, files=day_files)
+        print(f"ontime/routes.csv and recent.json: {n} days")
     return 1 if failed else 0
 
 
