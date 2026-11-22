@@ -1,11 +1,12 @@
 {
  "version": 1,
+ "repo": "dfladagermccullugh-bot/Open-Island-Transit-Data",
  "days": {
   "2026-11-19": {
    "service_date": "2026-11-19",
    "events_version": "events/0.3.1",
    "ontime_version": "ontime/0.3.0",
-   "validate_version": "validate/0.1.0",
+   "validate_version": "validate/0.2.0",
    "service_expected": true,
    "passio_version": "passio-9b1efa882037",
    "timepoints": "passio-9b1efa882037__timetable-2026-09-27-970aa207",
@@ -27,14 +28,14 @@
     }
    ],
    "release_tag": "parsed-2026-11",
-   "built_at": "2026-11-21T22:49:28+00:00",
-   "code_sha": "611611c98f303e568d8a2412eacaf82fa71f148e"
+   "built_at": "2026-11-22T01:12:19+00:00",
+   "code_sha": "9582f4ff73cab2563ee392c0a27b81998fd2684b"
   },
   "2026-11-20": {
    "service_date": "2026-11-20",
    "events_version": "events/0.3.1",
    "ontime_version": "ontime/0.3.0",
-   "validate_version": "validate/0.1.0",
+   "validate_version": "validate/0.2.0",
    "service_expected": true,
    "passio_version": "passio-9b1efa882037",
    "timepoints": "passio-9b1efa882037__timetable-2026-09-27-970aa207",
@@ -56,8 +57,8 @@
     }
    ],
    "release_tag": "parsed-2026-11",
-   "built_at": "2026-11-21T22:49:23+00:00",
-   "code_sha": "611611c98f303e568d8a2412eacaf82fa71f148e"
+   "built_at": "2026-11-22T01:12:16+00:00",
+   "code_sha": "9582f4ff73cab2563ee392c0a27b81998fd2684b"
   }
  }
 }

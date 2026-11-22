@@ -2393,7 +2393,7 @@
   }
  },
  "validation": {
-  "validate_version": "validate/0.1.0",
+  "validate_version": "validate/0.2.0",
   "feed_agreement": {
    "compared": 8566,
    "inside_change_interval_share": 0.5908,
@@ -2496,7 +2496,7 @@
      "route_id": "9404",
      "from": "arrival 2",
      "to": "departure 2",
-     "metres": 80,
+     "meters": 80,
      "seconds": 2.1,
      "speed_ms": 37.5,
      "report_gap_s": 20.0
@@ -2506,7 +2506,7 @@
      "route_id": "7916",
      "from": "arrival 4",
      "to": "departure 4",
-     "metres": 80,
+     "meters": 80,
      "seconds": 2.1,
      "speed_ms": 37.5,
      "report_gap_s": 20.0
@@ -2516,7 +2516,7 @@
      "route_id": "7914",
      "from": "arrival 2",
      "to": "departure 2",
-     "metres": 80,
+     "meters": 80,
      "seconds": 2.2,
      "speed_ms": 36.8,
      "report_gap_s": 20.0
@@ -2526,7 +2526,7 @@
      "route_id": "7916",
      "from": "arrival 18",
      "to": "departure 18",
-     "metres": 80,
+     "meters": 80,
      "seconds": 2.2,
      "speed_ms": 36.4,
      "report_gap_s": 36.0
@@ -2536,7 +2536,7 @@
      "route_id": "7916",
      "from": "departure 18",
      "to": "arrival 19",
-     "metres": 308,
+     "meters": 308,
      "seconds": 8.5,
      "speed_ms": 36.4,
      "report_gap_s": 36.0
@@ -2546,7 +2546,7 @@
      "route_id": "7916",
      "from": "arrival 19",
      "to": "departure 19",
-     "metres": 80,
+     "meters": 80,
      "seconds": 2.2,
      "speed_ms": 36.4,
      "report_gap_s": 36.0
@@ -2556,7 +2556,7 @@
      "route_id": "7916",
      "from": "arrival 15",
      "to": "departure 15",
-     "metres": 80,
+     "meters": 80,
      "seconds": 2.2,
      "speed_ms": 36.4,
      "report_gap_s": 36.0
@@ -2566,7 +2566,7 @@
      "route_id": "7922",
      "from": "arrival 21",
      "to": "departure 21",
-     "metres": 80,
+     "meters": 80,
      "seconds": 2.2,
      "speed_ms": 36.4,
      "report_gap_s": 36.0
@@ -2576,7 +2576,7 @@
      "route_id": "7922",
      "from": "departure 21",
      "to": "arrival 22",
-     "metres": 437,
+     "meters": 437,
      "seconds": 12.0,
      "speed_ms": 36.4,
      "report_gap_s": 36.0
@@ -2586,7 +2586,7 @@
      "route_id": "7922",
      "from": "arrival 22",
      "to": "departure 22",
-     "metres": 80,
+     "meters": 80,
      "seconds": 2.2,
      "speed_ms": 36.4,
      "report_gap_s": 36.0
