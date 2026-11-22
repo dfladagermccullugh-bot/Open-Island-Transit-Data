@@ -111,7 +111,7 @@ def test_build_pools_counts_and_lists_missing_days(tmp_path):
     assert r["versions"]["tables"] == ["tables/0.1.0"]
 
     md = monthly.markdown(r)
-    assert "Missing days: 2026-11-29." in md
+    assert "Missing days: November 29, 2026." in md
     assert "| 2C | 10 | 8 | 100.0% |" in md
 
 
@@ -186,3 +186,62 @@ def test_a_holiday_stays_in_collection_but_not_in_coverage_or_on_time(tmp_path):
     assert r["collection"]["vehiclePositions"]["slots_expected"] == 6000  # the collector ran
     assert r["daily_headline"]["trip_coverage"]["days"] == 2
     assert "Days with no service" in monthly.markdown(r)
+
+
+def test_a_rebuild_with_the_same_figures_does_not_change_the_digest(tmp_path):
+    """Days are rebuilt when code changes even if no figure moves. The times
+    and commit ids stamped on a rebuild must not make a month's report look
+    out of date: that would upload its checksums and reset its release notes
+    again for nothing."""
+    make_branch(tmp_path, ["2026-11-30"])
+    before = monthly.inputs_digest(tmp_path, "2026-11")
+
+    day = quality_day("2026-11-30", 100, 90)
+    day["computed_at"] = "2027-01-05T08:40:00+00:00"
+    day["inputs"] = {"code_sha": "abc123", "raw_sha256": "c" * 64}
+    write(tmp_path / "quality/days/2026-11-30.json", day)
+    manifest = json.loads((tmp_path / "manifest/parsed.json").read_text())
+    manifest["days"]["2026-11-30"].update(built_at="2027-01-05T08:40:01+00:00", code_sha="abc123")
+    write(tmp_path / "manifest/parsed.json", manifest)
+    stamped = monthly.inputs_digest(tmp_path, "2026-11")
+
+    day["computed_at"] = "2027-02-01T00:00:00+00:00"
+    day["inputs"]["code_sha"] = "def456"
+    write(tmp_path / "quality/days/2026-11-30.json", day)
+    manifest["days"]["2026-11-30"].update(built_at="2027-02-01T00:00:01+00:00", code_sha="def456")
+    manifest["days"]["2026-11-30"]["archived_at"] = "2027-02-01T00:00:02+00:00"
+    write(tmp_path / "manifest/parsed.json", manifest)
+    assert monthly.inputs_digest(tmp_path, "2026-11") == stamped
+
+    # Anything else that changes still counts, including an input's hash.
+    day["inputs"]["raw_sha256"] = "d" * 64
+    write(tmp_path / "quality/days/2026-11-30.json", day)
+    assert monthly.inputs_digest(tmp_path, "2026-11") not in (before, stamped)
+
+
+def test_the_index_counts_missing_days_under_a_name_that_says_count(tmp_path):
+    make_branch(tmp_path, ["2026-11-29", "2026-11-30"])
+    r = monthly.build(tmp_path, "2026-11", date(2026, 12, 1))
+    monthly.write(tmp_path / "reports", r)
+    (entry,) = json.loads((tmp_path / "reports/index.json").read_text())
+    assert isinstance(r["period"]["days_missing"], list)
+    assert entry["days_missing_count"] == len(r["period"]["days_missing"])
+    assert "days_missing" not in entry
+
+
+def test_the_written_report_spells_dates_out(tmp_path):
+    make_branch(tmp_path, ["2026-11-29", "2026-11-30"])
+    text = monthly.markdown(monthly.build(tmp_path, "2026-11", date(2026, 12, 1)))
+    assert "November 29, 2026 to November 30, 2026" in text
+    assert "2026-11-29" not in text and "2026-11-30" not in text
+    assert "On time means 1 minute early to 5 minutes late." in text
+
+
+def test_a_route_without_a_number_has_an_empty_short_name_not_a_missing_one(tmp_path):
+    make_branch(tmp_path, ["2026-11-30"])
+    day = ontime_day("2026-11-30", {"shuttle": (10, 8, 6, 0, 2)})
+    day["routes"] = {"shuttle": {"short_name": "", "long_name": "Base Shuttle"}}
+    write(tmp_path / "ontime/days/2026-11-30.json", day)
+    r = monthly.build(tmp_path, "2026-11", date(2026, 12, 1))
+    assert r["ontime"]["by_route"]["shuttle"]["short_name"] == ""
+    assert "| Base Shuttle |" in monthly.markdown(r)

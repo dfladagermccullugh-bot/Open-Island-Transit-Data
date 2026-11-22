@@ -16,7 +16,6 @@
 
 from __future__ import annotations
 
-import csv
 import json
 from collections import defaultdict
 from datetime import date, timedelta
@@ -24,7 +23,7 @@ from functools import partial
 from pathlib import Path
 from typing import Any
 
-from pipeline.common import DayFiles
+from pipeline.common import DayFiles, write_csv
 from pipeline.gtfs.timepoints import reference_of
 from pipeline.stats import quantile, share
 
@@ -80,15 +79,16 @@ def write_routes(
     for d in days:
         names.update(d.get("routes", {}))
 
-    with (ontime_dir / "routes.csv").open("w", newline="") as fh:
-        w = csv.writer(fh)
-        w.writerow(ROUTE_COLUMNS)
-        for d in days:
-            for route, b in sorted(d["by_route"].items()):
-                w.writerow(
-                    [d["service_date"], route, route_name(names, route)]
-                    + [b.get(k) for k in ROUTE_COLUMNS[3:]]
-                )
+    write_csv(
+        ontime_dir / "routes.csv",
+        ROUTE_COLUMNS,
+        (
+            [d["service_date"], route, route_name(names, route)]
+            + [b.get(k) for k in ROUTE_COLUMNS[3:]]
+            for d in days
+            for route, b in sorted(d["by_route"].items())
+        ),
+    )
 
     last = date.fromisoformat(days[-1]["service_date"])
     first = last - timedelta(days=window_days - 1)

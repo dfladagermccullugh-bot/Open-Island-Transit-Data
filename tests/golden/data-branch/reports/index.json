@@ -2,7 +2,7 @@
  {
   "month": "2026-11",
   "days_archived": 3,
-  "days_missing": 4,
+  "days_missing_count": 4,
   "vehicle_uptime": 0.076312,
   "trip_coverage": 0.875,
   "timepoint_observed_share": 0.875,

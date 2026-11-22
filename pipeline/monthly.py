@@ -37,7 +37,7 @@ from pipeline.common import code_sha, load_json, stamp, utcnow
 from pipeline.config import PACIFIC, REPO
 from pipeline.stats import share
 
-REPORT_VERSION = "monthly/0.1.0"
+REPORT_VERSION = "monthly/0.2.0"
 GRACE_DAYS = 7
 FEEDS = ("vehiclePositions", "tripUpdates", "serviceAlerts")
 ONTIME_COUNTS = ("scheduled", "observed", "on_time", "early", "late")
@@ -118,19 +118,42 @@ def _route_key(r: dict[str, Any], route_id: str) -> tuple[int, int, str]:
     return (0 if digits else 1, int(digits) if digits else 0, name or route_id)
 
 
+# When a file was written and from which commit. A day rebuilt by newer code
+# carries new values of these even when every figure in it is the same.
+STAMPS = frozenset({"computed_at", "built_at", "archived_at", "code_sha"})
+
+
+def _without_stamps(value: Any) -> Any:
+    """``value`` with every stamp removed, at any depth."""
+    if isinstance(value, dict):
+        return {k: _without_stamps(v) for k, v in value.items() if k not in STAMPS}
+    if isinstance(value, list):
+        return [_without_stamps(v) for v in value]
+    return value
+
+
 def inputs_digest(data: Path, month: str) -> str:
-    """Changes whenever anything the report reads for ``month`` changes."""
+    """Changes whenever anything the report reads for ``month`` changes.
+
+    The stamps on the inputs (``STAMPS``) are left out. A month's report is
+    rebuilt, its checksum files uploaded again and its release notes reset
+    only when a figure, a file or a version behind it changed, not each time
+    a day is rebuilt to the same result."""
     h = hashlib.sha256(REPORT_VERSION.encode())
+
+    def take(value: Any) -> None:
+        h.update(json.dumps(_without_stamps(value), sort_keys=True).encode())
+
     for name, days in _manifests(data).items():
         for day in sorted(d for d in days if d.startswith(month)):
             h.update(f"{name}:{day}:".encode())
-            h.update(json.dumps(days[day], sort_keys=True).encode())
+            take(days[day])
     for folder in ("quality/days", "ontime/days"):
         for path in sorted((data / folder).glob(f"{month}-*.json")):
             h.update(path.name.encode())
-            h.update(path.read_bytes())
+            take(json.loads(path.read_text()))
     for row in _daily_rows(data, month):
-        h.update(json.dumps(row, sort_keys=True).encode())
+        take(row)
     return h.hexdigest()
 
 
@@ -241,8 +264,10 @@ def build(data: Path, month: str, today: date | None = None) -> dict[str, Any]:
     by_route = {}
     for route, acc in routes.items():
         by_route[route] = {
-            "short_name": names.get(route, {}).get("short_name"),
-            "long_name": names.get(route, {}).get("long_name"),
+            # Empty, not missing, for a route without a number or a name, as
+            # in the on-time files.
+            "short_name": names.get(route, {}).get("short_name") or "",
+            "long_name": names.get(route, {}).get("long_name") or "",
             **acc,
             "observed_share": share(acc["observed"], acc["scheduled"]),
             "on_time_share_of_observed": share(acc["on_time"], acc["observed"]),
@@ -335,33 +360,42 @@ def _pacific(ts: str) -> str:
     return t.strftime("%-I:%M %p Pacific")
 
 
+def _long(day: str) -> str:
+    """ "November 20, 2026" from "2026-11-20"."""
+    d = date.fromisoformat(day)
+    return f"{d:%B} {d.day}, {d.year}"
+
+
 def markdown(r: dict[str, Any]) -> str:
     p, c, o = r["period"], r["coverage"], r["ontime"]
     title = datetime.strptime(r["month"], "%Y-%m").strftime("%B %Y")
     lines = [f"# Island Transit real-time feeds: {title}", ""]
     if p["first_service_date"]:
         lines.append(
-            f"Service days {p['first_service_date']} to {p['last_service_date']}: "
+            f"Service days {_long(p['first_service_date'])} to {_long(p['last_service_date'])}: "
             f"{p['days_archived']} archived of {p['days_in_month']} in the month."
         )
     lines.append(
-        "Missing days: " + (", ".join(p["days_missing"]) if p["days_missing"] else "none") + "."
+        "Missing days: "
+        + ("; ".join(map(_long, p["days_missing"])) if p["days_missing"] else "none")
+        + "."
     )
     if p.get("days_without_service"):
         lines.append(
             "Days with no service (Island Transit holidays), left out of the trip coverage and "
-            "on-time figures: " + ", ".join(p["days_without_service"]) + "."
+            "on-time figures: " + "; ".join(map(_long, p["days_without_service"])) + "."
         )
     for d in p["partial_days"]:
         lines.append(
-            f"Partial day: {d['service_date']}, collection from {_pacific(d['observed_from'])} "
+            f"Partial day: {_long(d['service_date'])}, collection from "
+            f"{_pacific(d['observed_from'])} "
             f"({d['scheduled_trips_ended_before_collection']} scheduled trips ended before that)."
         )
     lines += ["", "## Collection", "", "| Feed | Fetches expected | Successful | Uptime | "
               "Lowest day |", "|---|---:|---:|---:|---|"]  # fmt: skip
     for feed, f in r["collection"].items():
         low = f["uptime_by_day"]
-        low_txt = f"{_pct(low['min'], 2)} ({low['min_date']})" if low else "n/a"
+        low_txt = f"{_pct(low['min'], 2)} ({_long(low['min_date'])})" if low else "n/a"
         lines.append(
             f"| {feed} | {f['slots_expected']:,} | {f['slots_ok']:,} | "
             f"{_pct(f['uptime'], 2)} | {low_txt} |"
@@ -376,14 +410,15 @@ def markdown(r: dict[str, Any]) -> str:
     if c["trip_coverage_by_day"]:
         t = c["trip_coverage_by_day"]
         lines.append(
-            f"Daily range {_pct(t['min'])} ({t['min_date']}) to {_pct(t['max'])} ({t['max_date']})."
+            f"Daily range {_pct(t['min'])} ({_long(t['min_date'])}) to {_pct(t['max'])} "
+            f"({_long(t['max_date'])})."
         )
     lines += ["", "## On time at printed timetable timepoints", ""]
     if o["definition"]:
         early, late = (-o["definition"]["window_s"][0] // 60, o["definition"]["window_s"][1] // 60)
         lines.append(f"On time means {early} minute early to {late} minutes late.")
     lines.append(
-        f"Timepoint departures scheduled: {o['scheduled']:,}. Observed: {o['observed']:,} "
+        f"Timepoint events scheduled: {o['scheduled']:,}. Observed: {o['observed']:,} "
         f"({_pct(o['observed_share'])}). Of those observed: on time "
         f"{_pct(o['on_time_share_of_observed'])}, early {_pct(o['early_share_of_observed'])}, "
         f"late {_pct(o['late_share_of_observed'])}."
@@ -422,7 +457,7 @@ def _index_entry(r: dict[str, Any]) -> dict[str, Any]:
     return {
         "month": r["month"],
         "days_archived": r["period"]["days_archived"],
-        "days_missing": len(r["period"]["days_missing"]),
+        "days_missing_count": len(r["period"]["days_missing"]),
         "vehicle_uptime": r["collection"]["vehiclePositions"]["uptime"],
         "trip_coverage": r["coverage"]["trip_coverage"],
         "timepoint_observed_share": r["ontime"]["observed_share"],

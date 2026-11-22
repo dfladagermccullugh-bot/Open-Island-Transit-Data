@@ -10,7 +10,7 @@ in every ``quality/days/*.json`` file and writes ``quality/gaps.json``:
           start; fitted only once there are MIN_DAYS days and MIN_UNOBSERVED
           unobserved trips
 
-The model uses Firth's penalised likelihood, which gives finite estimates
+The model uses Firth's penalized likelihood, which gives finite estimates
 when a route has no unobserved trips at all (ordinary maximum likelihood
 does not). The joint likelihood-ratio test of all predictors asks whether
 gaps depend on when, where and how busy service is; a small p-value means
@@ -36,7 +36,7 @@ import numpy as np
 
 from pipeline.common import DayFiles
 
-GAPS_VERSION = "gaps/0.3.0"
+GAPS_VERSION = "gaps/0.4.0"
 MIN_DAYS = 14
 MIN_UNOBSERVED = 30
 MIN_ROUTE_TRIPS = 30  # routes with fewer scheduled trips are pooled as "other"
@@ -119,9 +119,9 @@ def rates(rows: list[dict[str, Any]]) -> dict[str, Any]:
 def firth_logit(
     X: np.ndarray, y: np.ndarray, max_iter: int = 100, tol: float = 1e-8
 ) -> dict[str, Any]:
-    """Firth-penalised logistic regression (Firth 1993; Heinze and Schemper
+    """Firth-penalized logistic regression (Firth 1993; Heinze and Schemper
     2002). Returns coefficients, standard errors from the inverse Fisher
-    information, the penalised log-likelihood and whether it converged."""
+    information, the penalized log-likelihood and whether it converged."""
     n, k = X.shape
     beta = np.zeros(k)
 
@@ -210,25 +210,25 @@ def design(rows: list[dict[str, Any]]) -> tuple[np.ndarray, np.ndarray, list[str
     names = ["intercept"]
     cols = [np.ones(len(rows))]
     for label, levels, ref, value in (
-        ("hour band", bands, ref_band, lambda r: hour_band(r["start_hour"])),
+        ("hour_band", bands, ref_band, lambda r: hour_band(r["start_hour"])),
         ("route", routes, ref_route, lambda r: route_of[r["route_id"]]),
-        ("day type", dtypes, ref_dtype, lambda r: r["day_type"]),
+        ("day_type", dtypes, ref_dtype, lambda r: r["day_type"]),
     ):
         for level in sorted(levels):
             if level != ref:
                 names.append(f"{label}: {level}")
                 cols.append(np.array([value(r) == level for r in rows], dtype=float))
     if busy.std() > 0:
-        names.append("trips in service (per trip, centred)")
+        names.append("trips_in_service (per trip, centered)")
         cols.append(busy - busy_mean)
     X = np.column_stack(cols)
     y = np.array([not r["observed"] for r in rows], dtype=float)
     refs = {
-        "hour band": ref_band,
+        "hour_band": ref_band,
         "route": ref_route,
-        "day type": ref_dtype,
-        "trips in service centred at": round(busy_mean, 3),
-        "routes pooled as other": sorted(k for k, v in route_of.items() if v == "other"),
+        "day_type": ref_dtype,
+        "trips_in_service_centered_at": round(busy_mean, 3),
+        "routes_pooled_as_other": sorted(k for k, v in route_of.items() if v == "other"),
     }
     return X, y, names, refs
 
@@ -251,7 +251,7 @@ def model(rows: list[dict[str, Any]]) -> dict[str, Any]:
             "p": round(_p_normal(z), 6) if z is not None else None,
         })  # fmt: skip
     return {
-        "method": "logistic regression, Firth penalised likelihood",
+        "method": "logistic regression, Firth penalized likelihood",
         "outcome": "trip had no position report carrying its trip_id",
         "trips": len(y),
         "unobserved": int(y.sum()),

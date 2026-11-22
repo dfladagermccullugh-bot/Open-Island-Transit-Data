@@ -14,7 +14,6 @@ gaps, ``pipeline/quality/gaps.py``) are rebuilt from all day files.
 from __future__ import annotations
 
 import argparse
-import csv
 import json
 import os
 import sys
@@ -27,7 +26,7 @@ import pyarrow.parquet as pq
 
 from pipeline import release
 from pipeline.canceled import canceled_trips
-from pipeline.common import DayFiles, code_sha, load_json, run_order
+from pipeline.common import DayFiles, code_sha, load_json, run_order, write_csv
 from pipeline.common import sha_of as _sha
 from pipeline.config import COLLECTION_START, REPO
 from pipeline.gtfs.holidays import no_service, service_expected
@@ -385,11 +384,11 @@ def _get(obj: Any, path: tuple[str, ...]) -> Any:
 
 def write_daily_csv(out: Path, files: DayFiles | None = None) -> int:
     days = (files or DayFiles(out / "days")).all()
-    with (out / "daily.csv").open("w", newline="") as fh:
-        w = csv.writer(fh)
-        w.writerow([name for name, _ in HEADLINE])
-        for m in days:
-            w.writerow([_get(m, path) for _, path in HEADLINE])
+    write_csv(
+        out / "daily.csv",
+        [name for name, _ in HEADLINE],
+        ([_get(m, path) for _, path in HEADLINE] for m in days),
+    )
     return len(days)
 
 

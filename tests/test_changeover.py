@@ -273,3 +273,32 @@ def test_the_published_september_folder_name_is_unchanged():
     # Days already published point at this folder; a different hash would
     # rebuild every one of them.
     assert static._reference_id(date(2026, 9, 27)) == "timetable-2026-09-27-970aa207"
+
+
+def test_the_daily_table_is_rewritten_even_when_no_day_is_rebuilt(tmp_path, monkeypatch):
+    """A change in how the table is written (true for True) must reach the
+    published file on the next run, not wait for the next rebuild of a day."""
+    import sys
+
+    from pipeline.events import __main__ as events_main
+
+    data = tmp_path / "data"
+    (data / "manifest").mkdir(parents=True)
+    for name in ("parsed", "static", "events"):
+        (data / "manifest" / f"{name}.json").write_text(json.dumps({"days": {}}))
+    (data / "ontime" / "days").mkdir(parents=True)
+    day = {
+        "service_date": "2026-11-26",
+        "scheduled": 12,
+        "observed": 0,
+        "service_expected": False,
+        "ontime_version": "ontime/0.3.0",
+        "by_route": {},
+    }
+    (data / "ontime" / "days" / "2026-11-26.json").write_text(json.dumps(day))
+    (data / "ontime" / "daily.csv").write_text("an older way of writing the table\n")
+    monkeypatch.setattr(sys, "argv", ["events", "--pending", "--data", str(data)])
+    assert events_main.main() == 0
+    lines = (data / "ontime" / "daily.csv").read_text().splitlines()
+    assert lines[0].startswith("service_date,scheduled,observed")
+    assert lines[1] == "2026-11-26,12,0,,,,,,,,false,ontime/0.3.0"

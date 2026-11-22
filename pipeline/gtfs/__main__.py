@@ -38,7 +38,7 @@ from typing import Any
 import pyarrow.parquet as pq
 
 from pipeline import release
-from pipeline.common import load_json, sha_of
+from pipeline.common import load_json, sha_of, write_csv
 from pipeline.config import REPO
 from pipeline.gtfs import crosswalk, routemap, timepoints
 from pipeline.gtfs.schedule import scheduled_trips
@@ -178,10 +178,8 @@ def _made_by(path: Path, field: str, version: str, seen: dict[Path, bool] | None
 
 
 def _write_csv(path: Path, rows: list[dict[str, Any]]) -> None:
-    with path.open("w", newline="") as fh:
-        writer = csv.DictWriter(fh, fieldnames=list(rows[0]) if rows else ["empty"])
-        writer.writeheader()
-        writer.writerows(rows)
+    header = list(rows[0]) if rows else ["empty"]
+    write_csv(path, header, ([r.get(c, "") for c in header] for r in rows))
 
 
 def _reference_id(effective: date, reference_dir: Path = timepoints.REFERENCE_DIR) -> str:

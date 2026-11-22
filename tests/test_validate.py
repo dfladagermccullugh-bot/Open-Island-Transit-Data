@@ -55,3 +55,5 @@ def test_travel_times_flags_fast_segments_and_ignores_skipped_stretches():
     assert out["across_skipped_stretch"] == 1
     assert out["over_max_speed"] == 1
     assert out["fastest"][0]["from"] == "departure 4" and out["fastest"][0]["to"] == "arrival 5"
+    # American spelling in what is published, and the distance is still there.
+    assert out["fastest"][0]["meters"] == 420 and "metres" not in out["fastest"][0]

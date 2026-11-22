@@ -107,7 +107,7 @@
   }
  },
  "validation": {
-  "validate_version": "validate/0.1.0",
+  "validate_version": "validate/0.2.0",
   "feed_agreement": {
    "compared": 0,
    "inside_change_interval_share": null,

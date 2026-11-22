@@ -1,7 +1,7 @@
 {
  "passio_version": "passio-20af7aa7267e",
  "trillium_version": "trillium-998ebdb2ca0e",
- "crosswalk_version": "crosswalk/0.1.0",
+ "crosswalk_version": "crosswalk/0.2.0",
  "stops": {
   "passio": 4,
   "by_method": {

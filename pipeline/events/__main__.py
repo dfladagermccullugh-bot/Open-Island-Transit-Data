@@ -34,7 +34,16 @@ import pyarrow as pa
 import pyarrow.parquet as pq
 
 from pipeline import release
-from pipeline.common import DayFiles, code_sha, load_json, run_order, save_manifest, stamp
+from pipeline.common import (
+    DayFiles,
+    code_sha,
+    empty_manifest,
+    load_json,
+    run_order,
+    save_manifest,
+    stamp,
+    write_csv,
+)
 from pipeline.common import file_entry as _file_entry
 from pipeline.common import sha_of as _sha
 from pipeline.config import COLLECTION_START, REPO
@@ -121,7 +130,7 @@ DAILY = [
 
 
 def _load(path: Path) -> dict[str, Any]:
-    return load_json(path, {"version": 1, "days": {}})
+    return load_json(path, empty_manifest())
 
 
 def pending(data: Path) -> list[date]:
@@ -226,11 +235,7 @@ def dumps_day(obj: dict[str, Any]) -> str:
 
 def write_daily(ontime_dir: Path, files: DayFiles | None = None) -> int:
     days = (files or DayFiles(ontime_dir / "days")).all()
-    with (ontime_dir / "daily.csv").open("w", newline="") as fh:
-        w = csv.writer(fh)
-        w.writerow(DAILY)
-        for m in days:
-            w.writerow([m.get(k) for k in DAILY])
+    write_csv(ontime_dir / "daily.csv", DAILY, ([m.get(k) for k in DAILY] for m in days))
     return len(days)
 
 
@@ -258,6 +263,9 @@ def main() -> int:
     if not days:
         print("no events to build")
         if (ontime_dir / "days").exists():
+            # The tables are rewritten even when no day was rebuilt, so a
+            # change in how they are written reaches them the same night.
+            print(f"ontime/daily.csv: {write_daily(ontime_dir, day_files)} days")
             n = write_routes(ontime_dir, files=day_files)
             print(f"ontime/routes.csv and recent.json: {n} days")
         return 0
@@ -280,6 +288,13 @@ def main() -> int:
                 entry["built_at"] = stamp()
                 entry["code_sha"] = code_sha()
                 manifest["days"][day.isoformat()] = entry
+                # The first files did not name the repository, as the other
+                # manifests do.
+                manifest = {
+                    "version": manifest.get("version", 1),
+                    "repo": manifest.get("repo", args.repo),
+                    "days": manifest["days"],
+                }
                 save_manifest(manifest_path, manifest)
                 day_files.write(day.isoformat(), dumps_day(built["ontime"]))
             o = built["ontime"]

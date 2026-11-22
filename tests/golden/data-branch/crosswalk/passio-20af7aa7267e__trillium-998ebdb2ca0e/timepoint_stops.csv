@@ -1,5 +1,5 @@
 passio_route_id,passio_stop_id,trillium_route_id,trillium_stop_id,passio_stop_times,trillium_stop_times,trillium_timepoint_stop_times,trillium_timepoint
-R1,S0,X1,X0,4,4,4,True
-R1,S1,X1,X1,4,4,0,False
-R1,S2,X1,X2,4,4,4,True
-R1,S3,X1,X3,4,4,4,True
+R1,S0,X1,X0,4,4,4,true
+R1,S1,X1,X1,4,4,0,false
+R1,S2,X1,X2,4,4,4,true
+R1,S3,X1,X3,4,4,4,true

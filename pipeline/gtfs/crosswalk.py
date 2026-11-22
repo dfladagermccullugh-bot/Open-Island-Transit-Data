@@ -45,7 +45,7 @@ from pipeline.gtfs.zipread import ZipContents
 
 CODE_MAX_M = 150.0
 DISTANCE_MAX_M = 60.0
-CROSSWALK_VERSION = "crosswalk/0.1.0"
+CROSSWALK_VERSION = "crosswalk/0.2.0"  # 0.2.0: true and false in lowercase in the CSV files
 
 
 Tables = dict[str, list[Row]]

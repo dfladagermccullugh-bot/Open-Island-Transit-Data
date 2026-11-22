@@ -28,7 +28,7 @@ from typing import Any
 from pipeline.common import Row
 from pipeline.stats import quantile, share
 
-VALIDATE_VERSION = "validate/0.1.0"
+VALIDATE_VERSION = "validate/0.2.0"  # 0.2.0: "meters", not "metres", in the fastest segments
 TOLERANCE_S = 30.0
 MAX_SEGMENT_MS = 35.0  # 126 km/h
 
@@ -137,7 +137,7 @@ def travel_times(events: list[Row]) -> dict[str, Any]:
                             "route_id": r0["route_id"],
                             "from": f"{k0} {r0['stop_sequence']}",
                             "to": f"{k1} {r1['stop_sequence']}",
-                            "metres": round(d1 - d0),
+                            "meters": round(d1 - d0),
                             "seconds": round(dt, 1),
                             "speed_ms": round(speed, 1),
                             "report_gap_s": r1[f"{k1}_gap_s"],

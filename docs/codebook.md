@@ -30,6 +30,13 @@ A service day is a calendar date in Pacific time (`America/Los_Angeles`).
 Each row belongs to the day in which it was logged, and every timestamp is
 in UTC.
 
+In the CSV files on the `data` branch, a missing value is an empty cell,
+true and false are written `true` and `false`, and no number is written in
+scientific notation (`0.000063`, not `6.3e-05`). The files written before
+November 22, 2026 had Python's `True`, `False` and `6.3e-05`; the values are
+the same, and the files were rewritten in the new form that night
+(`format/0.2.0`, `pipeline/common.py`).
+
 ## `raw-YYYY-MM-DD.parquet`
 
 This file has one row for every time the collector asked the feed for
@@ -248,9 +255,10 @@ deviation in whole seconds (`deviations_s`). The `validation` section holds
 the automatic checks of the method (`pipeline/events/validate.py`,
 `docs/methods.md`, section 5). It shows how often our departures agree with
 the feed's `current_stop_sequence`, overall and by route, and how many
-travel times between stops run backwards or go faster than 35 m/s, with the
-fastest listed. `daily.csv` carries the agreement share as
-`feed_agreement_share`.
+travel times between stops run backwards or go faster than 35 m/s (about 78
+mph), with the fastest listed. Each of those gives the distance in `meters`
+(named `metres` in files written before `validate/0.2.0`, November 22,
+2026). `daily.csv` carries the agreement share as `feed_agreement_share`.
 
 | `daily.csv` column | Meaning |
 |---|---|
@@ -364,7 +372,12 @@ still short; the two numbers are also given as `thresholds`. Since
 `gaps/0.3.0` a trip the feed marked as canceled, and that no bus reported, is
 left out, because there was nothing to report; `canceled_left_out` counts
 them. `limits` states what the model assumes: it treats trips as
-independent, so its p-values are more confident than they should be.
+independent, so its p-values are more confident than they should be. Since
+`gaps/0.4.0` (November 22, 2026) the names inside `model` have no spaces:
+`reference_levels` has `hour_band`, `route`, `day_type`,
+`trips_in_service_centered_at` and `routes_pooled_as_other`, and each term
+is named `hour_band: <band>`, `route: <route id>`, `day_type: <type>` or
+`trips_in_service (per trip, centered)`. The figures are unchanged.
 
 | `daily.csv` column | Meaning |
 |---|---|
@@ -413,8 +426,11 @@ when a failed fetch falls between two fetches that returned it.
 
 `pipeline/monthly.py` writes a report for each month once its last day has
 been archived and processed, or seven days after the month ended, whichever
-comes first. It rebuilds a report whenever one of its inputs changes, such as
-a rebuilt day or a new report version.
+comes first. It rebuilds a report whenever one of its inputs changes: a
+figure, a file or a code version behind it. A day that is rebuilt to the
+same result does not count: since `monthly/0.2.0` the times and commit ids
+stamped on the inputs (`computed_at`, `built_at`, `archived_at`, `code_sha`)
+are left out of `inputs_digest`.
 
 `reports/YYYY-MM.json` starts with `period`, which gives the days archived,
 the days missing since collection began (`days_missing`), and the partial
@@ -433,7 +449,12 @@ collector, tables, stop-event, quality and on-time versions used, and
 
 `reports/YYYY-MM.md` says the same thing in plain text and also serves as
 the notes on that month's Releases. `reports/index.json` has one row per
-month with the headline figures.
+month with the headline figures: `month`, `days_archived`,
+`days_missing_count` (how many days are in the report's `days_missing`
+list), `vehicle_uptime`, `trip_coverage`, `timepoint_observed_share`,
+`on_time_share_of_observed`, `bytes` and `computed_at`. In a report's
+`ontime.by_route`, a route without a number has an empty `short_name`, as in
+the on-time files.
 
 Each Release also gets a `SHA256SUMS-<release>.txt` file. It lists
 `<sha256>  <file name>` for every file the manifests record in that release,
@@ -456,6 +477,7 @@ in the format `sha256sum -c` can check.
 
 | Field | Meaning |
 |---|---|
+| `version`, `repo` | Format version of the manifest and the repository it belongs to, as in `manifest/raw.json` (`repo` was added on November 22, 2026) |
 | `days.<date>.events_version`, `ontime_version`, `validate_version` | Versions of the code behind the stop events, the on-time summary and the automatic checks. A day is rebuilt when any of them changes |
 | `days.<date>.service_expected` | False on a holiday with no service |
 | `days.<date>.passio_version`, `timepoints` | The schedule version and timepoints folder used |
@@ -517,7 +539,7 @@ comparison only, and the true timepoints are in `timepoints/`.
 |---|---|---|
 | `stops.csv` | Passio stop | Matched Trillium stop, `method` (`stop_code`: same code within 150 m; `distance`: nearest Trillium stop within 60 m; empty: unmatched), distance, and the nearest Trillium stop either way |
 | `routes.csv` | Passio route | Matched Trillium route, by short name. Passio's three NAS Whidbey routes have no short name and map to Trillium's single NAS route |
-| `timepoint_stops.csv` | Passio route and stop | `trillium_timepoint`: Trillium marks the matched stop as a timepoint on at least one trip of the matched route. Also the counts of Passio stop times, Trillium stop times and Trillium timepoint stop times behind that decision |
+| `timepoint_stops.csv` | Passio route and stop | `trillium_timepoint` (`true` or `false` since `crosswalk/0.2.0`): Trillium marks the matched stop as a timepoint on at least one trip of the matched route. Also the counts of Passio stop times, Trillium stop times and Trillium timepoint stop times behind that decision |
 | `schedule_agreement.csv` | Passio stop time at a Trillium timepoint | `nearest_trillium_minus_passio_s`: seconds from the Passio time to the nearest Trillium timepoint time at that stop and route, on a day of the week both serve. Empty if Trillium has none |
 | `summary.json` | | Counts of the above |
 

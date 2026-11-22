@@ -3,11 +3,13 @@ and the order in which a stage takes its days."""
 
 from __future__ import annotations
 
+import csv
 import hashlib
 import json
 import os
 from collections.abc import Container, Iterable, Mapping
 from datetime import UTC, date, datetime
+from decimal import Decimal
 from pathlib import Path
 from typing import Any
 
@@ -72,6 +74,40 @@ def save_manifest(path: Path, manifest: Manifest | dict[str, Any]) -> None:
     path.parent.mkdir(parents=True, exist_ok=True)
     manifest["days"] = dict(sorted(manifest["days"].items()))
     path.write_text(json.dumps(manifest, indent=1, default=str) + "\n")
+
+
+# How values are written in the CSV files on the data branch. format/0.2.0
+# (November 22, 2026): true and false in lowercase, and no number in
+# scientific notation. The first files had Python's True, False and 6.3e-05.
+DATA_FORMAT_VERSION = "format/0.2.0"
+
+
+def csv_cell(value: Any) -> Any:
+    """``value`` as it is written in a published CSV file.
+
+    A missing value is an empty cell. True and false are lowercase, and a
+    very small or very large number is written out in full (0.000063, not
+    6.3e-05), because that is what spreadsheets, R, DuckDB and JavaScript
+    read without being told how. Everything else is left as it is."""
+    if value is None:
+        return ""
+    if isinstance(value, bool):
+        return "true" if value else "false"
+    if isinstance(value, float):
+        text = repr(value)
+        if "e" in text or "E" in text:
+            return format(Decimal(text), "f")
+    return value
+
+
+def write_csv(path: Path, header: list[str], rows: Iterable[Iterable[Any]]) -> None:
+    """Write a published CSV file: a header, then every value as ``csv_cell``
+    writes it."""
+    with path.open("w", newline="", encoding="utf-8") as fh:
+        writer = csv.writer(fh)
+        writer.writerow(header)
+        for row in rows:
+            writer.writerow([csv_cell(v) for v in row])
 
 
 class DayFiles:

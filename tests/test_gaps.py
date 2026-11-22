@@ -68,8 +68,8 @@ def test_model_detects_hour_dependence(tmp_path):
     g = gaps.summarise(tmp_path)
     m = g["model"]
     assert g["model_status"] == "fitted"
-    assert m["reference_levels"]["hour band"] == "midday (9-15)"
-    early = next(t for t in m["terms"] if t["term"] == "hour band: early (before 7)")
+    assert m["reference_levels"]["hour_band"] == "midday (9-15)"
+    early = next(t for t in m["terms"] if t["term"] == "hour_band: early (before 7)")
     assert early["odds_ratio"] > 5 and early["p"] < 1e-6
     assert m["lr_test_all_predictors"]["p"] < 1e-6
     bands = list(g["rates"]["by_hour_band"])
