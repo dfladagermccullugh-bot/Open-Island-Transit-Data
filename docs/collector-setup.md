@@ -61,7 +61,9 @@ repository.
   runs once a day: the collector reads that manifest and deletes its own copy of a
   day only if the day is at least 3 days old, every listed file can be
   downloaded at its recorded size, and the database's row count and digest for
-  the day equal the manifest's. The fetch log is never deleted. Every run is
+  the day equal the manifest's. The fetch log is never deleted. The day's
+  schedule zips are cleared by the same rule, once the Pacific date they were
+  downloaded on is at least 3 days past. Every run is
   recorded in `prune_log`:
   `select * from prune_log order by prune_id desc limit 5;`
 - The watchdog (`.github/workflows/watchdog.yml`, `scripts/watchdog.py`) runs
