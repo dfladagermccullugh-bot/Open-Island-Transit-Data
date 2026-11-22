@@ -24,3 +24,7 @@ updates:
       - dependency-name: "htl"
       - dependency-name: "marked"
       - dependency-name: "leaflet"
+      # Each Playwright release drives one browser build. The cloud sessions
+      # this project is developed in come with the browser for the pinned
+      # release, so a newer Playwright could not run the tests there.
+      - dependency-name: "@playwright/test"
