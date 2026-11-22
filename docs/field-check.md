@@ -25,12 +25,12 @@ timings on any trip can be added at any time.
 The method infers two moments for each bus at a stop, and the observer times
 the same two:
 
-- `arrive_40m`: the front of the bus comes within **40 m** of the stop
-  (about three bus lengths, or half a short block) on its way in.
-- `depart_40m`: the front of the bus is more than **40 m** past the stop on
+- `arrive_40m`: the front of the bus comes within 40 meters (about 130
+  feet, three bus lengths or half a short block) of the stop on its way in.
+- `depart_40m`: the front of the bus is more than 40 meters past the stop on
   its way out.
 
-From on board, or when the 40 m points are hard to judge, time instead:
+From on board, or when the 40-meter points are hard to judge, time instead:
 
 - `pass_stop`: the bus is level with the stop. This is compared with the
   midpoint of the inferred arrival and departure.

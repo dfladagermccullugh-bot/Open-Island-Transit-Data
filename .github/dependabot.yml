@@ -1,0 +1,26 @@
+# Proposes updates to the pinned GitHub Actions and to the libraries the
+# site's browser tests install, once a month. The Python libraries behind the
+# published numbers are pinned in constraints.txt and are updated by hand,
+# with a replay to see whether any figure moves.
+version: 2
+updates:
+  - package-ecosystem: github-actions
+    directory: /
+    schedule:
+      interval: monthly
+    commit-message:
+      prefix: "Actions:"
+  - package-ecosystem: npm
+    directory: /tests/site
+    schedule:
+      interval: monthly
+    commit-message:
+      prefix: "Site tests:"
+    # These are the versions the site itself loads; they change only when
+    # the site does.
+    ignore:
+      - dependency-name: "d3"
+      - dependency-name: "@observablehq/*"
+      - dependency-name: "htl"
+      - dependency-name: "marked"
+      - dependency-name: "leaflet"

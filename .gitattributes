@@ -1,0 +1,17 @@
+# Text files keep Unix line endings on every machine, so file hashes and the
+# golden test output do not depend on who checked the repository out.
+* text=auto eol=lf
+
+*.png binary
+*.pb binary
+*.zip binary
+*.parquet binary
+
+# Generated or copied in, not written by hand: left out of language
+# statistics and folded in diffs on GitHub.
+datapackage.json linguist-generated
+tests/golden/** linguist-generated
+tests/site/fixture/** linguist-generated
+tests/site/package-lock.json linguist-generated
+# Kept byte for byte as published (scripts/check_site.py pins the hashes).
+site/vendor/** -text linguist-vendored

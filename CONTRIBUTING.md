@@ -28,8 +28,12 @@ in [`LICENSE-DATA.md`](LICENSE-DATA.md).
 ```bash
 pip install -e ".[dev]" -c constraints.txt
 ruff check . && ruff format --check .
+mypy
 pytest
 ```
+
+If you change the site, also run `scripts/test_site.sh`, which builds it and
+tries every page in a browser.
 
 A change to how a number is computed needs three things: a test that fails
 without it, a higher version constant for the stage it touches (for example

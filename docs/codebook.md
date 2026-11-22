@@ -227,8 +227,8 @@ Passio schedule, whether or not we observed it.
 | `stop_distance_m` | The stop's distance along the trip's shape; empty if the stop is `unplaced`. Where two points on one stretch of the shape are equally near the stop, the earlier one (since `events/0.3.1`) |
 | `stop_offset_m` | How far the stop sits from the shape at that point, in meters (since `events/0.3.0`) |
 | `scheduled_arrival`, `scheduled_departure` | Passio schedule, as UTC timestamps |
-| `arrival_time` | When the bus first came within 40 m of the stop along the shape |
-| `departure_time` | When it moved more than 40 m past the stop |
+| `arrival_time` | When the bus first came within 40 meters (about 130 feet) of the stop along the shape |
+| `departure_time` | When it moved more than 40 meters past the stop |
 | `arrival_gap_s`, `departure_gap_s` | Seconds between the two position reports the time was interpolated from |
 | `arrival_status`, `departure_status` | `observed`; `gap` (reports more than 120 s apart, no time given); `not_reached` (tracking ended before the stop); `past_when_first_seen`; `skipped` (the bus left out the part of the shape the stop is on); `no_shape` (the trip has no shape); `unplaced` (the stop could not be placed on the shape in stop order within 150 m of it); `no_reports` (no vehicle carried the trip id); `not_applicable` (no arrival at the first stop, no departure at the last) |
 
@@ -238,7 +238,7 @@ This table has one row per scheduled trip. It shows which vehicles carried
 the trip's id and how many of their position reports we used. It also shows
 why we set the rest aside: they came before the trip started
 (`reports_before_start`) or after it ended (`reports_after_end`), they were
-more than 100 m from the route's shape (`off_shape_reports`), or the bus was
+more than 100 meters (about 330 feet) from the route's shape (`off_shape_reports`), or the bus was
 moving the wrong way (`wrong_direction_reports`). Finally, it shows how far
 along the shape we followed the bus and which parts of the shape it left out
 (`shape_skips`, `skipped_m`). We measure `shape_length_m` after collapsing
@@ -345,7 +345,7 @@ for up to 28 days. The site's route pages read from this file.
 For each route it records the id, the short and long names, Passio's color
 for the route, the number of trips, and the route's paths. Each path is a
 Passio shape with any stretch drawn forward, back and forward again
-collapsed, simplified so it stays within 5 m of the original, and stored as
+collapsed, simplified so it stays within 5 meters (about 16 feet) of the original, and stored as
 `[lon, lat]` pairs rounded to 5 decimal places. `timepoint_stops` lists every
 printed-timetable stop that was matched to a Passio stop, with its position
 and the routes it serves, and `bbox` gives the map's edges as west, south,
@@ -424,10 +424,10 @@ is named `hour_band: <band>`, `route: <route id>`, `day_type: <type>` or
 | `stale_in_service_rate` | Successful vehicle-position fetches that listed vehicles but whose newest vehicle timestamp was over 120 s old, while a trip was scheduled. An empty fetch is counted as empty, not stale |
 | `longest_gap_s_median` | Median over observed trips of the longest interval between new position reports from the trip's main vehicle, within 30 minutes of its schedule |
 | `position_age_s_median`, `position_age_s_p95` | Time from the vehicle's timestamp to the first fetch that returned it; each position counted once |
-| `impossible_jumps` | Consecutive reports of one vehicle implying more than 130 km/h |
+| `impossible_jumps` | Consecutive reports of one vehicle implying more than 130 km/h (about 80 mph) |
 | `timepoint_coverage` | Scheduled timepoint events with an inferred time |
 | `stop_coverage` | The same at every stop |
-| `off_shape_share` | Position reports more than 100 m from the trip's shape, divided by the reports tracked along it |
+| `off_shape_share` | Position reports more than 100 meters (about 330 feet) from the trip's shape, divided by the reports tracked along it |
 | `prediction_mae_s_5min` | Mean absolute error of arrival predictions published 5 minutes ahead, seconds |
 | `prediction_median_abs_s_5min` | The typical miss of those predictions: the median absolute error, seconds |
 | `prediction_over_30min_share_5min` | Share of those predictions off by more than 30 minutes |
@@ -569,7 +569,7 @@ comparison only, and the true timepoints are in `timepoints/`.
 
 | File | One row per | Contents |
 |---|---|---|
-| `stops.csv` | Passio stop | Matched Trillium stop, `method` (`stop_code`: same code within 150 m; `distance`: nearest Trillium stop within 60 m; empty: unmatched), distance, and the nearest Trillium stop either way |
+| `stops.csv` | Passio stop | Matched Trillium stop, `method` (`stop_code`: same code within 150 meters, about 490 feet; `distance`: nearest Trillium stop within 60 meters, about 200 feet; empty: unmatched), distance, and the nearest Trillium stop either way |
 | `routes.csv` | Passio route | Matched Trillium route, by short name. Passio's three NAS Whidbey routes have no short name and map to Trillium's single NAS route |
 | `timepoint_stops.csv` | Passio route and stop | `trillium_timepoint` (`true` or `false` since `crosswalk/0.2.0`): Trillium marks the matched stop as a timepoint on at least one trip of the matched route. Also the counts of Passio stop times, Trillium stop times and Trillium timepoint stop times behind that decision |
 | `schedule_agreement.csv` | Passio stop time at a Trillium timepoint | `nearest_trillium_minus_passio_s`: seconds from the Passio time to the nearest Trillium timepoint time at that stop and route, on a day of the week both serve. Empty if Trillium has none |

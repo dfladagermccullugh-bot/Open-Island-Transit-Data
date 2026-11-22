@@ -11,7 +11,9 @@ authors:
     given-names: "Davin"
 repository-code: "https://github.com/dfladagermccullugh-bot/Open-Island-Transit-Data"
 url: "https://dfladagermccullugh-bot.github.io/Open-Island-Transit-Data/"
-license: CC-BY-4.0
+license:
+  - MIT
+  - CC-BY-4.0
 date-released: "2026-11-19"
 keywords:
   - public transit

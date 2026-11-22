@@ -112,7 +112,7 @@
      {
       "name": "impossible_jumps",
       "type": "integer",
-      "description": "Consecutive reports of one vehicle implying more than 130 km/h"
+      "description": "Consecutive reports of one vehicle implying more than 130 km/h (about 80 mph)"
      },
      {
       "name": "timepoint_coverage",
@@ -129,7 +129,7 @@
      {
       "name": "off_shape_share",
       "type": "number",
-      "description": "Position reports more than 100 m from the trip's shape, divided by the reports tracked along it",
+      "description": "Position reports more than 100 meters (about 330 feet) from the trip's shape, divided by the reports tracked along it",
       "unit": "fraction from 0 to 1"
      },
      {
@@ -1290,7 +1290,7 @@
      {
       "name": "arrival_time",
       "type": "datetime",
-      "description": "When the bus first came within 40 m of the stop along the shape",
+      "description": "When the bus first came within 40 meters (about 130 feet) of the stop along the shape",
       "timezone": "UTC"
      },
      {
@@ -1307,7 +1307,7 @@
      {
       "name": "departure_time",
       "type": "datetime",
-      "description": "When it moved more than 40 m past the stop",
+      "description": "When it moved more than 40 meters past the stop",
       "timezone": "UTC"
      },
      {

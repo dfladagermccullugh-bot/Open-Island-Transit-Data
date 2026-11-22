@@ -13,6 +13,12 @@ how trustworthy the tracking data is. Everything is free to download.
 You can see the results at
 <https://dfladagermccullugh-bot.github.io/Open-Island-Transit-Data/>.
 
+[![Open Island Transit Data: how on time are Island Transit's buses?](site/social-card.png)](https://dfladagermccullugh-bot.github.io/Open-Island-Transit-Data/)
+
+If you came for the data, the [Download](https://dfladagermccullugh-bot.github.io/Open-Island-Transit-Data/data.html)
+page links straight to every file, and [Use the data](#use-the-data) below
+shows how to read them.
+
 We have been collecting since November 19, 2026, every 20 seconds, around
 the clock. The site's [Methods](https://dfladagermccullugh-bot.github.io/Open-Island-Transit-Data/methods.html) page gives the exact
 definition behind every number, and its [Codebook](https://dfladagermccullugh-bot.github.io/Open-Island-Transit-Data/codebook.html)
@@ -51,7 +57,8 @@ predictions every 20 seconds, and for service alerts every 5 minutes. It saves e
 and keeps a log of every request, and it runs on a free hosted database
 (`supabase/`). Each night, the previous day's saved data goes to
 [GitHub Releases](https://github.com/dfladagermccullugh-bot/Open-Island-Transit-Data/releases),
-one file per day, with checksums.
+one file per day for each table. A list on the `data` branch gives every
+file's SHA-256, a fingerprint you can check a download against.
 
 The feed tells us where a bus is, but it never says when the bus left a
 stop. So each night our script traces every bus along its route and figures
@@ -73,7 +80,7 @@ the new numbers (`site/`).
 |---|---|
 | Releases `raw-YYYY-MM` | Every response from the feed, exactly as received; the request log; the schedule files |
 | Releases `parsed-YYYY-MM` | Tables of bus locations, arrival predictions, alerts, and inferred stop arrivals and departures (Parquet) |
-| [`data` branch](https://github.com/dfladagermccullugh-bot/Open-Island-Transit-Data/tree/data) | Daily quality and on-time figures (JSON and CSV), route maps, monthly reports, and manifests listing every file with its size and SHA-256 |
+| [`data` branch](https://github.com/dfladagermccullugh-bot/Open-Island-Transit-Data/tree/data) | Daily quality and on-time figures (JSON and CSV), route maps, the printed timepoints matched to the schedule's stops, a crosswalk between the two schedule files, monthly reports, `files.csv` listing every Release file with its size and SHA-256, and `datapackage.json` describing every table and column for programs |
 
 The [codebook](docs/codebook.md) describes every file and column, the
 [methods](docs/methods.md) give the exact definition behind every number,
@@ -83,30 +90,38 @@ the reason for it.
 ## Use the data
 
 The daily figures are small CSV files you can read straight from the `data`
-branch. This reads the on-time table, one row per service day:
+branch. The larger tables are Parquet files in the monthly Releases, one per
+day, and `files.csv` on the `data` branch lists each of them with its
+address. This reads the on-time table, finds the latest day's stop events,
+downloads them and counts what happened at the timepoints:
 
 ```python
+import urllib.request
+
 import pandas as pd
 
-base = "https://raw.githubusercontent.com/dfladagermccullugh-bot/Open-Island-Transit-Data/data"
-ontime = pd.read_csv(f"{base}/ontime/daily.csv", parse_dates=["service_date"])
-print(ontime[["service_date", "observed_share", "on_time_share_of_observed"]])
+BASE = "https://raw.githubusercontent.com/dfladagermccullugh-bot/Open-Island-Transit-Data/data"
+
+ontime = pd.read_csv(f"{BASE}/ontime/daily.csv", parse_dates=["service_date"])
+print(ontime[["service_date", "observed_share", "on_time_share_of_observed"]].tail())
+
+files = pd.read_csv(f"{BASE}/files.csv")
+latest = files[files["table"] == "stop-events"].iloc[-1]
+urllib.request.urlretrieve(latest["url"], latest["name"])
+
+events = pd.read_parquet(latest["name"])
+print(events[events["is_timepoint"]]["departure_status"].value_counts())
 ```
 
-The larger tables are Parquet files in the monthly Releases, one per day.
-This downloads the inferred stop times for one day and reads them:
+The same thing in R and in DuckDB is in [`examples/`](examples/), and a
+workflow runs all three against the published data every week so they keep
+working. Every timestamp is in UTC, a service day is a calendar date in
+Pacific time, and shares are fractions from 0 to 1.
 
-```bash
-curl -LO https://github.com/dfladagermccullugh-bot/Open-Island-Transit-Data/releases/download/parsed-2026-11/stop-events-2026-11-20.parquet
-```
-
-```python
-events = pd.read_parquet("stop-events-2026-11-20.parquet")
-print(events[events.is_timepoint].departure_status.value_counts())
-```
-
-`manifest/*.json` on the `data` branch lists every file with its size and
-SHA-256, so you can check that a download is complete.
+To check that a download is complete, compare its SHA-256 with the `sha256`
+column of `files.csv`. [`datapackage.json`](datapackage.json) describes
+every table and column in a form programs can read; the
+[codebook](docs/codebook.md) says the same in words.
 
 To see whether the collector is running right now, ask it for its status:
 
@@ -123,17 +138,20 @@ curl -s "https://ekczqlmunyumtgtthppb.supabase.co/rest/v1/status_now" \
 | `pipeline/` | Archive, parsing, stop-time inference, quality metrics, monthly reports (Python) |
 | `site/` | The public site (Quarto with Observable Plot and Leaflet) |
 | `reference/` | Timepoints from Island Transit's printed timetables; field observations |
-| `scripts/` | Health check, feed check, a local rehearsal of the nightly run, the site's build checks |
+| `scripts/` | Health check, feed check, a local rehearsal of the nightly run and a comparison of two rehearsals, the site's build checks and browser tests, a check of the examples |
+| `examples/` | Short scripts that read the data in Python, R and DuckDB |
+| `datapackage.json` | Every table and column with types and units, generated from the code and the codebook |
 | `.github/workflows/` | The nightly archive, the site build, the watchdog and the tests |
 | `constraints.txt` | The exact library versions every workflow installs, so a library update cannot change a figure unnoticed |
-| `tests/` | Tests and fixtures |
-| `docs/` | Methods, codebook, decisions, collector setup, field-check guide |
+| `tests/` | Tests and fixtures; `tests/site/` holds the browser tests of the site; `tests/golden/` holds what the whole nightly chain writes for a small made-up archive |
+| `docs/` | Methods, codebook, decisions, collector setup, field-check guide, the notes from the first checks of the feed, and the README shown on the `data` branch |
 
 ## Run the checks yourself
 
 ```bash
 pip install -e ".[dev]" -c constraints.txt
 ruff check . && ruff format --check .
+mypy
 pytest
 python scripts/watchdog.py
 python scripts/verify_feed.py
@@ -143,8 +161,15 @@ python scripts/verify_feed.py
 deno test --allow-read supabase/functions/collect/
 ```
 
-The first three commands need no network. `watchdog.py` asks the live
-collector whether it is healthy. Run `verify_feed.py` between about 6 AM and
+```bash
+scripts/test_site.sh
+```
+
+Once the libraries are installed, `ruff`, `mypy` and `pytest` need no
+network. `scripts/test_site.sh` builds the site from a kept copy of the data
+and tries every page in a browser, at a desk and on a phone, in the light
+and dark themes; it needs Quarto 1.11.9 (`pip install quarto-cli==1.11.9`)
+and Node. `watchdog.py` asks the live collector whether it is healthy. Run `verify_feed.py` between about 6 AM and
 7 PM Pacific, when buses are sure to be on the road for it to check (weekday
 service itself runs from about 3:35 AM to 8:25 PM).
 

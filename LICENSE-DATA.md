@@ -11,7 +11,7 @@ GTFS-Realtime feeds, hosted by Passio Technologies:
 - `https://passio3.com/islandtransit/passioTransit/gtfs/google_transit.zip`
 - `https://data.trilliumtransit.com/gtfs/islandtransit-wa-us/islandtransit-wa-us.zip`
 
-As of 2026-11-18 no license or terms of use were published for these feeds:
+As of November 18, 2026, no license or terms of use were published for these feeds:
 the Passio `feed_info.txt` names none, the Trillium `feed_license` field is
 blank, and the Transitland Atlas record lists none. Island Transit's website
 has general website terms but no developer or data page. See
@@ -19,11 +19,13 @@ has general website terms but no developer or data page. See
 
 ## What this project licenses
 
-- **Raw archive** (the feed responses exactly as received): republished as
-  received. This project claims no rights in it.
-- **Derived tables** (fetch log, parsed tables, inferred stop events, quality
-  metrics, on-time measures): Creative Commons Attribution 4.0 International
-  (CC BY 4.0), https://creativecommons.org/licenses/by/4.0/
+The raw archive holds the feed responses exactly as received. We republish
+it as received, and this project claims no rights in it.
+
+The derived tables are the fetch log, the parsed tables, the inferred stop
+events, the quality metrics and the on-time measures. We release them under
+Creative Commons Attribution 4.0 International (CC BY 4.0),
+https://creativecommons.org/licenses/by/4.0/
 
 Suggested attribution: "Open Island Transit Data, derived from Island
 Transit's public GTFS feeds."

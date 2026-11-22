@@ -1,0 +1,27 @@
+# Optional: `pip install pre-commit && pre-commit install` runs these before
+# each commit. CI runs the same checks either way.
+repos:
+  - repo: local
+    hooks:
+      - id: ruff-check
+        name: ruff check
+        entry: ruff check
+        language: system
+        types: [python]
+      - id: ruff-format
+        name: ruff format
+        entry: ruff format --check
+        language: system
+        types: [python]
+      - id: mypy
+        name: mypy
+        entry: mypy
+        language: system
+        pass_filenames: false
+        types: [python]
+      - id: datapackage
+        name: datapackage.json is current
+        entry: python -m pipeline.datapackage --write datapackage.json
+        language: system
+        pass_filenames: false
+        files: ^(docs/codebook\.md|pipeline/)
