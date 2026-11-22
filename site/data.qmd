@@ -2,33 +2,167 @@
 description: "Free downloads of every saved Island Transit feed update, the parsed tables, daily figures and monthly reports."
 title: "Download the data"
 subtitle: "Free downloads of every saved update and table"
+include-in-header:
+  - _head.html
+  - _dataset.html
 ---
 
 Every number on this site can be rebuilt from these files, and all of them
 are free to download.
 
-::: {.link-row}
-[Raw and parsed files (Releases)](https://github.com/dfladagermccullugh-bot/Open-Island-Transit-Data/releases)
-[Daily figures and maps (data branch)](https://github.com/dfladagermccullugh-bot/Open-Island-Transit-Data/tree/data)
-[License](https://github.com/dfladagermccullugh-bot/Open-Island-Transit-Data/blob/main/LICENSE-DATA.md)
-:::
-
-Each release on GitHub holds one month of files, with one file per day: the
-raw archive is in `raw-YYYY-MM` and the parsed tables are in
-`parsed-YYYY-MM`. When we started collecting, Island Transit's feeds carried
-no published license or terms of use. Our [license file](https://github.com/dfladagermccullugh-bot/Open-Island-Transit-Data/blob/main/LICENSE-DATA.md) explains how
-we share the archived data.
-
-## Archived days
-
 ```{ojs}
 //| echo: false
 //| output: false
-import {json, count, pct, megabytes, longDate, emptyNote, guard, h, REPO_URL, DATA_URL, DATA_RAW_URL, RELEASES_URL} from "./lib.js"
+import {csv, json, count, pct, megabytes, fileSize, longDate, emptyNote, guard, h, REPO_URL, DATA_URL, DATA_RAW_URL, RELEASES_URL} from "./lib.js"
 import {makeCharts} from "./charts.js"
 ch = makeCharts({Plot})
 raw = json("data/manifest/raw.json")
+files = csv(d3, "data/files.csv")
+dictionary = json("data/datapackage.json")
+reports = json("data/reports/index.json")
+// A button that copies a value, and says so to screen readers.
+copyButton = (text, label) => {
+  const b = h("button", {type: "button", class: "copy", "aria-label": label}, "Copy");
+  b.addEventListener("click", async () => {
+    try {
+      await navigator.clipboard.writeText(text);
+      b.textContent = "Copied";
+    } catch (e) {
+      b.textContent = "Press Ctrl+C";
+    }
+    setTimeout(() => { b.textContent = "Copy"; }, 2000);
+  });
+  return b;
+}
 ```
+
+## Start here
+
+The daily figures are small tables you can open in a spreadsheet. Each link
+downloads the latest version of the file.
+
+```{ojs}
+//| echo: false
+html`<ul class="download-list">
+  <li><a href="${DATA_RAW_URL}/ontime/daily.csv"><code>ontime/daily.csv</code></a> has the share of departures on time, one row per day.</li>
+  <li><a href="${DATA_RAW_URL}/ontime/routes.csv"><code>ontime/routes.csv</code></a> has the same figures for each route on each day.</li>
+  <li><a href="${DATA_RAW_URL}/quality/daily.csv"><code>quality/daily.csv</code></a> has the daily grades of the tracking feed.</li>
+  <li><a href="${DATA_RAW_URL}/files.csv"><code>files.csv</code></a> lists every larger file with its address and its SHA-256, a fingerprint for checking a download.</li>
+  <li><a href="${DATA_RAW_URL}/datapackage.json"><code>datapackage.json</code></a> describes every table and column in a form a program can read.</li>
+</ul>`
+```
+
+::: {.link-row}
+[All the larger files (Releases)](https://github.com/dfladagermccullugh-bot/Open-Island-Transit-Data/releases)
+[Browse the data branch](https://github.com/dfladagermccullugh-bot/Open-Island-Transit-Data/tree/data)
+[License](https://github.com/dfladagermccullugh-bot/Open-Island-Transit-Data/blob/main/LICENSE-DATA.md)
+:::
+
+Every timestamp in the files is in UTC. A service day is a calendar date in
+Pacific time, and hours of the day are Pacific too. Shares are fractions
+from 0 to 1. The [codebook](codebook.qmd) explains every file and every
+column.
+
+## What's in the archive
+
+The larger tables have one file for each service day and live in monthly
+Releases on GitHub: the raw archive in `raw-YYYY-MM` and everything parsed
+from it in `parsed-YYYY-MM`.
+
+```{ojs}
+//| echo: false
+guard(() => {
+  const tables = [...(dictionary?.dailyTables ?? []), ...(dictionary?.resources ?? [])];
+  if (tables.length === 0) return emptyNote("unavailable", "The list of tables");
+  const where = t => t.path
+    ? h("a", {href: `${DATA_RAW_URL}/${t.path}`}, h("code", {}, t.path))
+    : h("code", {}, `${t.release}/${t.pathPattern}`);
+  return ch.table(tables.map(t => ({...t, columns: t.schema?.fields?.length ?? null})), {
+    caption: "Every table in the archive", wide: true, pageSize: 40,
+    columns: [
+      {key: "title", label: "Table", sortable: false},
+      {key: "oneRowIs", label: "One row is", sortable: false},
+      {key: "columns", label: "Columns", align: "right", format: count, sortable: false},
+      {key: "format", label: "Format", format: v => v === "parquet" ? "Parquet" : "CSV", sortable: false},
+      {key: "name", label: "Where", format: (v, t) => where(t), sortable: false},
+    ],
+  });
+}, "The list of tables")
+```
+
+## Files for one day
+
+```{ojs}
+//| echo: false
+// The days that have files, newest first, for the picker.
+viewof fileDay = {
+  const days = [...new Set(files.map(f => f.service_date instanceof Date ? f.service_date.toISOString().slice(0, 10) : String(f.service_date ?? "")))].filter(Boolean).sort().reverse();
+  const select = h("select", {id: "file-day"}, ...days.map(d => h("option", {value: d}, longDate(d))));
+  const picker = h("div", {class: "route-picker"}, h("label", {for: "file-day"}, "Service day"), select);
+  if (days.length === 0) picker.hidden = true;
+  Object.defineProperty(picker, "value", {get: () => select.value || null});
+  return picker;
+}
+```
+
+```{ojs}
+//| echo: false
+guard(() => {
+  if (files.length === 0) return emptyNote("unavailable", "The list of files");
+  const iso = d => d instanceof Date ? d.toISOString().slice(0, 10) : String(d);
+  const rows = files.filter(f => iso(f.service_date) === fileDay);
+  return ch.table(rows, {
+    caption: `Files for ${longDate(fileDay)}`, wide: true, pageSize: 40,
+    columns: [
+      {key: "name", label: "File", format: (v, f) => h("a", {href: f.url}, h("code", {}, v))},
+      {key: "table", label: "Table"},
+      {key: "bytes", label: "Size", align: "right", format: v => fileSize(v)},
+      {key: "sha256", label: "SHA-256", sortable: false,
+       format: v => h("span", {class: "hash"}, h("span", {title: v}, `${String(v).slice(0, 12)}…`), copyButton(String(v), "Copy the full SHA-256"))},
+    ],
+  });
+}, "The list of files")
+```
+
+To check a download, compute its SHA-256 and compare it with the one listed
+here or in `files.csv`. On macOS and Linux that is
+`shasum -a 256 <file>` or `sha256sum <file>`. Once a month is complete, its
+Release also holds a `SHA256SUMS` file that `sha256sum -c` can check in one
+step.
+
+## Read it in your own tools
+
+<details class="more"><summary>Python</summary>
+
+::: {.copyable}
+```python
+{{< include ../examples/quickstart.py >}}
+```
+:::
+
+</details>
+
+<details class="more"><summary>R</summary>
+
+::: {.copyable}
+```r
+{{< include ../examples/quickstart.R >}}
+```
+:::
+
+</details>
+
+<details class="more"><summary>DuckDB</summary>
+
+::: {.copyable}
+```sql
+{{< include ../examples/quickstart.sql >}}
+```
+:::
+
+</details>
+
+## Archived days
 
 ```{ojs}
 //| echo: false
@@ -44,7 +178,7 @@ guard(() => {
       {key: "day", label: "Service day", format: v => longDate(v)},
       {key: "fetches", label: "Fetch attempts", align: "right", format: count},
       {key: "ok", label: "Successful", align: "right", format: count},
-      {key: "bytes", label: "Size", align: "right", format: v => megabytes(v)},
+      {key: "bytes", label: "Size of the raw archive", align: "right", format: v => megabytes(v)},
       {key: "release", label: "Release", format: t => t ? h("a", {href: `${RELEASES_URL}/tag/${t}`}, t) : "not yet uploaded"},
     ],
   });
@@ -56,12 +190,6 @@ guard(() => {
 Once a month is over, we write up a summary of it and add a checksum
 verification file to its downloads, so you can confirm that your copies
 match ours exactly.
-
-```{ojs}
-//| echo: false
-//| output: false
-reports = json("data/reports/index.json")
-```
 
 ```{ojs}
 //| echo: false
@@ -86,6 +214,12 @@ guard(() => {
 }, "The list of monthly reports")
 ```
 
-## What's in each file
+## Using and citing the data
 
-The [codebook](codebook.qmd) describes every file and every column.
+When we started collecting, Island Transit's feeds carried no published
+license or terms of use. Our [license file](https://github.com/dfladagermccullugh-bot/Open-Island-Transit-Data/blob/main/LICENSE-DATA.md)
+explains how we share the archived data. If you use the data or the figures,
+please credit them as "Open Island Transit Data, derived from Island
+Transit's public GTFS feeds," with the date you downloaded them. The
+repository's [citation file](https://github.com/dfladagermccullugh-bot/Open-Island-Transit-Data/blob/main/CITATION.cff)
+has the same information in a form reference managers can read.

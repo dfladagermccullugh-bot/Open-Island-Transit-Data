@@ -161,6 +161,14 @@ export function megabytes(bytes, digits = 1) {
   return missing(bytes) ? DASH : `${num(bytes / 1e6, digits)} MB`;
 }
 
+// "3.6 KB", "0.75 MB", "2.6 MB": the size of one file, in the unit that fits.
+export function fileSize(bytes) {
+  if (missing(bytes)) return DASH;
+  if (bytes < 1e3) return `${num(bytes)} bytes`;
+  if (bytes < 1e6) return `${num(bytes / 1e3, bytes < 1e4 ? 1 : 0)} KB`;
+  return `${num(bytes / 1e6, bytes < 1e7 ? 2 : 1)} MB`;
+}
+
 // "3.5 min late", "1.2 min early", "on schedule".
 export function lateness(seconds) {
   if (missing(seconds)) return DASH;

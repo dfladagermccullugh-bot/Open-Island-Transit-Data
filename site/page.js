@@ -123,10 +123,34 @@ function setUpPrinting() {
   });
 }
 
+// --- copying code -------------------------------------------------------------
+
+// Each block of example code gets a button that copies it.
+function setUpCopying() {
+  for (const block of document.querySelectorAll(".copyable pre")) {
+    const button = document.createElement("button");
+    button.type = "button";
+    button.className = "copy";
+    button.textContent = "Copy";
+    button.setAttribute("aria-label", "Copy this code");
+    button.addEventListener("click", async () => {
+      try {
+        await navigator.clipboard.writeText(block.innerText);
+        button.textContent = "Copied";
+      } catch (e) {
+        button.textContent = "Select and copy by hand";
+      }
+      setTimeout(() => { button.textContent = "Copy"; }, 2000);
+    });
+    block.parentElement.insertBefore(button, block);
+  }
+}
+
 function start() {
   showDataThrough();
   setUpTerms();
   setUpPrinting();
+  setUpCopying();
   const badge = document.getElementById("live");
   if (badge) watchLiveStatus(badge);
 }

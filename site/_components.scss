@@ -210,13 +210,16 @@ details.as-table > summary:hover { color: var(--text-primary); }
 // Plain text links in a row.
 .link-row p { display: flex; flex-wrap: wrap; gap: var(--sp-2) var(--sp-6); margin: var(--sp-4) 0 var(--sp-5); font-weight: 600; max-width: none; }
 
-// Code that can be copied, on the Download page.
-.snippet { position: relative; margin: var(--sp-2) 0 var(--sp-4); }
-.snippet pre { margin: 0; padding: var(--sp-3) var(--sp-4); background: var(--panel); border-radius: var(--radius-md); overflow-x: auto; font-size: var(--fs-sm); }
-.snippet pre code { background: none; padding: 0; color: var(--text-primary); white-space: pre; }
-.hash { font-family: var(--bs-font-monospace); font-size: var(--fs-xs); color: var(--text-secondary); }
-.copy { font: inherit; font-size: var(--fs-xs); font-weight: 600; color: var(--link); background: none; border: none; padding: 0 var(--sp-1); min-height: 1.5rem; min-width: 1.5rem; cursor: pointer; }
+// Example code on the Download page, with a button to copy it.
+.copyable { position: relative; margin: var(--sp-2) 0 var(--sp-4); }
+.copyable pre { margin: 0; padding: var(--sp-4); background: var(--panel); border-radius: var(--radius-md); overflow-x: auto; font-size: var(--fs-sm); }
+.copyable div.sourceCode { position: relative; margin: 0; background: none; border: none; }
+.copyable .copy { position: absolute; top: var(--sp-2); right: var(--sp-2); z-index: 1; background: var(--card); border-radius: var(--radius-sm); padding: var(--sp-1) var(--sp-2); }
+.hash { font-family: var(--bs-font-monospace); font-size: var(--fs-xs); color: var(--text-secondary); white-space: nowrap; }
+.copy { font: inherit; font-size: var(--fs-xs); font-weight: 600; color: var(--link); background: none; border: none; padding: 0 var(--sp-2); min-height: 1.5rem; min-width: 1.5rem; cursor: pointer; }
 .copy:hover { text-decoration: underline; }
+.download-list { padding-left: 1.2rem; }
+.download-list li { margin-bottom: var(--sp-2); }
 
 @media (max-width: $bp-narrow) {
   .stat-row { display: grid; grid-template-columns: 1fr 1fr; gap: var(--sp-4) var(--sp-5); }

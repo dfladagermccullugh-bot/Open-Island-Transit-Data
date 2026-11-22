@@ -284,11 +284,63 @@ test.describe("nothing invisible takes the keyboard focus", () => {
       for (const d of await page.locator("details").all()) await d.evaluate(n => (n.open = true));
       const tiny = await page.evaluate(() =>
         [...document.querySelectorAll("a[href], button, input, select, summary, [tabindex]:not([tabindex='-1'])")]
-          .filter(n => n.checkVisibility() && !n.closest(".visually-hidden-focusable"))
+          // Only what the Tab key stops on: Quarto's code lines carry empty
+          // anchors with tabindex -1, which it does not.
+          .filter(n => n.checkVisibility() && n.tabIndex >= 0 && !n.closest(".visually-hidden-focusable"))
           .map(n => [n.tagName, n.className?.baseVal ?? n.className, n.getBoundingClientRect()])
           .filter(([, , b]) => b.width < 8 || b.height < 8)
           .map(([tag, cls, b]) => `${tag}.${cls} ${Math.round(b.width)}x${Math.round(b.height)}`));
       expect(tiny).toEqual([]);
     });
   }
+});
+
+test.describe("the download page", () => {
+  test("links go straight to the files, not to pages about them", async ({page}) => {
+    await open(page, "data");
+    const daily = page.locator(".download-list a", {hasText: "quality/daily.csv"});
+    await expect(daily).toHaveAttribute("href", /^https:\/\/raw\.githubusercontent\.com\/.+\/data\/quality\/daily\.csv$/);
+  });
+
+  test("lists every table with what one row is", async ({page}) => {
+    await open(page, "data");
+    const table = page.getByRole("table", {name: "Every table in the archive"});
+    await expect(table.locator("tbody tr")).toHaveCount(12);
+    await expect(table.locator("tbody tr", {hasText: "Stop events"})).toContainText("one scheduled stop of one scheduled trip");
+  });
+
+  test("shows the files of the day that is picked, with a link and a hash for each", async ({page}) => {
+    await open(page, "data");
+    await expect(page.locator("#file-day")).toHaveValue("2026-11-20");
+    const table = page.getByRole("table", {name: "Files for November 20, 2026"});
+    const row = table.locator("tbody tr", {hasText: "stop-events-2026-11-20.parquet"});
+    await expect(row.locator("a")).toHaveAttribute("href", /releases\/download\/parsed-2026-11\/stop-events-2026-11-20\.parquet$/);
+    await expect(row.locator(".hash span").first()).toHaveAttribute("title", /^[0-9a-f]{64}$/);
+    await page.locator("#file-day").selectOption("2026-11-19");
+    await expect(page.getByRole("table", {name: "Files for November 19, 2026"})).toBeVisible();
+    await expect(page.locator("main")).toContainText("static-2026-11-19-trillium-2.zip");
+  });
+
+  test("each example has a button that copies it", async ({page, context}, info) => {
+    test.skip(!info.project.name.startsWith("desktop"), "clipboard access is granted on the desk browser");
+    await context.grantPermissions(["clipboard-read", "clipboard-write"]);
+    await open(page, "data");
+    await page.locator("details.more > summary", {hasText: "Python"}).click();
+    const button = page.locator("details.more", {hasText: "Python"}).getByRole("button", {name: "Copy this code"});
+    await button.click();
+    await expect(button).toHaveText("Copied");
+    const copied = await page.evaluate(() => navigator.clipboard.readText());
+    expect(copied).toContain("import pandas as pd");
+    expect(copied).toContain("files.csv");
+  });
+
+  test("still reads when the index and the dictionary are not published yet", async ({page, problems}) => {
+    await page.route("**/data/files.csv", route => route.fulfill({status: 404, body: ""}));
+    await page.route("**/data/datapackage.json", route => route.fulfill({status: 404, body: ""}));
+    await open(page, "data");
+    await expect(page.locator("main")).toContainText("The list of tables can't be shown right now.");
+    await expect(page.locator("main")).toContainText("The list of files can't be shown right now.");
+    await expect(page.locator("#file-day")).toBeHidden();
+    await expectClean(page, problems.filter(p => !/Failed to load resource.*404/.test(p)));
+  });
 });
