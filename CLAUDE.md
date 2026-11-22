@@ -146,7 +146,7 @@ Open checks from this pass:
 ## Waiting on Davin
 
 - **Repository settings** (cannot be set from a session): description, website URL and topics are empty; private vulnerability reporting is off though `SECURITY.md` points to it; the issue forms use labels `data` and `correction`, which do not exist.
-- **Visible choices made on 2026-11-22 for him to overrule**: teal for the "on time" band (green and red cannot be told apart by color-blind readers at a contrast that passes), a shape per band, the legend under the map, a row of route links under the home map, a table of contents on Methods and Codebook, small rates on their own axis. `site/social-card.png` still has the old blue.
+- **Visible choices made on 2026-11-22 for him to overrule**: teal for the "on time" band (green and red cannot be told apart by color-blind readers at a contrast that passes), a shape per band, the legend under the map, a row of route links under the home map, a table of contents on Methods and Codebook, small rates on their own axis. The link-preview card and the PNG icons are drawn from `site/favicon.svg` by `node tests/site/make-icons.mjs`; run it after a change of palette.
 
 - **Route 58 northbound**: the December guide's timetable no longer has a column for Cultus Bay Rd at Deer Lake Rd (the map text on the same page still names it). The December list follows the timetable. If he knows otherwise, add the row back.
 
