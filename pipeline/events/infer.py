@@ -37,8 +37,8 @@ from bisect import bisect_left
 from collections import defaultdict
 from dataclasses import dataclass, field
 from datetime import UTC, date, datetime, timedelta
-from typing import Any
 
+from pipeline.common import Row
 from pipeline.events.geometry import Shape
 from pipeline.gtfs.schedule import Trip, day_origin, scheduled_trips
 from pipeline.gtfs.tables import rows as _rows
@@ -63,8 +63,6 @@ REANCHOR_DEG = 45.0  # ... if the bus's bearing is this close to the shape's hea
 STOP_PASS_M = 150.0  # a shape passing within this distance of a stop may serve it
 MAX_STOP_OFFSET_M = 150.0  # a stop farther than this from its shape is not placed
 UNPLACED_COST_M = 10_000.0  # cost of leaving a stop out of the placement
-
-Row = dict[str, Any]
 
 
 @dataclass

@@ -30,6 +30,7 @@ from datetime import date
 from pathlib import Path
 from typing import Any
 
+from pipeline.common import Row
 from pipeline.gtfs.tables import rows as _rows
 from pipeline.gtfs.zipread import ZipContents
 
@@ -37,7 +38,6 @@ TIMEPOINTS_VERSION = "timepoints/0.1.0"  # matching; day-type selection is appli
 REFERENCE_DIR = Path(__file__).resolve().parents[2] / "reference"
 THRESHOLD = 0.6
 
-Row = dict[str, Any]
 
 _WORDS = {"st": "street", "rd": "road", "ave": "avenue", "dr": "drive", "blvd": "boulevard",
           "elem": "elementary", "pr": "park ride", "p": "park", "r": "ride", "hs": "high school",

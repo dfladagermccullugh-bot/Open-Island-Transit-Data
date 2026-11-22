@@ -33,8 +33,9 @@ from pathlib import Path
 from typing import Any
 
 from pipeline import release
-from pipeline.common import code_sha, stamp, utcnow
+from pipeline.common import code_sha, load_json, stamp, utcnow
 from pipeline.config import PACIFIC, REPO
+from pipeline.stats import share
 
 REPORT_VERSION = "monthly/0.1.0"
 GRACE_DAYS = 7
@@ -44,7 +45,7 @@ TAG_TITLES = {"raw": "Raw archive", "parsed": "Parsed tables"}
 
 
 def _load(path: Path) -> Any:
-    return json.loads(path.read_text()) if path.exists() else None
+    return load_json(path)
 
 
 def _manifests(data: Path) -> dict[str, dict[str, Any]]:
@@ -79,10 +80,6 @@ def closed_months(data: Path, today: date) -> list[str]:
     return out
 
 
-def _share(num: float, den: float) -> float | None:
-    return round(num / den, 6) if den else None
-
-
 def _range(values: list[tuple[str, float]]) -> dict[str, Any] | None:
     if not values:
         return None
@@ -92,6 +89,7 @@ def _range(values: list[tuple[str, float]]) -> dict[str, Any] | None:
         "days": len(values),
         "min": lo[1],
         "min_date": lo[0],
+        # statistics.median on purpose; see the note in pipeline/quality/stops.py.
         "median": round(statistics.median(v for _, v in values), 6),
         "max": hi[1],
         "max_date": hi[0],
@@ -201,10 +199,10 @@ def build(data: Path, month: str, today: date | None = None) -> dict[str, Any]:
         collection[feed] = {
             "slots_expected": exp,
             "slots_ok": ok,
-            "uptime": _share(ok, exp),
+            "uptime": share(ok, exp),
             "attempted": att,
             "failed": fail,
-            "failure_rate": _share(fail, att),
+            "failure_rate": share(fail, att),
             "uptime_by_day": _range(
                 [(d, q["paradata"][feed]["uptime"]) for d, q in sorted(all_quality.items())]
             ),
@@ -220,7 +218,7 @@ def build(data: Path, month: str, today: date | None = None) -> dict[str, Any]:
     coverage = {
         "scheduled_trips": sched,
         "observed_scheduled_trips": seen,
-        "trip_coverage": _share(seen, sched),
+        "trip_coverage": share(seen, sched),
         "trip_coverage_by_day": _range(
             [
                 (d, q["coverage"]["trip_coverage"])
@@ -246,17 +244,17 @@ def build(data: Path, month: str, today: date | None = None) -> dict[str, Any]:
             "short_name": names.get(route, {}).get("short_name"),
             "long_name": names.get(route, {}).get("long_name"),
             **acc,
-            "observed_share": _share(acc["observed"], acc["scheduled"]),
-            "on_time_share_of_observed": _share(acc["on_time"], acc["observed"]),
+            "observed_share": share(acc["observed"], acc["scheduled"]),
+            "on_time_share_of_observed": share(acc["on_time"], acc["observed"]),
         }
     definition = next(iter(ontime.values()))["definition"] if ontime else None
     ontime_out = {
         "definition": definition,
         **totals,
-        "observed_share": _share(totals["observed"], totals["scheduled"]),
-        "on_time_share_of_observed": _share(totals["on_time"], totals["observed"]),
-        "early_share_of_observed": _share(totals["early"], totals["observed"]),
-        "late_share_of_observed": _share(totals["late"], totals["observed"]),
+        "observed_share": share(totals["observed"], totals["scheduled"]),
+        "on_time_share_of_observed": share(totals["on_time"], totals["observed"]),
+        "early_share_of_observed": share(totals["early"], totals["observed"]),
+        "late_share_of_observed": share(totals["late"], totals["observed"]),
         "on_time_share_by_day": _range(
             [
                 (d, o["on_time_share_of_observed"])

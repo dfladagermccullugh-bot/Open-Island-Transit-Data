@@ -21,11 +21,11 @@ from __future__ import annotations
 
 from collections import Counter, defaultdict
 from datetime import datetime
+from functools import partial
 from typing import Any
 
-from pipeline.stats import quantile  # noqa: E402
-
-Row = dict[str, Any]
+from pipeline.common import Row
+from pipeline.stats import quantile, share
 
 VALIDATE_VERSION = "validate/0.1.0"
 TOLERANCE_S = 30.0
@@ -37,8 +37,8 @@ def _q(values: list[float], q: float) -> float | None:
     return round(x, 1) if x is not None else None
 
 
-def _share(n: int, d: int) -> float | None:
-    return round(n / d, 4) if d else None
+# Shares in the on-time files are published to four decimal places.
+_share = partial(share, digits=4)
 
 
 def feed_agreement(events: list[Row], vehicles: list[Row]) -> dict[str, Any]:

@@ -23,13 +23,14 @@ from pathlib import Path
 from typing import Any
 
 from pipeline import release
+from pipeline.common import load_json
 from pipeline.config import REPO
 
 Assets = Callable[[str], dict[str, int]]
 
 
 def _load(path: Path) -> dict[str, Any]:
-    return json.loads(path.read_text()) if path.exists() else {"days": {}}
+    return load_json(path, {"days": {}})
 
 
 def gh_assets(repo: str) -> Assets:

@@ -24,21 +24,16 @@ from pathlib import Path
 from typing import Any
 
 from pipeline import release
-from pipeline.common import code_sha, run_order, stamp
+from pipeline.common import (
+    code_sha,
+    empty_manifest,
+    load_json,
+    run_order,
+    save_manifest,
+    stamp,
+)
 from pipeline.config import REPO
 from pipeline.tables.build import TABLES_VERSION, build_tables, read_raw, write_tables
-
-
-def load(path: Path) -> dict[str, Any]:
-    if path.exists():
-        return json.loads(path.read_text())
-    return {"version": 1, "repo": REPO, "days": {}}
-
-
-def save(path: Path, manifest: dict[str, Any]) -> None:
-    path.parent.mkdir(parents=True, exist_ok=True)
-    manifest["days"] = dict(sorted(manifest["days"].items()))
-    path.write_text(json.dumps(manifest, indent=1, default=str) + "\n")
 
 
 def release_tag(day: date) -> str:
@@ -83,8 +78,8 @@ def main() -> int:
         print(json.dumps(entry["rows"]))
         return 0
 
-    raw = load(args.raw_manifest)
-    manifest = load(args.manifest)
+    raw = load_json(args.raw_manifest, empty_manifest())
+    manifest = load_json(args.manifest, empty_manifest())
     days = list(args.date or [])
     if args.pending:
         days += pending(raw, manifest)
@@ -119,7 +114,7 @@ def main() -> int:
                 entry["built_at"] = stamp()
                 entry["code_sha"] = code_sha()
                 manifest["days"][day.isoformat()] = entry
-                save(args.manifest, manifest)
+                save_manifest(args.manifest, manifest)
             print(f"{day}: {entry['rows']}")
         except Exception as exc:  # keep going; one bad day must not block the rest
             failed = True

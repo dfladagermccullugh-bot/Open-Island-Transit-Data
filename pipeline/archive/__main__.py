@@ -13,7 +13,6 @@ its own copy, so a day is never listed before its files are confirmed.
 from __future__ import annotations
 
 import argparse
-import json
 import os
 import sys
 import traceback
@@ -25,20 +24,15 @@ from pipeline import release
 from pipeline.archive.build import build_day
 from pipeline.archive.days import complete_days
 from pipeline.archive.store import Collector
-from pipeline.common import code_sha, stamp, utcnow
+from pipeline.common import (
+    code_sha,
+    empty_manifest,
+    load_json,
+    save_manifest,
+    stamp,
+    utcnow,
+)
 from pipeline.config import REPO
-
-
-def load_manifest(path: Path) -> dict[str, Any]:
-    if path.exists():
-        return json.loads(path.read_text())
-    return {"version": 1, "repo": REPO, "days": {}}
-
-
-def save_manifest(path: Path, manifest: dict[str, Any]) -> None:
-    path.parent.mkdir(parents=True, exist_ok=True)
-    manifest["days"] = dict(sorted(manifest["days"].items()))
-    path.write_text(json.dumps(manifest, indent=1, sort_keys=False, default=str) + "\n")
 
 
 def release_tag(day: date) -> str:
@@ -73,7 +67,7 @@ def main() -> int:
     args = ap.parse_args()
 
     collector = Collector()
-    manifest = load_manifest(args.manifest)
+    manifest = load_json(args.manifest, empty_manifest())
 
     days = list(args.date or [])
     if args.pending:

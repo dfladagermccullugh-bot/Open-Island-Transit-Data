@@ -13,9 +13,9 @@ from typing import Any
 import requests
 
 from pipeline.archive.days import day_bounds, pacific_date
+from pipeline.common import Row
 from pipeline.config import SUPABASE_PUBLISHABLE_KEY, SUPABASE_URL, USER_AGENT
 
-Row = dict[str, Any]
 RETRY_WAITS_S = (1, 4, 16)
 
 

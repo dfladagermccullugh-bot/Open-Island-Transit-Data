@@ -23,12 +23,11 @@ from __future__ import annotations
 from collections.abc import Iterable
 from typing import Any
 
+from pipeline.common import Row
 from pipeline.gtfs.schedule import Trip
 
 CANCELED_FLAGS = frozenset({"CANCELED", "DELETED"})
 CANCELING_EFFECT = "NO_SERVICE"
-
-Row = dict[str, Any]
 
 
 def _active_during(periods: Iterable[Any] | None, trip: Trip) -> bool:

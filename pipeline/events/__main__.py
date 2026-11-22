@@ -34,7 +34,7 @@ import pyarrow as pa
 import pyarrow.parquet as pq
 
 from pipeline import release
-from pipeline.common import DayFiles, code_sha, load_json, run_order, stamp
+from pipeline.common import DayFiles, code_sha, load_json, run_order, save_manifest, stamp
 from pipeline.common import file_entry as _file_entry
 from pipeline.common import sha_of as _sha
 from pipeline.config import COLLECTION_START, REPO
@@ -122,12 +122,6 @@ DAILY = [
 
 def _load(path: Path) -> dict[str, Any]:
     return load_json(path, {"version": 1, "days": {}})
-
-
-def _save(path: Path, manifest: dict[str, Any]) -> None:
-    path.parent.mkdir(parents=True, exist_ok=True)
-    manifest["days"] = dict(sorted(manifest["days"].items()))
-    path.write_text(json.dumps(manifest, indent=1, default=str) + "\n")
 
 
 def pending(data: Path) -> list[date]:
@@ -286,7 +280,7 @@ def main() -> int:
                 entry["built_at"] = stamp()
                 entry["code_sha"] = code_sha()
                 manifest["days"][day.isoformat()] = entry
-                _save(manifest_path, manifest)
+                save_manifest(manifest_path, manifest)
                 day_files.write(day.isoformat(), dumps_day(built["ontime"]))
             o = built["ontime"]
             print(

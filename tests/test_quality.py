@@ -7,7 +7,6 @@ from pipeline.gtfs.schedule import ServiceWindows, Trip, day_origin, scheduled_t
 from pipeline.gtfs.zipread import read_zip
 from pipeline.quality.metrics import (
     VEHICLE_FIELDS,
-    _quantile,
     coverage,
     day_metrics,
     feed_emptiness,
@@ -16,6 +15,7 @@ from pipeline.quality.metrics import (
     refresh,
     trip_gaps,
 )
+from pipeline.stats import quantile
 
 DAY = date(2026, 11, 20)  # a Friday, standard time
 T = datetime(2026, 11, 20, 16, 0, tzinfo=UTC)  # 8:00 AM Pacific
@@ -82,9 +82,9 @@ def test_service_windows_merge_overlaps():
 
 
 def test_quantile_matches_linear_interpolation():
-    assert _quantile([1, 2, 3, 4], 0.5) == 2.5
-    assert _quantile([10], 0.95) == 10
-    assert _quantile([], 0.5) is None
+    assert quantile([1, 2, 3, 4], 0.5) == 2.5
+    assert quantile([10], 0.95) == 10
+    assert quantile([], 0.5) is None
 
 
 def fetch(i, feed="vehiclePositions", at=None, ok=True, entities=5, newest_age=5):

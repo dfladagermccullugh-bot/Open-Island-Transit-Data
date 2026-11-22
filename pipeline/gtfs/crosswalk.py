@@ -37,6 +37,8 @@ import math
 from collections import Counter, defaultdict
 from typing import Any
 
+from pipeline.common import Row
+from pipeline.gtfs.schedule import DAYS
 from pipeline.gtfs.tables import rows as _rows
 from pipeline.gtfs.tables import seconds as _seconds
 from pipeline.gtfs.zipread import ZipContents
@@ -45,9 +47,7 @@ CODE_MAX_M = 150.0
 DISTANCE_MAX_M = 60.0
 CROSSWALK_VERSION = "crosswalk/0.1.0"
 
-DAYS = ("monday", "tuesday", "wednesday", "thursday", "friday", "saturday", "sunday")
 
-Row = dict[str, Any]
 Tables = dict[str, list[Row]]
 
 

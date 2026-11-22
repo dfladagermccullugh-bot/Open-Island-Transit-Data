@@ -55,9 +55,8 @@ from pipeline.gtfs.zipread import ZipContents, load_zip, read_zip
 
 
 def load(path: Path) -> dict[str, Any]:
-    if path.exists():
-        return json.loads(path.read_text())
-    return {"version": 1, "repo": REPO, "versions": {}, "downloads": {}, "days": {}}
+    empty = {"version": 1, "repo": REPO, "versions": {}, "downloads": {}, "days": {}}
+    return load_json(path, empty)
 
 
 def save(path: Path, registry: dict[str, Any]) -> None:

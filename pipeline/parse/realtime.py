@@ -12,7 +12,7 @@ from typing import Any
 
 from google.transit import gtfs_realtime_pb2 as rt
 
-Row = dict[str, Any]
+from pipeline.common import Row
 
 
 @dataclass

@@ -18,12 +18,12 @@ from collections import Counter, defaultdict
 from datetime import datetime, timedelta
 from typing import Any
 
+from pipeline.common import Row
 from pipeline.config import PACIFIC
 from pipeline.events.geometry import drop_retraced
 from pipeline.events.ontime import classify
-from pipeline.quality.metrics import _metres, _quantile, _r, _share
-
-Row = dict[str, Any]
+from pipeline.geo import meters_between
+from pipeline.stats import mean, quantile, rounded, share
 
 HORIZONS_MIN = (1, 2, 5, 10, 15, 30)
 PREDICTION_STALE_S = 30  # a prediction counts until this long after its last fetch
@@ -65,10 +65,10 @@ def stop_coverage(events: list[Row], collection_start: datetime) -> dict[str, An
         return {
             "scheduled": counts["scheduled"],
             "observed": counts["observed"],
-            "coverage": _share(counts["observed"], counts["scheduled"]),
+            "coverage": share(counts["observed"], counts["scheduled"]),
             "not_observed_by_reason": dict(sorted(reasons.items())),
             "by_route": {
-                r: {**c, "coverage": _share(c["observed"], c["scheduled"])}
+                r: {**c, "coverage": share(c["observed"], c["scheduled"])}
                 for r, c in sorted(by_route.items())
             },
         }
@@ -109,9 +109,9 @@ def shape_fit(tracks: list[Row]) -> dict[str, Any]:
             "position_reports": c["position_reports"],
             "tracked_reports": c["tracked"],
             "off_shape": c["off_shape"],
-            "off_shape_share": _share(c["off_shape"], c["tracked"]),
+            "off_shape_share": share(c["off_shape"], c["tracked"]),
             "wrong_direction": c["wrong_direction"],
-            "wrong_direction_share": _share(c["wrong_direction"], c["tracked"]),
+            "wrong_direction_share": share(c["wrong_direction"], c["tracked"]),
         }
 
     skipped = [t for t in tracks if t.get("shape_skips")]
@@ -139,7 +139,7 @@ def assignment(
     return {
         "observed_trip_ids": len(seen),
         "unassignable": len(not_in_static) + len(not_today),
-        "unassignable_share": _share(len(not_in_static) + len(not_today), len(seen)),
+        "unassignable_share": share(len(not_in_static) + len(not_today), len(seen)),
         "trip_id_not_in_static": sorted(not_in_static),
         "trip_not_scheduled_today": sorted(not_today),
         "scheduled_trips_with_reports": len(with_reports),
@@ -236,14 +236,14 @@ def prediction_error(predictions: list[Row], events: list[Row]) -> dict[str, Any
         return {
             "n": len(xs),
             "other_day": other_day[h],
-            "other_day_share": _share(other_day[h], len(xs) + other_day[h]),
-            "bias_s": _r(statistics.fmean(xs)) if xs else None,
-            "median_s": _r(_quantile(xs, 0.5)),
-            "mae_s": _r(statistics.fmean(abs(x) for x in xs)) if xs else None,
-            "median_abs_s": _r(_quantile([abs(x) for x in xs], 0.5)),
-            "within_60s_share": _share(sum(abs(x) <= WITHIN_S for x in xs), len(xs)),
+            "other_day_share": share(other_day[h], len(xs) + other_day[h]),
+            "bias_s": rounded(mean(xs)) if xs else None,
+            "median_s": rounded(quantile(xs, 0.5)),
+            "mae_s": rounded(mean(abs(x) for x in xs)) if xs else None,
+            "median_abs_s": rounded(quantile([abs(x) for x in xs], 0.5)),
+            "within_60s_share": share(sum(abs(x) <= WITHIN_S for x in xs), len(xs)),
             "over_30min": sum(abs(x) > FAR_OFF_S for x in xs),
-            "over_30min_share": _share(sum(abs(x) > FAR_OFF_S for x in xs), len(xs)),
+            "over_30min_share": share(sum(abs(x) > FAR_OFF_S for x in xs), len(xs)),
         }
 
     return {
@@ -267,7 +267,9 @@ def jitter(vehicles: list[Row], terminals: list[tuple[float, float]]) -> dict[st
 
     def near_terminal(lat: float, lon: float) -> bool:
         return any(
-            abs(lat - a) < 0.002 and abs(lon - b) < 0.003 and _metres(lat, lon, a, b) <= TERMINAL_M
+            abs(lat - a) < 0.002
+            and abs(lon - b) < 0.003
+            and meters_between(lat, lon, a, b) <= TERMINAL_M
             for a, b in terminals
         )
 
@@ -297,14 +299,17 @@ def jitter(vehicles: list[Row], terminals: list[tuple[float, float]]) -> dict[st
 
     spread: list[float] = []
     for d in dwells:
+        # statistics.median, not pipeline.stats.median: for an even count the
+        # two average the middle pair in a different order, which can differ
+        # in the last bit, and these published figures were made with this one.
         lat = statistics.median(r["lat"] for r in d)
         lon = statistics.median(r["lon"] for r in d)
-        spread += [_metres(lat, lon, r["lat"], r["lon"]) for r in d]
+        spread += [meters_between(lat, lon, r["lat"], r["lon"]) for r in d]
     return {
         "dwells": len(dwells),
         "reports": len(spread),
-        "jitter_m_median": _r(_quantile(spread, 0.5)),
-        "jitter_m_p95": _r(_quantile(spread, 0.95)),
+        "jitter_m_median": rounded(quantile(spread, 0.5)),
+        "jitter_m_p95": rounded(quantile(spread, 0.95)),
         "definition": (
             f"distance from the dwell's median position; speed under {STATIONARY_MS} m/s, "
             f"within {TERMINAL_M:.0f} m of a first or last stop, "

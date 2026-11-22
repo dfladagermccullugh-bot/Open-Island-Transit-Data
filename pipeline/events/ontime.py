@@ -25,14 +25,13 @@ from collections import Counter, defaultdict
 from datetime import datetime
 from typing import Any
 
+from pipeline.common import Row
 from pipeline.config import PACIFIC
 from pipeline.stats import median
 
 ONTIME_VERSION = "ontime/0.3.0"
 EARLY_S = -60
 LATE_S = 300
-
-Row = dict[str, Any]
 
 
 def classify(event: Row) -> tuple[str, float | None, datetime | None]:

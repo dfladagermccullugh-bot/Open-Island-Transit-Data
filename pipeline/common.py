@@ -11,6 +11,11 @@ from datetime import UTC, date, datetime
 from pathlib import Path
 from typing import Any
 
+from pipeline.config import REPO
+
+# One row of a table read from a file or about to be written to one.
+Row = dict[str, Any]
+
 
 def utcnow() -> datetime:
     """The current time in UTC.
@@ -54,6 +59,18 @@ def sha_of(entry: dict[str, Any], name: str) -> str:
 
 def load_json(path: Path, default: Any = None) -> Any:
     return json.loads(path.read_text(encoding="utf-8")) if path.exists() else default
+
+
+def empty_manifest() -> dict[str, Any]:
+    """A manifest before its first day."""
+    return {"version": 1, "repo": REPO, "days": {}}
+
+
+def save_manifest(path: Path, manifest: dict[str, Any]) -> None:
+    """Write a manifest with its days in date order."""
+    path.parent.mkdir(parents=True, exist_ok=True)
+    manifest["days"] = dict(sorted(manifest["days"].items()))
+    path.write_text(json.dumps(manifest, indent=1, default=str) + "\n")
 
 
 class DayFiles:

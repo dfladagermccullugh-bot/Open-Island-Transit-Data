@@ -13,21 +13,20 @@ Metrics that need inferred stop events or trip shapes are in
 from __future__ import annotations
 
 import math
-import statistics
 from collections import Counter, defaultdict
 from collections.abc import Container, Iterable
 from datetime import date, datetime, timedelta
 from typing import Any
 
 from pipeline.archive.days import day_bounds
-from pipeline.common import stamp
+from pipeline.common import Row, stamp
 from pipeline.config import PACIFIC
+from pipeline.geo import meters_between
 from pipeline.gtfs.schedule import ServiceWindows, Trip
-from pipeline.stats import quantile as _quantile
+from pipeline.stats import mean, quantile, rounded, share
 
 QUALITY_VERSION = "quality/0.5.0"
 
-Row = dict[str, Any]
 
 SLOT_SECONDS = {"vehiclePositions": 20, "tripUpdates": 20, "serviceAlerts": 300}
 STALE_SECONDS = 120
@@ -62,23 +61,8 @@ def _ok(f: Row) -> bool:
     return f.get("http_status") == 200 and not f.get("error_class")
 
 
-def _share(num: int, den: int) -> float | None:
-    return round(num / den, 6) if den else None
-
-
-def _r(x: float | None, nd: int = 1) -> float | None:
-    return round(x, nd) if x is not None else None
-
-
 def _hour(moment: datetime) -> int:
     return moment.astimezone(PACIFIC).hour
-
-
-def _metres(lat1: float, lon1: float, lat2: float, lon2: float) -> float:
-    p1, p2 = math.radians(lat1), math.radians(lat2)
-    dp, dl = p2 - p1, math.radians(lon2 - lon1)
-    a = math.sin(dp / 2) ** 2 + math.cos(p1) * math.cos(p2) * math.sin(dl / 2) ** 2
-    return 2 * 6_371_000 * math.asin(math.sqrt(a))
 
 
 def distinct_reports(vehicles: list[Row]) -> list[Row]:
@@ -139,12 +123,12 @@ def paradata(fetches: list[Row], day: date, collection_start: datetime) -> dict[
             "slots_expected": expected,
             "slots_logged": len(slots),
             "slots_ok": len(ok_slots),
-            "uptime": _share(len(ok_slots), expected),
+            "uptime": share(len(ok_slots), expected),
             "not_logged": expected - len(slots),
             "logged_not_ok": len(slots - ok_slots),
             "tick_phase_s": round(phase, 2),
-            "latency_ms_median": _r(_quantile(latency, 0.5)),
-            "latency_ms_p95": _r(_quantile(latency, 0.95)),
+            "latency_ms_median": rounded(quantile(latency, 0.5)),
+            "latency_ms_p95": rounded(quantile(latency, 0.95)),
             "collector_versions": sorted(
                 {f["collector_version"] for f in mine if f.get("collector_version")}
             ),
@@ -185,9 +169,9 @@ def refresh(runs: Iterable[Row], poll_s: int = SLOT_SECONDS["tripUpdates"]) -> d
     return {
         "pairs": pairs,
         "changed": changed,
-        "changed_share": _share(changed, pairs),
-        "update_interval_s_median": _r(_quantile(intervals, 0.5)),
-        "update_interval_s_p90": _r(_quantile(intervals, 0.9)),
+        "changed_share": share(changed, pairs),
+        "update_interval_s_median": rounded(quantile(intervals, 0.5)),
+        "update_interval_s_p90": rounded(quantile(intervals, 0.9)),
         "poll_interval_s": poll_s,
     }
 
@@ -203,7 +187,7 @@ def fetch_nonresponse(fetches: list[Row]) -> dict[str, Any]:
         out[feed] = {
             "attempted": len(mine),
             "failed": len(bad),
-            "rate": _share(len(bad), len(mine)),
+            "rate": share(len(bad), len(mine)),
             "by_error": dict(Counter(f.get("error_class") or "http" for f in bad)),
         }
     return out
@@ -243,9 +227,9 @@ def feed_emptiness(fetches: list[Row], windows: ServiceWindows) -> dict[str, Any
         "in_service_fetches": total["in_service"],
         "ok_in_service_fetches": total["ok_in_service"],
         "empty_in_service": total["empty_in_service"],
-        "empty_in_service_rate": _share(total["empty_in_service"], total["ok_in_service"]),
+        "empty_in_service_rate": share(total["empty_in_service"], total["ok_in_service"]),
         "stale_in_service": total["stale_in_service"],
-        "stale_in_service_rate": _share(total["stale_in_service"], total["ok_in_service"]),
+        "stale_in_service_rate": share(total["stale_in_service"], total["ok_in_service"]),
         "no_timestamp_in_service": total["no_timestamp_in_service"],
         "by_hour": {str(k): dict(v) for k, v in sorted(by_hour.items())},
     }
@@ -257,9 +241,7 @@ def item_nonresponse(vehicles: list[Row]) -> dict[str, Any]:
     n = len(vehicles)
     return {
         "position_reports": n,
-        "missing_share": {
-            k: _share(sum(v[k] is None for v in vehicles), n) for k in VEHICLE_FIELDS
-        },
+        "missing_share": {k: share(sum(v[k] is None for v in vehicles), n) for k in VEHICLE_FIELDS},
     }
 
 
@@ -304,12 +286,10 @@ def trip_gaps(vehicles: list[Row], trips: list[Trip]) -> dict[str, Any]:
         gap_share.append(sum(x for x in steps if x > GAP_SECONDS) / span if span else 0.0)
     return {
         "trips_with_two_or_more_reports": len(longest),
-        "longest_gap_s_median": _r(_quantile(longest, 0.5)),
-        "longest_gap_s_p95": _r(_quantile(longest, 0.95)),
+        "longest_gap_s_median": rounded(quantile(longest, 0.5)),
+        "longest_gap_s_p95": rounded(quantile(longest, 0.95)),
         "trips_with_gap_over_90s": sum(x > GAP_SECONDS for x in longest),
-        "share_of_trip_time_in_gaps_mean": _r(statistics.fmean(gap_share), 4)
-        if gap_share
-        else None,
+        "share_of_trip_time_in_gaps_mean": rounded(mean(gap_share), 4) if gap_share else None,
     }
 
 
@@ -379,19 +359,19 @@ def coverage(
     return {
         "scheduled_trips": len(scheduled),
         "observed_scheduled_trips": len(scheduled & seen),
-        "trip_coverage": _share(len(scheduled & seen), len(scheduled)),
+        "trip_coverage": share(len(scheduled & seen), len(scheduled)),
         "canceled_trips": len(canceled),
         "canceled_by": {how: sum(v == how for v in canceled.values()) for how in ("flag", "alert")},
         "canceled_trip_ids": sorted(canceled),
         "canceled_but_observed": len(set(canceled) & seen),
-        "trip_coverage_excluding_canceled": _share(
+        "trip_coverage_excluding_canceled": share(
             len(scheduled & seen), len(scheduled) - len(not_run)
         ),
         "window_min": WINDOW_MIN,
         "trips_seen_only_outside_window": len((scheduled & anytime) - seen),
         "routes_never_reporting": sorted(r for r, c in by_route.items() if not c["observed"]),
         "by_route": {
-            r: {**c, "coverage": _share(c["observed"], c["scheduled"])}
+            r: {**c, "coverage": share(c["observed"], c["scheduled"])}
             for r, c in sorted(by_route.items())
         },
         "trips": {
@@ -404,7 +384,7 @@ def coverage(
             "no_trip_id": no_trip,
             "trip_id_not_in_static": unknown,
             "trip_not_scheduled_today": off_day,
-            "share": _share(no_trip + unknown + off_day, len(reports)),
+            "share": share(no_trip + unknown + off_day, len(reports)),
         },
     }
 
@@ -435,12 +415,12 @@ def measurement(vehicles: list[Row]) -> dict[str, Any]:
                     backwards += 1
                 elif dt > 0 and None not in (r["lat"], r["lon"], prev["lat"], prev["lon"]):
                     pairs += 1
-                    kmh = _metres(prev["lat"], prev["lon"], r["lat"], r["lon"]) / dt * 3.6
+                    kmh = meters_between(prev["lat"], prev["lon"], r["lat"], r["lon"]) / dt * 3.6
                     jumps += kmh > MAX_KMH
             prev = r
     return {
-        "position_age_s_median": _r(_quantile(ages, 0.5)),
-        "position_age_s_p95": _r(_quantile(ages, 0.95)),
+        "position_age_s_median": rounded(quantile(ages, 0.5)),
+        "position_age_s_p95": rounded(quantile(ages, 0.95)),
         "position_age_definition": "first fetch request time minus vehicle timestamp",
         "timestamps_in_future": future,
         "timestamps_going_backwards": backwards,
@@ -463,7 +443,7 @@ def id_match(vehicles: list[Row], static_ids: dict[str, set[str]]) -> dict[str, 
         out[field] = {
             "present": len(present),
             "in_static": sum(x in ids for x in present),
-            "match_rate": _share(sum(x in ids for x in present), len(present)),
+            "match_rate": share(sum(x in ids for x in present), len(present)),
         }
     return out
 

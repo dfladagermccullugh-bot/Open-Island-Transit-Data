@@ -20,12 +20,13 @@ import csv
 import json
 from collections import defaultdict
 from datetime import date, timedelta
+from functools import partial
 from pathlib import Path
 from typing import Any
 
 from pipeline.common import DayFiles
 from pipeline.gtfs.timepoints import reference_of
-from pipeline.stats import quantile
+from pipeline.stats import quantile, share
 
 ROUTES_VERSION = "routes/0.2.0"
 WINDOW_DAYS = 28
@@ -41,8 +42,8 @@ ROUTE_COLUMNS = [
 ]
 
 
-def _share(num: int, den: int) -> float | None:
-    return round(num / den, 4) if den else None
+# Shares in the on-time files are published to four decimal places.
+_share = partial(share, digits=4)
 
 
 def _quantile(values: list[int], q: float) -> float | None:

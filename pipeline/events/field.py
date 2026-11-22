@@ -34,18 +34,20 @@ import io
 import json
 import os
 import re
-import statistics
 import sys
 from collections import defaultdict
 from datetime import UTC, date, datetime, time, timedelta
 from pathlib import Path
 from typing import Any
 
+from pipeline.common import Row
 from pipeline.config import PACIFIC, REPO, USER_AGENT
 from pipeline.gtfs import timepoints as tp
-from pipeline.gtfs.schedule import _rows, _seconds, day_origin, scheduled_trips
+from pipeline.gtfs.schedule import day_origin, scheduled_trips
+from pipeline.gtfs.tables import rows as gtfs_rows
+from pipeline.gtfs.tables import seconds as gtfs_seconds
 from pipeline.gtfs.zipread import ZipContents, read_zip
-from pipeline.stats import median
+from pipeline.stats import mean, median
 
 FIELD_VERSION = "field/0.3.0"
 OBSERVATIONS = tp.REFERENCE_DIR / "field-observations.csv"
@@ -54,8 +56,6 @@ SHEET_COLUMNS = ("service_date", "stop_id", "stop_name", "route", "trip_id", "sc
                  "time_this", "arrive_40m", "depart_40m", "pass_stop", "note")  # fmt: skip
 TARGET_MAE_S = 30.0
 TARGET_MIN_N = 5  # the target is not judged on fewer timed moments than this
-
-Row = dict[str, Any]
 
 
 # --- the sheet ------------------------------------------------------------------
@@ -77,13 +77,13 @@ def sheet(
     if effective is None:
         raise ValueError(f"no timetable reference covers {day}")
     pairs = tp.timepoint_pairs(tp.build(passio, effective)["matched"])
-    stops = {s["stop_id"]: s["stop_name"] for s in _rows(passio, "stops.txt")}
+    stops = {s["stop_id"]: s["stop_name"] for s in gtfs_rows(passio, "stops.txt")}
     wanted = {i for i, name in stops.items() if any(q.lower() in name.lower() for q in queries)}
     routes = {r["route_id"]: r.get("route_short_name") or r.get("route_long_name") or r["route_id"]
-              for r in _rows(passio, "routes.txt")}  # fmt: skip
+              for r in gtfs_rows(passio, "routes.txt")}  # fmt: skip
     trips = {t.trip_id: t for t in scheduled_trips(passio, day)}
     origin = day_origin(day)
-    stop_times = [st for st in _rows(passio, "stop_times.txt") if st["trip_id"] in trips]
+    stop_times = [st for st in gtfs_rows(passio, "stop_times.txt") if st["trip_id"] in trips]
     ends: dict[str, tuple[int, int]] = {}
     for st in stop_times:
         q = int(st["stop_sequence"])
@@ -99,7 +99,7 @@ def sheet(
         hms = (st.get("arrival_time") if role == "arrival" else st.get("departure_time")) or (
             st.get("departure_time") or st.get("arrival_time")
         )
-        when = (origin + timedelta(seconds=_seconds(hms))).astimezone(PACIFIC)
+        when = (origin + timedelta(seconds=gtfs_seconds(hms))).astimezone(PACIFIC)
         if (start and when.time() < start) or (end and when.time() > end):
             continue
         out.append({
@@ -167,9 +167,9 @@ def _stats(diffs: list[float]) -> dict[str, Any]:
                 "within_30s_share": None, "within_60s_share": None, "max_abs_s": None}  # fmt: skip
     return {
         "n": len(diffs),
-        "bias_s": round(statistics.fmean(diffs), 1),
+        "bias_s": round(mean(diffs), 1),
         "median_s": round(median(diffs), 1),
-        "mae_s": round(statistics.fmean(abs(d) for d in diffs), 1),
+        "mae_s": round(mean(abs(d) for d in diffs), 1),
         "within_30s_share": round(sum(abs(d) <= 30 for d in diffs) / len(diffs), 4),
         "within_60s_share": round(sum(abs(d) <= 60 for d in diffs) / len(diffs), 4),
         "max_abs_s": round(max(abs(d) for d in diffs), 1),
