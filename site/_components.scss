@@ -99,7 +99,9 @@ h3 { margin-top: var(--sp-6); }
 .band-legend li { white-space: nowrap; }
 
 // --- route map -----------------------------------------------------------------
-.route-map { width: 100%; height: var(--map-height); border-radius: var(--radius-md); margin: var(--sp-2) 0 var(--sp-3); z-index: 0; }
+// The height (--map-height) is set on the element by map.js, so the box is
+// bounded even when no stylesheet is applied.
+.route-map { width: 100%; border-radius: var(--radius-md); margin: var(--sp-2) 0 var(--sp-3); z-index: 0; }
 .route-casing { stroke: var(--map-casing); stroke-opacity: .55; }
 .route-line { stroke: var(--band); }
 .route-hit { cursor: pointer; }

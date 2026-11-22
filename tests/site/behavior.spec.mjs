@@ -278,6 +278,23 @@ test.describe("loading", () => {
     });
   }
 
+  for (const name of ["index", "routes"]) {
+    test(`without stylesheets the map on ${name} keeps its size and fetches no tiles`, async ({page, asked}) => {
+      // Page readers often skip stylesheets. Leaflet's stylesheet is what
+      // keeps the tiles inside the map's box; without it, and without a
+      // height set on the box itself, each tile made the box taller and a
+      // taller map asked for more tiles, thousands of them.
+      await page.route(/\.css(\?|$)/, route => route.fulfill({body: "", contentType: "text/css"}));
+      await page.goto(`${name}.html`, {waitUntil: "load", timeout: 15_000});
+      const map = page.locator(".route-map");
+      await expect(map.locator(".route-line").first()).toBeAttached();
+      await expect(page.locator("h1")).toBeVisible();
+      await page.waitForTimeout(1500);
+      expect(await map.evaluate(n => n.clientHeight)).toBeLessThanOrEqual(640);
+      expect(asked.filter(u => u.includes("tile.openstreetmap.org"))).toHaveLength(0);
+    });
+  }
+
   test("the page does not jump while its figures arrive", async ({page}) => {
     await page.addInitScript(() => {
       window.__shift = 0;

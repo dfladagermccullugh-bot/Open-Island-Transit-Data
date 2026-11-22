@@ -56,6 +56,12 @@ export function drawRouteMap(L, mapData, recent, {onSelect = null, linkFor = nul
   node.setAttribute("role", "region");
   node.setAttribute("aria-label",
     "Map of Island Transit routes, colored by how often buses were on time. The same figures are listed beside the map.");
+  // The box is bounded here, not only in the stylesheet. A page reader that
+  // skips stylesheets would otherwise get a box as tall as its contents: each
+  // tile makes it taller, a taller map asks for more tiles, and it ends with
+  // the whole world requested from OpenStreetMap.
+  node.style.height = "var(--map-height, 440px)";
+  node.style.overflow = "hidden";
 
   const calm = matchMedia("(prefers-reduced-motion: reduce)").matches;
   // Whole zoom levels only: fractional zoom leaves hairline seams between tiles.
@@ -178,6 +184,10 @@ export function drawRouteMap(L, mapData, recent, {onSelect = null, linkFor = nul
   // itself has finished loading, so a slow or silent tile server can never
   // hold up the page's load event (and everything that waits for it); the
   // route lines, which come with the page, are drawn at once.
+  //
+  // Without Leaflet's stylesheet the tiles would be laid out as a column of
+  // pictures, not a map, so none are fetched then.
+  const styled = () => getComputedStyle(m.getPane("mapPane")).position === "absolute";
   let size = "", destroyed = false;
   const afterLoad = start => {
     if (document.readyState === "complete") start();
@@ -191,7 +201,7 @@ export function drawRouteMap(L, mapData, recent, {onSelect = null, linkFor = nul
     if (!tiles) {
       fit();
       tiles = L.tileLayer(TILES, {maxZoom: 18, attribution: ATTRIBUTION});
-      afterLoad(() => { if (!destroyed) tiles.addTo(m); });
+      afterLoad(() => { if (!destroyed && styled()) tiles.addTo(m); });
       restyle();
     } else if (!moved) {
       fit();
