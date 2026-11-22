@@ -6,6 +6,11 @@ import {BASE, PORT} from "./serve.mjs";
 // the one browser the tests install.
 const phone = {...devices["iPhone 13"], browserName: "chromium", defaultBrowserType: "chromium"};
 
+// SITE_URL points the tests at a site that is already being served, such as
+// the published one (scripts/test_site.sh live). Without it the tests serve
+// site/_site themselves.
+const live = process.env.SITE_URL ? new URL("./", process.env.SITE_URL).href : null;
+
 export default defineConfig({
   testDir: ".",
   testMatch: "*.spec.mjs",
@@ -17,18 +22,20 @@ export default defineConfig({
   timeout: 30_000,
   expect: {timeout: 10_000},
   use: {
-    baseURL: `http://127.0.0.1:${PORT}${BASE}`,
+    baseURL: live ?? `http://127.0.0.1:${PORT}${BASE}`,
     trace: "off",
     locale: "en-US",
     timezoneId: "America/Los_Angeles",
     ...(process.env.PW_CHROMIUM ? {launchOptions: {executablePath: process.env.PW_CHROMIUM}} : {}),
   },
-  webServer: {
-    command: "node serve.mjs",
-    url: `http://127.0.0.1:${PORT}${BASE}index.html`,
-    reuseExistingServer: !process.env.CI,
-    timeout: 20_000,
-  },
+  ...(live ? {} : {
+    webServer: {
+      command: "node serve.mjs",
+      url: `http://127.0.0.1:${PORT}${BASE}index.html`,
+      reuseExistingServer: !process.env.CI,
+      timeout: 20_000,
+    },
+  }),
   projects: [
     {name: "desktop-light", use: {viewport: {width: 1280, height: 900}, colorScheme: "light"}},
     {name: "desktop-dark", use: {viewport: {width: 1280, height: 900}, colorScheme: "dark"}},
