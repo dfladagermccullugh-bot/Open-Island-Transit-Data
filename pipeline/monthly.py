@@ -275,8 +275,8 @@ def build(data: Path, month: str, today: date | None = None) -> dict[str, Any]:
     rows = [r for r in _daily_rows(data, month) if r["service_date"] not in no_service]
     headline = {}
     for col in rows[0].keys() if rows else []:
-        values = [(r["service_date"], _number(r[col])) for r in rows]
-        values = [(d, v) for d, v in values if v is not None]
+        numbers = [(r["service_date"], _number(r[col])) for r in rows]
+        values = [(d, v) for d, v in numbers if v is not None]
         if col != "service_date" and values:
             headline[col] = _range(values)
 

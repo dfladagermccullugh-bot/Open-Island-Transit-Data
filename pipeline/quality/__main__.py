@@ -311,7 +311,7 @@ def compute(
         holidays = removed_services(load_zip(tpath, tex["sha256"]), day)
 
     downloads = [x for x in static.get("downloads", {}).values() if x["day"] == d]
-    extra = {
+    extra: dict[str, Any] = {
         "parser": {
             feed: {**c, "decode_error_rate": (c["decode_errors"] / c["attempted"])
                    if c["attempted"] else None}

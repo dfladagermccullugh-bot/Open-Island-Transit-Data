@@ -22,7 +22,7 @@ def quality_day(day, scheduled, observed, ended_before=0, uptime_ok=1900):
         "paradata": {
             "observed_from": f"{day}T21:24:40+00:00",
             **{f: dict(feed) for f in monthly.FEEDS},
-        },  # fmt: skip
+        },
         "nonresponse": {"fetch": {f: dict(fetch) for f in monthly.FEEDS}},
         "coverage": {
             "scheduled_trips": scheduled,
@@ -51,7 +51,7 @@ def ontime_day(day, route_counts):
             "r1": {"short_name": "1", "long_name": "One"},
             "r10": {"short_name": "10", "long_name": "Ten"},
             "r2c": {"short_name": "2C", "long_name": "Two C"},
-        },  # fmt: skip
+        },
     }
 
 

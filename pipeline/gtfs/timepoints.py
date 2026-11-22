@@ -24,6 +24,7 @@ from __future__ import annotations
 
 import csv
 import difflib
+import itertools
 import re
 from collections import defaultdict
 from datetime import date
@@ -100,7 +101,7 @@ def _fit(seq: dict[str, int], printed_ids: list[list[str]]) -> tuple[int, int]:
     """How well one trip fits a printed timetable: (printed stops it serves,
     consecutive pairs of them in the printed order)."""
     seqs = [min(seq[s] for s in ids if s in seq) for ids in printed_ids if set(ids) & seq.keys()]
-    return len(seqs), sum(a < b for a, b in zip(seqs, seqs[1:], strict=False))
+    return len(seqs), sum(a < b for a, b in itertools.pairwise(seqs))
 
 
 def match(passio: ZipContents, printed: list[Row], overrides: dict) -> list[Row]:
@@ -174,7 +175,7 @@ def match(passio: ZipContents, printed: list[Row], overrides: dict) -> list[Row]
                                     "order",
                                     "printed_stop",
                                 )
-                            },  # fmt: skip
+                            },
                             "passio_route_id": rid,
                             "passio_stop_id": sid,
                             "passio_stop_name": name.get(sid, ""),
@@ -228,7 +229,7 @@ def summarize(matched: list[Row]) -> dict[str, Any]:
                 (r["route_short_name"], r["printed_stop"], r["match"])
                 for r in matched
                 if (r["route_short_name"], r["printed_stop"]) not in resolved
-            }  # fmt: skip
+            }
         ),
         "timepoint_route_stops": len(timepoint_pairs(matched)),
     }

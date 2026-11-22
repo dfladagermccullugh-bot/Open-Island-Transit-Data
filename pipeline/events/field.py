@@ -47,7 +47,7 @@ from pipeline.gtfs.schedule import day_origin, scheduled_trips
 from pipeline.gtfs.tables import rows as gtfs_rows
 from pipeline.gtfs.tables import seconds as gtfs_seconds
 from pipeline.gtfs.zipread import ZipContents, read_zip
-from pipeline.stats import mean, median
+from pipeline.stats import mean, median, rounded
 
 FIELD_VERSION = "field/0.3.0"
 OBSERVATIONS = tp.REFERENCE_DIR / "field-observations.csv"
@@ -99,7 +99,10 @@ def sheet(
         hms = (st.get("arrival_time") if role == "arrival" else st.get("departure_time")) or (
             st.get("departure_time") or st.get("arrival_time")
         )
-        when = (origin + timedelta(seconds=gtfs_seconds(hms))).astimezone(PACIFIC)
+        seconds = gtfs_seconds(hms)
+        if seconds is None:  # a stop time with neither an arrival nor a departure
+            continue
+        when = (origin + timedelta(seconds=seconds)).astimezone(PACIFIC)
         if (start and when.time() < start) or (end and when.time() > end):
             continue
         out.append({
@@ -168,7 +171,7 @@ def _stats(diffs: list[float]) -> dict[str, Any]:
     return {
         "n": len(diffs),
         "bias_s": round(mean(diffs), 1),
-        "median_s": round(median(diffs), 1),
+        "median_s": rounded(median(diffs), 1),
         "mae_s": round(mean(abs(d) for d in diffs), 1),
         "within_30s_share": round(sum(abs(d) <= 30 for d in diffs) / len(diffs), 4),
         "within_60s_share": round(sum(abs(d) <= 60 for d in diffs) / len(diffs), 4),

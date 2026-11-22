@@ -13,6 +13,7 @@ from __future__ import annotations
 import hashlib
 import sys
 from pathlib import Path
+from typing import Any
 
 from pipeline import release
 
@@ -22,7 +23,7 @@ TAG = "selftest-release"
 def main(repo: str, work: Path) -> None:
     out = work / "up"
     out.mkdir(parents=True, exist_ok=True)
-    files = []
+    files: list[dict[str, Any]] = []
     for name, body in (("a-2000-01-01.parquet", b"a" * 1000), ("b-2000-01-01.zip", b"b" * 37)):
         (out / name).write_bytes(body)
         files.append({"name": name, "bytes": len(body), "sha256": hashlib.sha256(body).hexdigest()})
@@ -36,9 +37,9 @@ def main(repo: str, work: Path) -> None:
         print("downloaded and verified:", got)
         notes = "# Self-test notes\n\n| a | b |\n|---|---|\n| 1 | 2 |\n"
         release.set_notes(TAG, repo, notes)
-        body = release.gh("release", "view", TAG, "--repo", repo, "--json", "body", "-q", ".body")
-        if body.strip() != notes.strip():
-            raise RuntimeError(f"release notes not replaced: {body!r}")
+        shown = release.gh("release", "view", TAG, "--repo", repo, "--json", "body", "-q", ".body")
+        if shown.strip() != notes.strip():
+            raise RuntimeError(f"release notes not replaced: {shown!r}")
         print("release notes replaced")
     finally:
         release.gh("release", "delete", TAG, "--repo", repo, "--yes", "--cleanup-tag")

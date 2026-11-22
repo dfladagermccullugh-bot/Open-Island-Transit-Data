@@ -79,7 +79,8 @@ def scheduled_trips(contents: ZipContents, day: date) -> list[Trip]:
     for st in _rows(contents, "stop_times.txt"):
         if st["trip_id"] not in trips:
             continue
-        times = [_seconds(x) for x in (st.get("arrival_time"), st.get("departure_time")) if x]
+        both = (_seconds(st.get("arrival_time")), _seconds(st.get("departure_time")))
+        times = [t for t in both if t is not None]
         if not times:
             continue
         b = bounds.setdefault(st["trip_id"], [min(times), max(times)])

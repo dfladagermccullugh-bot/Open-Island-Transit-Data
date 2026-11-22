@@ -27,7 +27,7 @@ from pathlib import Path
 
 sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
 
-from pipeline.config import PACIFIC, REPO  # noqa: E402
+from pipeline.config import PACIFIC, REPO
 
 QUIET_HOURS = 3
 READY_AFTER = timedelta(minutes=30)  # after midnight Pacific

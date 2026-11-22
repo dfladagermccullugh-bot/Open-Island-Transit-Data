@@ -13,7 +13,7 @@ dependencies = [
 ]
 
 [project.optional-dependencies]
-dev = ["pytest>=8", "ruff>=0.6"]
+dev = ["pytest>=8", "ruff>=0.6", "mypy>=1.13", "types-requests"]
 
 [build-system]
 requires = ["setuptools>=68"]
@@ -31,7 +31,38 @@ line-length = 100
 target-version = "py311"
 
 [tool.ruff.lint]
-select = ["E", "F", "I", "UP", "B"]
+# E, F: errors. I: import order. UP: current syntax. B: likely bugs.
+# RUF: unused noqa comments and other slips. SIM, C4, PIE, RET: simpler
+# equivalents. PERF: needless work in loops.
+select = ["E", "F", "I", "UP", "B", "RUF", "SIM", "C4", "PIE", "RET", "PERF"]
+ignore = [
+  "RUF001", "RUF002", "RUF003",  # the pipeline writes real dashes and multiplication signs
+  "RET504",                      # a named result before return is often clearer
+  "SIM108",                      # an if statement can read better than a ternary
+  "PERF401",                     # a loop that appends can read better than one long comprehension
+]
 
 [tool.ruff.lint.per-file-ignores]
 "scripts/make_fixtures.py" = ["E501"]
+
+[tool.mypy]
+python_version = "3.13"
+files = ["pipeline", "scripts"]
+warn_unused_ignores = true
+warn_redundant_casts = true
+warn_unreachable = true
+no_implicit_optional = true
+check_untyped_defs = true
+
+# Libraries that ship no type information.
+[[tool.mypy.overrides]]
+module = ["pyarrow", "pyarrow.*", "google.transit", "google.transit.*", "google.protobuf.*"]
+ignore_missing_imports = true
+
+# The modules everything else stands on are fully typed: every function says
+# what it takes and returns.
+[[tool.mypy.overrides]]
+module = ["pipeline.common", "pipeline.stats", "pipeline.geo", "pipeline.records", "pipeline.config", "pipeline.gtfs.zipread", "pipeline.gtfs.tables", "pipeline.gtfs.holidays"]
+disallow_untyped_defs = true
+disallow_incomplete_defs = true
+disallow_any_generics = true

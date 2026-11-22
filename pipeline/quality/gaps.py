@@ -129,7 +129,7 @@ def firth_logit(
         p = 1 / (1 + np.exp(-(X @ b)))
         p = np.clip(p, 1e-12, 1 - 1e-12)
         info = X.T @ (X * (p * (1 - p))[:, None])
-        sign, logdet = np.linalg.slogdet(info)
+        _sign, logdet = np.linalg.slogdet(info)
         ll = float(np.sum(y * np.log(p) + (1 - y) * np.log(1 - p)) + 0.5 * logdet)
         return ll, p, info
 
@@ -201,9 +201,9 @@ def design(rows: list[dict[str, Any]]) -> tuple[np.ndarray, np.ndarray, list[str
     routes = Counter(route_of[r["route_id"]] for r in rows)
     ref_route = max(routes, key=lambda k: (routes[k], k != "other", k))
     bands = Counter(hour_band(r["start_hour"]) for r in rows)
-    ref_band = REFERENCE_BAND if REFERENCE_BAND in bands else max(bands, key=bands.get)
+    ref_band = REFERENCE_BAND if REFERENCE_BAND in bands else max(bands, key=lambda k: bands[k])
     dtypes = Counter(r["day_type"] for r in rows)
-    ref_dtype = "weekday" if "weekday" in dtypes else max(dtypes, key=dtypes.get)
+    ref_dtype = "weekday" if "weekday" in dtypes else max(dtypes, key=lambda k: dtypes[k])
     busy = np.array([r["scheduled_in_service"] for r in rows], dtype=float)
     busy_mean = float(busy.mean())
 
@@ -253,7 +253,7 @@ def model(rows: list[dict[str, Any]]) -> dict[str, Any]:
     return {
         "method": "logistic regression, Firth penalised likelihood",
         "outcome": "trip had no position report carrying its trip_id",
-        "trips": int(len(y)),
+        "trips": len(y),
         "unobserved": int(y.sum()),
         "converged": bool(full["converged"] and null["converged"]),
         "reference_levels": refs,

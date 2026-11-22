@@ -34,8 +34,8 @@ from google.protobuf.message import DecodeError
 
 sys.path.insert(0, str(Path(__file__).resolve().parent.parent))
 
-from pipeline.gtfs.zipread import read_zip  # noqa: E402
-from pipeline.parse.realtime import ParsedFeed, field_population, parse_feed  # noqa: E402
+from pipeline.gtfs.zipread import read_zip
+from pipeline.parse.realtime import ParsedFeed, field_population, parse_feed
 
 HOST = "https://passio3.com"
 AGENCY = "islandtransit"
@@ -71,7 +71,9 @@ def pct(x: float) -> str:
 def load_static(base: str) -> tuple[dict[str, list[dict]], list[str]]:
     """Download the Passio static GTFS; return its tables and any defects."""
     resp, err = get(f"{base}/google_transit.zip", timeout=60)
-    if resp is None or resp.status_code != 200:
+    if resp is None:
+        return {}, [err or "no response"]
+    if resp.status_code != 200:
         return {}, [err or f"HTTP {resp.status_code}"]
     z = read_zip(resp.content)
     tables = {

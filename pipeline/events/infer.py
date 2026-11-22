@@ -71,7 +71,7 @@ class StaticData:
     trips: dict[str, Row]
     stop_times: dict[str, list[Row]]  # trip id -> rows in stop order
     stops: dict[str, Row]
-    _placed: dict[tuple, list[float]] = field(default_factory=dict)
+    _placed: dict[tuple, list[Placement]] = field(default_factory=dict)
 
     @classmethod
     def load(cls, contents: ZipContents) -> StaticData:
@@ -166,8 +166,8 @@ def order_stops(cands: list[list[tuple[float, float]]]) -> list[Placement]:
     j = min(range(len(prev)), key=lambda k: prev[k][0])
     out: list[Placement] = []
     for row in reversed(rows):
-        _, along, back, off = row[j]
-        out.append((along, off) if off is not None else (None, None))
+        _, at, back, offset = row[j]
+        out.append((at, offset) if offset is not None else (None, None))
         j = back
     return out[::-1]
 

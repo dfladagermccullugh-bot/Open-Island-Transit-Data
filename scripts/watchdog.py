@@ -39,12 +39,12 @@ from typing import Any
 
 sys.path.insert(0, str(Path(__file__).resolve().parent.parent))
 
-import requests  # noqa: E402
+import requests
 
-from pipeline.archive.store import Collector  # noqa: E402
-from pipeline.config import PACIFIC, REPO, USER_AGENT  # noqa: E402
-from pipeline.gtfs.holidays import last_listed, service_expected  # noqa: E402
-from pipeline.stats import median  # noqa: E402
+from pipeline.archive.store import Collector
+from pipeline.config import PACIFIC, REPO, USER_AGENT
+from pipeline.gtfs.holidays import last_listed, service_expected
+from pipeline.stats import median
 
 MAX_AGE_S = {"vehiclePositions": 600, "tripUpdates": 600, "serviceAlerts": 1800}
 DATABASE_WARN_BYTES = 300 * 1024 * 1024  # free tier allows 500 MB
@@ -88,7 +88,7 @@ def feed_problems(status: dict[str, Row]) -> list[str]:
     out = []
     for feed, limit in MAX_AGE_S.items():
         row = status.get(feed)
-        age = row and row["last_ok_age_s"]
+        age = row["last_ok_age_s"] if row else None
         if age is None:
             out.append(f"{feed}: no successful fetch in the last 2 days")
         elif age > limit:
@@ -222,7 +222,7 @@ def data_problems(
         recent = [c for r in earlier[-MEDIAN_DAYS:] if (c := _num(r, "trip_coverage")) is not None]
         if coverage is not None and len(recent) >= MIN_HISTORY:
             usual = median(recent)
-            if coverage < usual - COVERAGE_DROP:
+            if usual is not None and coverage < usual - COVERAGE_DROP:
                 out.append(
                     f"{day}: trip coverage was {coverage:.1%}, against a median of {usual:.1%} "
                     f"over the {len(recent)} service days before"

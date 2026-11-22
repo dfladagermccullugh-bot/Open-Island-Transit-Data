@@ -124,7 +124,7 @@ def build(passio: ZipContents, timepoints: list[Row]) -> dict[str, Any]:
             round(min(lat_all), 4),
             round(max(lon_all), 4),
             round(max(lat_all), 4),
-        ]  # fmt: skip
+        ]
         if lat_all
         else None
     )

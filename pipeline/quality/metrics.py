@@ -12,6 +12,7 @@ Metrics that need inferred stop events or trip shapes are in
 
 from __future__ import annotations
 
+import itertools
 import math
 from collections import Counter, defaultdict
 from collections.abc import Container, Iterable
@@ -156,7 +157,7 @@ def refresh(runs: Iterable[Row], poll_s: int = SLOT_SECONDS["tripUpdates"]) -> d
     for mine in by_trip.values():
         mine.sort(key=lambda r: r["first_requested_at"])
         repeats += sum(r["times_seen"] - 1 for r in mine)
-        for a, b in zip(mine, mine[1:], strict=False):
+        for a, b in itertools.pairwise(mine):
             gap = (b["first_requested_at"] - a["last_requested_at"]).total_seconds()
             if gap > 1.5 * poll_s:
                 continue
@@ -254,7 +255,9 @@ def _reports_by_vehicle(vehicles: list[Row]) -> dict[str, list[Row]]:
     return by
 
 
-def reports_in_window(vehicles: list[Row], trips: list[Trip]) -> dict[str, dict[str, set]]:
+def reports_in_window(
+    vehicles: list[Row], trips: list[Trip]
+) -> dict[str, dict[str, set[datetime]]]:
     """Scheduled trip id -> vehicle -> vehicle timestamps of the reports that
     carry the trip's id within ``WINDOW_MIN`` minutes of its schedule. A bus
     can show a trip id hours before or after the trip (the same ids run
@@ -277,10 +280,12 @@ def trip_gaps(vehicles: list[Row], trips: list[Trip]) -> dict[str, Any]:
     the trip, inside the trip's window (``reports_in_window``)."""
     longest, gap_share = [], []
     for by_vehicle in reports_in_window(vehicles, trips).values():
-        s = sorted(max(by_vehicle.values(), key=len))
+        # The vehicle that sent the most reports for the trip.
+        most = max(by_vehicle.values(), key=len)
+        s = sorted(most)
         if len(s) < 2:
             continue
-        steps = [(b - a).total_seconds() for a, b in zip(s, s[1:], strict=False)]
+        steps = [(b - a).total_seconds() for a, b in itertools.pairwise(s)]
         span = (s[-1] - s[0]).total_seconds()
         longest.append(max(steps))
         gap_share.append(sum(x for x in steps if x > GAP_SECONDS) / span if span else 0.0)

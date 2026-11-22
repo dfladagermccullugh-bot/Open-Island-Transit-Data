@@ -82,7 +82,7 @@ def raw_digest(rows: list[Row]) -> str:
         for r in sorted(rows, key=lambda r: r["fetch_id"])
         if r.get("body") is not None
     ]
-    return hashlib.md5(",".join(parts).encode()).hexdigest()  # noqa: S324 (not for security)
+    return hashlib.md5(",".join(parts).encode()).hexdigest()
 
 
 def _ts(value: str | None) -> datetime | None:

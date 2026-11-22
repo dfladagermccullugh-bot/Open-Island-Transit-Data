@@ -19,6 +19,7 @@ measured for speed: that distance was not driven.
 
 from __future__ import annotations
 
+import itertools
 from collections import Counter, defaultdict
 from datetime import datetime
 from functools import partial
@@ -49,15 +50,15 @@ def feed_agreement(events: list[Row], vehicles: list[Row]) -> dict[str, Any]:
         series[(v["trip_id"], v["vehicle_key"])].append(
             (v["vehicle_ts"], v["current_stop_sequence"])
         )
-    for k, s in series.items():
-        series[k] = sorted(set(s))
+    for key, unsorted in series.items():
+        series[key] = sorted(set(unsorted))
 
     lead: list[float] = []  # t_next minus inferred departure
     inside = within = 0
     backwards = 0
     by_route: dict[str, Counter[str]] = defaultdict(Counter)
-    for s in series.values():
-        backwards += sum(b[1] < a[1] for a, b in zip(s, s[1:], strict=False))
+    for reports in series.values():
+        backwards += sum(b[1] < a[1] for a, b in itertools.pairwise(reports))
     for e in events:
         dep = e["departure_time"]
         if dep is None or e["is_first_stop"] or e["is_last_stop"]:
@@ -118,7 +119,7 @@ def travel_times(events: list[Row]) -> dict[str, Any]:
                 if t is not None and r["stop_distance_m"] is not None:
                     times.append((t, r["stop_distance_m"] + offset, skip, r, kind))
                     skip = False
-        for (t0, d0, _, r0, k0), (t1, d1, crossed, r1, k1) in zip(times, times[1:], strict=False):
+        for (t0, d0, _, r0, k0), (t1, d1, crossed, r1, k1) in itertools.pairwise(times):
             segments += 1
             dt = (t1 - t0).total_seconds()
             if dt < 0:

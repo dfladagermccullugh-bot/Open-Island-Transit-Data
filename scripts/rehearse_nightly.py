@@ -35,8 +35,8 @@ from pathlib import Path
 
 sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
 
-import pipeline.archive.build as archive_build  # noqa: E402
-import pipeline.release as rel  # noqa: E402
+import pipeline.archive.build as archive_build
+import pipeline.release as rel
 
 RAW_KEPT = ("manifest/raw.json", "README.md")
 

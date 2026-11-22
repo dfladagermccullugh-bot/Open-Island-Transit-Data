@@ -8,6 +8,7 @@ the distortion is well under 0.1%, far below GPS error.
 from __future__ import annotations
 
 import math
+from collections.abc import Sequence
 from dataclasses import dataclass
 
 import numpy as np
@@ -18,7 +19,9 @@ _KX = EARTH_RADIUS_M * math.cos(math.radians(ORIGIN_LAT)) * math.pi / 180
 _KY = EARTH_RADIUS_M * math.pi / 180
 
 
-def to_xy(lat: np.ndarray | float, lon: np.ndarray | float) -> tuple:
+def to_xy(
+    lat: np.ndarray | Sequence[float] | float, lon: np.ndarray | Sequence[float] | float
+) -> tuple[np.ndarray, np.ndarray]:
     return np.asarray(lon, dtype=float) * _KX, np.asarray(lat, dtype=float) * _KY
 
 

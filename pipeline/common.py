@@ -6,12 +6,13 @@ from __future__ import annotations
 import hashlib
 import json
 import os
-from collections.abc import Container, Iterable
+from collections.abc import Container, Iterable, Mapping
 from datetime import UTC, date, datetime
 from pathlib import Path
 from typing import Any
 
 from pipeline.config import REPO
+from pipeline.records import FileEntry, Manifest
 
 # One row of a table read from a file or about to be written to one.
 Row = dict[str, Any]
@@ -47,12 +48,12 @@ def sha256_file(path: Path) -> str:
     return h.hexdigest()
 
 
-def file_entry(path: Path) -> dict[str, Any]:
+def file_entry(path: Path) -> FileEntry:
     """The manifest record of one published file."""
     return {"name": path.name, "bytes": path.stat().st_size, "sha256": sha256_file(path)}
 
 
-def sha_of(entry: dict[str, Any], name: str) -> str:
+def sha_of(entry: Mapping[str, Any], name: str) -> str:
     """The recorded SHA-256 of file ``name`` in a manifest entry."""
     return next(f["sha256"] for f in entry["files"] if f["name"] == name)
 
@@ -61,12 +62,12 @@ def load_json(path: Path, default: Any = None) -> Any:
     return json.loads(path.read_text(encoding="utf-8")) if path.exists() else default
 
 
-def empty_manifest() -> dict[str, Any]:
+def empty_manifest() -> Manifest:
     """A manifest before its first day."""
     return {"version": 1, "repo": REPO, "days": {}}
 
 
-def save_manifest(path: Path, manifest: dict[str, Any]) -> None:
+def save_manifest(path: Path, manifest: Manifest | dict[str, Any]) -> None:
     """Write a manifest with its days in date order."""
     path.parent.mkdir(parents=True, exist_ok=True)
     manifest["days"] = dict(sorted(manifest["days"].items()))

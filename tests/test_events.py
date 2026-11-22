@@ -187,7 +187,7 @@ def test_summarize_by_route_stop_keeps_deviations():
 
 def test_drop_retraced_collapses_forth_back_forth():
     lons = [lon_at(d) for d in (0, 500, 0, 500, 1000, 500, 1000, 1500)]
-    lats, out, removed = geometry.drop_retraced([LAT] * len(lons), lons)
+    _lats, out, removed = geometry.drop_retraced([LAT] * len(lons), lons)
     assert out == pytest.approx([lon_at(d) for d in (0, 500, 1000, 1500)])
     assert removed == pytest.approx(2000, abs=1)
     s = Shape.from_latlon([LAT] * len(lons), lons)

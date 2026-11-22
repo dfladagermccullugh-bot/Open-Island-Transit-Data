@@ -29,7 +29,14 @@ jobs:
       - run: pip install -e ".[dev]" -c constraints.txt
       - run: ruff check .
       - run: ruff format --check .
+      - run: mypy
       - run: pytest -q
+      # The shell scripts and the workflow files are code too.
+      - run: shellcheck scripts/*.sh
+      - name: Check the workflow files
+        run: |
+          bash <(curl -fsSL https://raw.githubusercontent.com/rhysd/actionlint/914e7df21a07ef503a81201c76d2b11c789d3fca/scripts/download-actionlint.bash) 1.7.12
+          ./actionlint -color
 
   collector:
     runs-on: ubuntu-latest

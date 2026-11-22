@@ -18,8 +18,8 @@ from pathlib import Path
 
 sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
 
-from pipeline.gtfs import crosswalk, timepoints  # noqa: E402
-from pipeline.gtfs.zipread import read_zip  # noqa: E402
+from pipeline.gtfs import crosswalk, timepoints
+from pipeline.gtfs.zipread import read_zip
 
 
 def main() -> int:

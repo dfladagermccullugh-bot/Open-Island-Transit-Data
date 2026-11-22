@@ -212,9 +212,12 @@ def write_timepoints(
         effective = timepoints.reference_for(date.fromisoformat(day), reference_dir)
         if effective and effective not in ids:
             ids[effective] = _reference_id(effective, reference_dir)
-        key = f"{pv}__{ids[effective]}" if pv and effective else None
+        if not (pv and effective):
+            pins["timepoints"] = None
+            continue
+        key = f"{pv}__{ids[effective]}"
         pins["timepoints"] = key
-        if not key or (out / key / "summary.json").exists():
+        if (out / key / "summary.json").exists():
             continue
         built = timepoints.build(_zip(registry, pv, raw_dir, repo), effective, reference_dir)
         folder = out / key
@@ -254,11 +257,12 @@ def write_crosswalks(registry: dict[str, Any], out: Path, raw_dir: Path, repo: s
     for pins in registry["days"].values():
         pv = (pins.get("passio") or {}).get("version")
         tv = (pins.get("trillium") or {}).get("version")
-        pins["crosswalk"] = f"{pv}__{tv}" if pv and tv else None
-        done = out / str(pins["crosswalk"]) / "summary.json"
-        if not pins["crosswalk"] or _made_by(
-            done, "crosswalk_version", crosswalk.CROSSWALK_VERSION, seen
-        ):
+        if not (pv and tv):
+            pins["crosswalk"] = None
+            continue
+        pins["crosswalk"] = f"{pv}__{tv}"
+        done = out / pins["crosswalk"] / "summary.json"
+        if _made_by(done, "crosswalk_version", crosswalk.CROSSWALK_VERSION, seen):
             continue
         passio, trillium = (_zip(registry, v, raw_dir, repo) for v in (pv, tv))
         built = crosswalk.build(passio, trillium)

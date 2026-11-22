@@ -40,7 +40,7 @@ def printed(route, direction, *names):
             "direction": direction,
             "order": str(i),
             "printed_stop": n,
-        }  # fmt: skip
+        }
         for i, n in enumerate(names, 1)
     ]
 
@@ -58,7 +58,7 @@ def test_name_matching_and_direction():
             "Harbor Station at SE Bayshore Dr",
             "SW Erie St at Walmart",
             "SR 525 at Greenbank",
-        ),  # fmt: skip
+        ),
         {},
     )
     assert ids(rows, "Harbor Station at SE Bayshore Dr") == ["A1"]
