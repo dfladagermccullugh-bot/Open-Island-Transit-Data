@@ -197,6 +197,96 @@
    "release_tag": "raw-2026-11",
    "archived_at": "2026-11-21T08:40:33+00:00",
    "code_sha": "0617dacf6a1a882fe225fe1fd344ebeaaa2c9c4c"
+  },
+  "2026-11-21": {
+   "service_date": "2026-11-21",
+   "fetch_rows": 8918,
+   "raw_rows": 8917,
+   "digest": "89ed31397d145ccb2d85bae3416200e5",
+   "ok_rows": 8917,
+   "first_fetch_id": 12850,
+   "last_fetch_id": 21767,
+   "static": [
+    {
+     "static_fetch_id": 5,
+     "source": "passio",
+     "url": "https://passio3.com/islandtransit/passioTransit/gtfs/google_transit.zip",
+     "requested_at": "2026-11-21T10:15:00.218+00:00",
+     "responded_at": "2026-11-21T10:15:00.87+00:00",
+     "latency_ms": 652,
+     "http_status": 200,
+     "bytes": 523673,
+     "sha256": "2e2b2522ebd7220165dedf918b3d5c0aeab6445d73ad69d4f9180fda9542e0fb",
+     "zip_has_directory": true,
+     "files": [
+      "agency.txt",
+      "feed_info.txt",
+      "stops.txt",
+      "routes.txt",
+      "trips.txt",
+      "stop_times.txt",
+      "shapes.txt",
+      "calendar.txt"
+     ],
+     "error_class": null,
+     "error_msg": null,
+     "collector_version": "collect/0.2.0",
+     "logged_at": "2026-11-21T10:15:01.107548+00:00",
+     "file": "static-2026-11-21-passio-5.zip"
+    },
+    {
+     "static_fetch_id": 6,
+     "source": "passio",
+     "url": "https://passio3.com/islandtransit/passioTransit/gtfs/google_transit.zip",
+     "requested_at": "2026-11-21T16:30:00.173+00:00",
+     "responded_at": "2026-11-21T16:30:04.096+00:00",
+     "latency_ms": 3923,
+     "http_status": 200,
+     "bytes": 523673,
+     "sha256": "ae950360eac5c8c1da327e44a749ee68b9fa12dd1db192c141b8a8c5621f2f97",
+     "zip_has_directory": true,
+     "files": [
+      "agency.txt",
+      "feed_info.txt",
+      "stops.txt",
+      "routes.txt",
+      "trips.txt",
+      "stop_times.txt",
+      "shapes.txt",
+      "calendar.txt"
+     ],
+     "error_class": null,
+     "error_msg": null,
+     "collector_version": "collect/0.2.0",
+     "logged_at": "2026-11-21T16:30:04.321613+00:00",
+     "file": "static-2026-11-21-passio-6.zip"
+    }
+   ],
+   "files": [
+    {
+     "name": "raw-2026-11-21.parquet",
+     "bytes": 1390437,
+     "sha256": "252a12d179f5480b8c19ee898e77a2661fb79e1d26f62f3ddf2461991917f3d3"
+    },
+    {
+     "name": "fetch-log-2026-11-21.csv",
+     "bytes": 2525245,
+     "sha256": "d9b040e528a477440c91cc68af8d190cfafe5f67935fcdd333abddafe82e1d1a"
+    },
+    {
+     "name": "static-2026-11-21-passio-5.zip",
+     "bytes": 523673,
+     "sha256": "2e2b2522ebd7220165dedf918b3d5c0aeab6445d73ad69d4f9180fda9542e0fb"
+    },
+    {
+     "name": "static-2026-11-21-passio-6.zip",
+     "bytes": 523673,
+     "sha256": "ae950360eac5c8c1da327e44a749ee68b9fa12dd1db192c141b8a8c5621f2f97"
+    }
+   ],
+   "release_tag": "raw-2026-11",
+   "archived_at": "2026-11-22T08:40:32+00:00",
+   "code_sha": "105ddf4515323b976b3a88781c7e783ffbabaf16"
   }
  }
 }
