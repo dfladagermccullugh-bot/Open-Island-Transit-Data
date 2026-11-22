@@ -129,7 +129,7 @@ Open checks from this pass:
 - **2026-11-27**: the holiday row in the quality page's "All days" table should read "No service (holiday)" (this was the bug; a browser test covers both `False` and `false`).
 - **2026-12-01**: first monthly report now uses `monthly/0.2.0`; besides the checks in step 8, confirm a later rebuild of a November day does not re-upload the checksum files.
 - The `Examples` workflow installs R with apt (`r-cran-arrow` may be missing on the runner; the R example is then skipped, only Python and DuckDB are required).
-- Not done from the plan: splitting the long functions (`monthly.build`, `quality compute`, `routes.write_routes`, `verify_feed.main`).
+- Long functions: `routes.write_routes` and `monthly.build` were split into named parts (byte-neutral; golden test and replay). `quality.__main__.compute` (it gathers one day's inputs) and `scripts/verify_feed.main` (a manual check) were left whole.
 
 ## Next steps, in order
 

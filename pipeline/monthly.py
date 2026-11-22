@@ -174,45 +174,10 @@ def sums_text(files: list[dict[str, Any]]) -> str:
     return "".join(f"{f['sha256']}  {f['name']}\n" for f in files)
 
 
-def build(data: Path, month: str, today: date | None = None) -> dict[str, Any]:
-    manifests = _manifests(data)
-    raw = manifests["raw"]
-    days = month_days(month)
-    archived = sorted(d for d in raw if d.startswith(month))
-    first_collected = min(raw) if raw else None
-    expected = [
-        d.isoformat()
-        for d in days
-        if first_collected and d.isoformat() >= first_collected and (today is None or d < today)
-    ]
-    quality = {d: _load(data / "quality" / "days" / f"{d}.json") for d in archived}
-    quality = {d: q for d, q in quality.items() if q}
-    ontime = {d: _load(data / "ontime" / "days" / f"{d}.json") for d in archived}
-    ontime = {d: o for d, o in ontime.items() if o}
-
-    # Days with no service stay in the collection figures (the collector ran)
-    # but not in coverage or on-time figures, where they would read as a day
-    # of lost buses.
-    no_service = sorted(
-        d for d, q in quality.items() if not (q.get("schedule") or {}).get("service_expected", True)
-    )
-    all_quality = quality
-    quality = {d: q for d, q in quality.items() if d not in no_service}
-    ontime_all = ontime
-    ontime = {d: o for d, o in ontime.items() if d not in no_service}
-
-    partial = [
-        {
-            "service_date": d,
-            "observed_from": q["paradata"]["observed_from"],
-            "scheduled_trips_ended_before_collection": q["scheduled_service"][
-                "trips_ended_before_collection"
-            ],
-        }
-        for d, q in sorted(quality.items())
-        if q["scheduled_service"].get("trips_ended_before_collection")
-    ]
-
+def _collection(all_quality: dict[str, Any]) -> tuple[dict[str, Any], set[str]]:
+    """For each feed, the fetch slots expected and successful over every
+    archived day of the month, holidays included (the collector runs on
+    them too), and the collector versions that made them."""
     collection = {}
     for feed in FEEDS:
         exp = sum(q["paradata"][feed]["slots_expected"] for q in all_quality.values())
@@ -234,7 +199,11 @@ def build(data: Path, month: str, today: date | None = None) -> dict[str, Any]:
     for q in all_quality.values():
         for feed in FEEDS:
             versions.update(q["paradata"][feed].get("collector_versions", []))
+    return collection, versions
 
+
+def _coverage(quality: dict[str, Any]) -> dict[str, Any]:
+    """Scheduled trips and the trips seen, summed over the days with service."""
     sched = sum(q["coverage"]["scheduled_trips"] for q in quality.values())
     seen = sum(q["coverage"]["observed_scheduled_trips"] for q in quality.values())
     never = sorted({r for q in quality.values() for r in q["coverage"]["routes_never_reporting"]})
@@ -251,7 +220,12 @@ def build(data: Path, month: str, today: date | None = None) -> dict[str, Any]:
         ),
         "routes_never_reporting_on_some_day": never,
     }
+    return coverage
 
+
+def _ontime(ontime: dict[str, Any]) -> dict[str, Any]:
+    """Counts of timepoint events summed over the days with service, the
+    shares recomputed from those sums, overall and by route."""
     totals = {k: sum(o[k] for o in ontime.values()) for k in ONTIME_COUNTS}
     routes: dict[str, dict[str, Any]] = {}
     names: dict[str, dict[str, str]] = {}
@@ -296,15 +270,23 @@ def build(data: Path, month: str, today: date | None = None) -> dict[str, Any]:
         ),
         "by_route": dict(sorted(by_route.items(), key=lambda kv: _route_key(kv[1], kv[0]))),
     }
+    return ontime_out
 
-    rows = [r for r in _daily_rows(data, month) if r["service_date"] not in no_service]
+
+def _headline(rows: list[dict[str, str]]) -> dict[str, Any]:
+    """The lowest, middle and highest value over the month of every numeric
+    column of ``quality/daily.csv``."""
     headline = {}
     for col in rows[0].keys() if rows else []:
         numbers = [(r["service_date"], _number(r[col])) for r in rows]
         values = [(d, v) for d, v in numbers if v is not None]
         if col != "service_date" and values:
             headline[col] = _range(values)
+    return headline
 
+
+def _releases(data: Path, month: str) -> dict[str, Any]:
+    """The files in each of the month's Releases and its checksum file."""
     releases = {}
     for tag, files in checksums(data, month).items():
         text = sums_text(files)
@@ -315,6 +297,54 @@ def build(data: Path, month: str, today: date | None = None) -> dict[str, Any]:
             "checksums_bytes": len(text.encode()),
             "checksums_sha256": hashlib.sha256(text.encode()).hexdigest(),
         }
+    return releases
+
+
+def build(data: Path, month: str, today: date | None = None) -> dict[str, Any]:
+    manifests = _manifests(data)
+    raw = manifests["raw"]
+    days = month_days(month)
+    archived = sorted(d for d in raw if d.startswith(month))
+    first_collected = min(raw) if raw else None
+    expected = [
+        d.isoformat()
+        for d in days
+        if first_collected and d.isoformat() >= first_collected and (today is None or d < today)
+    ]
+    quality = {d: _load(data / "quality" / "days" / f"{d}.json") for d in archived}
+    quality = {d: q for d, q in quality.items() if q}
+    ontime = {d: _load(data / "ontime" / "days" / f"{d}.json") for d in archived}
+    ontime = {d: o for d, o in ontime.items() if o}
+
+    # Days with no service stay in the collection figures (the collector ran)
+    # but not in coverage or on-time figures, where they would read as a day
+    # of lost buses.
+    no_service = sorted(
+        d for d, q in quality.items() if not (q.get("schedule") or {}).get("service_expected", True)
+    )
+    all_quality = quality
+    quality = {d: q for d, q in quality.items() if d not in no_service}
+    ontime_all = ontime
+    ontime = {d: o for d, o in ontime.items() if d not in no_service}
+
+    partial = [
+        {
+            "service_date": d,
+            "observed_from": q["paradata"]["observed_from"],
+            "scheduled_trips_ended_before_collection": q["scheduled_service"][
+                "trips_ended_before_collection"
+            ],
+        }
+        for d, q in sorted(quality.items())
+        if q["scheduled_service"].get("trips_ended_before_collection")
+    ]
+
+    collection, versions = _collection(all_quality)
+    coverage = _coverage(quality)
+    ontime_out = _ontime(ontime)
+    rows = [r for r in _daily_rows(data, month) if r["service_date"] not in no_service]
+    headline = _headline(rows)
+    releases = _releases(data, month)
 
     def _versions(source: dict[str, Any], key: str) -> list[str]:
         return sorted({v[key] for v in source.values() if v.get(key)})
