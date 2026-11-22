@@ -1,0 +1,1755 @@
+{
+ "profile": "data-package",
+ "name": "open-island-transit-data",
+ "title": "Open Island Transit Data",
+ "description": "Island Transit's (Whidbey and Camano Islands, Washington) GTFS-Realtime feeds, saved every 20 seconds since November 19, 2026, with daily measures of the feed's quality and on-time figures inferred from vehicle positions.",
+ "homepage": "https://dfladagermccullugh-bot.github.io/Open-Island-Transit-Data/",
+ "repository": "https://github.com/dfladagermccullugh-bot/Open-Island-Transit-Data",
+ "version": "dictionary/0.1.0",
+ "dataFormat": "format/0.2.0",
+ "licenses": [
+  {
+   "name": "see-LICENSE-DATA",
+   "title": "Terms for the archived data",
+   "path": "https://github.com/dfladagermccullugh-bot/Open-Island-Transit-Data/blob/main/LICENSE-DATA.md"
+  }
+ ],
+ "documentation": {
+  "codebook": "https://dfladagermccullugh-bot.github.io/Open-Island-Transit-Data/codebook.html",
+  "methods": "https://dfladagermccullugh-bot.github.io/Open-Island-Transit-Data/methods.html"
+ },
+ "conventions": {
+  "timestamps": "UTC",
+  "serviceDay": "a calendar date in America/Los_Angeles",
+  "pacificFields": "hours of the day (by_hour, start_hour), day_type and passio_time",
+  "shares": "fractions from 0 to 1",
+  "missing": "an empty cell in CSV files, null in Parquet and JSON files"
+ },
+ "resources": [
+  {
+   "name": "quality-daily",
+   "title": "Daily feed-quality figures",
+   "path": "quality/daily.csv",
+   "format": "csv",
+   "mediatype": "text/csv",
+   "oneRowIs": "one service day",
+   "schema": {
+    "fields": [
+     {
+      "name": "service_date",
+      "type": "date",
+      "description": "The service day"
+     },
+     {
+      "name": "service_expected",
+      "type": "boolean",
+      "description": "False on a holiday with no service (`reference/no-service-days.csv`)"
+     },
+     {
+      "name": "passio_version",
+      "type": "string",
+      "description": "Static version the day was measured against"
+     },
+     {
+      "name": "scheduled_trips",
+      "type": "integer",
+      "description": "Passio trips scheduled that day (on the first day, only those still running when collection began)"
+     },
+     {
+      "name": "trip_coverage",
+      "type": "number",
+      "description": "Share of those trips with at least one vehicle position within 30 minutes of the trip's schedule",
+      "unit": "fraction from 0 to 1"
+     },
+     {
+      "name": "vehicle_uptime",
+      "type": "number",
+      "description": "Share of 20-second slots with a successful fetch. Slots are centered on the moment the scheduler usually fires",
+      "unit": "fraction from 0 to 1"
+     },
+     {
+      "name": "trip_update_uptime",
+      "type": "number",
+      "description": "Share of 20-second slots with a successful fetch. Slots are centered on the moment the scheduler usually fires",
+      "unit": "fraction from 0 to 1"
+     },
+     {
+      "name": "vehicle_fetch_failure_rate",
+      "type": "number",
+      "description": "Share of vehicle-position fetches that failed",
+      "unit": "fraction from 0 to 1"
+     },
+     {
+      "name": "empty_in_service_rate",
+      "type": "number",
+      "description": "Successful vehicle-position fetches with no vehicles, while a trip was scheduled",
+      "unit": "fraction from 0 to 1"
+     },
+     {
+      "name": "stale_in_service_rate",
+      "type": "number",
+      "description": "Successful vehicle-position fetches that listed vehicles but whose newest vehicle timestamp was over 120 s old, while a trip was scheduled. An empty fetch is counted as empty, not stale",
+      "unit": "fraction from 0 to 1"
+     },
+     {
+      "name": "longest_gap_s_median",
+      "type": "number",
+      "description": "Median over observed trips of the longest interval between new position reports from the trip's main vehicle, within 30 minutes of its schedule",
+      "unit": "seconds"
+     },
+     {
+      "name": "position_age_s_median",
+      "type": "number",
+      "description": "Time from the vehicle's timestamp to the first fetch that returned it; each position counted once",
+      "unit": "seconds"
+     },
+     {
+      "name": "position_age_s_p95",
+      "type": "number",
+      "description": "Time from the vehicle's timestamp to the first fetch that returned it; each position counted once",
+      "unit": "seconds"
+     },
+     {
+      "name": "impossible_jumps",
+      "type": "integer",
+      "description": "Consecutive reports of one vehicle implying more than 130 km/h"
+     },
+     {
+      "name": "timepoint_coverage",
+      "type": "number",
+      "description": "Scheduled timepoint events with an inferred time",
+      "unit": "fraction from 0 to 1"
+     },
+     {
+      "name": "stop_coverage",
+      "type": "number",
+      "description": "The same at every stop",
+      "unit": "fraction from 0 to 1"
+     },
+     {
+      "name": "off_shape_share",
+      "type": "number",
+      "description": "Position reports more than 100 m from the trip's shape, divided by the reports tracked along it",
+      "unit": "fraction from 0 to 1"
+     },
+     {
+      "name": "prediction_mae_s_5min",
+      "type": "number",
+      "description": "Mean absolute error of arrival predictions published 5 minutes ahead, seconds",
+      "unit": "seconds"
+     },
+     {
+      "name": "prediction_median_abs_s_5min",
+      "type": "number",
+      "description": "The typical miss of those predictions: the median absolute error, seconds",
+      "unit": "seconds"
+     },
+     {
+      "name": "prediction_over_30min_share_5min",
+      "type": "number",
+      "description": "Share of those predictions off by more than 30 minutes",
+      "unit": "fraction from 0 to 1"
+     },
+     {
+      "name": "prediction_within_60s_5min",
+      "type": "number",
+      "description": "Share of those predictions within 60 s",
+      "unit": "fraction from 0 to 1"
+     },
+     {
+      "name": "jitter_m_p95",
+      "type": "number",
+      "description": "95th percentile of position spread while a bus stands at a terminal, meters",
+      "unit": "meters"
+     },
+     {
+      "name": "unassignable_trip_ids",
+      "type": "integer",
+      "description": "Trip ids reported that are not in the static version or not scheduled that day"
+     },
+     {
+      "name": "vehicles_missing_vs_30d",
+      "type": "integer",
+      "description": "Vehicles seen in the previous 30 days (with quality files) but not this day"
+     },
+     {
+      "name": "trip_id_match_rate",
+      "type": "number",
+      "description": "Positions whose `trip_id` exists in the static version",
+      "unit": "fraction from 0 to 1"
+     },
+     {
+      "name": "over_coverage_share",
+      "type": "number",
+      "description": "Positions with no trip, an unknown trip, or a trip not scheduled that day",
+      "unit": "fraction from 0 to 1"
+     },
+     {
+      "name": "vehicle_latency_ms_median",
+      "type": "number",
+      "description": "Median response time of the vehicle-position feed",
+      "unit": "milliseconds"
+     },
+     {
+      "name": "vehicles_seen",
+      "type": "integer",
+      "description": "Distinct vehicles reporting"
+     },
+     {
+      "name": "timetable_reference",
+      "type": "date",
+      "description": "Effective date of the printed timetable used for timepoints"
+     },
+     {
+      "name": "timepoint_names_resolved_share",
+      "type": "number",
+      "description": "Printed timepoint names tied to a Passio stop",
+      "unit": "fraction from 0 to 1"
+     },
+     {
+      "name": "canceled_trips",
+      "type": "integer",
+      "description": "Scheduled trips the feed marked as canceled, by a flag on the trip or by a `NO_SERVICE` alert naming it"
+     },
+     {
+      "name": "trip_coverage_excluding_canceled",
+      "type": "number",
+      "description": "Trip coverage with the canceled trips that no bus reported taken out of the scheduled trips. Equal to `trip_coverage` when nothing was canceled",
+      "unit": "fraction from 0 to 1"
+     },
+     {
+      "name": "trip_update_changed_share",
+      "type": "number",
+      "description": "Of the pairs of consecutive fetches that both listed a trip, the share in which the trip's update had changed",
+      "unit": "fraction from 0 to 1"
+     },
+     {
+      "name": "trip_update_interval_s_median",
+      "type": "number",
+      "description": "Typical time between the feed's timestamps on two successive updates of a trip, seconds",
+      "unit": "seconds"
+     },
+     {
+      "name": "passio_basis",
+      "type": "string",
+      "description": "How the day's Passio version was chosen (see `manifest/static.json`)"
+     },
+     {
+      "name": "passio_changed_during_day",
+      "type": "boolean",
+      "description": "True when complete Passio downloads on that day differed, which marks a schedule change"
+     },
+     {
+      "name": "quality_version",
+      "type": "string",
+      "description": "Version of the quality code"
+     }
+    ],
+    "missingValues": [
+     ""
+    ],
+    "primaryKey": [
+     "service_date"
+    ]
+   },
+   "encoding": "utf-8",
+   "dialect": {
+    "delimiter": ",",
+    "header": true
+   }
+  },
+  {
+   "name": "ontime-daily",
+   "title": "Daily on-time figures",
+   "path": "ontime/daily.csv",
+   "format": "csv",
+   "mediatype": "text/csv",
+   "oneRowIs": "one service day",
+   "schema": {
+    "fields": [
+     {
+      "name": "service_date",
+      "type": "date",
+      "description": "The service day"
+     },
+     {
+      "name": "scheduled",
+      "type": "integer",
+      "description": "Scheduled timepoint events"
+     },
+     {
+      "name": "observed",
+      "type": "integer",
+      "description": "Those we could put a time on, and their share of `scheduled`"
+     },
+     {
+      "name": "observed_share",
+      "type": "number",
+      "description": "Those we could put a time on, and their share of `scheduled`",
+      "unit": "fraction from 0 to 1"
+     },
+     {
+      "name": "on_time",
+      "type": "integer",
+      "description": "Observed events from 1 minute early to 5 minutes late, earlier, and later"
+     },
+     {
+      "name": "early",
+      "type": "integer",
+      "description": "Observed events from 1 minute early to 5 minutes late, earlier, and later"
+     },
+     {
+      "name": "late",
+      "type": "integer",
+      "description": "Observed events from 1 minute early to 5 minutes late, earlier, and later"
+     },
+     {
+      "name": "on_time_share_of_observed",
+      "type": "number",
+      "description": "`on_time` divided by `observed`",
+      "unit": "fraction from 0 to 1"
+     },
+     {
+      "name": "deviation_s_median",
+      "type": "number",
+      "description": "Median of measured minus scheduled time, seconds; positive is late",
+      "unit": "seconds"
+     },
+     {
+      "name": "feed_agreement_share",
+      "type": "number",
+      "description": "Share of inferred departures that agree with the feed's change of stop (check 2)",
+      "unit": "fraction from 0 to 1"
+     },
+     {
+      "name": "service_expected",
+      "type": "boolean",
+      "description": "False on a holiday with no service (`reference/no-service-days.csv`)"
+     },
+     {
+      "name": "ontime_version",
+      "type": "string",
+      "description": "Version of the on-time code"
+     }
+    ],
+    "missingValues": [
+     ""
+    ],
+    "primaryKey": [
+     "service_date"
+    ]
+   },
+   "encoding": "utf-8",
+   "dialect": {
+    "delimiter": ",",
+    "header": true
+   }
+  },
+  {
+   "name": "ontime-routes",
+   "title": "Daily on-time figures by route",
+   "path": "ontime/routes.csv",
+   "format": "csv",
+   "mediatype": "text/csv",
+   "oneRowIs": "one route on one service day",
+   "schema": {
+    "fields": [
+     {
+      "name": "service_date",
+      "type": "date",
+      "description": "The service day"
+     },
+     {
+      "name": "route_id",
+      "type": "string",
+      "description": "Passio's id for the route"
+     },
+     {
+      "name": "route_name",
+      "type": "string",
+      "description": "The route's number, or its name when it has no number"
+     },
+     {
+      "name": "scheduled",
+      "type": "integer",
+      "description": "Counts of the route's timepoint events that day, as in `daily.csv`"
+     },
+     {
+      "name": "observed",
+      "type": "integer",
+      "description": "Counts of the route's timepoint events that day, as in `daily.csv`"
+     },
+     {
+      "name": "on_time",
+      "type": "integer",
+      "description": "Counts of the route's timepoint events that day, as in `daily.csv`"
+     },
+     {
+      "name": "early",
+      "type": "integer",
+      "description": "Counts of the route's timepoint events that day, as in `daily.csv`"
+     },
+     {
+      "name": "late",
+      "type": "integer",
+      "description": "Counts of the route's timepoint events that day, as in `daily.csv`"
+     },
+     {
+      "name": "observed_share",
+      "type": "number",
+      "description": "`observed` divided by `scheduled`, and `on_time` divided by `observed`",
+      "unit": "fraction from 0 to 1"
+     },
+     {
+      "name": "on_time_share_of_observed",
+      "type": "number",
+      "description": "`observed` divided by `scheduled`, and `on_time` divided by `observed`",
+      "unit": "fraction from 0 to 1"
+     },
+     {
+      "name": "deviation_s_median",
+      "type": "number",
+      "description": "Median of measured minus scheduled time, seconds; positive is late",
+      "unit": "seconds"
+     }
+    ],
+    "missingValues": [
+     ""
+    ],
+    "primaryKey": [
+     "service_date",
+     "route_id"
+    ]
+   },
+   "encoding": "utf-8",
+   "dialect": {
+    "delimiter": ",",
+    "header": true
+   }
+  },
+  {
+   "name": "files",
+   "title": "Index of the files in the Releases",
+   "path": "files.csv",
+   "format": "csv",
+   "mediatype": "text/csv",
+   "oneRowIs": "one file in a Release",
+   "schema": {
+    "fields": [
+     {
+      "name": "service_date",
+      "type": "date",
+      "description": "The service day the file belongs to"
+     },
+     {
+      "name": "table",
+      "type": "string",
+      "description": "The kind of table, as named in this dictionary (`vehicles`, `stop-events`, `raw`, `fetch-log`, `static-passio`, `static-trillium` and so on)"
+     },
+     {
+      "name": "release_tag",
+      "type": "string",
+      "description": "The Release the file is in"
+     },
+     {
+      "name": "name",
+      "type": "string",
+      "description": "The file's name"
+     },
+     {
+      "name": "bytes",
+      "type": "integer",
+      "description": "Its size",
+      "unit": "bytes"
+     },
+     {
+      "name": "sha256",
+      "type": "string",
+      "description": "SHA-256 of the file, to check a download against"
+     },
+     {
+      "name": "url",
+      "type": "string",
+      "description": "Where to download it"
+     }
+    ],
+    "missingValues": [
+     ""
+    ],
+    "primaryKey": [
+     "name"
+    ]
+   },
+   "encoding": "utf-8",
+   "dialect": {
+    "delimiter": ",",
+    "header": true
+   }
+  }
+ ],
+ "dailyTables": [
+  {
+   "name": "raw",
+   "title": "Raw archive",
+   "pathPattern": "raw-YYYY-MM-DD.parquet",
+   "release": "raw-YYYY-MM",
+   "urlPattern": "https://github.com/dfladagermccullugh-bot/Open-Island-Transit-Data/releases/download/raw-YYYY-MM/raw-YYYY-MM-DD.parquet",
+   "format": "parquet",
+   "mediatype": "application/vnd.apache.parquet",
+   "oneRowIs": "one attempt to fetch a feed, with the exact response",
+   "schema": {
+    "fields": [
+     {
+      "name": "fetch_id",
+      "type": "integer",
+      "description": "Unique, increasing id of the attempt"
+     },
+     {
+      "name": "feed",
+      "type": "string",
+      "description": "`vehiclePositions`, `tripUpdates` or `serviceAlerts`"
+     },
+     {
+      "name": "scheduled_at",
+      "type": "datetime",
+      "description": "When the scheduler fired",
+      "timezone": "UTC"
+     },
+     {
+      "name": "requested_at",
+      "type": "datetime",
+      "description": "When the request was sent. Empty for ticks skipped during backoff",
+      "timezone": "UTC"
+     },
+     {
+      "name": "responded_at",
+      "type": "datetime",
+      "description": "When the whole response had arrived. Empty if there was none",
+      "timezone": "UTC"
+     },
+     {
+      "name": "latency_ms",
+      "type": "integer",
+      "description": "`responded_at` minus `requested_at`",
+      "unit": "milliseconds"
+     },
+     {
+      "name": "http_status",
+      "type": "integer",
+      "description": "HTTP status. Empty if no response arrived"
+     },
+     {
+      "name": "bytes",
+      "type": "integer",
+      "description": "Size of the response body",
+      "unit": "bytes"
+     },
+     {
+      "name": "sha256",
+      "type": "string",
+      "description": "SHA-256 of the response body"
+     },
+     {
+      "name": "header_ts",
+      "type": "datetime",
+      "description": "The feed's own header timestamp. In practice this equals the request time, so it does not show whether the data is fresh",
+      "timezone": "UTC"
+     },
+     {
+      "name": "entity_count",
+      "type": "integer",
+      "description": "Number of entities in the feed message (vehicles, trip updates or alerts)"
+     },
+     {
+      "name": "newest_entity_ts",
+      "type": "datetime",
+      "description": "Latest vehicle or trip-update timestamp in the message",
+      "timezone": "UTC"
+     },
+     {
+      "name": "error_class",
+      "type": "string",
+      "description": "Empty for success. `timeout`, `network` (no response), `http` (status other than 200), `decode` (body is not a feed message), `backoff_skip` (tick skipped after repeated failures)"
+     },
+     {
+      "name": "error_msg",
+      "type": "string",
+      "description": "Detail for the error"
+     },
+     {
+      "name": "collector_version",
+      "type": "string",
+      "description": "Version of the collector code that made the attempt"
+     },
+     {
+      "name": "logged_at",
+      "type": "datetime",
+      "description": "When the row was written",
+      "timezone": "UTC"
+     },
+     {
+      "name": "body",
+      "type": "string",
+      "description": "The response body exactly as received (a GTFS-Realtime protobuf message when the fetch succeeded). Empty when there was no response"
+     }
+    ],
+    "missingValues": [
+     ""
+    ],
+    "primaryKey": [
+     "fetch_id"
+    ]
+   }
+  },
+  {
+   "name": "fetch-log",
+   "title": "Fetch log",
+   "pathPattern": "fetch-log-YYYY-MM-DD.csv",
+   "release": "raw-YYYY-MM",
+   "urlPattern": "https://github.com/dfladagermccullugh-bot/Open-Island-Transit-Data/releases/download/raw-YYYY-MM/fetch-log-YYYY-MM-DD.csv",
+   "format": "csv",
+   "mediatype": "text/csv",
+   "oneRowIs": "one attempt to fetch a feed, without the response body",
+   "schema": {
+    "fields": [
+     {
+      "name": "fetch_id",
+      "type": "integer",
+      "description": "Unique, increasing id of the attempt"
+     },
+     {
+      "name": "feed",
+      "type": "string",
+      "description": "`vehiclePositions`, `tripUpdates` or `serviceAlerts`"
+     },
+     {
+      "name": "scheduled_at",
+      "type": "datetime",
+      "description": "When the scheduler fired",
+      "timezone": "UTC"
+     },
+     {
+      "name": "requested_at",
+      "type": "datetime",
+      "description": "When the request was sent. Empty for ticks skipped during backoff",
+      "timezone": "UTC"
+     },
+     {
+      "name": "responded_at",
+      "type": "datetime",
+      "description": "When the whole response had arrived. Empty if there was none",
+      "timezone": "UTC"
+     },
+     {
+      "name": "latency_ms",
+      "type": "integer",
+      "description": "`responded_at` minus `requested_at`",
+      "unit": "milliseconds"
+     },
+     {
+      "name": "http_status",
+      "type": "integer",
+      "description": "HTTP status. Empty if no response arrived"
+     },
+     {
+      "name": "bytes",
+      "type": "integer",
+      "description": "Size of the response body",
+      "unit": "bytes"
+     },
+     {
+      "name": "sha256",
+      "type": "string",
+      "description": "SHA-256 of the response body"
+     },
+     {
+      "name": "header_ts",
+      "type": "datetime",
+      "description": "The feed's own header timestamp. In practice this equals the request time, so it does not show whether the data is fresh",
+      "timezone": "UTC"
+     },
+     {
+      "name": "entity_count",
+      "type": "integer",
+      "description": "Number of entities in the feed message (vehicles, trip updates or alerts)"
+     },
+     {
+      "name": "newest_entity_ts",
+      "type": "datetime",
+      "description": "Latest vehicle or trip-update timestamp in the message",
+      "timezone": "UTC"
+     },
+     {
+      "name": "error_class",
+      "type": "string",
+      "description": "Empty for success. `timeout`, `network` (no response), `http` (status other than 200), `decode` (body is not a feed message), `backoff_skip` (tick skipped after repeated failures)"
+     },
+     {
+      "name": "error_msg",
+      "type": "string",
+      "description": "Detail for the error"
+     },
+     {
+      "name": "collector_version",
+      "type": "string",
+      "description": "Version of the collector code that made the attempt"
+     },
+     {
+      "name": "logged_at",
+      "type": "datetime",
+      "description": "When the row was written",
+      "timezone": "UTC"
+     }
+    ],
+    "missingValues": [
+     ""
+    ],
+    "primaryKey": [
+     "fetch_id"
+    ]
+   },
+   "encoding": "utf-8",
+   "dialect": {
+    "delimiter": ",",
+    "header": true
+   }
+  },
+  {
+   "name": "vehicles",
+   "title": "Parsed vehicles",
+   "pathPattern": "vehicles-YYYY-MM-DD.parquet",
+   "release": "parsed-YYYY-MM",
+   "urlPattern": "https://github.com/dfladagermccullugh-bot/Open-Island-Transit-Data/releases/download/parsed-YYYY-MM/vehicles-YYYY-MM-DD.parquet",
+   "format": "parquet",
+   "mediatype": "application/vnd.apache.parquet",
+   "oneRowIs": "one run of fetches in which a vehicle reported the same values",
+   "schema": {
+    "fields": [
+     {
+      "name": "vehicle_key",
+      "type": "string",
+      "description": "`vehicle_id`, or `entity:<id>` if the feed sent no vehicle id"
+     },
+     {
+      "name": "vehicle_id",
+      "type": "string",
+      "description": "Vehicle id and the label shown on the bus"
+     },
+     {
+      "name": "vehicle_label",
+      "type": "string",
+      "description": "Vehicle id and the label shown on the bus"
+     },
+     {
+      "name": "vehicle_ts",
+      "type": "datetime",
+      "description": "Time of the position report, as sent by the vehicle",
+      "timezone": "UTC"
+     },
+     {
+      "name": "trip_id",
+      "type": "string",
+      "description": "The trip the vehicle reports. `direction_id`, `start_date` and `start_time` have not been sent so far"
+     },
+     {
+      "name": "route_id",
+      "type": "string",
+      "description": "The trip the vehicle reports. `direction_id`, `start_date` and `start_time` have not been sent so far"
+     },
+     {
+      "name": "direction_id",
+      "type": "integer",
+      "description": "The trip the vehicle reports. `direction_id`, `start_date` and `start_time` have not been sent so far"
+     },
+     {
+      "name": "start_date",
+      "type": "string",
+      "description": "The trip the vehicle reports. `direction_id`, `start_date` and `start_time` have not been sent so far"
+     },
+     {
+      "name": "start_time",
+      "type": "string",
+      "description": "The trip the vehicle reports. `direction_id`, `start_date` and `start_time` have not been sent so far"
+     },
+     {
+      "name": "trip_schedule_relationship",
+      "type": "string",
+      "description": "The trip the vehicle reports. `direction_id`, `start_date` and `start_time` have not been sent so far"
+     },
+     {
+      "name": "lat",
+      "type": "number",
+      "description": "Position; speed in meters per second",
+      "unit": "degrees north"
+     },
+     {
+      "name": "lon",
+      "type": "number",
+      "description": "Position; speed in meters per second",
+      "unit": "degrees east"
+     },
+     {
+      "name": "bearing",
+      "type": "number",
+      "description": "Position; speed in meters per second",
+      "unit": "degrees clockwise from north"
+     },
+     {
+      "name": "speed",
+      "type": "number",
+      "description": "Position; speed in meters per second",
+      "unit": "meters per second"
+     },
+     {
+      "name": "odometer",
+      "type": "number",
+      "description": "Position; speed in meters per second",
+      "unit": "meters"
+     },
+     {
+      "name": "current_stop_sequence",
+      "type": "integer",
+      "description": "The stop the vehicle reports. `current_status` has not been sent so far"
+     },
+     {
+      "name": "stop_id",
+      "type": "string",
+      "description": "The stop the vehicle reports. `current_status` has not been sent so far"
+     },
+     {
+      "name": "current_status",
+      "type": "string",
+      "description": "The stop the vehicle reports. `current_status` has not been sent so far"
+     },
+     {
+      "name": "congestion_level",
+      "type": "string",
+      "description": "As sent"
+     },
+     {
+      "name": "occupancy_status",
+      "type": "string",
+      "description": "As sent"
+     },
+     {
+      "name": "occupancy_percentage",
+      "type": "integer",
+      "description": "As sent",
+      "unit": "percent"
+     },
+     {
+      "name": "first_fetch_id",
+      "type": "integer",
+      "description": "First and last fetch of the run; join to the fetch log"
+     },
+     {
+      "name": "last_fetch_id",
+      "type": "integer",
+      "description": "First and last fetch of the run; join to the fetch log"
+     },
+     {
+      "name": "first_requested_at",
+      "type": "datetime",
+      "description": "When those fetches were requested",
+      "timezone": "UTC"
+     },
+     {
+      "name": "last_requested_at",
+      "type": "datetime",
+      "description": "When those fetches were requested",
+      "timezone": "UTC"
+     },
+     {
+      "name": "times_seen",
+      "type": "integer",
+      "description": "Number of fetches in the run"
+     }
+    ],
+    "missingValues": [
+     ""
+    ]
+   }
+  },
+  {
+   "name": "trip-updates",
+   "title": "Parsed trip updates",
+   "pathPattern": "trip-updates-YYYY-MM-DD.parquet",
+   "release": "parsed-YYYY-MM",
+   "urlPattern": "https://github.com/dfladagermccullugh-bot/Open-Island-Transit-Data/releases/download/parsed-YYYY-MM/trip-updates-YYYY-MM-DD.parquet",
+   "format": "parquet",
+   "mediatype": "application/vnd.apache.parquet",
+   "oneRowIs": "one run of fetches in which a trip's update stayed the same",
+   "schema": {
+    "fields": [
+     {
+      "name": "trip_key",
+      "type": "string",
+      "description": "`trip_id`, or `entity:<id>` if the feed sent no trip id"
+     },
+     {
+      "name": "trip_id",
+      "type": "string",
+      "description": "The trip the vehicle reports. `direction_id`, `start_date` and `start_time` have not been sent so far"
+     },
+     {
+      "name": "route_id",
+      "type": "string",
+      "description": "The trip the vehicle reports. `direction_id`, `start_date` and `start_time` have not been sent so far"
+     },
+     {
+      "name": "direction_id",
+      "type": "integer",
+      "description": "The trip the vehicle reports. `direction_id`, `start_date` and `start_time` have not been sent so far"
+     },
+     {
+      "name": "start_date",
+      "type": "string",
+      "description": "The trip the vehicle reports. `direction_id`, `start_date` and `start_time` have not been sent so far"
+     },
+     {
+      "name": "start_time",
+      "type": "string",
+      "description": "The trip the vehicle reports. `direction_id`, `start_date` and `start_time` have not been sent so far"
+     },
+     {
+      "name": "trip_schedule_relationship",
+      "type": "string",
+      "description": "The trip the vehicle reports. `direction_id`, `start_date` and `start_time` have not been sent so far"
+     },
+     {
+      "name": "vehicle_id",
+      "type": "string",
+      "description": "Vehicle assigned to the trip. The feed also lists upcoming trips that have no vehicle yet"
+     },
+     {
+      "name": "trip_update_ts",
+      "type": "datetime",
+      "description": "Time of the update",
+      "timezone": "UTC"
+     },
+     {
+      "name": "trip_delay",
+      "type": "integer",
+      "description": "Trip-level delay in seconds, if sent",
+      "unit": "seconds"
+     },
+     {
+      "name": "stop_time_update_count",
+      "type": "integer",
+      "description": "Number of stops with a prediction"
+     },
+     {
+      "name": "first_fetch_id",
+      "type": "integer",
+      "description": "First and last fetch of the run; join to the fetch log"
+     },
+     {
+      "name": "last_fetch_id",
+      "type": "integer",
+      "description": "First and last fetch of the run; join to the fetch log"
+     },
+     {
+      "name": "first_requested_at",
+      "type": "datetime",
+      "description": "When those fetches were requested",
+      "timezone": "UTC"
+     },
+     {
+      "name": "last_requested_at",
+      "type": "datetime",
+      "description": "When those fetches were requested",
+      "timezone": "UTC"
+     },
+     {
+      "name": "times_seen",
+      "type": "integer",
+      "description": "Number of fetches in the run"
+     }
+    ],
+    "missingValues": [
+     ""
+    ]
+   }
+  },
+  {
+   "name": "trip-update-stops",
+   "title": "Parsed trip update stops",
+   "pathPattern": "trip-update-stops-YYYY-MM-DD.parquet",
+   "release": "parsed-YYYY-MM",
+   "urlPattern": "https://github.com/dfladagermccullugh-bot/Open-Island-Transit-Data/releases/download/parsed-YYYY-MM/trip-update-stops-YYYY-MM-DD.parquet",
+   "format": "parquet",
+   "mediatype": "application/vnd.apache.parquet",
+   "oneRowIs": "one run of fetches in which a stop's prediction stayed the same",
+   "schema": {
+    "fields": [
+     {
+      "name": "trip_key",
+      "type": "string",
+      "description": "`trip_id`, or `entity:<id>` if the feed sent no trip id"
+     },
+     {
+      "name": "trip_id",
+      "type": "string",
+      "description": "The trip the vehicle reports. `direction_id`, `start_date` and `start_time` have not been sent so far"
+     },
+     {
+      "name": "route_id",
+      "type": "string",
+      "description": "The trip the vehicle reports. `direction_id`, `start_date` and `start_time` have not been sent so far"
+     },
+     {
+      "name": "direction_id",
+      "type": "integer",
+      "description": "The trip the vehicle reports. `direction_id`, `start_date` and `start_time` have not been sent so far"
+     },
+     {
+      "name": "start_date",
+      "type": "string",
+      "description": "The trip the vehicle reports. `direction_id`, `start_date` and `start_time` have not been sent so far"
+     },
+     {
+      "name": "start_time",
+      "type": "string",
+      "description": "The trip the vehicle reports. `direction_id`, `start_date` and `start_time` have not been sent so far"
+     },
+     {
+      "name": "trip_schedule_relationship",
+      "type": "string",
+      "description": "The trip the vehicle reports. `direction_id`, `start_date` and `start_time` have not been sent so far"
+     },
+     {
+      "name": "vehicle_id",
+      "type": "string",
+      "description": "Vehicle assigned to the trip. The feed also lists upcoming trips that have no vehicle yet"
+     },
+     {
+      "name": "trip_update_ts",
+      "type": "datetime",
+      "description": "Time of the update",
+      "timezone": "UTC"
+     },
+     {
+      "name": "trip_delay",
+      "type": "integer",
+      "description": "Trip-level delay in seconds, if sent",
+      "unit": "seconds"
+     },
+     {
+      "name": "stop_sequence",
+      "type": "integer",
+      "description": "The stop"
+     },
+     {
+      "name": "stop_id",
+      "type": "string",
+      "description": "The stop"
+     },
+     {
+      "name": "arrival_time",
+      "type": "datetime",
+      "description": "Predicted times",
+      "timezone": "UTC"
+     },
+     {
+      "name": "arrival_delay",
+      "type": "integer",
+      "description": "In seconds, if sent",
+      "unit": "seconds"
+     },
+     {
+      "name": "arrival_uncertainty",
+      "type": "integer",
+      "description": "In seconds, if sent",
+      "unit": "seconds"
+     },
+     {
+      "name": "departure_time",
+      "type": "datetime",
+      "description": "Predicted times",
+      "timezone": "UTC"
+     },
+     {
+      "name": "departure_delay",
+      "type": "integer",
+      "description": "In seconds, if sent",
+      "unit": "seconds"
+     },
+     {
+      "name": "departure_uncertainty",
+      "type": "integer",
+      "description": "In seconds, if sent",
+      "unit": "seconds"
+     },
+     {
+      "name": "stop_schedule_relationship",
+      "type": "string",
+      "description": "As sent"
+     },
+     {
+      "name": "first_fetch_id",
+      "type": "integer",
+      "description": "First and last fetch of the run; join to the fetch log"
+     },
+     {
+      "name": "last_fetch_id",
+      "type": "integer",
+      "description": "First and last fetch of the run; join to the fetch log"
+     },
+     {
+      "name": "first_requested_at",
+      "type": "datetime",
+      "description": "When those fetches were requested",
+      "timezone": "UTC"
+     },
+     {
+      "name": "last_requested_at",
+      "type": "datetime",
+      "description": "When those fetches were requested",
+      "timezone": "UTC"
+     },
+     {
+      "name": "times_seen",
+      "type": "integer",
+      "description": "Number of fetches in the run"
+     }
+    ],
+    "missingValues": [
+     ""
+    ]
+   }
+  },
+  {
+   "name": "alerts",
+   "title": "Parsed alerts",
+   "pathPattern": "alerts-YYYY-MM-DD.parquet",
+   "release": "parsed-YYYY-MM",
+   "urlPattern": "https://github.com/dfladagermccullugh-bot/Open-Island-Transit-Data/releases/download/parsed-YYYY-MM/alerts-YYYY-MM-DD.parquet",
+   "format": "parquet",
+   "mediatype": "application/vnd.apache.parquet",
+   "oneRowIs": "one run of fetches in which an alert stayed the same",
+   "schema": {
+    "fields": [
+     {
+      "name": "entity_id",
+      "type": "string",
+      "description": "The alert's id in the feed"
+     },
+     {
+      "name": "active_periods",
+      "type": "array",
+      "description": "List of start and end times"
+     },
+     {
+      "name": "cause",
+      "type": "string",
+      "description": "As sent"
+     },
+     {
+      "name": "effect",
+      "type": "string",
+      "description": "As sent"
+     },
+     {
+      "name": "header",
+      "type": "string",
+      "description": "English text (or the first translation)"
+     },
+     {
+      "name": "description",
+      "type": "string",
+      "description": "English text (or the first translation)"
+     },
+     {
+      "name": "url",
+      "type": "string",
+      "description": "English text (or the first translation)"
+     },
+     {
+      "name": "route_ids",
+      "type": "array",
+      "description": "What the alert applies to"
+     },
+     {
+      "name": "stop_ids",
+      "type": "array",
+      "description": "What the alert applies to"
+     },
+     {
+      "name": "trip_ids",
+      "type": "array",
+      "description": "What the alert applies to"
+     },
+     {
+      "name": "first_fetch_id",
+      "type": "integer",
+      "description": "First and last fetch of the run; join to the fetch log"
+     },
+     {
+      "name": "last_fetch_id",
+      "type": "integer",
+      "description": "First and last fetch of the run; join to the fetch log"
+     },
+     {
+      "name": "first_requested_at",
+      "type": "datetime",
+      "description": "When those fetches were requested",
+      "timezone": "UTC"
+     },
+     {
+      "name": "last_requested_at",
+      "type": "datetime",
+      "description": "When those fetches were requested",
+      "timezone": "UTC"
+     },
+     {
+      "name": "times_seen",
+      "type": "integer",
+      "description": "Number of fetches in the run"
+     }
+    ],
+    "missingValues": [
+     ""
+    ]
+   }
+  },
+  {
+   "name": "stop-events",
+   "title": "Stop events",
+   "pathPattern": "stop-events-YYYY-MM-DD.parquet",
+   "release": "parsed-YYYY-MM",
+   "urlPattern": "https://github.com/dfladagermccullugh-bot/Open-Island-Transit-Data/releases/download/parsed-YYYY-MM/stop-events-YYYY-MM-DD.parquet",
+   "format": "parquet",
+   "mediatype": "application/vnd.apache.parquet",
+   "oneRowIs": "one scheduled stop of one scheduled trip, observed or not",
+   "schema": {
+    "fields": [
+     {
+      "name": "trip_id",
+      "type": "string",
+      "description": "Passio ids"
+     },
+     {
+      "name": "route_id",
+      "type": "string",
+      "description": "Passio ids"
+     },
+     {
+      "name": "vehicle_key",
+      "type": "string",
+      "description": "The vehicle whose reports were used; empty if none carried the trip id"
+     },
+     {
+      "name": "stop_sequence",
+      "type": "integer",
+      "description": "Passio ids"
+     },
+     {
+      "name": "stop_id",
+      "type": "string",
+      "description": "Passio ids"
+     },
+     {
+      "name": "is_first_stop",
+      "type": "boolean",
+      "description": "Position in the trip"
+     },
+     {
+      "name": "is_last_stop",
+      "type": "boolean",
+      "description": "Position in the trip"
+     },
+     {
+      "name": "is_timepoint",
+      "type": "boolean",
+      "description": "A true timepoint (`timepoints/`)"
+     },
+     {
+      "name": "stop_distance_m",
+      "type": "number",
+      "description": "The stop's distance along the trip's shape; empty if the stop is `unplaced`. Where two points on one stretch of the shape are equally near the stop, the earlier one (since `events/0.3.1`)",
+      "unit": "meters"
+     },
+     {
+      "name": "stop_offset_m",
+      "type": "number",
+      "description": "How far the stop sits from the shape at that point, in meters (since `events/0.3.0`)",
+      "unit": "meters"
+     },
+     {
+      "name": "scheduled_arrival",
+      "type": "datetime",
+      "description": "Passio schedule, as UTC timestamps",
+      "timezone": "UTC"
+     },
+     {
+      "name": "scheduled_departure",
+      "type": "datetime",
+      "description": "Passio schedule, as UTC timestamps",
+      "timezone": "UTC"
+     },
+     {
+      "name": "arrival_time",
+      "type": "datetime",
+      "description": "When the bus first came within 40 m of the stop along the shape",
+      "timezone": "UTC"
+     },
+     {
+      "name": "arrival_gap_s",
+      "type": "number",
+      "description": "Seconds between the two position reports the time was interpolated from",
+      "unit": "seconds"
+     },
+     {
+      "name": "arrival_status",
+      "type": "string",
+      "description": "`observed`; `gap` (reports more than 120 s apart, no time given); `not_reached` (tracking ended before the stop); `past_when_first_seen`; `skipped` (the bus left out the part of the shape the stop is on); `no_shape` (the trip has no shape); `unplaced` (the stop could not be placed on the shape in stop order within 150 m of it); `no_reports` (no vehicle carried the trip id); `not_applicable` (no arrival at the first stop, no departure at the last)"
+     },
+     {
+      "name": "departure_time",
+      "type": "datetime",
+      "description": "When it moved more than 40 m past the stop",
+      "timezone": "UTC"
+     },
+     {
+      "name": "departure_gap_s",
+      "type": "number",
+      "description": "Seconds between the two position reports the time was interpolated from",
+      "unit": "seconds"
+     },
+     {
+      "name": "departure_status",
+      "type": "string",
+      "description": "`observed`; `gap` (reports more than 120 s apart, no time given); `not_reached` (tracking ended before the stop); `past_when_first_seen`; `skipped` (the bus left out the part of the shape the stop is on); `no_shape` (the trip has no shape); `unplaced` (the stop could not be placed on the shape in stop order within 150 m of it); `no_reports` (no vehicle carried the trip id); `not_applicable` (no arrival at the first stop, no departure at the last)"
+     }
+    ],
+    "missingValues": [
+     ""
+    ],
+    "primaryKey": [
+     "trip_id",
+     "stop_sequence"
+    ]
+   }
+  },
+  {
+   "name": "trip-tracks",
+   "title": "Trip tracks",
+   "pathPattern": "trip-tracks-YYYY-MM-DD.parquet",
+   "release": "parsed-YYYY-MM",
+   "urlPattern": "https://github.com/dfladagermccullugh-bot/Open-Island-Transit-Data/releases/download/parsed-YYYY-MM/trip-tracks-YYYY-MM-DD.parquet",
+   "format": "parquet",
+   "mediatype": "application/vnd.apache.parquet",
+   "oneRowIs": "one scheduled trip, with how its bus was followed",
+   "schema": {
+    "fields": [
+     {
+      "name": "trip_id",
+      "type": "string",
+      "description": "Passio ids"
+     },
+     {
+      "name": "route_id",
+      "type": "string",
+      "description": "Passio ids"
+     },
+     {
+      "name": "scheduled_start",
+      "type": "datetime",
+      "description": "First scheduled departure and last scheduled arrival, UTC",
+      "timezone": "UTC"
+     },
+     {
+      "name": "scheduled_end",
+      "type": "datetime",
+      "description": "First scheduled departure and last scheduled arrival, UTC",
+      "timezone": "UTC"
+     },
+     {
+      "name": "vehicles_with_trip_id",
+      "type": "integer",
+      "description": "Vehicles that carried the trip's id within 30 minutes of its schedule"
+     },
+     {
+      "name": "vehicle_key",
+      "type": "string",
+      "description": "The one whose reports were used (the one with the most)"
+     },
+     {
+      "name": "position_reports",
+      "type": "integer",
+      "description": "That vehicle's reports in the window"
+     },
+     {
+      "name": "reports_used",
+      "type": "integer",
+      "description": "Reports placed on the shape"
+     },
+     {
+      "name": "reports_before_start",
+      "type": "integer",
+      "description": "Reports from before tracking began or after the bus reached the end; never compared with the shape"
+     },
+     {
+      "name": "reports_after_end",
+      "type": "integer",
+      "description": "Reports from before tracking began or after the bus reached the end; never compared with the shape"
+     },
+     {
+      "name": "off_shape_reports",
+      "type": "integer",
+      "description": "Reports set aside while tracking. Since `events/0.3.1`, a report equally near two segments of the shape is measured on the earlier one, and one nearest a corner has its direction checked against the segment leaving the corner, so the counts are the same on any computer (`docs/methods.md`, section 3)"
+     },
+     {
+      "name": "wrong_direction_reports",
+      "type": "integer",
+      "description": "Reports set aside while tracking. Since `events/0.3.1`, a report equally near two segments of the shape is measured on the earlier one, and one nearest a corner has its direction checked against the segment leaving the corner, so the counts are the same on any computer (`docs/methods.md`, section 3)"
+     },
+     {
+      "name": "shape_id",
+      "type": "string",
+      "description": "The trip's shape and its length"
+     },
+     {
+      "name": "shape_length_m",
+      "type": "number",
+      "description": "The trip's shape and its length",
+      "unit": "meters"
+     },
+     {
+      "name": "max_distance_m",
+      "type": "number",
+      "description": "How far along the shape the bus was followed",
+      "unit": "meters"
+     },
+     {
+      "name": "shape_skips",
+      "type": "integer",
+      "description": "Stretches of the shape the bus left out, and their total length"
+     },
+     {
+      "name": "skipped_m",
+      "type": "number",
+      "description": "Stretches of the shape the bus left out, and their total length",
+      "unit": "meters"
+     },
+     {
+      "name": "problem",
+      "type": "string",
+      "description": "Empty, or why the trip could not be read from the schedule files (since `events/0.3.0`); such a trip has no stop events"
+     }
+    ],
+    "missingValues": [
+     ""
+    ],
+    "primaryKey": [
+     "trip_id"
+    ]
+   }
+  }
+ ],
+ "versionedTables": [
+  {
+   "name": "timepoints",
+   "title": "Printed timepoints matched to Passio stops",
+   "pathPattern": "timepoints/<passio version>__timetable-<date>-<hash>/timepoints.csv",
+   "format": "csv",
+   "mediatype": "text/csv",
+   "oneRowIs": "one printed timetable stop and the Passio stop it was matched to",
+   "schema": {
+    "fields": [
+     {
+      "name": "route_short_name",
+      "type": "string",
+      "description": "The route number as printed in the guide"
+     },
+     {
+      "name": "day_type",
+      "type": "string",
+      "description": "The kind of day the printed timetable is for: `weekday`, `weekday AM`, `weekday PM`, `weekday AM and PM`, `saturday` or `weekend`"
+     },
+     {
+      "name": "direction",
+      "type": "string",
+      "description": "The direction as printed, such as `northbound` or `loop`"
+     },
+     {
+      "name": "order",
+      "type": "integer",
+      "description": "Position of the stop in the printed timetable, counting from 1"
+     },
+     {
+      "name": "printed_stop",
+      "type": "string",
+      "description": "The stop's name as printed"
+     },
+     {
+      "name": "passio_route_id",
+      "type": "string",
+      "description": "The Passio route and stop the printed stop was matched to. The stop id and name are empty when the printed name is not a stop"
+     },
+     {
+      "name": "passio_stop_id",
+      "type": "string",
+      "description": "The Passio route and stop the printed stop was matched to. The stop id and name are empty when the printed name is not a stop"
+     },
+     {
+      "name": "passio_stop_name",
+      "type": "string",
+      "description": "The Passio route and stop the printed stop was matched to. The stop id and name are empty when the printed name is not a stop"
+     },
+     {
+      "name": "match",
+      "type": "string",
+      "description": "How the match was made: `name` and a similarity score from 0 to 1, `override` for a match a person reviewed, or the reason there is none"
+     }
+    ],
+    "missingValues": [
+     ""
+    ]
+   },
+   "encoding": "utf-8",
+   "dialect": {
+    "delimiter": ",",
+    "header": true
+   }
+  },
+  {
+   "name": "crosswalk-stops",
+   "title": "Passio to Trillium crosswalk: stops",
+   "pathPattern": "crosswalk/<passio version>__<trillium version>/stops.csv",
+   "format": "csv",
+   "mediatype": "text/csv",
+   "oneRowIs": "one Passio stop",
+   "schema": {
+    "fields": [
+     {
+      "name": "passio_stop_id",
+      "type": "string",
+      "description": "The Passio stop"
+     },
+     {
+      "name": "passio_stop_code",
+      "type": "string",
+      "description": "The Passio stop"
+     },
+     {
+      "name": "passio_stop_name",
+      "type": "string",
+      "description": "The Passio stop"
+     },
+     {
+      "name": "trillium_stop_id",
+      "type": "string",
+      "description": "The matched Trillium stop. Empty when there is no match"
+     },
+     {
+      "name": "trillium_stop_code",
+      "type": "string",
+      "description": "The matched Trillium stop. Empty when there is no match"
+     },
+     {
+      "name": "trillium_stop_name",
+      "type": "string",
+      "description": "The matched Trillium stop. Empty when there is no match"
+     },
+     {
+      "name": "method",
+      "type": "string",
+      "description": "`stop_code`, `distance`, or empty for no match"
+     },
+     {
+      "name": "distance_m",
+      "type": "number",
+      "description": "Meters from the Passio stop to the matched stop, or to the nearest one when there is no match",
+      "unit": "meters"
+     },
+     {
+      "name": "nearest_trillium_stop_id",
+      "type": "string",
+      "description": "The nearest Trillium stop, matched or not, and its distance in meters"
+     },
+     {
+      "name": "nearest_trillium_stop_name",
+      "type": "string",
+      "description": "The nearest Trillium stop, matched or not, and its distance in meters"
+     },
+     {
+      "name": "nearest_distance_m",
+      "type": "number",
+      "description": "The nearest Trillium stop, matched or not, and its distance in meters",
+      "unit": "meters"
+     }
+    ],
+    "missingValues": [
+     ""
+    ]
+   },
+   "encoding": "utf-8",
+   "dialect": {
+    "delimiter": ",",
+    "header": true
+   }
+  },
+  {
+   "name": "crosswalk-routes",
+   "title": "Passio to Trillium crosswalk: routes",
+   "pathPattern": "crosswalk/<passio version>__<trillium version>/routes.csv",
+   "format": "csv",
+   "mediatype": "text/csv",
+   "oneRowIs": "one Passio route",
+   "schema": {
+    "fields": [
+     {
+      "name": "passio_route_id",
+      "type": "string",
+      "description": "The Passio route"
+     },
+     {
+      "name": "passio_route_short_name",
+      "type": "string",
+      "description": "The Passio route"
+     },
+     {
+      "name": "passio_route_long_name",
+      "type": "string",
+      "description": "The Passio route"
+     },
+     {
+      "name": "trillium_route_id",
+      "type": "string",
+      "description": "The matched Trillium route"
+     },
+     {
+      "name": "trillium_route_long_name",
+      "type": "string",
+      "description": "The matched Trillium route"
+     },
+     {
+      "name": "method",
+      "type": "string",
+      "description": "`route_short_name` when the two share a route number, or `no short name in either feed` for the NAS Whidbey routes"
+     }
+    ],
+    "missingValues": [
+     ""
+    ]
+   },
+   "encoding": "utf-8",
+   "dialect": {
+    "delimiter": ",",
+    "header": true
+   }
+  },
+  {
+   "name": "crosswalk-timepoint-stops",
+   "title": "Passio to Trillium crosswalk: timepoint_stops",
+   "pathPattern": "crosswalk/<passio version>__<trillium version>/timepoint_stops.csv",
+   "format": "csv",
+   "mediatype": "text/csv",
+   "oneRowIs": "one Passio route and stop",
+   "schema": {
+    "fields": [
+     {
+      "name": "passio_route_id",
+      "type": "string",
+      "description": "The Passio route and stop"
+     },
+     {
+      "name": "passio_stop_id",
+      "type": "string",
+      "description": "The Passio route and stop"
+     },
+     {
+      "name": "trillium_route_id",
+      "type": "string",
+      "description": "The matched Trillium route and stop. The stop is empty when it has no match"
+     },
+     {
+      "name": "trillium_stop_id",
+      "type": "string",
+      "description": "The matched Trillium route and stop. The stop is empty when it has no match"
+     },
+     {
+      "name": "passio_stop_times",
+      "type": "integer",
+      "description": "Passio stop times at this stop on this route"
+     },
+     {
+      "name": "trillium_stop_times",
+      "type": "integer",
+      "description": "Trillium stop times at the matched stop on the matched route, and how many of them Trillium marks as timepoints"
+     },
+     {
+      "name": "trillium_timepoint_stop_times",
+      "type": "integer",
+      "description": "Trillium stop times at the matched stop on the matched route, and how many of them Trillium marks as timepoints"
+     },
+     {
+      "name": "trillium_timepoint",
+      "type": "boolean",
+      "description": "`true` when Trillium marks at least one of them as a timepoint"
+     }
+    ],
+    "missingValues": [
+     ""
+    ]
+   },
+   "encoding": "utf-8",
+   "dialect": {
+    "delimiter": ",",
+    "header": true
+   }
+  },
+  {
+   "name": "crosswalk-schedule-agreement",
+   "title": "Passio to Trillium crosswalk: schedule_agreement",
+   "pathPattern": "crosswalk/<passio version>__<trillium version>/schedule_agreement.csv",
+   "format": "csv",
+   "mediatype": "text/csv",
+   "oneRowIs": "one Passio stop time at a Trillium timepoint",
+   "schema": {
+    "fields": [
+     {
+      "name": "passio_trip_id",
+      "type": "string",
+      "description": "The Passio trip, route and stop of the stop time"
+     },
+     {
+      "name": "passio_route_id",
+      "type": "string",
+      "description": "The Passio trip, route and stop of the stop time"
+     },
+     {
+      "name": "passio_stop_id",
+      "type": "string",
+      "description": "The Passio trip, route and stop of the stop time"
+     },
+     {
+      "name": "stop_sequence",
+      "type": "integer",
+      "description": "The stop's position in the trip"
+     },
+     {
+      "name": "passio_time",
+      "type": "string",
+      "description": "The scheduled time as written in the schedule file: a local Pacific clock time (`HH:MM:SS`), not a UTC timestamp"
+     },
+     {
+      "name": "nearest_trillium_minus_passio_s",
+      "type": "integer",
+      "description": "Seconds from the Passio time to the nearest Trillium timepoint time. Empty if Trillium has none",
+      "unit": "seconds"
+     }
+    ],
+    "missingValues": [
+     ""
+    ]
+   },
+   "encoding": "utf-8",
+   "dialect": {
+    "delimiter": ",",
+    "header": true
+   }
+  }
+ ]
+}

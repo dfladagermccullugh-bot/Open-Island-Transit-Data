@@ -156,6 +156,20 @@ jobs:
         if: always()
         run: scripts/publish_data.sh "After monthly:"
 
+      # files.csv lists every Release file with its address and SHA-256;
+      # datapackage.json is the codebook in a form a program can read.
+      - name: Write the file index and the data dictionary
+        id: index
+        if: always()
+        timeout-minutes: 5
+        run: |
+          set +e
+          python -m pipeline.datapackage --data data-branch
+          echo "code=$?" >> "$GITHUB_OUTPUT"
+      - name: Publish after the index
+        if: always()
+        run: scripts/publish_data.sh "After index:"
+
       - name: Redeploy the site with the new data
         if: always() && env.DATA_CHANGED == '1'
         run: gh workflow run pages.yml --repo "$GITHUB_REPOSITORY" --ref main
@@ -177,5 +191,5 @@ jobs:
           steps.static.outputs.code != '0' || steps.events.outputs.code != '0' ||
           steps.field.outputs.code != '0' ||
           steps.quality.outputs.code != '0' || steps.monthly.outputs.code != '0' ||
-          steps.check.outputs.code != '0')
+          steps.index.outputs.code != '0' || steps.check.outputs.code != '0')
         run: exit 1

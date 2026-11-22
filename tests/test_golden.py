@@ -58,7 +58,9 @@ def published(root: Path) -> dict[str, str]:
     """Everything the stages would publish, as text keyed by relative path."""
     out: dict[str, str] = {}
     for path in sorted((root / "data-branch").rglob("*")):
-        if path.is_file():
+        # The dictionary is the same file as the repository's datapackage.json,
+        # which tests/test_datapackage.py keeps current; no second copy here.
+        if path.is_file() and path.name != "datapackage.json":
             out[path.relative_to(root).as_posix()] = even_out(path.read_text(encoding="utf-8"))
     releases: dict[str, object] = {}
     for path in sorted((root / "releases").rglob("*")):

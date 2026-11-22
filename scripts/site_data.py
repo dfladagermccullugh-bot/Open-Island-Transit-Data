@@ -19,7 +19,13 @@ from datetime import UTC, datetime
 from pathlib import Path
 
 REQUIRED = ("ontime/recent.json", "ontime/daily.csv", "quality/daily.csv", "manifest/raw.json")
-OPTIONAL = ("ontime/field-check.json", "quality/gaps.json", "reports/index.json")
+OPTIONAL = (
+    "ontime/field-check.json",
+    "quality/gaps.json",
+    "reports/index.json",
+    "files.csv",
+    "datapackage.json",
+)
 
 
 def latest_service_day(daily: Path) -> str | None:

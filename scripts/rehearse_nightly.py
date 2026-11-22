@@ -138,6 +138,7 @@ def main(argv: list[str] | None = None) -> int:
                               "--tables-dir", f"{work}/tables", "--events-dir",
                               f"{work}/events"]),
         ("pipeline.monthly", ["--data", str(data), "--release", "--work", f"{work}/monthly"]),
+        ("pipeline.datapackage", ["--data", str(data)]),
         ("pipeline.check", ["--data", str(data)]),
     ]  # fmt: skip
     if args.replay:

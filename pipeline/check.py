@@ -15,6 +15,7 @@ are any.
 from __future__ import annotations
 
 import argparse
+import csv
 import json
 import os
 import sys
@@ -96,8 +97,35 @@ def check(data: Path, assets: Assets) -> tuple[list[str], dict[str, int]]:
                     f"report {report['month']}: {rel['checksums_file']} in {tag} is {size} "
                     f"bytes, report {rel['checksums_bytes']}"
                 )
+    problems += index_problems(data, manifests)
     counts["days"] = len(days)
     return problems, counts
+
+
+def index_problems(data: Path, manifests: dict[str, dict[str, Any]]) -> list[str]:
+    """``files.csv`` must list exactly the files the manifests record, with
+    the same size and SHA-256. A data branch from before the index existed has
+    none, and that is not a problem."""
+    path = data / "files.csv"
+    if not path.exists():
+        return []
+    recorded = {
+        f["name"]: (str(f["bytes"]), f["sha256"])
+        for manifest in manifests.values()
+        for entry in manifest["days"].values()
+        if entry.get("release_tag")
+        for f in entry["files"]
+    }
+    with path.open(newline="", encoding="utf-8") as fh:
+        listed = {r["name"]: (r["bytes"], r["sha256"]) for r in csv.DictReader(fh)}
+    out = [f"files.csv: {name} is missing" for name in sorted(recorded.keys() - listed.keys())]
+    out += [f"files.csv: {name} is in no manifest" for name in sorted(listed.keys() - recorded)]
+    out += [
+        f"files.csv: {name} does not match its manifest entry"
+        for name in sorted(recorded.keys() & listed.keys())
+        if recorded[name] != listed[name]
+    ]
+    return out
 
 
 def main() -> int:

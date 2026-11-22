@@ -35,3 +35,29 @@ def test_check_finds_missing_and_wrong_size_files(tmp_path):
     write(tmp_path / "maps/tp1.json", {})
     write(tmp_path / f"quality/days/{day}.json", {})
     assert check(tmp_path, lambda tag: releases[tag])[0] == []
+
+
+def test_the_file_index_must_match_the_manifests(tmp_path):
+    from pipeline import datapackage
+
+    files = [{"name": "raw-2026-11-24.parquet", "bytes": 10, "sha256": "a" * 64}]
+    manifest = {"days": {"2026-11-24": {"release_tag": "raw-2026-11", "files": files}}}
+    (tmp_path / "manifest").mkdir()
+    (tmp_path / "manifest" / "raw.json").write_text(json.dumps(manifest))
+    (tmp_path / "quality" / "days").mkdir(parents=True)
+    assets = lambda tag: {"raw-2026-11-24.parquet": 10}  # noqa: E731
+
+    assert check(tmp_path, assets)[0] == []  # no index yet: nothing to compare
+    datapackage.write(tmp_path)
+    assert check(tmp_path, assets)[0] == []
+
+    index = tmp_path / "files.csv"
+    good = index.read_text()
+    index.write_text(good.replace("a" * 64, "b" * 64))
+    assert check(tmp_path, assets)[0] == [
+        "files.csv: raw-2026-11-24.parquet does not match its manifest entry"
+    ]
+    index.write_text(good.splitlines()[0] + "\n")
+    assert check(tmp_path, assets)[0] == ["files.csv: raw-2026-11-24.parquet is missing"]
+    index.write_text(good + good.splitlines()[1].replace("raw-2026-11-24", "raw-2026-11-25") + "\n")
+    assert check(tmp_path, assets)[0] == ["files.csv: raw-2026-11-25.parquet is in no manifest"]

@@ -18,8 +18,15 @@ its row counts and the size and SHA-256 fingerprint of each file, and
 one applied to each service day. The `crosswalk/` folder links the Passio and
 Trillium schedule files, `timepoints/` holds the true timepoints taken from
 the printed timetables, `quality/` holds the daily feed-quality figures,
-`ontime/` holds the daily on-time summaries, and `reports/` holds one report
-for each complete month.
+`ontime/` holds the daily on-time summaries, `maps/` holds the route lines
+the site draws, and `reports/` holds one report for each complete month.
+
+Two files at the top of the `data` branch help a program find its way.
+`files.csv` lists every file in the Releases, one row each, with its service
+day, the kind of table it holds, its release, name, size, SHA-256 and the
+address to download it from. `datapackage.json` is this codebook in a form a
+program can read: every table with its columns, their types and units, in
+the Data Package format. Both are written by `pipeline/datapackage.py`.
 
 `reference/no-service-days.csv`, in the main branch, lists the holidays on
 which Island Transit runs no service. On those days the day files carry
@@ -28,7 +35,10 @@ them out.
 
 A service day is a calendar date in Pacific time (`America/Los_Angeles`).
 Each row belongs to the day in which it was logged, and every timestamp is
-in UTC.
+in UTC. Three things are in Pacific time instead, because they describe the
+schedule as riders see it: hours of the day (every `by_hour` section and
+`start_hour`), the kind of day (`day_type`), and scheduled clock times
+copied from the schedule files (`passio_time`).
 
 In the CSV files on the `data` branch, a missing value is an empty cell,
 true and false are written `true` and `false`, and no number is written in
@@ -182,6 +192,16 @@ unresolved instead of guessing.
 | `timepoints.csv` | One row per printed stop and matched Passio stop: route, day type, direction, printed order and name, `passio_route_id`, `passio_stop_id`, `passio_stop_name`, and `match` (`name <score>`, `override`, or the reason it is unresolved) |
 | `summary.json` | Reference date, printed names, resolved names, the unresolved names with reasons, and the number of timepoint route-stop pairs |
 
+| `timepoints.csv` column | Meaning |
+|---|---|
+| `route_short_name` | The route number as printed in the guide |
+| `day_type` | The kind of day the printed timetable is for: `weekday`, `weekday AM`, `weekday PM`, `weekday AM and PM`, `saturday` or `weekend` |
+| `direction` | The direction as printed, such as `northbound` or `loop` |
+| `order` | Position of the stop in the printed timetable, counting from 1 |
+| `printed_stop` | The stop's name as printed |
+| `passio_route_id`, `passio_stop_id`, `passio_stop_name` | The Passio route and stop the printed stop was matched to. The stop id and name are empty when the printed name is not a stop |
+| `match` | How the match was made: `name` and a similarity score from 0 to 1, `override` for a match a person reviewed, or the reason there is none |
+
 Where a route prints separate timetables for different kinds of day (the
 `day_type` column: weekday, Saturday and so on), a service day uses only the
 rows for its own kind of day. A route that prints nothing for that kind of
@@ -290,8 +310,20 @@ whose day hasn't been processed yet, that match no scheduled event, or whose
 moment has no inferred time.
 
 `ontime/routes.csv`, from `pipeline/events/routes.py`, has one row per
-service day and route, with the counts, the observed and on-time shares, and
-the median deviation.
+service day and route.
+
+| `routes.csv` column | Meaning |
+|---|---|
+| `service_date` | The service day |
+| `route_id` | Passio's id for the route |
+| `route_name` | The route's number, or its name when it has no number |
+| `scheduled`, `observed`, `on_time`, `early`, `late` | Counts of the route's timepoint events that day, as in `daily.csv` |
+| `observed_share`, `on_time_share_of_observed` | `observed` divided by `scheduled`, and `on_time` divided by `observed` |
+| `deviation_s_median` | Median of measured minus scheduled time, seconds; positive is late |
+
+Shares in the `ontime/` files are rounded to four decimal places, and
+shares in the `quality/` files and the monthly reports to six. Every share
+is a fraction from 0 to 1, not a percentage.
 
 `ontime/recent.json` pools the last 28 calendar days, overall, by route, and
 by route and timepoint stop. It adds up the counts, recomputes the shares
@@ -542,6 +574,35 @@ comparison only, and the true timepoints are in `timepoints/`.
 | `timepoint_stops.csv` | Passio route and stop | `trillium_timepoint` (`true` or `false` since `crosswalk/0.2.0`): Trillium marks the matched stop as a timepoint on at least one trip of the matched route. Also the counts of Passio stop times, Trillium stop times and Trillium timepoint stop times behind that decision |
 | `schedule_agreement.csv` | Passio stop time at a Trillium timepoint | `nearest_trillium_minus_passio_s`: seconds from the Passio time to the nearest Trillium timepoint time at that stop and route, on a day of the week both serve. Empty if Trillium has none |
 | `summary.json` | | Counts of the above |
+
+| `stops.csv` column | Meaning |
+|---|---|
+| `passio_stop_id`, `passio_stop_code`, `passio_stop_name` | The Passio stop |
+| `trillium_stop_id`, `trillium_stop_code`, `trillium_stop_name` | The matched Trillium stop. Empty when there is no match |
+| `method` | `stop_code`, `distance`, or empty for no match |
+| `distance_m` | Meters from the Passio stop to the matched stop, or to the nearest one when there is no match |
+| `nearest_trillium_stop_id`, `nearest_trillium_stop_name`, `nearest_distance_m` | The nearest Trillium stop, matched or not, and its distance in meters |
+
+| `routes.csv` column | Meaning |
+|---|---|
+| `passio_route_id`, `passio_route_short_name`, `passio_route_long_name` | The Passio route |
+| `trillium_route_id`, `trillium_route_long_name` | The matched Trillium route |
+| `method` | `route_short_name` when the two share a route number, or `no short name in either feed` for the NAS Whidbey routes |
+
+| `timepoint_stops.csv` column | Meaning |
+|---|---|
+| `passio_route_id`, `passio_stop_id` | The Passio route and stop |
+| `trillium_route_id`, `trillium_stop_id` | The matched Trillium route and stop. The stop is empty when it has no match |
+| `passio_stop_times` | Passio stop times at this stop on this route |
+| `trillium_stop_times`, `trillium_timepoint_stop_times` | Trillium stop times at the matched stop on the matched route, and how many of them Trillium marks as timepoints |
+| `trillium_timepoint` | `true` when Trillium marks at least one of them as a timepoint |
+
+| `schedule_agreement.csv` column | Meaning |
+|---|---|
+| `passio_trip_id`, `passio_route_id`, `passio_stop_id` | The Passio trip, route and stop of the stop time |
+| `stop_sequence` | The stop's position in the trip |
+| `passio_time` | The scheduled time as written in the schedule file: a local Pacific clock time (`HH:MM:SS`), not a UTC timestamp |
+| `nearest_trillium_minus_passio_s` | Seconds from the Passio time to the nearest Trillium timepoint time. Empty if Trillium has none |
 
 ## The collector's live tables
 
