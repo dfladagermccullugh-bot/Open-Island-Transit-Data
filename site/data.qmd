@@ -23,10 +23,15 @@ we share the archived data.
 
 ```{ojs}
 //| echo: false
+//| output: false
 import {json, count, pct, megabytes, longDate, emptyNote, guard, h, REPO_URL, DATA_URL, DATA_RAW_URL, RELEASES_URL} from "./lib.js"
 import {makeCharts} from "./charts.js"
 ch = makeCharts({Plot})
 raw = json("data/manifest/raw.json")
+```
+
+```{ojs}
+//| echo: false
 guard(() => {
   const rows = Object.values(raw?.days ?? {}).map(d => ({
     day: d.service_date, fetches: d.fetch_rows, ok: d.ok_rows,
@@ -54,7 +59,12 @@ match ours exactly.
 
 ```{ojs}
 //| echo: false
+//| output: false
 reports = json("data/reports/index.json")
+```
+
+```{ojs}
+//| echo: false
 guard(() => {
   const rows = Array.isArray(reports) ? reports : [];
   if (rows.length === 0) return h("p", {class: "empty"}, "No month is complete yet.");

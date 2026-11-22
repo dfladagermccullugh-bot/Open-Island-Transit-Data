@@ -276,3 +276,19 @@ test.describe("loading", () => {
     }
   });
 });
+
+test.describe("nothing invisible takes the keyboard focus", () => {
+  for (const name of ["index", "routes", "ontime", "quality", "data"]) {
+    test(`every control on ${name} that can be focused can be seen`, async ({page}) => {
+      await open(page, name);
+      for (const d of await page.locator("details").all()) await d.evaluate(n => (n.open = true));
+      const tiny = await page.evaluate(() =>
+        [...document.querySelectorAll("a[href], button, input, select, summary, [tabindex]:not([tabindex='-1'])")]
+          .filter(n => n.checkVisibility() && !n.closest(".visually-hidden-focusable"))
+          .map(n => [n.tagName, n.className?.baseVal ?? n.className, n.getBoundingClientRect()])
+          .filter(([, , b]) => b.width < 8 || b.height < 8)
+          .map(([tag, cls, b]) => `${tag}.${cls} ${Math.round(b.width)}x${Math.round(b.height)}`));
+      expect(tiny).toEqual([]);
+    });
+  }
+});

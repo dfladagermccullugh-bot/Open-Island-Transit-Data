@@ -144,7 +144,12 @@ guard(() => {
 ::: {#route-detail tabindex="-1"}
 ```{ojs}
 //| echo: false
+//| output: false
 selected = routeId == null ? null : byId[routeId] ?? null
+```
+
+```{ojs}
+//| echo: false
 guard(() => selected == null ? overview() : detail(selected, selected.stats), "This route's figures")
 ```
 :::

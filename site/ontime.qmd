@@ -71,10 +71,15 @@ guard(() => {
 
 ```{ojs}
 //| echo: false
+//| output: false
 hours = Object.entries(latest?.by_hour ?? {})
   .map(([hour, b]) => ({hour: +hour, ...b, band: band(b?.on_time_share_of_observed, b?.observed), label: hourLabel(hour)}))
   .filter(d => d.observed >= MIN_OBSERVED && d.on_time_share_of_observed != null)
   .sort((a, b) => a.hour - b.hour)
+```
+
+```{ojs}
+//| echo: false
 guard(() => hours.length === 0 ? noDetail() : ch.figure({
   note: `This chart shows ${longDate(latestDate)}, grouped by the hour each departure was scheduled, in Pacific time. We leave out any hour in which we saw fewer than ${MIN_OBSERVED} departures.`,
   legend: bandLegend(),
@@ -151,7 +156,12 @@ that with the midpoint of our two times.
 
 ```{ojs}
 //| echo: false
+//| output: false
 fc = json("data/ontime/field-check.json")
+```
+
+```{ojs}
+//| echo: false
 guard(() => {
   const rows = [["All", fc?.overall], ["Arrivals (130 feet before the stop)", fc?.arrival], ["Departures (130 feet past the stop)", fc?.departure], ["Level with the stop", fc?.pass]]
     .filter(([, s]) => s?.n > 0)

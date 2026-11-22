@@ -70,6 +70,7 @@ viewof showAll = showAllToggle(days.length)
 ::: {.slot-trends}
 ```{ojs}
 //| echo: false
+//| output: false
 series = [
   {key: "trip_coverage", title: "Scheduled trips seen in the feed", share: true},
   {key: "vehicle_uptime", title: "Collector uptime (vehicle locations)", share: true},
@@ -79,6 +80,10 @@ series = [
   {key: "timepoint_coverage", title: "Departures at timetable stops we could time", share: true},
   {key: "prediction_min_5min", title: "Typical arrival prediction miss, 5 minutes ahead", word: "minute"},
 ]
+```
+
+```{ojs}
+//| echo: false
 guard(() => {
   if (days.length === 0) return noData();
   if (days.length < 2) return emptyNote("one-day", "Charts that follow each measure over time");
@@ -287,8 +292,13 @@ called a logistic regression will test all of these at the same time.
 
 ```{ojs}
 //| echo: false
+//| output: false
 gaps = json("data/quality/gaps.json")
 pval = p => p == null ? "–" : p < 0.0001 ? "< 0.0001" : `= ${num(p, 4)}`
+```
+
+```{ojs}
+//| echo: false
 guard(() => {
   const rates = gaps?.rates;
   if (rates == null || Object.keys(rates).length === 0) return noData();

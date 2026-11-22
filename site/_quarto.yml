@@ -65,5 +65,8 @@ format:
     page-layout: full
     lang: en-US
     canonical-url: true
+    # No cell shows its code, so Quarto's copy buttons would be empty,
+    # nearly invisible buttons a keyboard still stops on.
+    code-copy: false
     include-in-header: _head.html
     include-after-body: _after.html
