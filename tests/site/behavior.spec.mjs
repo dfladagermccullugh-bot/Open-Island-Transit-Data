@@ -262,6 +262,22 @@ test.describe("loading", () => {
     expect([...zooms]).toHaveLength(1);
   });
 
+  for (const name of ["index", "routes"]) {
+    test(`a tile server that never answers does not hold up ${name}`, async ({page}) => {
+      // The tiles are another server's. If it is slow or silent the map has
+      // no background, but the page still finishes loading and still works.
+      let asked = 0;
+      await page.route("https://tile.openstreetmap.org/**", () => { asked++; });
+      const before = asked;
+      await page.goto(`${name}.html`, {waitUntil: "load", timeout: 15_000});
+      expect(before).toBe(0);
+      await expect(page.locator(".route-map .route-line").first()).toBeAttached();
+      await expect(page.locator(".route-links a, #route-select").first()).toBeVisible();
+      // Tiles are asked for, but only after the page has loaded.
+      await expect.poll(() => asked).toBeGreaterThan(0);
+    });
+  }
+
   test("the page does not jump while its figures arrive", async ({page}) => {
     await page.addInitScript(() => {
       window.__shift = 0;

@@ -173,7 +173,16 @@ export function drawRouteMap(L, mapData, recent, {onSelect = null, linkFor = nul
   // Leaflet needs to know the size of its box, and the box has none until the
   // page lays it out. Fit the view the first time the box has a size, and
   // only then add the tiles, so each tile is fetched once.
-  let size = "";
+  //
+  // The tiles come from another server. They are added only once the page
+  // itself has finished loading, so a slow or silent tile server can never
+  // hold up the page's load event (and everything that waits for it); the
+  // route lines, which come with the page, are drawn at once.
+  let size = "", destroyed = false;
+  const afterLoad = start => {
+    if (document.readyState === "complete") start();
+    else addEventListener("load", start, {once: true});
+  };
   const watcher = new ResizeObserver(() => {
     const now = `${node.clientWidth}x${node.clientHeight}`;
     if (node.clientWidth === 0 || now === size) return;
@@ -181,7 +190,8 @@ export function drawRouteMap(L, mapData, recent, {onSelect = null, linkFor = nul
     m.invalidateSize({animate: false});
     if (!tiles) {
       fit();
-      tiles = L.tileLayer(TILES, {maxZoom: 18, attribution: ATTRIBUTION}).addTo(m);
+      tiles = L.tileLayer(TILES, {maxZoom: 18, attribution: ATTRIBUTION});
+      afterLoad(() => { if (!destroyed) tiles.addTo(m); });
       restyle();
     } else if (!moved) {
       fit();
@@ -190,6 +200,7 @@ export function drawRouteMap(L, mapData, recent, {onSelect = null, linkFor = nul
   watcher.observe(node);
 
   function destroy() {
+    destroyed = true;
     watcher.disconnect();
     m.remove();
   }
