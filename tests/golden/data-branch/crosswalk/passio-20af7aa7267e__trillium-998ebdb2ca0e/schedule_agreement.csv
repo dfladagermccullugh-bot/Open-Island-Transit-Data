@@ -1,0 +1,13 @@
+passio_trip_id,passio_route_id,passio_stop_id,stop_sequence,passio_time,nearest_trillium_minus_passio_s
+T1,R1,S0,1,06:00:00,0
+T2,R1,S0,1,06:20:00,300
+T3,R1,S0,1,06:40:00,0
+T4,R1,S0,1,07:00:00,0
+T1,R1,S2,3,06:08:00,0
+T2,R1,S2,3,06:28:00,300
+T3,R1,S2,3,06:48:00,0
+T4,R1,S2,3,07:08:00,0
+T1,R1,S3,4,06:12:00,0
+T2,R1,S3,4,06:32:00,300
+T3,R1,S3,4,06:52:00,0
+T4,R1,S3,4,07:12:00,0

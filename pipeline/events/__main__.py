@@ -26,7 +26,7 @@ import os
 import re
 import sys
 import traceback
-from datetime import UTC, date, datetime
+from datetime import date
 from pathlib import Path
 from typing import Any
 
@@ -34,8 +34,8 @@ import pyarrow as pa
 import pyarrow.parquet as pq
 
 from pipeline import release
+from pipeline.common import code_sha, load_json, run_order, stamp
 from pipeline.common import file_entry as _file_entry
-from pipeline.common import load_json, run_order
 from pipeline.common import sha_of as _sha
 from pipeline.config import COLLECTION_START, REPO
 from pipeline.events.infer import EVENTS_VERSION, infer_day
@@ -282,8 +282,8 @@ def main() -> int:
                 )
                 release.upload(tag, args.repo, args.out, entry["files"])
                 entry["release_tag"] = tag
-                entry["built_at"] = datetime.now(UTC).isoformat(timespec="seconds")
-                entry["code_sha"] = os.environ.get("GITHUB_SHA")
+                entry["built_at"] = stamp()
+                entry["code_sha"] = code_sha()
                 manifest["days"][day.isoformat()] = entry
                 _save(manifest_path, manifest)
                 (ontime_dir / "days").mkdir(parents=True, exist_ok=True)

@@ -19,12 +19,12 @@ import json
 import os
 import sys
 import traceback
-from datetime import UTC, date, datetime
+from datetime import date
 from pathlib import Path
 from typing import Any
 
 from pipeline import release
-from pipeline.common import run_order
+from pipeline.common import code_sha, run_order, stamp
 from pipeline.config import REPO
 from pipeline.tables.build import TABLES_VERSION, build_tables, read_raw, write_tables
 
@@ -116,8 +116,8 @@ def main() -> int:
                 )
                 release.upload(tag, args.repo, args.out, entry["files"])
                 entry["release_tag"] = tag
-                entry["built_at"] = datetime.now(UTC).isoformat(timespec="seconds")
-                entry["code_sha"] = os.environ.get("GITHUB_SHA")
+                entry["built_at"] = stamp()
+                entry["code_sha"] = code_sha()
                 manifest["days"][day.isoformat()] = entry
                 save(args.manifest, manifest)
             print(f"{day}: {entry['rows']}")

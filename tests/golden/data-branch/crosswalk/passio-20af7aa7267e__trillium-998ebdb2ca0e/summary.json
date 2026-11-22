@@ -1,0 +1,27 @@
+{
+ "passio_version": "passio-20af7aa7267e",
+ "trillium_version": "trillium-998ebdb2ca0e",
+ "crosswalk_version": "crosswalk/0.1.0",
+ "stops": {
+  "passio": 4,
+  "by_method": {
+   "stop_code": 4
+  }
+ },
+ "routes": {
+  "passio": 1,
+  "unmatched": []
+ },
+ "timepoints": {
+  "passio_route_stops": 4,
+  "trillium_timepoint_route_stops": 3,
+  "mixed_route_stops": 0
+ },
+ "schedule_agreement": {
+  "passio_stop_times_at_timepoints": 12,
+  "same_time": 9,
+  "within_60_s": 9,
+  "within_300_s": 12,
+  "no_trillium_time_same_weekday": 0
+ }
+}

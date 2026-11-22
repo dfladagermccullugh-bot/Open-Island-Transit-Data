@@ -1,0 +1,10 @@
+<sha256>  fetch-log-2026-11-24.csv
+<sha256>  fetch-log-2026-11-25.csv
+<sha256>  fetch-log-2026-11-26.csv
+<sha256>  raw-2026-11-24.parquet
+<sha256>  raw-2026-11-25.parquet
+<sha256>  raw-2026-11-26.parquet
+<sha256>  static-2026-11-24-passio-1.zip
+<sha256>  static-2026-11-24-trillium-2.zip
+<sha256>  static-2026-11-25-passio-3.zip
+<sha256>  static-2026-11-26-passio-4.zip

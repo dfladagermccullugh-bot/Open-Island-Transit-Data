@@ -27,7 +27,7 @@ import pyarrow.parquet as pq
 
 from pipeline import release
 from pipeline.canceled import canceled_trips
-from pipeline.common import load_json, run_order
+from pipeline.common import code_sha, load_json, run_order
 from pipeline.common import sha_of as _sha
 from pipeline.config import COLLECTION_START, REPO
 from pipeline.gtfs.holidays import no_service, service_expected
@@ -345,7 +345,7 @@ def compute(day: date, data: Path, raw_dir: Path, tables_dir: Path, repo: str) -
         "tables_version": parsed["tables_version"],
         "stop_events_sha256": None,
         **event_inputs,
-        "code_sha": os.environ.get("GITHUB_SHA"),
+        "code_sha": code_sha(),
     }
     return m
 

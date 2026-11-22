@@ -5,10 +5,32 @@ from __future__ import annotations
 
 import hashlib
 import json
+import os
 from collections.abc import Container, Iterable
-from datetime import date
+from datetime import UTC, date, datetime
 from pathlib import Path
 from typing import Any
+
+
+def utcnow() -> datetime:
+    """The current time in UTC.
+
+    Every stage stamps what it writes (``computed_at``, ``built_at``,
+    ``archived_at``) through this one function. Setting ``OITD_NOW`` to an ISO
+    time fixes the clock, so two runs over the same inputs write the same
+    bytes and a change in the code can be measured with ``diff``."""
+    fixed = os.environ.get("OITD_NOW")
+    return datetime.fromisoformat(fixed).astimezone(UTC) if fixed else datetime.now(UTC)
+
+
+def stamp() -> str:
+    """``utcnow`` as the text the manifests and day files carry."""
+    return utcnow().isoformat(timespec="seconds")
+
+
+def code_sha() -> str | None:
+    """The commit a GitHub run was started from; nothing on a local run."""
+    return os.environ.get("GITHUB_SHA")
 
 
 def sha256_file(path: Path) -> str:

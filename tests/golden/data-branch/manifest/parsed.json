@@ -1,0 +1,192 @@
+{
+ "version": 1,
+ "repo": "dfladagermccullugh-bot/Open-Island-Transit-Data",
+ "days": {
+  "2026-11-24": {
+   "service_date": "2026-11-24",
+   "tables_version": "tables/0.1.0",
+   "rows": {
+    "vehicles": 136,
+    "trip-updates": 152,
+    "trip-update-stops": 512,
+    "alerts": 0
+   },
+   "fetches": {
+    "serviceAlerts": {
+     "attempted": 22,
+     "parsed": 22,
+     "failed": 0,
+     "decode_errors": 0
+    },
+    "tripUpdates": {
+     "attempted": 330,
+     "parsed": 329,
+     "failed": 1,
+     "decode_errors": 0
+    },
+    "vehiclePositions": {
+     "attempted": 330,
+     "parsed": 329,
+     "failed": 1,
+     "decode_errors": 0
+    }
+   },
+   "duplicate_keys": {
+    "vehicles": 0,
+    "trip-updates": 0,
+    "trip-update-stops": 0,
+    "alerts": 0
+   },
+   "files": [
+    {
+     "name": "vehicles-2026-11-24.parquet",
+     "bytes": 0,
+     "sha256": "<sha256>"
+    },
+    {
+     "name": "trip-updates-2026-11-24.parquet",
+     "bytes": 0,
+     "sha256": "<sha256>"
+    },
+    {
+     "name": "trip-update-stops-2026-11-24.parquet",
+     "bytes": 0,
+     "sha256": "<sha256>"
+    },
+    {
+     "name": "alerts-2026-11-24.parquet",
+     "bytes": 0,
+     "sha256": "<sha256>"
+    }
+   ],
+   "raw_sha256": "<sha256>",
+   "release_tag": "parsed-2026-11",
+   "built_at": "2026-12-08T09:00:00+00:00",
+   "code_sha": null
+  },
+  "2026-11-25": {
+   "service_date": "2026-11-25",
+   "tables_version": "tables/0.1.0",
+   "rows": {
+    "vehicles": 174,
+    "trip-updates": 152,
+    "trip-update-stops": 512,
+    "alerts": 0
+   },
+   "fetches": {
+    "serviceAlerts": {
+     "attempted": 22,
+     "parsed": 22,
+     "failed": 0,
+     "decode_errors": 0
+    },
+    "tripUpdates": {
+     "attempted": 330,
+     "parsed": 330,
+     "failed": 0,
+     "decode_errors": 0
+    },
+    "vehiclePositions": {
+     "attempted": 330,
+     "parsed": 330,
+     "failed": 0,
+     "decode_errors": 0
+    }
+   },
+   "duplicate_keys": {
+    "vehicles": 0,
+    "trip-updates": 0,
+    "trip-update-stops": 0,
+    "alerts": 0
+   },
+   "files": [
+    {
+     "name": "vehicles-2026-11-25.parquet",
+     "bytes": 0,
+     "sha256": "<sha256>"
+    },
+    {
+     "name": "trip-updates-2026-11-25.parquet",
+     "bytes": 0,
+     "sha256": "<sha256>"
+    },
+    {
+     "name": "trip-update-stops-2026-11-25.parquet",
+     "bytes": 0,
+     "sha256": "<sha256>"
+    },
+    {
+     "name": "alerts-2026-11-25.parquet",
+     "bytes": 0,
+     "sha256": "<sha256>"
+    }
+   ],
+   "raw_sha256": "<sha256>",
+   "release_tag": "parsed-2026-11",
+   "built_at": "2026-12-08T09:00:00+00:00",
+   "code_sha": null
+  },
+  "2026-11-26": {
+   "service_date": "2026-11-26",
+   "tables_version": "tables/0.1.0",
+   "rows": {
+    "vehicles": 0,
+    "trip-updates": 0,
+    "trip-update-stops": 0,
+    "alerts": 0
+   },
+   "fetches": {
+    "serviceAlerts": {
+     "attempted": 22,
+     "parsed": 22,
+     "failed": 0,
+     "decode_errors": 0
+    },
+    "tripUpdates": {
+     "attempted": 330,
+     "parsed": 330,
+     "failed": 0,
+     "decode_errors": 0
+    },
+    "vehiclePositions": {
+     "attempted": 330,
+     "parsed": 330,
+     "failed": 0,
+     "decode_errors": 0
+    }
+   },
+   "duplicate_keys": {
+    "vehicles": 0,
+    "trip-updates": 0,
+    "trip-update-stops": 0,
+    "alerts": 0
+   },
+   "files": [
+    {
+     "name": "vehicles-2026-11-26.parquet",
+     "bytes": 0,
+     "sha256": "<sha256>"
+    },
+    {
+     "name": "trip-updates-2026-11-26.parquet",
+     "bytes": 0,
+     "sha256": "<sha256>"
+    },
+    {
+     "name": "trip-update-stops-2026-11-26.parquet",
+     "bytes": 0,
+     "sha256": "<sha256>"
+    },
+    {
+     "name": "alerts-2026-11-26.parquet",
+     "bytes": 0,
+     "sha256": "<sha256>"
+    }
+   ],
+   "raw_sha256": "<sha256>",
+   "release_tag": "parsed-2026-11",
+   "built_at": "2026-12-08T09:00:00+00:00",
+   "code_sha": null
+  }
+ }
+}

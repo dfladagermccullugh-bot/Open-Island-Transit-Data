@@ -1,0 +1,92 @@
+{
+ "version": 1,
+ "days": {
+  "2026-11-24": {
+   "service_date": "2026-11-24",
+   "events_version": "events/0.3.1",
+   "ontime_version": "ontime/0.3.0",
+   "validate_version": "validate/0.1.0",
+   "service_expected": true,
+   "passio_version": "passio-20af7aa7267e",
+   "timepoints": "passio-20af7aa7267e__timetable-2026-09-27-3390f308",
+   "vehicles_sha256": "<sha256>",
+   "rows": {
+    "stop-events": 16,
+    "trip-tracks": 4
+   },
+   "files": [
+    {
+     "name": "stop-events-2026-11-24.parquet",
+     "bytes": 0,
+     "sha256": "<sha256>"
+    },
+    {
+     "name": "trip-tracks-2026-11-24.parquet",
+     "bytes": 0,
+     "sha256": "<sha256>"
+    }
+   ],
+   "release_tag": "parsed-2026-11",
+   "built_at": "2026-12-08T09:00:00+00:00",
+   "code_sha": null
+  },
+  "2026-11-25": {
+   "service_date": "2026-11-25",
+   "events_version": "events/0.3.1",
+   "ontime_version": "ontime/0.3.0",
+   "validate_version": "validate/0.1.0",
+   "service_expected": true,
+   "passio_version": "passio-20af7aa7267e",
+   "timepoints": "passio-20af7aa7267e__timetable-2026-09-27-3390f308",
+   "vehicles_sha256": "<sha256>",
+   "rows": {
+    "stop-events": 16,
+    "trip-tracks": 4
+   },
+   "files": [
+    {
+     "name": "stop-events-2026-11-25.parquet",
+     "bytes": 0,
+     "sha256": "<sha256>"
+    },
+    {
+     "name": "trip-tracks-2026-11-25.parquet",
+     "bytes": 0,
+     "sha256": "<sha256>"
+    }
+   ],
+   "release_tag": "parsed-2026-11",
+   "built_at": "2026-12-08T09:00:00+00:00",
+   "code_sha": null
+  },
+  "2026-11-26": {
+   "service_date": "2026-11-26",
+   "events_version": "events/0.3.1",
+   "ontime_version": "ontime/0.3.0",
+   "validate_version": "validate/0.1.0",
+   "service_expected": false,
+   "passio_version": "passio-20af7aa7267e",
+   "timepoints": "passio-20af7aa7267e__timetable-2026-09-27-3390f308",
+   "vehicles_sha256": "<sha256>",
+   "rows": {
+    "stop-events": 16,
+    "trip-tracks": 4
+   },
+   "files": [
+    {
+     "name": "stop-events-2026-11-26.parquet",
+     "bytes": 0,
+     "sha256": "<sha256>"
+    },
+    {
+     "name": "trip-tracks-2026-11-26.parquet",
+     "bytes": 0,
+     "sha256": "<sha256>"
+    }
+   ],
+   "release_tag": "parsed-2026-11",
+   "built_at": "2026-12-08T09:00:00+00:00",
+   "code_sha": null
+  }
+ }
+}

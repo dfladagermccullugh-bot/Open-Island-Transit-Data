@@ -1,0 +1,483 @@
+{
+ "service_date": "2026-11-25",
+ "quality_version": "quality/0.5.0",
+ "computed_at": "2026-12-08T09:00:00+00:00",
+ "scheduled_service": {
+  "trips": 4,
+  "trips_ended_before_collection": 0,
+  "first_departure": "2026-11-25T14:00:00+00:00",
+  "last_arrival": "2026-11-25T15:12:00+00:00",
+  "scheduled_hours": 0.8
+ },
+ "paradata": {
+  "observed_from": "2026-11-25T08:00:00+00:00",
+  "vehiclePositions": {
+   "slots_expected": 4320,
+   "slots_logged": 330,
+   "slots_ok": 330,
+   "uptime": 0.076389,
+   "not_logged": 3990,
+   "logged_not_ok": 0,
+   "tick_phase_s": 0.0,
+   "latency_ms_median": 350.0,
+   "latency_ms_p95": 350.0,
+   "collector_versions": [
+    "collect/0.3.0"
+   ]
+  },
+  "tripUpdates": {
+   "slots_expected": 4320,
+   "slots_logged": 330,
+   "slots_ok": 330,
+   "uptime": 0.076389,
+   "not_logged": 3990,
+   "logged_not_ok": 0,
+   "tick_phase_s": 0.0,
+   "latency_ms_median": 350.0,
+   "latency_ms_p95": 350.0,
+   "collector_versions": [
+    "collect/0.3.0"
+   ],
+   "refresh": {
+    "pairs": 444,
+    "changed": 148,
+    "changed_share": 0.333333,
+    "update_interval_s_median": 60.0,
+    "update_interval_s_p90": 60.0,
+    "poll_interval_s": 20
+   }
+  },
+  "serviceAlerts": {
+   "slots_expected": 288,
+   "slots_logged": 22,
+   "slots_ok": 22,
+   "uptime": 0.076389,
+   "not_logged": 266,
+   "logged_not_ok": 0,
+   "tick_phase_s": 0.0,
+   "latency_ms_median": 350.0,
+   "latency_ms_p95": 350.0,
+   "collector_versions": [
+    "collect/0.3.0"
+   ]
+  }
+ },
+ "nonresponse": {
+  "fetch": {
+   "vehiclePositions": {
+    "attempted": 330,
+    "failed": 0,
+    "rate": 0.0,
+    "by_error": {}
+   },
+   "tripUpdates": {
+    "attempted": 330,
+    "failed": 0,
+    "rate": 0.0,
+    "by_error": {}
+   },
+   "serviceAlerts": {
+    "attempted": 22,
+    "failed": 0,
+    "rate": 0.0,
+    "by_error": {}
+   }
+  },
+  "vehicle_feed": {
+   "in_service_fetches": 144,
+   "ok_in_service_fetches": 144,
+   "empty_in_service": 11,
+   "empty_in_service_rate": 0.076389,
+   "stale_in_service": 0,
+   "stale_in_service_rate": 0.0,
+   "no_timestamp_in_service": 0,
+   "by_hour": {
+    "5": {
+     "attempted": 30
+    },
+    "6": {
+     "attempted": 180,
+     "in_service": 108,
+     "ok_in_service": 108,
+     "empty_in_service": 11
+    },
+    "7": {
+     "attempted": 120,
+     "in_service": 36,
+     "ok_in_service": 36
+    }
+   }
+  },
+  "items": {
+   "position_reports": 174,
+   "missing_share": {
+    "vehicle_id": 0.0,
+    "vehicle_label": 0.0,
+    "vehicle_ts": 0.0,
+    "trip_id": 0.0,
+    "route_id": 0.0,
+    "direction_id": 1.0,
+    "start_date": 1.0,
+    "start_time": 1.0,
+    "trip_schedule_relationship": 1.0,
+    "lat": 0.0,
+    "lon": 0.0,
+    "bearing": 0.0,
+    "speed": 0.0,
+    "odometer": 1.0,
+    "current_stop_sequence": 0.0,
+    "stop_id": 0.0,
+    "current_status": 1.0,
+    "congestion_level": 1.0,
+    "occupancy_status": 0.0,
+    "occupancy_percentage": 1.0
+   }
+  },
+  "trip_gaps": {
+   "trips_with_two_or_more_reports": 4,
+   "longest_gap_s_median": 20.0,
+   "longest_gap_s_p95": 173.0,
+   "trips_with_gap_over_90s": 1,
+   "share_of_trip_time_in_gaps_mean": 0.0556
+  }
+ },
+ "coverage": {
+  "scheduled_trips": 4,
+  "observed_scheduled_trips": 4,
+  "trip_coverage": 1.0,
+  "canceled_trips": 0,
+  "canceled_by": {
+   "flag": 0,
+   "alert": 0
+  },
+  "canceled_trip_ids": [],
+  "canceled_but_observed": 0,
+  "trip_coverage_excluding_canceled": 1.0,
+  "window_min": 30,
+  "trips_seen_only_outside_window": 0,
+  "routes_never_reporting": [],
+  "by_route": {
+   "R1": {
+    "scheduled": 4,
+    "observed": 4,
+    "canceled": 0,
+    "coverage": 1.0
+   }
+  },
+  "trips": {
+   "columns": [
+    "trip_id",
+    "route_id",
+    "start_hour",
+    "scheduled_in_service",
+    "observed",
+    "canceled"
+   ],
+   "rows": [
+    [
+     "T1",
+     "R1",
+     6,
+     1,
+     true,
+     false
+    ],
+    [
+     "T2",
+     "R1",
+     6,
+     1,
+     true,
+     false
+    ],
+    [
+     "T3",
+     "R1",
+     6,
+     1,
+     true,
+     false
+    ],
+    [
+     "T4",
+     "R1",
+     7,
+     1,
+     true,
+     false
+    ]
+   ]
+  },
+  "vehicles_seen": 2,
+  "over_coverage": {
+   "position_reports": 174,
+   "no_trip_id": 0,
+   "trip_id_not_in_static": 0,
+   "trip_not_scheduled_today": 0,
+   "share": 0.0
+  },
+  "stop_updates_flagged_skipped": 0,
+  "alerts_seen": 0,
+  "vehicle_ids": [
+   "B1",
+   "B2"
+  ]
+ },
+ "measurement": {
+  "position_age_s_median": 3.0,
+  "position_age_s_p95": 3.0,
+  "position_age_definition": "first fetch request time minus vehicle timestamp",
+  "timestamps_in_future": 0,
+  "timestamps_going_backwards": 0,
+  "consecutive_report_pairs": 172,
+  "impossible_jumps_over_130_kmh": 0
+ },
+ "processing": {
+  "id_match": {
+   "trip_id": {
+    "present": 174,
+    "in_static": 174,
+    "match_rate": 1.0
+   },
+   "route_id": {
+    "present": 174,
+    "in_static": 174,
+    "match_rate": 1.0
+   },
+   "stop_id": {
+    "present": 174,
+    "in_static": 174,
+    "match_rate": 1.0
+   }
+  },
+  "vehicle_table_rows": 174,
+  "distinct_position_reports": 174,
+  "parser": {
+   "serviceAlerts": {
+    "attempted": 22,
+    "parsed": 22,
+    "failed": 0,
+    "decode_errors": 0,
+    "decode_error_rate": 0.0
+   },
+   "tripUpdates": {
+    "attempted": 330,
+    "parsed": 330,
+    "failed": 0,
+    "decode_errors": 0,
+    "decode_error_rate": 0.0
+   },
+   "vehiclePositions": {
+    "attempted": 330,
+    "parsed": 330,
+    "failed": 0,
+    "decode_errors": 0,
+    "decode_error_rate": 0.0
+   }
+  },
+  "static_downloads": [
+   {
+    "static_fetch_id": 3,
+    "source": "passio",
+    "requested_at": "2026-11-25T10:15:00+00:00",
+    "complete": true,
+    "problems": [],
+    "missing": [],
+    "version": "passio-20af7aa7267e"
+   }
+  ],
+  "timepoints": {
+   "folder": "passio-20af7aa7267e__timetable-2026-09-27-3390f308",
+   "reference": "2026-09-27",
+   "printed_names": 3,
+   "resolved_names": 3,
+   "resolved_share": 1.0,
+   "timepoint_route_stops": 3
+  }
+ },
+ "events": {
+  "events_version": "events/0.3.1",
+  "stop_coverage": {
+   "timepoints": {
+    "scheduled": 12,
+    "observed": 12,
+    "coverage": 1.0,
+    "not_observed_by_reason": {},
+    "by_route": {
+     "R1": {
+      "scheduled": 12,
+      "observed": 12,
+      "coverage": 1.0
+     }
+    }
+   },
+   "all_stops": {
+    "scheduled": 16,
+    "observed": 16,
+    "coverage": 1.0,
+    "not_observed_by_reason": {},
+    "by_route": {
+     "R1": {
+      "scheduled": 16,
+      "observed": 16,
+      "coverage": 1.0
+     }
+    }
+   }
+  },
+  "shape_fit": {
+   "position_reports": 174,
+   "tracked_reports": 163,
+   "off_shape": 0,
+   "off_shape_share": 0.0,
+   "wrong_direction": 0,
+   "wrong_direction_share": 0.0,
+   "threshold_m": 100,
+   "trips_skipping_part_of_shape": 0,
+   "skipped_km": 0.0,
+   "skipping_by_route": {},
+   "trips_not_readable": 0,
+   "by_route": {
+    "R1": {
+     "position_reports": 174,
+     "tracked_reports": 163,
+     "off_shape": 0,
+     "off_shape_share": 0.0,
+     "wrong_direction": 0,
+     "wrong_direction_share": 0.0
+    }
+   }
+  },
+  "retraced_shapes": {
+   "shapes_used": 1,
+   "shapes_retraced": 0,
+   "retraced_m_by_shape": {},
+   "reported_from_m": 100
+  },
+  "assignment": {
+   "observed_trip_ids": 4,
+   "unassignable": 0,
+   "unassignable_share": 0.0,
+   "trip_id_not_in_static": [],
+   "trip_not_scheduled_today": [],
+   "scheduled_trips_with_reports": 4,
+   "trips_with_no_usable_report": 0,
+   "trips_with_more_than_one_vehicle": 0
+  },
+  "prediction_error": {
+   "observed_events_with_predictions": 15,
+   "definition": "predicted minus inferred time; arrival, or departure at a trip's first stop",
+   "by_horizon_min": {
+    "1": {
+     "n": 15,
+     "other_day": 0,
+     "other_day_share": 0.0,
+     "bias_s": 5.0,
+     "median_s": 7.3,
+     "mae_s": 5.5,
+     "median_abs_s": 7.3,
+     "within_60s_share": 1.0,
+     "over_30min": 0,
+     "over_30min_share": 0.0
+    },
+    "2": {
+     "n": 15,
+     "other_day": 0,
+     "other_day_share": 0.0,
+     "bias_s": 5.0,
+     "median_s": 7.3,
+     "mae_s": 5.5,
+     "median_abs_s": 7.3,
+     "within_60s_share": 1.0,
+     "over_30min": 0,
+     "over_30min_share": 0.0
+    },
+    "5": {
+     "n": 15,
+     "other_day": 0,
+     "other_day_share": 0.0,
+     "bias_s": 5.0,
+     "median_s": 7.3,
+     "mae_s": 5.5,
+     "median_abs_s": 7.3,
+     "within_60s_share": 1.0,
+     "over_30min": 0,
+     "over_30min_share": 0.0
+    },
+    "10": {
+     "n": 15,
+     "other_day": 0,
+     "other_day_share": 0.0,
+     "bias_s": 5.0,
+     "median_s": 7.3,
+     "mae_s": 5.5,
+     "median_abs_s": 7.3,
+     "within_60s_share": 1.0,
+     "over_30min": 0,
+     "over_30min_share": 0.0
+    },
+    "15": {
+     "n": 13,
+     "other_day": 0,
+     "other_day_share": 0.0,
+     "bias_s": 5.3,
+     "median_s": 7.3,
+     "mae_s": 5.7,
+     "median_abs_s": 7.3,
+     "within_60s_share": 1.0,
+     "over_30min": 0,
+     "over_30min_share": 0.0
+    },
+    "30": {
+     "n": 10,
+     "other_day": 0,
+     "other_day_share": 0.0,
+     "bias_s": 5.0,
+     "median_s": 7.3,
+     "mae_s": 5.5,
+     "median_abs_s": 7.3,
+     "within_60s_share": 1.0,
+     "over_30min": 0,
+     "over_30min_share": 0.0
+    }
+   }
+  },
+  "jitter": {
+   "dwells": 8,
+   "reports": 42,
+   "jitter_m_median": 0.0,
+   "jitter_m_p95": 0.0,
+   "definition": "distance from the dwell's median position; speed under 0.5 m/s, within 150 m of a first or last stop, at least 3 reports"
+  },
+  "missing_vehicles": {
+   "previous_days_available": 1,
+   "vehicles_seen_previously": 2,
+   "missing_count": 0,
+   "missing_today": [],
+   "new_today": []
+  }
+ },
+ "routes": {
+  "R1": {
+   "short_name": "1",
+   "long_name": "Harbor - Ferry"
+  }
+ },
+ "schedule": {
+  "passio_version": "passio-20af7aa7267e",
+  "passio_basis": "complete download that day",
+  "passio_changed_during_day": false,
+  "trillium_version": "trillium-998ebdb2ca0e",
+  "trillium_removes_service_today": [],
+  "service_expected": true,
+  "no_service_day": null,
+  "note": "Scheduled trips come from the Passio calendar, which has no holiday exceptions. On a day Island Transit lists as having no service, service_expected is false and the day is left out of figures that pool several days."
+ },
+ "inputs": {
+  "raw_sha256": "<sha256>",
+  "vehicles_sha256": "<sha256>",
+  "tables_version": "tables/0.1.0",
+  "stop_events_sha256": "<sha256>",
+  "code_sha": null
+ }
+}

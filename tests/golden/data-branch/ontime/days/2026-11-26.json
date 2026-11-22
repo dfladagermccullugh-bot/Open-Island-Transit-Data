@@ -1,0 +1,135 @@
+{
+ "ontime_version": "ontime/0.3.0",
+ "definition": {
+  "window_s": [-60,300],
+  "measured": "departure at timepoints; arrival at the last stop",
+  "timepoints": "stops printed in Island Transit's timetables"
+ },
+ "scheduled": 12,
+ "observed": 0,
+ "observed_share": 0.0,
+ "on_time": 0,
+ "early": 0,
+ "late": 0,
+ "on_time_share_of_observed": null,
+ "deviation_s_median": null,
+ "by_route": {
+  "R1": {
+   "scheduled": 12,
+   "observed": 0,
+   "observed_share": 0.0,
+   "on_time": 0,
+   "early": 0,
+   "late": 0,
+   "on_time_share_of_observed": null,
+   "deviation_s_median": null
+  }
+ },
+ "by_hour": {
+  "6": {
+   "scheduled": 9,
+   "observed": 0,
+   "observed_share": 0.0,
+   "on_time": 0,
+   "early": 0,
+   "late": 0,
+   "on_time_share_of_observed": null,
+   "deviation_s_median": null
+  },
+  "7": {
+   "scheduled": 3,
+   "observed": 0,
+   "observed_share": 0.0,
+   "on_time": 0,
+   "early": 0,
+   "late": 0,
+   "on_time_share_of_observed": null,
+   "deviation_s_median": null
+  }
+ },
+ "by_route_stop": {
+  "R1": {
+   "S0": {
+    "name": "Harbor Station",
+    "stop_sequence_median": 1,
+    "scheduled": 4,
+    "observed": 0,
+    "observed_share": 0.0,
+    "on_time": 0,
+    "early": 0,
+    "late": 0,
+    "on_time_share_of_observed": null,
+    "deviation_s_median": null,
+    "deviations_s": []
+   },
+   "S2": {
+    "name": "Midway Mall",
+    "stop_sequence_median": 3,
+    "scheduled": 4,
+    "observed": 0,
+    "observed_share": 0.0,
+    "on_time": 0,
+    "early": 0,
+    "late": 0,
+    "on_time_share_of_observed": null,
+    "deviation_s_median": null,
+    "deviations_s": []
+   },
+   "S3": {
+    "name": "Ferry Terminal",
+    "stop_sequence_median": 4,
+    "scheduled": 4,
+    "observed": 0,
+    "observed_share": 0.0,
+    "on_time": 0,
+    "early": 0,
+    "late": 0,
+    "on_time_share_of_observed": null,
+    "deviation_s_median": null,
+    "deviations_s": []
+   }
+  }
+ },
+ "service_date": "2026-11-26",
+ "service_expected": false,
+ "no_service_day": {
+  "holiday": "Thanksgiving Day",
+  "source": "https://www.islandtransit.org/Hours-of-Operation",
+  "read_on": "2026-11-21"
+ },
+ "passio_version": "passio-20af7aa7267e",
+ "timepoints": "passio-20af7aa7267e__timetable-2026-09-27-3390f308",
+ "events_version": "events/0.3.1",
+ "routes": {
+  "R1": {
+   "short_name": "1",
+   "long_name": "Harbor - Ferry"
+  }
+ },
+ "validation": {
+  "validate_version": "validate/0.1.0",
+  "feed_agreement": {
+   "compared": 0,
+   "inside_change_interval_share": null,
+   "within_tolerance_share": null,
+   "tolerance_s": 30.0,
+   "feed_change_after_departure_s": {
+    "p5": null,
+    "median": null,
+    "p95": null
+   },
+   "feed_sequence_going_backwards": 0,
+   "by_route": {}
+  },
+  "travel_times": {
+   "segments": 0,
+   "negative": 0,
+   "over_max_speed": 0,
+   "across_skipped_stretch": 0,
+   "max_speed_ms": null,
+   "max_allowed_ms": 35.0,
+   "fastest": []
+  }
+ },
+ "feed_agreement_share": null
+}

@@ -1,0 +1,13 @@
+[
+ {
+  "month": "2026-11",
+  "days_archived": 3,
+  "days_missing": 4,
+  "vehicle_uptime": 0.076312,
+  "trip_coverage": 0.875,
+  "timepoint_observed_share": 0.875,
+  "on_time_share_of_observed": 0.761905,
+  "bytes": 0,
+  "computed_at": "2026-12-08T09:00:00+00:00"
+ }
+]

@@ -17,7 +17,7 @@ import json
 import os
 import sys
 import traceback
-from datetime import UTC, date, datetime
+from datetime import date
 from pathlib import Path
 from typing import Any
 
@@ -25,6 +25,7 @@ from pipeline import release
 from pipeline.archive.build import build_day
 from pipeline.archive.days import complete_days
 from pipeline.archive.store import Collector
+from pipeline.common import code_sha, stamp, utcnow
 from pipeline.config import REPO
 
 
@@ -79,9 +80,7 @@ def main() -> int:
         first = collector.first_day()
         if first is not None:
             days += [
-                d
-                for d in complete_days(first, datetime.now(UTC))
-                if d.isoformat() not in manifest["days"]
+                d for d in complete_days(first, utcnow()) if d.isoformat() not in manifest["days"]
             ]
     # Oldest first: every pending day is new, and the oldest stored day is the
     # one closest to being lost if the database fills.
@@ -96,8 +95,8 @@ def main() -> int:
             entry = build_day(collector, day, args.out)
             if args.release:
                 entry["release_tag"] = upload(day, entry, args.out, args.repo)
-                entry["archived_at"] = datetime.now(UTC).isoformat(timespec="seconds")
-                entry["code_sha"] = os.environ.get("GITHUB_SHA")
+                entry["archived_at"] = stamp()
+                entry["code_sha"] = code_sha()
                 manifest["days"][day.isoformat()] = entry
                 save_manifest(args.manifest, manifest)
             size = sum(f["bytes"] for f in entry["files"])

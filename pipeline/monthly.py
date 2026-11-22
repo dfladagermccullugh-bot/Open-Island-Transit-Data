@@ -28,11 +28,12 @@ import json
 import os
 import statistics
 import sys
-from datetime import UTC, date, datetime, timedelta
+from datetime import date, datetime, timedelta
 from pathlib import Path
 from typing import Any
 
 from pipeline import release
+from pipeline.common import code_sha, stamp, utcnow
 from pipeline.config import PACIFIC, REPO
 
 REPORT_VERSION = "monthly/0.1.0"
@@ -298,8 +299,8 @@ def build(data: Path, month: str, today: date | None = None) -> dict[str, Any]:
     return {
         "report_version": REPORT_VERSION,
         "month": month,
-        "computed_at": datetime.now(UTC).replace(microsecond=0).isoformat(),
-        "code_sha": os.environ.get("GITHUB_SHA"),
+        "computed_at": stamp(),
+        "code_sha": code_sha(),
         "inputs_digest": inputs_digest(data, month),
         "period": {
             "days_in_month": len(days),
@@ -468,7 +469,7 @@ def main() -> int:
     ap.add_argument("--month", help="with --preview: build this month even if open")
     ap.add_argument("--preview", type=Path, help="write one month here; publish nothing")
     args = ap.parse_args()
-    today = args.today or datetime.now(PACIFIC).date()
+    today = args.today or utcnow().astimezone(PACIFIC).date()
 
     if args.preview:
         if not args.month:

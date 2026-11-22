@@ -16,12 +16,18 @@ hold ``data-branch/`` (a copy of the published data branch) and
 everything derived from the raw archive is removed first, so every later
 stage is rebuilt from the raw files; comparing the result with the published
 copy (``diff -r``) measures what a code change does to the figures.
+
+``--now`` fixes the clock every stage stamps its output with (``OITD_NOW``,
+see ``pipeline.common.utcnow``). Two replays with the same ``--now`` over the
+same inputs write the same bytes, so ``scripts/replay_diff.py`` shows exactly
+what a change in the code did, and nothing else.
 """
 
 from __future__ import annotations
 
 import argparse
 import hashlib
+import os
 import runpy
 import shutil
 import sys
@@ -50,7 +56,7 @@ def forget_derived(data: Path, store: Path) -> None:
                 f.unlink()
 
 
-def main() -> int:
+def main(argv: list[str] | None = None) -> int:
     ap = argparse.ArgumentParser(description="Run the nightly chain locally.")
     ap.add_argument("day", nargs="?", help="service day to pull from the collector")
     ap.add_argument("root", nargs="?", type=Path, help="empty folder to write into")
@@ -59,10 +65,14 @@ def main() -> int:
     ap.add_argument("--max-days", type=int, help="days per stage and run (stage default: 7)")
     ap.add_argument("--reference-dir", help="timetable reference folder for the static stage")
     ap.add_argument("--pin-overrides", help="schedule pin overrides file for the static stage")
-    args = ap.parse_args()
+    ap.add_argument("--observations", help="field observations file for the field check")
+    ap.add_argument("--now", help="fix the clock at this ISO time, e.g. 2026-12-02T09:00:00+00:00")
+    args = ap.parse_args(argv)
     if bool(args.replay) == bool(args.day and args.root):
         ap.error("give either a day and a folder, or --replay <folder>")
     day, root = args.day, args.replay or args.root
+    if args.now:
+        os.environ["OITD_NOW"] = args.now
     store = root / "releases"
     if args.replay and args.from_raw:
         forget_derived(root / "data-branch", store)
@@ -106,6 +116,7 @@ def main() -> int:
         if value
         for x in (flag, value)
     ]  # fmt: skip
+    field_args = ["--observations", args.observations] if args.observations else []
     steps = [
         ("pipeline.archive", ["--date", day, "--release", "--manifest",
                               f"{data}/manifest/raw.json", "--out", f"{work}/files"]),
@@ -122,7 +133,7 @@ def main() -> int:
                              f"{work}/files", "--tables-dir", f"{work}/tables", "--out",
                              f"{work}/events"]),
         ("pipeline.events.field", ["score", "--data", str(data), "--tables-dir",
-                                   f"{work}/events"]),
+                                   f"{work}/events", *field_args]),
         ("pipeline.quality", ["--pending", "--data", str(data), "--raw-dir", f"{work}/files",
                               "--tables-dir", f"{work}/tables"]),
         ("pipeline.monthly", ["--data", str(data), "--release", "--work", f"{work}/monthly"]),

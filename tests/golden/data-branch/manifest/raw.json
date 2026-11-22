@@ -1,0 +1,210 @@
+{
+ "version": 1,
+ "repo": "example/synthetic",
+ "days": {
+  "2026-11-24": {
+   "service_date": "2026-11-24",
+   "fetch_rows": 682,
+   "raw_rows": 680,
+   "digest": "f55c1522d8c04811329a64a31bed35bc",
+   "ok_rows": 680,
+   "first_fetch_id": 1,
+   "last_fetch_id": 682,
+   "static": [
+    {
+     "static_fetch_id": 1,
+     "source": "passio",
+     "url": "https://example.org/passio.zip",
+     "requested_at": "2026-11-24T10:15:00+00:00",
+     "responded_at": "2026-11-24T10:15:00.600000+00:00",
+     "latency_ms": 600,
+     "http_status": 200,
+     "bytes": 0,
+     "sha256": "<sha256>",
+     "zip_has_directory": true,
+     "files": [
+      "agency.txt",
+      "feed_info.txt",
+      "routes.txt",
+      "calendar.txt",
+      "trips.txt",
+      "shapes.txt",
+      "stops.txt",
+      "stop_times.txt"
+     ],
+     "error_class": null,
+     "error_msg": null,
+     "collector_version": "collect/0.3.0",
+     "logged_at": "2026-11-24T10:15:00.800000+00:00",
+     "file": "static-2026-11-24-passio-1.zip"
+    },
+    {
+     "static_fetch_id": 2,
+     "source": "trillium",
+     "url": "https://example.org/trillium.zip",
+     "requested_at": "2026-11-24T10:20:00+00:00",
+     "responded_at": "2026-11-24T10:20:00.600000+00:00",
+     "latency_ms": 600,
+     "http_status": 200,
+     "bytes": 0,
+     "sha256": "<sha256>",
+     "zip_has_directory": true,
+     "files": [
+      "agency.txt",
+      "routes.txt",
+      "calendar.txt",
+      "trips.txt",
+      "stops.txt",
+      "stop_times.txt"
+     ],
+     "error_class": null,
+     "error_msg": null,
+     "collector_version": "collect/0.3.0",
+     "logged_at": "2026-11-24T10:20:00.800000+00:00",
+     "file": "static-2026-11-24-trillium-2.zip"
+    }
+   ],
+   "files": [
+    {
+     "name": "raw-2026-11-24.parquet",
+     "bytes": 0,
+     "sha256": "<sha256>"
+    },
+    {
+     "name": "fetch-log-2026-11-24.csv",
+     "bytes": 0,
+     "sha256": "<sha256>"
+    },
+    {
+     "name": "static-2026-11-24-passio-1.zip",
+     "bytes": 0,
+     "sha256": "<sha256>"
+    },
+    {
+     "name": "static-2026-11-24-trillium-2.zip",
+     "bytes": 0,
+     "sha256": "<sha256>"
+    }
+   ],
+   "release_tag": "raw-2026-11",
+   "archived_at": "2026-11-25T08:40:00+00:00",
+   "code_sha": null
+  },
+  "2026-11-25": {
+   "service_date": "2026-11-25",
+   "fetch_rows": 682,
+   "raw_rows": 682,
+   "digest": "547da7d2d5266797948d357af8fc772d",
+   "ok_rows": 682,
+   "first_fetch_id": 683,
+   "last_fetch_id": 1364,
+   "static": [
+    {
+     "static_fetch_id": 3,
+     "source": "passio",
+     "url": "https://example.org/passio.zip",
+     "requested_at": "2026-11-25T10:15:00+00:00",
+     "responded_at": "2026-11-25T10:15:00.600000+00:00",
+     "latency_ms": 600,
+     "http_status": 200,
+     "bytes": 0,
+     "sha256": "<sha256>",
+     "zip_has_directory": true,
+     "files": [
+      "agency.txt",
+      "feed_info.txt",
+      "routes.txt",
+      "calendar.txt",
+      "trips.txt",
+      "shapes.txt",
+      "stops.txt",
+      "stop_times.txt"
+     ],
+     "error_class": null,
+     "error_msg": null,
+     "collector_version": "collect/0.3.0",
+     "logged_at": "2026-11-25T10:15:00.800000+00:00",
+     "file": "static-2026-11-25-passio-3.zip"
+    }
+   ],
+   "files": [
+    {
+     "name": "raw-2026-11-25.parquet",
+     "bytes": 0,
+     "sha256": "<sha256>"
+    },
+    {
+     "name": "fetch-log-2026-11-25.csv",
+     "bytes": 0,
+     "sha256": "<sha256>"
+    },
+    {
+     "name": "static-2026-11-25-passio-3.zip",
+     "bytes": 0,
+     "sha256": "<sha256>"
+    }
+   ],
+   "release_tag": "raw-2026-11",
+   "archived_at": "2026-11-26T08:40:00+00:00",
+   "code_sha": null
+  },
+  "2026-11-26": {
+   "service_date": "2026-11-26",
+   "fetch_rows": 682,
+   "raw_rows": 682,
+   "digest": "2324225b57cbe470a6b84ad2f1c95cc2",
+   "ok_rows": 682,
+   "first_fetch_id": 1365,
+   "last_fetch_id": 2046,
+   "static": [
+    {
+     "static_fetch_id": 4,
+     "source": "passio",
+     "url": "https://example.org/passio.zip",
+     "requested_at": "2026-11-26T10:15:00+00:00",
+     "responded_at": "2026-11-26T10:15:00.600000+00:00",
+     "latency_ms": 600,
+     "http_status": 200,
+     "bytes": 0,
+     "sha256": "<sha256>",
+     "zip_has_directory": true,
+     "files": [
+      "agency.txt",
+      "feed_info.txt",
+      "routes.txt",
+      "calendar.txt",
+      "trips.txt",
+      "shapes.txt",
+      "stops.txt",
+      "stop_times.txt"
+     ],
+     "error_class": null,
+     "error_msg": null,
+     "collector_version": "collect/0.3.0",
+     "logged_at": "2026-11-26T10:15:00.800000+00:00",
+     "file": "static-2026-11-26-passio-4.zip"
+    }
+   ],
+   "files": [
+    {
+     "name": "raw-2026-11-26.parquet",
+     "bytes": 0,
+     "sha256": "<sha256>"
+    },
+    {
+     "name": "fetch-log-2026-11-26.csv",
+     "bytes": 0,
+     "sha256": "<sha256>"
+    },
+    {
+     "name": "static-2026-11-26-passio-4.zip",
+     "bytes": 0,
+     "sha256": "<sha256>"
+    }
+   ],
+   "release_tag": "raw-2026-11",
+   "archived_at": "2026-11-27T08:40:00+00:00",
+   "code_sha": null
+  }
+ }
+}

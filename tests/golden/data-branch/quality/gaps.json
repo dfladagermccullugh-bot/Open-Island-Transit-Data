@@ -1,0 +1,64 @@
+{
+ "gaps_version": "gaps/0.3.0",
+ "days": [
+  "2026-11-24",
+  "2026-11-25"
+ ],
+ "trips": 8,
+ "unobserved": 1,
+ "canceled_left_out": 0,
+ "thresholds": {
+  "min_days": 14,
+  "min_unobserved": 30
+ },
+ "rates": {
+  "by_hour": {
+   "6": {
+    "scheduled": 6,
+    "unobserved": 0,
+    "rate": 0.0
+   },
+   "7": {
+    "scheduled": 2,
+    "unobserved": 1,
+    "rate": 0.5
+   }
+  },
+  "by_hour_band": {
+   "early (before 7)": {
+    "scheduled": 6,
+    "unobserved": 0,
+    "rate": 0.0
+   },
+   "morning peak (7-9)": {
+    "scheduled": 2,
+    "unobserved": 1,
+    "rate": 0.5
+   }
+  },
+  "by_route": {
+   "R1": {
+    "scheduled": 8,
+    "unobserved": 1,
+    "rate": 0.125
+   }
+  },
+  "by_day_type": {
+   "weekday": {
+    "scheduled": 8,
+    "unobserved": 1,
+    "rate": 0.125
+   }
+  },
+  "by_trips_in_service": {
+   "1-9": {
+    "scheduled": 8,
+    "unobserved": 1,
+    "rate": 0.125
+   }
+  }
+ },
+ "model": null,
+ "model_status": "not fitted: needs 14 days and 30 unobserved trips (have 2 and 1)",
+ "limits": "The model treats trips as independent. Trips lost together on one day or one bus make its standard errors too small and its p-values too confident. Days with no service are left out, and so are trips the feed marked as canceled that no bus reported."
+}

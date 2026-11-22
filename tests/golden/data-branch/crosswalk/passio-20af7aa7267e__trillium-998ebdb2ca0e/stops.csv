@@ -1,0 +1,5 @@
+passio_stop_id,passio_stop_code,passio_stop_name,trillium_stop_id,trillium_stop_code,trillium_stop_name,method,distance_m,nearest_trillium_stop_id,nearest_trillium_stop_name,nearest_distance_m
+S0,100,Harbor Station,X0,100,Harbor Station,stop_code,0.0,X0,Harbor Station,0.0
+S1,101,Old Depot,X1,101,Old Depot,stop_code,0.0,X1,Old Depot,0.0
+S2,102,Midway Mall,X2,102,Midway Mall,stop_code,0.0,X2,Midway Mall,0.0
+S3,103,Ferry Terminal,X3,103,Ferry Terminal,stop_code,0.0,X3,Ferry Terminal,0.0

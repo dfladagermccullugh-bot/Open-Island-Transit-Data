@@ -1,0 +1,94 @@
+{
+ "field_version": "field/0.3.0",
+ "definition": "inferred minus field-timed, seconds; arrival = bus within 40 m of the stop along its route, departure = more than 40 m past it, pass = bus level with the stop, inferred as the midpoint of arrival and departure",
+ "target_mae_s": 30.0,
+ "target_min_n": 5,
+ "meets_target": null,
+ "overall": {
+  "n": 1,
+  "bias_s": -7.0,
+  "median_s": -7.0,
+  "mae_s": 7.0,
+  "within_30s_share": 1.0,
+  "within_60s_share": 1.0,
+  "max_abs_s": 7.0
+ },
+ "arrival": {
+  "n": 0,
+  "bias_s": null,
+  "median_s": null,
+  "mae_s": null,
+  "within_30s_share": null,
+  "within_60s_share": null,
+  "max_abs_s": null
+ },
+ "departure": {
+  "n": 0,
+  "bias_s": null,
+  "median_s": null,
+  "mae_s": null,
+  "within_30s_share": null,
+  "within_60s_share": null,
+  "max_abs_s": null
+ },
+ "pass": {
+  "n": 1,
+  "bias_s": -7.0,
+  "median_s": -7.0,
+  "mae_s": 7.0,
+  "within_30s_share": 1.0,
+  "within_60s_share": 1.0,
+  "max_abs_s": 7.0
+ },
+ "by_stop": {
+  "S2": {
+   "arrival": {
+    "n": 0,
+    "bias_s": null,
+    "median_s": null,
+    "mae_s": null,
+    "within_30s_share": null,
+    "within_60s_share": null,
+    "max_abs_s": null
+   },
+   "departure": {
+    "n": 0,
+    "bias_s": null,
+    "median_s": null,
+    "mae_s": null,
+    "within_30s_share": null,
+    "within_60s_share": null,
+    "max_abs_s": null
+   },
+   "pass": {
+    "n": 1,
+    "bias_s": -7.0,
+    "median_s": -7.0,
+    "mae_s": 7.0,
+    "within_30s_share": 1.0,
+    "within_60s_share": 1.0,
+    "max_abs_s": 7.0
+   }
+  }
+ },
+ "timed_rows": 1,
+ "rows_waiting_for_their_day": 0,
+ "rows_with_no_scheduled_event": 0,
+ "timed_moments_not_inferred": 0,
+ "days": [
+  "2026-11-24"
+ ],
+ "pairs": [
+  {
+   "line": 2,
+   "service_date": "2026-11-24",
+   "trip_id": "T1",
+   "stop_id": "S2",
+   "event": "pass",
+   "field": "2026-11-24T14:08:04+00:00",
+   "inferred": "2026-11-24T14:07:56.995121+00:00",
+   "difference_s": -7.0
+  }
+ ],
+ "unreadable_rows": []
+}

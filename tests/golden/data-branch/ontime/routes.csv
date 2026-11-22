@@ -1,0 +1,4 @@
+service_date,route_id,route_name,scheduled,observed,on_time,early,late,observed_share,on_time_share_of_observed,deviation_s_median
+2026-11-24,R1,1,12,9,4,2,3,0.75,0.4444,-7.3
+2026-11-25,R1,1,12,12,12,0,0,1.0,1.0,7.0
+2026-11-26,R1,1,12,0,0,0,0,0.0,,

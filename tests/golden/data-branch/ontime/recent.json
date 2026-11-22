@@ -1,0 +1,130 @@
+{
+ "routes_version": "routes/0.2.0",
+ "window_days": 28,
+ "first_service_date": "2026-11-24",
+ "last_service_date": "2026-11-25",
+ "days": 2,
+ "days_without_service": [
+  "2026-11-26"
+ ],
+ "timetable_reference": "2026-09-27",
+ "schedule_change": null,
+ "definition": {
+  "window_s": [
+   -60,
+   300
+  ],
+  "measured": "departure at timepoints; arrival at the last stop",
+  "timepoints": "stops printed in Island Transit's timetables"
+ },
+ "timepoints": "passio-20af7aa7267e__timetable-2026-09-27-3390f308",
+ "passio_version": "passio-20af7aa7267e",
+ "ontime_versions": [
+  "ontime/0.3.0"
+ ],
+ "overall": {
+  "scheduled": 24,
+  "observed": 21,
+  "on_time": 16,
+  "early": 2,
+  "late": 3,
+  "observed_share": 0.875,
+  "on_time_share_of_observed": 0.7619,
+  "early_share_of_observed": 0.0952,
+  "late_share_of_observed": 0.1429,
+  "deviation_s_median": 1.0,
+  "deviation_s_p25": -7.0,
+  "deviation_s_p75": 146.0,
+  "deviations_counted": 21
+ },
+ "routes": {
+  "R1": {
+   "name": "1",
+   "short_name": "1",
+   "long_name": "Harbor - Ferry",
+   "scheduled": 24,
+   "observed": 21,
+   "on_time": 16,
+   "early": 2,
+   "late": 3,
+   "observed_share": 0.875,
+   "on_time_share_of_observed": 0.7619,
+   "early_share_of_observed": 0.0952,
+   "late_share_of_observed": 0.1429,
+   "deviation_s_median": 1.0,
+   "deviation_s_p25": -7.0,
+   "deviation_s_p75": 146.0,
+   "deviations_counted": 21,
+   "daily": [
+    {
+     "service_date": "2026-11-24",
+     "observed_share": 0.75,
+     "on_time_share_of_observed": 0.4444,
+     "deviation_s_median": -7.3
+    },
+    {
+     "service_date": "2026-11-25",
+     "observed_share": 1.0,
+     "on_time_share_of_observed": 1.0,
+     "deviation_s_median": 7.0
+    }
+   ],
+   "stops": [
+    {
+     "stop_id": "S0",
+     "name": "Harbor Station",
+     "order": 1,
+     "scheduled": 8,
+     "observed": 7,
+     "on_time": 5,
+     "early": 1,
+     "late": 1,
+     "observed_share": 0.875,
+     "on_time_share_of_observed": 0.7143,
+     "early_share_of_observed": 0.1429,
+     "late_share_of_observed": 0.1429,
+     "deviation_s_median": 1.0,
+     "deviation_s_p25": -6.5,
+     "deviation_s_p75": 83.5,
+     "deviations_counted": 7
+    },
+    {
+     "stop_id": "S2",
+     "name": "Midway Mall",
+     "order": 3,
+     "scheduled": 8,
+     "observed": 7,
+     "on_time": 5,
+     "early": 1,
+     "late": 1,
+     "observed_share": 0.875,
+     "on_time_share_of_observed": 0.7143,
+     "early_share_of_observed": 0.1429,
+     "late_share_of_observed": 0.1429,
+     "deviation_s_median": 1.0,
+     "deviation_s_p25": 1.0,
+     "deviation_s_p75": 86.0,
+     "deviations_counted": 7
+    },
+    {
+     "stop_id": "S3",
+     "name": "Ferry Terminal",
+     "order": 4,
+     "scheduled": 8,
+     "observed": 7,
+     "on_time": 6,
+     "early": 0,
+     "late": 1,
+     "observed_share": 0.875,
+     "on_time_share_of_observed": 0.8571,
+     "early_share_of_observed": 0.0,
+     "late_share_of_observed": 0.1429,
+     "deviation_s_median": -7.0,
+     "deviation_s_p25": -7.0,
+     "deviation_s_p75": 80.5,
+     "deviations_counted": 7
+    }
+   ]
+  }
+ }
+}

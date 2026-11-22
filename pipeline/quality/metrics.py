@@ -16,10 +16,11 @@ import math
 import statistics
 from collections import Counter, defaultdict
 from collections.abc import Container, Iterable
-from datetime import UTC, date, datetime, timedelta
+from datetime import date, datetime, timedelta
 from typing import Any
 
 from pipeline.archive.days import day_bounds
+from pipeline.common import stamp
 from pipeline.config import PACIFIC
 from pipeline.gtfs.schedule import ServiceWindows, Trip
 from pipeline.stats import quantile as _quantile
@@ -490,7 +491,7 @@ def day_metrics(
     return {
         "service_date": day.isoformat(),
         "quality_version": QUALITY_VERSION,
-        "computed_at": datetime.now(UTC).isoformat(timespec="seconds"),
+        "computed_at": stamp(),
         "scheduled_service": {
             "trips": len(all_trips),
             "trips_ended_before_collection": len(all_trips) - len(trips),

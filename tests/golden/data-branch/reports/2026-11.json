@@ -1,0 +1,412 @@
+{
+ "report_version": "monthly/0.1.0",
+ "month": "2026-11",
+ "computed_at": "2026-12-08T09:00:00+00:00",
+ "code_sha": null,
+ "inputs_digest": "<sha256>",
+ "period": {
+  "days_in_month": 30,
+  "first_service_date": "2026-11-24",
+  "last_service_date": "2026-11-26",
+  "days_archived": 3,
+  "days_missing": [
+   "2026-11-27",
+   "2026-11-28",
+   "2026-11-29",
+   "2026-11-30"
+  ],
+  "days_without_quality": [],
+  "days_without_ontime": [],
+  "days_without_service": [
+   "2026-11-26"
+  ],
+  "partial_days": []
+ },
+ "collection": {
+  "vehiclePositions": {
+   "slots_expected": 12960,
+   "slots_ok": 989,
+   "uptime": 0.076312,
+   "attempted": 990,
+   "failed": 1,
+   "failure_rate": 0.00101,
+   "uptime_by_day": {
+    "days": 3,
+    "min": 0.076157,
+    "min_date": "2026-11-24",
+    "median": 0.076389,
+    "max": 0.076389,
+    "max_date": "2026-11-25"
+   }
+  },
+  "tripUpdates": {
+   "slots_expected": 12960,
+   "slots_ok": 989,
+   "uptime": 0.076312,
+   "attempted": 990,
+   "failed": 1,
+   "failure_rate": 0.00101,
+   "uptime_by_day": {
+    "days": 3,
+    "min": 0.076157,
+    "min_date": "2026-11-24",
+    "median": 0.076389,
+    "max": 0.076389,
+    "max_date": "2026-11-25"
+   }
+  },
+  "serviceAlerts": {
+   "slots_expected": 864,
+   "slots_ok": 66,
+   "uptime": 0.076389,
+   "attempted": 66,
+   "failed": 0,
+   "failure_rate": 0.0,
+   "uptime_by_day": {
+    "days": 3,
+    "min": 0.076389,
+    "min_date": "2026-11-24",
+    "median": 0.076389,
+    "max": 0.076389,
+    "max_date": "2026-11-24"
+   }
+  }
+ },
+ "coverage": {
+  "scheduled_trips": 8,
+  "observed_scheduled_trips": 7,
+  "trip_coverage": 0.875,
+  "trip_coverage_by_day": {
+   "days": 2,
+   "min": 0.75,
+   "min_date": "2026-11-24",
+   "median": 0.875,
+   "max": 1.0,
+   "max_date": "2026-11-25"
+  },
+  "routes_never_reporting_on_some_day": []
+ },
+ "ontime": {
+  "definition": {
+   "window_s": [
+    -60,
+    300
+   ],
+   "measured": "departure at timepoints; arrival at the last stop",
+   "timepoints": "stops printed in Island Transit's timetables"
+  },
+  "scheduled": 24,
+  "observed": 21,
+  "on_time": 16,
+  "early": 2,
+  "late": 3,
+  "observed_share": 0.875,
+  "on_time_share_of_observed": 0.761905,
+  "early_share_of_observed": 0.095238,
+  "late_share_of_observed": 0.142857,
+  "on_time_share_by_day": {
+   "days": 2,
+   "min": 0.4444,
+   "min_date": "2026-11-24",
+   "median": 0.7222,
+   "max": 1.0,
+   "max_date": "2026-11-25"
+  },
+  "deviation_s_median_by_day": {
+   "days": 2,
+   "min": -7.3,
+   "min_date": "2026-11-24",
+   "median": -0.15,
+   "max": 7.0,
+   "max_date": "2026-11-25"
+  },
+  "by_route": {
+   "R1": {
+    "short_name": "1",
+    "long_name": "Harbor - Ferry",
+    "scheduled": 24,
+    "observed": 21,
+    "on_time": 16,
+    "early": 2,
+    "late": 3,
+    "observed_share": 0.875,
+    "on_time_share_of_observed": 0.761905
+   }
+  }
+ },
+ "daily_headline": {
+  "scheduled_trips": {
+   "days": 2,
+   "min": 4.0,
+   "min_date": "2026-11-24",
+   "median": 4.0,
+   "max": 4.0,
+   "max_date": "2026-11-24"
+  },
+  "trip_coverage": {
+   "days": 2,
+   "min": 0.75,
+   "min_date": "2026-11-24",
+   "median": 0.875,
+   "max": 1.0,
+   "max_date": "2026-11-25"
+  },
+  "vehicle_uptime": {
+   "days": 2,
+   "min": 0.076157,
+   "min_date": "2026-11-24",
+   "median": 0.076273,
+   "max": 0.076389,
+   "max_date": "2026-11-25"
+  },
+  "trip_update_uptime": {
+   "days": 2,
+   "min": 0.076157,
+   "min_date": "2026-11-24",
+   "median": 0.076273,
+   "max": 0.076389,
+   "max_date": "2026-11-25"
+  },
+  "vehicle_fetch_failure_rate": {
+   "days": 2,
+   "min": 0.0,
+   "min_date": "2026-11-25",
+   "median": 0.001515,
+   "max": 0.00303,
+   "max_date": "2026-11-24"
+  },
+  "empty_in_service_rate": {
+   "days": 2,
+   "min": 0.076389,
+   "min_date": "2026-11-25",
+   "median": 0.209523,
+   "max": 0.342657,
+   "max_date": "2026-11-24"
+  },
+  "stale_in_service_rate": {
+   "days": 2,
+   "min": 0.0,
+   "min_date": "2026-11-24",
+   "median": 0.0,
+   "max": 0.0,
+   "max_date": "2026-11-24"
+  },
+  "longest_gap_s_median": {
+   "days": 2,
+   "min": 20.0,
+   "min_date": "2026-11-24",
+   "median": 20.0,
+   "max": 20.0,
+   "max_date": "2026-11-24"
+  },
+  "position_age_s_median": {
+   "days": 2,
+   "min": 3.0,
+   "min_date": "2026-11-24",
+   "median": 3.0,
+   "max": 3.0,
+   "max_date": "2026-11-24"
+  },
+  "position_age_s_p95": {
+   "days": 2,
+   "min": 3.0,
+   "min_date": "2026-11-24",
+   "median": 3.0,
+   "max": 3.0,
+   "max_date": "2026-11-24"
+  },
+  "impossible_jumps": {
+   "days": 2,
+   "min": 0.0,
+   "min_date": "2026-11-24",
+   "median": 0.0,
+   "max": 0.0,
+   "max_date": "2026-11-24"
+  },
+  "timepoint_coverage": {
+   "days": 2,
+   "min": 0.75,
+   "min_date": "2026-11-24",
+   "median": 0.875,
+   "max": 1.0,
+   "max_date": "2026-11-25"
+  },
+  "stop_coverage": {
+   "days": 2,
+   "min": 0.75,
+   "min_date": "2026-11-24",
+   "median": 0.875,
+   "max": 1.0,
+   "max_date": "2026-11-25"
+  },
+  "off_shape_share": {
+   "days": 2,
+   "min": 0.0,
+   "min_date": "2026-11-24",
+   "median": 0.0,
+   "max": 0.0,
+   "max_date": "2026-11-24"
+  },
+  "prediction_mae_s_5min": {
+   "days": 2,
+   "min": 5.5,
+   "min_date": "2026-11-25",
+   "median": 6.1,
+   "max": 6.7,
+   "max_date": "2026-11-24"
+  },
+  "prediction_median_abs_s_5min": {
+   "days": 2,
+   "min": 7.3,
+   "min_date": "2026-11-24",
+   "median": 7.3,
+   "max": 7.3,
+   "max_date": "2026-11-24"
+  },
+  "prediction_over_30min_share_5min": {
+   "days": 2,
+   "min": 0.0,
+   "min_date": "2026-11-24",
+   "median": 0.0,
+   "max": 0.0,
+   "max_date": "2026-11-24"
+  },
+  "prediction_within_60s_5min": {
+   "days": 2,
+   "min": 1.0,
+   "min_date": "2026-11-24",
+   "median": 1.0,
+   "max": 1.0,
+   "max_date": "2026-11-24"
+  },
+  "jitter_m_p95": {
+   "days": 2,
+   "min": 0.0,
+   "min_date": "2026-11-24",
+   "median": 0.0,
+   "max": 0.0,
+   "max_date": "2026-11-24"
+  },
+  "unassignable_trip_ids": {
+   "days": 2,
+   "min": 0.0,
+   "min_date": "2026-11-24",
+   "median": 0.0,
+   "max": 0.0,
+   "max_date": "2026-11-24"
+  },
+  "vehicles_missing_vs_30d": {
+   "days": 1,
+   "min": 0.0,
+   "min_date": "2026-11-25",
+   "median": 0.0,
+   "max": 0.0,
+   "max_date": "2026-11-25"
+  },
+  "trip_id_match_rate": {
+   "days": 2,
+   "min": 1.0,
+   "min_date": "2026-11-24",
+   "median": 1.0,
+   "max": 1.0,
+   "max_date": "2026-11-24"
+  },
+  "over_coverage_share": {
+   "days": 2,
+   "min": 0.0,
+   "min_date": "2026-11-24",
+   "median": 0.0,
+   "max": 0.0,
+   "max_date": "2026-11-24"
+  },
+  "vehicle_latency_ms_median": {
+   "days": 2,
+   "min": 350.0,
+   "min_date": "2026-11-24",
+   "median": 350.0,
+   "max": 350.0,
+   "max_date": "2026-11-24"
+  },
+  "vehicles_seen": {
+   "days": 2,
+   "min": 2.0,
+   "min_date": "2026-11-24",
+   "median": 2.0,
+   "max": 2.0,
+   "max_date": "2026-11-24"
+  },
+  "timepoint_names_resolved_share": {
+   "days": 2,
+   "min": 1.0,
+   "min_date": "2026-11-24",
+   "median": 1.0,
+   "max": 1.0,
+   "max_date": "2026-11-24"
+  },
+  "canceled_trips": {
+   "days": 2,
+   "min": 0.0,
+   "min_date": "2026-11-24",
+   "median": 0.0,
+   "max": 0.0,
+   "max_date": "2026-11-24"
+  },
+  "trip_coverage_excluding_canceled": {
+   "days": 2,
+   "min": 0.75,
+   "min_date": "2026-11-24",
+   "median": 0.875,
+   "max": 1.0,
+   "max_date": "2026-11-25"
+  },
+  "trip_update_changed_share": {
+   "days": 2,
+   "min": 0.333333,
+   "min_date": "2026-11-25",
+   "median": 0.334483,
+   "max": 0.335632,
+   "max_date": "2026-11-24"
+  },
+  "trip_update_interval_s_median": {
+   "days": 2,
+   "min": 60.0,
+   "min_date": "2026-11-24",
+   "median": 60.0,
+   "max": 60.0,
+   "max_date": "2026-11-24"
+  }
+ },
+ "releases": {
+  "parsed-2026-11": {
+   "files": 18,
+   "bytes": 0,
+   "checksums_file": "SHA256SUMS-parsed-2026-11.txt",
+   "checksums_bytes": 1743,
+   "checksums_sha256": "<sha256>"
+  },
+  "raw-2026-11": {
+   "files": 10,
+   "bytes": 0,
+   "checksums_file": "SHA256SUMS-raw-2026-11.txt",
+   "checksums_bytes": 930,
+   "checksums_sha256": "<sha256>"
+  }
+ },
+ "versions": {
+  "collector": [
+   "collect/0.3.0"
+  ],
+  "tables": [
+   "tables/0.1.0"
+  ],
+  "events": [
+   "events/0.3.1"
+  ],
+  "quality": [
+   "quality/0.5.0"
+  ],
+  "ontime": [
+   "ontime/0.3.0"
+  ]
+ }
+}
