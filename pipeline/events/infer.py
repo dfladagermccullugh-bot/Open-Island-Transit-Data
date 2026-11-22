@@ -33,6 +33,7 @@ A stop that cannot be placed on the shape in stop order, within
 
 from __future__ import annotations
 
+from bisect import bisect_left
 from collections import defaultdict
 from dataclasses import dataclass, field
 from datetime import UTC, date, datetime, timedelta
@@ -96,6 +97,14 @@ class StaticData:
             stop_times=dict(stop_times),
             stops={s["stop_id"]: s for s in _rows(contents, "stops.txt")},
         )
+
+    @classmethod
+    def of(cls, contents: ZipContents) -> StaticData:
+        """``load``, done once for each schedule and kept with its files, so
+        days that share a schedule share its shapes and stop placements."""
+        if "static_data" not in contents.derived:
+            contents.derived["static_data"] = cls.load(contents)
+        return contents.derived["static_data"]
 
     def place_stops(self, trip_id: str) -> list[Placement] | None:
         """Where each stop of the trip lies on its shape, in stop order.
@@ -300,16 +309,19 @@ def crossing(tr: Track, boundary: float) -> tuple[float | None, float | None, st
         return None, None, "no_reports"
     if any(a < boundary < b for a, b in tr.skips):
         return None, None, "skipped"
-    for k, d in enumerate(tr.dists):
-        if d >= boundary:
-            if k == 0:
-                return None, None, "past_when_first_seen"
-            d0, t0, t1 = tr.dists[k - 1], tr.times[k - 1], tr.times[k]
-            gap = t1 - t0
-            if gap > MAX_GAP_S:
-                return None, gap, "gap"
-            return t0 + (boundary - d0) / (d - d0) * gap, gap, "observed"
-    return None, None, "not_reached"
+    # The first report at or past the boundary. Distances along the shape
+    # never go down within a track, so a binary search finds the same report
+    # a scan from the start would.
+    k = bisect_left(tr.dists, boundary)
+    if k == len(tr.dists):
+        return None, None, "not_reached"
+    if k == 0:
+        return None, None, "past_when_first_seen"
+    d, d0, t0, t1 = tr.dists[k], tr.dists[k - 1], tr.times[k - 1], tr.times[k]
+    gap = t1 - t0
+    if gap > MAX_GAP_S:
+        return None, gap, "gap"
+    return t0 + (boundary - d0) / (d - d0) * gap, gap, "observed"
 
 
 def _epoch(dt: datetime) -> float:
@@ -346,7 +358,7 @@ def infer_day(
     same schedule. A trip whose schedule rows cannot be read (a stop or trip
     missing from the static files) still gets a trip summary, with
     ``problem`` set, and no stop events."""
-    static = static or StaticData.load(contents)
+    static = static or StaticData.of(contents)
     timepoints = timepoints or set()
     origin = day_origin(day)
     margin = timedelta(minutes=WINDOW_MIN)

@@ -34,7 +34,7 @@ import pyarrow as pa
 import pyarrow.parquet as pq
 
 from pipeline import release
-from pipeline.common import code_sha, load_json, run_order, stamp
+from pipeline.common import DayFiles, code_sha, load_json, run_order, stamp
 from pipeline.common import file_entry as _file_entry
 from pipeline.common import sha_of as _sha
 from pipeline.config import COLLECTION_START, REPO
@@ -46,7 +46,7 @@ from pipeline.gtfs.holidays import no_service, service_expected
 from pipeline.gtfs.schedule import route_names
 from pipeline.gtfs.tables import rows as gtfs_rows
 from pipeline.gtfs.timepoints import timepoint_pairs
-from pipeline.gtfs.zipread import read_zip
+from pipeline.gtfs.zipread import load_zip
 
 TS = pa.timestamp("us", tz="UTC")
 EVENT_SCHEMA = pa.schema(
@@ -168,7 +168,7 @@ def build(day: date, data: Path, raw_dir: Path, tables_dir: Path, out: Path, rep
     version = static["versions"][pins["passio"]["version"]]
     ex = version["example"]
     zpath = release.fetch(ex["release_tag"], repo, ex["file"], raw_dir, ex["sha256"])
-    passio = read_zip(zpath.read_bytes())
+    passio = load_zip(zpath, ex["sha256"])
 
     tp_file = data / "timepoints" / pins["timepoints"] / "timepoints.csv"
     with tp_file.open(encoding="utf-8", newline="") as fh:
@@ -230,15 +230,14 @@ def dumps_day(obj: dict[str, Any]) -> str:
     return _NUMBER_LIST.sub(lambda m: "[" + re.sub(r"\s+", "", m.group(1)) + "]", text) + "\n"
 
 
-def write_daily(ontime_dir: Path) -> int:
-    files = sorted((ontime_dir / "days").glob("*.json"))
+def write_daily(ontime_dir: Path, files: DayFiles | None = None) -> int:
+    days = (files or DayFiles(ontime_dir / "days")).all()
     with (ontime_dir / "daily.csv").open("w", newline="") as fh:
         w = csv.writer(fh)
         w.writerow(DAILY)
-        for f in files:
-            m = json.loads(f.read_text())
+        for m in days:
             w.writerow([m.get(k) for k in DAILY])
-    return len(files)
+    return len(days)
 
 
 def main() -> int:
@@ -261,10 +260,13 @@ def main() -> int:
     manifest = _load(manifest_path)
     days = run_order(days, manifest["days"], args.max_days)
     ontime_dir = args.data / "ontime"
+    day_files = DayFiles(ontime_dir / "days")
     if not days:
         print("no events to build")
         if (ontime_dir / "days").exists():
-            print(f"ontime/routes.csv and recent.json: {write_routes(ontime_dir)} days")
+            print(
+                f"ontime/routes.csv and recent.json: {write_routes(ontime_dir, files=day_files)} days"
+            )
         return 0
 
     failed = False
@@ -286,10 +288,7 @@ def main() -> int:
                 entry["code_sha"] = code_sha()
                 manifest["days"][day.isoformat()] = entry
                 _save(manifest_path, manifest)
-                (ontime_dir / "days").mkdir(parents=True, exist_ok=True)
-                (ontime_dir / "days" / f"{day.isoformat()}.json").write_text(
-                    dumps_day(built["ontime"])
-                )
+                day_files.write(day.isoformat(), dumps_day(built["ontime"]))
             o = built["ontime"]
             print(
                 f"{day}: {entry['rows']}; timepoint events {o['scheduled']}, observed "
@@ -300,8 +299,10 @@ def main() -> int:
             print(f"{day}: FAILED: {exc!r}", file=sys.stderr)
             traceback.print_exc()
     if (ontime_dir / "days").exists():
-        print(f"ontime/daily.csv: {write_daily(ontime_dir)} days")
-        print(f"ontime/routes.csv and recent.json: {write_routes(ontime_dir)} days")
+        print(f"ontime/daily.csv: {write_daily(ontime_dir, day_files)} days")
+        print(
+            f"ontime/routes.csv and recent.json: {write_routes(ontime_dir, files=day_files)} days"
+        )
     return 1 if failed else 0
 
 

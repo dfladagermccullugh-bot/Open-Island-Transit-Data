@@ -51,7 +51,7 @@ from pipeline.gtfs.versions import (
     load_overrides,
     pin_days,
 )
-from pipeline.gtfs.zipread import read_zip
+from pipeline.gtfs.zipread import ZipContents, load_zip, read_zip
 
 
 def load(path: Path) -> dict[str, Any]:
@@ -153,21 +153,29 @@ def live_match(
     return out
 
 
-def _zip(registry: dict[str, Any], version: str, raw_dir: Path, repo: str):
+def _zip(registry: dict[str, Any], version: str, raw_dir: Path, repo: str) -> ZipContents:
     ex = registry["versions"][version]["example"]
     path = release.fetch(ex["release_tag"], repo, ex["file"], raw_dir, ex["sha256"])
-    return read_zip(path.read_bytes())
+    return load_zip(path, ex["sha256"])
 
 
-def _made_by(path: Path, field: str, version: str) -> bool:
+def _made_by(path: Path, field: str, version: str, seen: dict[Path, bool] | None = None) -> bool:
     """True if the JSON file exists and records that code version. A file
-    from older code is rebuilt in place, so a fix reaches every folder."""
+    from older code is rebuilt in place, so a fix reaches every folder.
+
+    Many days share one folder. ``seen`` remembers the files already found
+    up to date in this pass, so each is opened once and not once per day."""
+    if seen is not None and seen.get(path):
+        return True
     if not path.exists():
         return False
     try:
-        return json.loads(path.read_text()).get(field) == version
+        current = json.loads(path.read_text()).get(field) == version
     except json.JSONDecodeError:
         return False
+    if seen is not None and current:
+        seen[path] = True
+    return current
 
 
 def _write_csv(path: Path, rows: list[dict[str, Any]]) -> None:
@@ -197,10 +205,15 @@ def write_timepoints(
     """Match the printed timetable in effect each day to that day's Passio
     version, write it once per pair, and record which applies to each day."""
     written = []
+    # Every day under one printed timetable has the same reference id; work
+    # it out (it hashes the reference files) once per timetable.
+    ids: dict[date, str] = {}
     for day, pins in registry["days"].items():
         pv = (pins.get("passio") or {}).get("version")
         effective = timepoints.reference_for(date.fromisoformat(day), reference_dir)
-        key = f"{pv}__{_reference_id(effective, reference_dir)}" if pv and effective else None
+        if effective and effective not in ids:
+            ids[effective] = _reference_id(effective, reference_dir)
+        key = f"{pv}__{ids[effective]}" if pv and effective else None
         pins["timepoints"] = key
         if not key or (out / key / "summary.json").exists():
             continue
@@ -219,9 +232,10 @@ def write_maps(
 ) -> list[str]:
     """Write the route map once for every timepoints folder in use."""
     written = []
+    seen: dict[Path, bool] = {}
     for pins in registry["days"].values():
         key = pins.get("timepoints")
-        if not key or _made_by(out / f"{key}.json", "map_version", routemap.MAP_VERSION):
+        if not key or _made_by(out / f"{key}.json", "map_version", routemap.MAP_VERSION, seen):
             continue
         pv = pins["passio"]["version"]
         with (tp_dir / key / "timepoints.csv").open(newline="") as fh:
@@ -237,13 +251,14 @@ def write_crosswalks(registry: dict[str, Any], out: Path, raw_dir: Path, repo: s
     """Write the crosswalk for every pinned version pair that lacks one, and
     record which crosswalk applies to each day. Returns the pairs written."""
     written = []
+    seen: dict[Path, bool] = {}
     for pins in registry["days"].values():
         pv = (pins.get("passio") or {}).get("version")
         tv = (pins.get("trillium") or {}).get("version")
         pins["crosswalk"] = f"{pv}__{tv}" if pv and tv else None
         done = out / str(pins["crosswalk"]) / "summary.json"
         if not pins["crosswalk"] or _made_by(
-            done, "crosswalk_version", crosswalk.CROSSWALK_VERSION
+            done, "crosswalk_version", crosswalk.CROSSWALK_VERSION, seen
         ):
             continue
         passio, trillium = (_zip(registry, v, raw_dir, repo) for v in (pv, tv))

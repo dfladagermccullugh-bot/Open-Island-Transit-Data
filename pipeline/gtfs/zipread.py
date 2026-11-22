@@ -10,11 +10,14 @@ what was wrong, so the defect is recorded instead of hidden.
 
 from __future__ import annotations
 
+import functools
 import io
 import struct
 import zipfile
 import zlib
 from dataclasses import dataclass, field
+from pathlib import Path
+from typing import Any
 
 LOCAL_HEADER = b"PK\x03\x04"
 DATA_DESCRIPTOR = b"PK\x07\x08"
@@ -31,6 +34,9 @@ class ZipContents:
     problems: list[str] = field(default_factory=list)
     # Parsed text tables, filled by ``pipeline.gtfs.tables.rows``.
     tables: dict[str, list[dict[str, str]]] = field(default_factory=dict, repr=False, compare=False)
+    # Anything else worked out from the files once and reused, by name (the
+    # shapes and stop placements of ``pipeline.events.infer.StaticData``).
+    derived: dict[str, Any] = field(default_factory=dict, repr=False, compare=False)
 
     @property
     def missing_required(self) -> list[str]:
@@ -61,6 +67,22 @@ def read_zip(data: bytes) -> ZipContents:
         out = _walk_local_headers(data)
         out.problems.insert(0, f"no usable central directory ({exc})")
         return out
+
+
+@functools.lru_cache(maxsize=8)
+def _load(path: str, sha256: str) -> ZipContents:
+    return read_zip(Path(path).read_bytes())
+
+
+def load_zip(path: Path, sha256: str) -> ZipContents:
+    """The contents of the zip at ``path``, read once per process.
+
+    The same schedule file serves many days and several stages, and reading
+    it means unzipping it and, on first use, parsing its tables. ``sha256``
+    is the file's recorded hash: it is part of the key, so a different file
+    at the same path is never mistaken for this one. The contents are
+    shared, so callers must not change them."""
+    return _load(str(path), sha256)
 
 
 def _walk_local_headers(data: bytes) -> ZipContents:

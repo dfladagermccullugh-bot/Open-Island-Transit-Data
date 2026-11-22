@@ -34,6 +34,8 @@ from typing import Any
 
 import numpy as np
 
+from pipeline.common import DayFiles
+
 GAPS_VERSION = "gaps/0.3.0"
 MIN_DAYS = 14
 MIN_UNOBSERVED = 30
@@ -58,11 +60,12 @@ def hour_band(hour: int) -> str:
     return next(name for name, lo, hi in HOUR_BANDS if lo <= hour < hi)
 
 
-def collect(days_dir: Path) -> tuple[list[dict[str, Any]], list[str]]:
+def collect(
+    days_dir: Path, files: DayFiles | None = None
+) -> tuple[list[dict[str, Any]], list[str]]:
     """Trip rows from every day file that has them, and the days used."""
     rows, used = [], []
-    for f in sorted(days_dir.glob("*.json")):
-        m = json.loads(f.read_text())
+    for m in (files or DayFiles(days_dir)).all():
         trips = (m.get("coverage") or {}).get("trips")
         if not trips or not (m.get("schedule") or {}).get("service_expected", True):
             continue  # no trip rows, or a day with no service: nothing to explain
@@ -263,8 +266,8 @@ def model(rows: list[dict[str, Any]]) -> dict[str, Any]:
     }
 
 
-def summarise(days_dir: Path) -> dict[str, Any]:
-    every, used = collect(days_dir)
+def summarise(days_dir: Path, files: DayFiles | None = None) -> dict[str, Any]:
+    every, used = collect(days_dir, files)
     # A trip the feed said was canceled, and that no bus reported, is not a
     # gap in the data: there was nothing to report.
     rows = [r for r in every if r["observed"] or not r.get("canceled", False)]
@@ -295,7 +298,7 @@ def summarise(days_dir: Path) -> dict[str, Any]:
     return out
 
 
-def write(out: Path) -> dict[str, Any]:
-    g = summarise(out / "days")
+def write(out: Path, files: DayFiles | None = None) -> dict[str, Any]:
+    g = summarise(out / "days", files)
     (out / "gaps.json").write_text(json.dumps(g, indent=1) + "\n")
     return g

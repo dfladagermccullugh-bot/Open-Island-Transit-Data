@@ -1,4 +1,5 @@
 import io
+import random
 import zipfile
 from datetime import UTC, date, datetime, timedelta
 
@@ -326,3 +327,40 @@ def test_a_position_nearest_a_corner_is_measured_on_the_segment_leaving_it():
     assert [p for p in s.passes(lat, lon, 150) if p[0] == s.cum[1]]
     tr = track(s, [(T0, lat, lon, 3.0, 4.61)], T0)
     assert (tr.wrong_direction, len(tr.dists)) == (0, 1)
+
+
+def _crossing_by_scan(tr, boundary):
+    """``crossing`` as it was first written: a scan from the first report."""
+    if not tr.dists:
+        return None, None, "no_reports"
+    if any(a < boundary < b for a, b in tr.skips):
+        return None, None, "skipped"
+    for k, d in enumerate(tr.dists):
+        if d >= boundary:
+            if k == 0:
+                return None, None, "past_when_first_seen"
+            d0, t0, t1 = tr.dists[k - 1], tr.times[k - 1], tr.times[k]
+            gap = t1 - t0
+            if gap > infer.MAX_GAP_S:
+                return None, gap, "gap"
+            return t0 + (boundary - d0) / (d - d0) * gap, gap, "observed"
+    return None, None, "not_reached"
+
+
+def test_the_binary_search_finds_the_same_crossing_as_a_scan():
+    """Thousands of made-up tracks, with repeated distances, long gaps and
+    skipped stretches, and boundaries on, between and beyond the reports."""
+    rng = random.Random(20261122)
+    for _ in range(3000):
+        n = rng.randint(0, 12)
+        dists, times, d, t = [], [], rng.uniform(0, 50), 1000.0
+        for _ in range(n):
+            d += rng.choice([0.0, 0.0, rng.uniform(0, 400)])
+            t += rng.choice([20.0, 20.0, 45.0, 400.0])
+            dists.append(d)
+            times.append(t)
+        skips = [(dists[i], dists[i] + 80.0) for i in range(n) if rng.random() < 0.1]
+        tr = infer.Track(times=times, dists=dists, skips=skips)
+        boundaries = [*dists, *(x + 0.5 for x in dists), *(x - 0.5 for x in dists), -1.0, 1e9]
+        for boundary in boundaries:
+            assert infer.crossing(tr, boundary) == _crossing_by_scan(tr, boundary)

@@ -56,6 +56,45 @@ def load_json(path: Path, default: Any = None) -> Any:
     return json.loads(path.read_text(encoding="utf-8")) if path.exists() else default
 
 
+class DayFiles:
+    """The day files of one folder (``<folder>/<date>.json``), each read and
+    parsed at most once in a run.
+
+    A stage decides which days to rebuild, writes those days, then builds its
+    daily table and its pooled figures; every one of those steps reads the
+    day files. Passing one ``DayFiles`` along lets them share a single read,
+    so the work stays level as the archive grows by a file a day. What a
+    stage writes through ``write`` is kept as it would be read back, so a
+    later step sees exactly the published text. Callers must not change the
+    dictionaries they are given."""
+
+    def __init__(self, folder: Path) -> None:
+        self.folder = folder
+        self._parsed: dict[str, dict[str, Any]] = {}
+
+    def days(self) -> list[str]:
+        """Dates that have a file, oldest first."""
+        return sorted(p.stem for p in self.folder.glob("*.json"))
+
+    def read(self, day: str) -> dict[str, Any] | None:
+        """The day's file, or None if there is none."""
+        if day not in self._parsed:
+            path = self.folder / f"{day}.json"
+            if not path.exists():
+                return None
+            self._parsed[day] = json.loads(path.read_text(encoding="utf-8"))
+        return self._parsed[day]
+
+    def all(self) -> list[dict[str, Any]]:
+        """Every day's file, oldest first."""
+        return [m for m in map(self.read, self.days()) if m is not None]
+
+    def write(self, day: str, text: str) -> None:
+        self.folder.mkdir(parents=True, exist_ok=True)
+        (self.folder / f"{day}.json").write_text(text, encoding="utf-8")
+        self._parsed[day] = json.loads(text)
+
+
 def run_order(days: Iterable[date], processed: Container[str], limit: int) -> list[date]:
     """The days a stage handles in one run, in the order it handles them.
 

@@ -23,6 +23,7 @@ from datetime import date, timedelta
 from pathlib import Path
 from typing import Any
 
+from pipeline.common import DayFiles
 from pipeline.gtfs.timepoints import reference_of
 from pipeline.stats import quantile
 
@@ -68,8 +69,10 @@ def route_name(names: dict[str, dict[str, str]], route_id: str) -> str:
     return n.get("short_name") or n.get("long_name") or route_id
 
 
-def write_routes(ontime_dir: Path, window_days: int = WINDOW_DAYS) -> int:
-    days = [json.loads(p.read_text()) for p in sorted((ontime_dir / "days").glob("*.json"))]
+def write_routes(
+    ontime_dir: Path, window_days: int = WINDOW_DAYS, files: DayFiles | None = None
+) -> int:
+    days = (files or DayFiles(ontime_dir / "days")).all()
     if not days:
         return 0
     names: dict[str, dict[str, str]] = {}

@@ -135,7 +135,8 @@ def main(argv: list[str] | None = None) -> int:
         ("pipeline.events.field", ["score", "--data", str(data), "--tables-dir",
                                    f"{work}/events", *field_args]),
         ("pipeline.quality", ["--pending", "--data", str(data), "--raw-dir", f"{work}/files",
-                              "--tables-dir", f"{work}/tables"]),
+                              "--tables-dir", f"{work}/tables", "--events-dir",
+                              f"{work}/events"]),
         ("pipeline.monthly", ["--data", str(data), "--release", "--work", f"{work}/monthly"]),
         ("pipeline.check", ["--data", str(data)]),
     ]  # fmt: skip

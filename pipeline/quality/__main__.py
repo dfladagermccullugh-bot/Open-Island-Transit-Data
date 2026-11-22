@@ -27,13 +27,13 @@ import pyarrow.parquet as pq
 
 from pipeline import release
 from pipeline.canceled import canceled_trips
-from pipeline.common import code_sha, load_json, run_order
+from pipeline.common import DayFiles, code_sha, load_json, run_order
 from pipeline.common import sha_of as _sha
 from pipeline.config import COLLECTION_START, REPO
 from pipeline.gtfs.holidays import no_service, service_expected
 from pipeline.gtfs.schedule import removed_services, route_names, scheduled_trips
 from pipeline.gtfs.tables import rows as _csv
-from pipeline.gtfs.zipread import read_zip
+from pipeline.gtfs.zipread import ZipContents, load_zip
 from pipeline.quality import gaps
 from pipeline.quality import stops as stop_metrics
 from pipeline.quality.metrics import QUALITY_VERSION, day_metrics, refresh
@@ -138,21 +138,27 @@ def _events_sha(events: dict, day: str) -> str | None:
     return _sha(entry, f"stop-events-{day}.parquet")
 
 
-def pending(parsed: dict, static: dict, out: Path, events: dict | None = None) -> list[date]:
+def pending(
+    parsed: dict,
+    static: dict,
+    out: Path,
+    events: dict | None = None,
+    files: DayFiles | None = None,
+) -> list[date]:
     """Days with no quality file, another QUALITY_VERSION, or parsed tables,
     stop events, a schedule version or a timepoints list that changed since
     the file was computed."""
     events = events or {"days": {}}
+    files = files or DayFiles(out / "days")
     days = []
     for day, entry in parsed["days"].items():
         pins = static.get("days", {}).get(day, {})
         if not entry.get("release_tag") or not (pins.get("passio") or {}).get("version"):
             continue
-        f = out / "days" / f"{day}.json"
-        if not f.exists():
+        old = files.read(day)
+        if old is None:
             days.append(date.fromisoformat(day))
             continue
-        old = json.loads(f.read_text())
         inputs, schedule = old.get("inputs") or {}, old.get("schedule") or {}
         used_timepoints = (old.get("processing") or {}).get("timepoints") or {}
         if (
@@ -168,21 +174,24 @@ def pending(parsed: dict, static: dict, out: Path, events: dict | None = None) -
     return sorted(days)
 
 
-def previous_vehicles(out: Path, day: date, days: int = 30) -> dict[str, list[str]]:
+def previous_vehicles(
+    out: Path, day: date, days: int = 30, files: DayFiles | None = None
+) -> dict[str, list[str]]:
     """Vehicle ids seen on each of the ``days`` days before ``day`` that
     have a quality file."""
+    files = files or DayFiles(out / "days")
     found = {}
     for k in range(1, days + 1):
         d = (day - timedelta(days=k)).isoformat()
-        f = out / "days" / f"{d}.json"
-        if f.exists():
-            ids = (json.loads(f.read_text()).get("coverage") or {}).get("vehicle_ids")
+        m = files.read(d)
+        if m is not None:
+            ids = (m.get("coverage") or {}).get("vehicle_ids")
             if ids is not None:
                 found[d] = ids
     return found
 
 
-def terminals(contents) -> list[tuple[float, float]]:
+def terminals(contents: ZipContents) -> list[tuple[float, float]]:
     """(lat, lon) of every stop that begins or ends a trip."""
     stops = {s["stop_id"]: s for s in _csv(contents, "stops.txt")}
     ends: dict[str, list[tuple[int, str]]] = {}
@@ -200,28 +209,32 @@ def terminals(contents) -> list[tuple[float, float]]:
 def event_metrics(
     day: date,
     data: Path,
-    tables_dir: Path,
+    events_dir: Path,
     repo: str,
-    parsed: dict,
+    predictions: list[dict],
     vehicles: list[dict],
-    passio,
+    passio: ZipContents,
     static_trip_ids: set[str],
     todays_trip_ids: set[str],
+    files: DayFiles | None = None,
 ) -> tuple[dict[str, Any] | None, dict[str, Any]]:
-    """Metrics that need stop events; (None, {}) if the day has none yet."""
+    """Metrics that need stop events; (None, {}) if the day has none yet.
+
+    ``events_dir`` is where the events stage left the day's stop events and
+    trip tracks; a file that is already there with the recorded hash is used
+    as it is and not downloaded again."""
     d = day.isoformat()
     entry = _load(data / "manifest" / "events.json")["days"].get(d)
     if not entry or not entry.get("release_tag"):
         return None, {}
 
-    def table(name: str, source: dict, columns: list[str] | None = None) -> list[dict]:
+    def table(name: str) -> list[dict]:
         f = f"{name}-{d}.parquet"
-        path = release.fetch(source["release_tag"], repo, f, tables_dir, _sha(source, f))
-        return pq.read_table(path, columns=columns).to_pylist()
+        path = release.fetch(entry["release_tag"], repo, f, events_dir, _sha(entry, f))
+        return pq.read_table(path).to_pylist()
 
-    events = table("stop-events", entry)
-    tracks = table("trip-tracks", entry)
-    predictions = table("trip-update-stops", parsed, PREDICTION_COLUMNS)
+    events = table("stop-events")
+    tracks = table("trip-tracks")
     out = data / "quality"
     today_ids = {v["vehicle_id"] for v in vehicles if v["vehicle_id"] is not None}
     metrics = {
@@ -234,12 +247,22 @@ def event_metrics(
         "assignment": stop_metrics.assignment(vehicles, tracks, static_trip_ids, todays_trip_ids),
         "prediction_error": stop_metrics.prediction_error(predictions, events),
         "jitter": stop_metrics.jitter(vehicles, terminals(passio)),
-        "missing_vehicles": stop_metrics.missing_vehicles(today_ids, previous_vehicles(out, day)),
+        "missing_vehicles": stop_metrics.missing_vehicles(
+            today_ids, previous_vehicles(out, day, files=files)
+        ),
     }
     return metrics, {"stop_events_sha256": _sha(entry, f"stop-events-{d}.parquet")}
 
 
-def compute(day: date, data: Path, raw_dir: Path, tables_dir: Path, repo: str) -> dict[str, Any]:
+def compute(
+    day: date,
+    data: Path,
+    raw_dir: Path,
+    tables_dir: Path,
+    repo: str,
+    events_dir: Path | None = None,
+    files: DayFiles | None = None,
+) -> dict[str, Any]:
     d = day.isoformat()
     raw = _load(data / "manifest" / "raw.json")["days"][d]
     parsed = _load(data / "manifest" / "parsed.json")["days"][d]
@@ -262,16 +285,18 @@ def compute(day: date, data: Path, raw_dir: Path, tables_dir: Path, repo: str) -
 
     trip_updates = parsed_table("trip-updates", TRIP_UPDATE_COLUMNS)
     alerts = parsed_table("alerts")
-    skipped = sum(
-        r["stop_schedule_relationship"] == "SKIPPED"
-        for r in parsed_table("trip-update-stops", ["stop_schedule_relationship"])
+    # The largest table of the day: read once, for the count of stops the
+    # feed flagged as skipped here and for the prediction errors further on.
+    stop_updates = parsed_table(
+        "trip-update-stops", [*PREDICTION_COLUMNS, "stop_schedule_relationship"]
     )
+    skipped = sum(r["stop_schedule_relationship"] == "SKIPPED" for r in stop_updates)
 
     pins = static["days"][d]
     version = static["versions"][pins["passio"]["version"]]
     ex = version["example"]
     zpath = release.fetch(ex["release_tag"], repo, ex["file"], raw_dir, ex["sha256"])
-    passio = read_zip(zpath.read_bytes())
+    passio = load_zip(zpath, ex["sha256"])
     trips = scheduled_trips(passio, day)
     ids = {
         name: {r[col] for r in _csv(passio, f"{name}.txt")}
@@ -283,7 +308,7 @@ def compute(day: date, data: Path, raw_dir: Path, tables_dir: Path, repo: str) -
     if tv:
         tex = static["versions"][tv]["example"]
         tpath = release.fetch(tex["release_tag"], repo, tex["file"], raw_dir, tex["sha256"])
-        holidays = removed_services(read_zip(tpath.read_bytes()), day)
+        holidays = removed_services(load_zip(tpath, tex["sha256"]), day)
 
     downloads = [x for x in static.get("downloads", {}).values() if x["day"] == d]
     extra = {
@@ -323,8 +348,8 @@ def compute(day: date, data: Path, raw_dir: Path, tables_dir: Path, repo: str) -
         {v["vehicle_id"] for v in vehicles if v["vehicle_id"] is not None}
     )
     m["events"], event_inputs = event_metrics(
-        day, data, tables_dir, repo, parsed, vehicles, passio, ids["trips"],
-        {t.trip_id for t in trips},
+        day, data, events_dir or tables_dir, repo, stop_updates, vehicles, passio,
+        ids["trips"], {t.trip_id for t in trips}, files,
     )  # fmt: skip
     m["routes"] = route_names(passio)
     m["schedule"] = {
@@ -358,15 +383,14 @@ def _get(obj: Any, path: tuple[str, ...]) -> Any:
     return obj
 
 
-def write_daily_csv(out: Path) -> int:
-    files = sorted((out / "days").glob("*.json"))
+def write_daily_csv(out: Path, files: DayFiles | None = None) -> int:
+    days = (files or DayFiles(out / "days")).all()
     with (out / "daily.csv").open("w", newline="") as fh:
         w = csv.writer(fh)
         w.writerow([name for name, _ in HEADLINE])
-        for f in files:
-            m = json.loads(f.read_text())
+        for m in days:
             w.writerow([_get(m, path) for _, path in HEADLINE])
-    return len(files)
+    return len(days)
 
 
 def _json_default(o: Any) -> str:
@@ -382,11 +406,17 @@ def main() -> int:
     ap.add_argument("--data", type=Path, default=Path("work"), help="data branch checkout")
     ap.add_argument("--raw-dir", type=Path, default=Path("work/files"))
     ap.add_argument("--tables-dir", type=Path, default=Path("work/tables"))
+    ap.add_argument(
+        "--events-dir",
+        type=Path,
+        help="where the events stage wrote stop events and trip tracks (default: --tables-dir)",
+    )
     ap.add_argument("--repo", default=os.environ.get("GITHUB_REPOSITORY", REPO))
     ap.add_argument("--max-days", type=int, default=7)
     args = ap.parse_args()
 
     out = args.data / "quality"
+    files = DayFiles(out / "days")
     days = list(args.date or [])
     if args.pending:
         days += pending(
@@ -394,25 +424,25 @@ def main() -> int:
             _load(args.data / "manifest" / "static.json"),
             out,
             _load(args.data / "manifest" / "events.json"),
+            files,
         )
-    processed = {f.stem for f in (out / "days").glob("*.json")}
+    processed = set(files.days())
     days = run_order(days, processed, args.max_days)
     failed = False
     for day in days:
         try:
-            m = compute(day, args.data, args.raw_dir, args.tables_dir, args.repo)
-            (out / "days").mkdir(parents=True, exist_ok=True)
-            (out / "days" / f"{day.isoformat()}.json").write_text(
-                json.dumps(m, indent=1, default=_json_default) + "\n"
+            m = compute(
+                day, args.data, args.raw_dir, args.tables_dir, args.repo, args.events_dir, files
             )
+            files.write(day.isoformat(), json.dumps(m, indent=1, default=_json_default) + "\n")
             print(f"{day}: coverage {m['coverage']['trip_coverage']}")
         except Exception as exc:  # keep going; one bad day must not block the rest
             failed = True
             print(f"{day}: FAILED: {exc!r}", file=sys.stderr)
             traceback.print_exc()
     if (out / "days").exists():
-        print(f"daily.csv: {write_daily_csv(out)} days")
-        g = gaps.write(out)
+        print(f"daily.csv: {write_daily_csv(out, files)} days")
+        g = gaps.write(out, files)
         print(f"gaps.json: {g['trips']} trips, {g['unobserved']} unobserved; {g['model_status']}")
     else:
         print("no quality files yet")
