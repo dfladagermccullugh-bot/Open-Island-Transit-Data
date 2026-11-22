@@ -28,7 +28,8 @@ def latest_service_day(daily: Path) -> str | None:
         days = [
             r["service_date"]
             for r in csv.DictReader(fh)
-            if r.get("service_expected", "True") != "False"
+            # "False" in the first files, "false" since the tables write lowercase.
+            if r.get("service_expected", "true").strip().lower() != "false"
         ]
     return days[-1] if days else None
 

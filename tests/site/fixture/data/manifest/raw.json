@@ -1,0 +1,202 @@
+{
+ "version": 1,
+ "repo": "dfladagermccullugh-bot/Open-Island-Transit-Data",
+ "days": {
+  "2026-11-19": {
+   "service_date": "2026-11-19",
+   "fetch_rows": 3935,
+   "raw_rows": 3935,
+   "digest": "2560d4799b0bfd5e46db8350c93287e7",
+   "ok_rows": 3935,
+   "first_fetch_id": 1,
+   "last_fetch_id": 3935,
+   "static": [
+    {
+     "static_fetch_id": 1,
+     "source": "passio",
+     "url": "https://passio3.com/islandtransit/passioTransit/gtfs/google_transit.zip",
+     "requested_at": "2026-11-19T21:24:27.234+00:00",
+     "responded_at": "2026-11-19T21:24:27.885+00:00",
+     "latency_ms": 651,
+     "http_status": 200,
+     "bytes": 523674,
+     "sha256": "6b0114bf4e2e8d726b46242d3e327798d049172576c07e1a8f325b13b9872554",
+     "zip_has_directory": true,
+     "files": [
+      "agency.txt",
+      "feed_info.txt",
+      "stops.txt",
+      "routes.txt",
+      "trips.txt",
+      "stop_times.txt",
+      "shapes.txt",
+      "calendar.txt"
+     ],
+     "error_class": null,
+     "error_msg": null,
+     "collector_version": "collect/0.1.1",
+     "logged_at": "2026-11-19T21:24:28.037408+00:00",
+     "file": "static-2026-11-19-passio-1.zip"
+    },
+    {
+     "static_fetch_id": 2,
+     "source": "trillium",
+     "url": "https://data.trilliumtransit.com/gtfs/islandtransit-wa-us/islandtransit-wa-us.zip",
+     "requested_at": "2026-11-19T21:24:28.069+00:00",
+     "responded_at": "2026-11-19T21:24:28.145+00:00",
+     "latency_ms": 76,
+     "http_status": 200,
+     "bytes": 1068058,
+     "sha256": "1be99962507fc442320eab7d192a3c81a09562dc9231864e6ddb160217614cc1",
+     "zip_has_directory": true,
+     "files": [
+      "areas.txt",
+      "shapes.txt",
+      "agency.txt",
+      "calendar.txt",
+      "calendar_attributes.txt",
+      "calendar_dates.txt",
+      "directions.txt",
+      "fare_attributes.txt",
+      "fare_rules.txt",
+      "farezone_attributes.txt",
+      "feed_info.txt",
+      "frequencies.txt",
+      "routes.txt",
+      "runcut.txt",
+      "stop_attributes.txt",
+      "stop_times.txt",
+      "stops.txt",
+      "timetable_stop_order.txt",
+      "timetables.txt",
+      "transfers.txt",
+      "trips.txt",
+      "linked_datasets.txt",
+      "location_groups.txt",
+      "booking_rules.txt"
+     ],
+     "error_class": null,
+     "error_msg": null,
+     "collector_version": "collect/0.1.1",
+     "logged_at": "2026-11-19T21:24:28.385566+00:00",
+     "file": "static-2026-11-19-trillium-2.zip"
+    }
+   ],
+   "files": [
+    {
+     "name": "raw-2026-11-19.parquet",
+     "bytes": 1158375,
+     "sha256": "9faa6e3b579028a8878c57f4fdd7a16b65c5b20b2b935f42cf750f696e55d976"
+    },
+    {
+     "name": "fetch-log-2026-11-19.csv",
+     "bytes": 1129038,
+     "sha256": "f4bf542e0cc886673a56d9fd08146c3dab8f55e7f094187d5df2083d404c82fe"
+    },
+    {
+     "name": "static-2026-11-19-passio-1.zip",
+     "bytes": 523674,
+     "sha256": "6b0114bf4e2e8d726b46242d3e327798d049172576c07e1a8f325b13b9872554"
+    },
+    {
+     "name": "static-2026-11-19-trillium-2.zip",
+     "bytes": 1068058,
+     "sha256": "1be99962507fc442320eab7d192a3c81a09562dc9231864e6ddb160217614cc1"
+    }
+   ],
+   "release_tag": "raw-2026-11",
+   "archived_at": "2026-11-20T09:11:15+00:00",
+   "code_sha": "98535dcb690a8964ef9f9432bc3db4a6a38e11bf"
+  },
+  "2026-11-20": {
+   "service_date": "2026-11-20",
+   "fetch_rows": 8914,
+   "raw_rows": 8913,
+   "digest": "ec8582133d9c7e624a6d9d84ab519fea",
+   "ok_rows": 8913,
+   "first_fetch_id": 3936,
+   "last_fetch_id": 12849,
+   "static": [
+    {
+     "static_fetch_id": 3,
+     "source": "passio",
+     "url": "https://passio3.com/islandtransit/passioTransit/gtfs/google_transit.zip",
+     "requested_at": "2026-11-20T10:15:00.624+00:00",
+     "responded_at": "2026-11-20T10:15:01.203+00:00",
+     "latency_ms": 579,
+     "http_status": 200,
+     "bytes": 523674,
+     "sha256": "235e724c1b778c1f64582642bdda7d05530d8cc231ebda6b9243432b29134d88",
+     "zip_has_directory": true,
+     "files": [
+      "agency.txt",
+      "feed_info.txt",
+      "stops.txt",
+      "routes.txt",
+      "trips.txt",
+      "stop_times.txt",
+      "shapes.txt",
+      "calendar.txt"
+     ],
+     "error_class": null,
+     "error_msg": null,
+     "collector_version": "collect/0.2.0",
+     "logged_at": "2026-11-20T10:15:01.447847+00:00",
+     "file": "static-2026-11-20-passio-3.zip"
+    },
+    {
+     "static_fetch_id": 4,
+     "source": "passio",
+     "url": "https://passio3.com/islandtransit/passioTransit/gtfs/google_transit.zip",
+     "requested_at": "2026-11-20T16:30:00.064+00:00",
+     "responded_at": "2026-11-20T16:30:06.615+00:00",
+     "latency_ms": 6551,
+     "http_status": 200,
+     "bytes": 523674,
+     "sha256": "38471a52d88a84b3fe85efc92e52e72456daa3ec69e2f8a5f92abf833563cbe0",
+     "zip_has_directory": true,
+     "files": [
+      "agency.txt",
+      "feed_info.txt",
+      "stops.txt",
+      "routes.txt",
+      "trips.txt",
+      "stop_times.txt",
+      "shapes.txt",
+      "calendar.txt"
+     ],
+     "error_class": null,
+     "error_msg": null,
+     "collector_version": "collect/0.2.0",
+     "logged_at": "2026-11-20T16:30:06.857658+00:00",
+     "file": "static-2026-11-20-passio-4.zip"
+    }
+   ],
+   "files": [
+    {
+     "name": "raw-2026-11-20.parquet",
+     "bytes": 2559272,
+     "sha256": "fc0784b1fefbec2decb6c2e94f77c6c015abe0ab8de0a401549e625ed75616db"
+    },
+    {
+     "name": "fetch-log-2026-11-20.csv",
+     "bytes": 2560451,
+     "sha256": "738ba2c4b2ace868c163395c52a161d07fc1d92a937df86ca495f04541e42908"
+    },
+    {
+     "name": "static-2026-11-20-passio-3.zip",
+     "bytes": 523674,
+     "sha256": "235e724c1b778c1f64582642bdda7d05530d8cc231ebda6b9243432b29134d88"
+    },
+    {
+     "name": "static-2026-11-20-passio-4.zip",
+     "bytes": 523674,
+     "sha256": "38471a52d88a84b3fe85efc92e52e72456daa3ec69e2f8a5f92abf833563cbe0"
+    }
+   ],
+   "release_tag": "raw-2026-11",
+   "archived_at": "2026-11-21T08:40:33+00:00",
+   "code_sha": "0617dacf6a1a882fe225fe1fd344ebeaaa2c9c4c"
+  }
+ }
+}

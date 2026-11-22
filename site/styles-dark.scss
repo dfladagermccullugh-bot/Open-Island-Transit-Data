@@ -5,11 +5,15 @@ $web-font-path: false;
 $font-family-sans-serif: system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", "Noto Sans", Arial, sans-serif;
 $body-bg: #1a1a19;
 $body-color: #f0efec;
-$link-color: #3987e5;
+$primary: #62a4f1;
+$link-color: #62a4f1;
 $navbar-bg: #232322;
 $navbar-fg: #f0efec;
+$navbar-hl: #62a4f1;
 
 /*-- scss:rules --*/
+// The same names as the light theme, with the same contrast rules
+// (tests/test_site_tokens.py).
 :root {
   --surface: #1a1a19;
   --panel: #262625;
@@ -17,17 +21,24 @@ $navbar-fg: #f0efec;
   --card: #232322;
   --text-primary: #f0efec;
   --text-secondary: #c3c2b7;
-  --text-muted: #8f8e86;
+  --text-muted: #a3a29a;
   --border: rgba(255, 255, 255, .15);
   --border-strong: rgba(255, 255, 255, .35);
-  --series-1: #3987e5;
-  --status-good: #0ca30c;
-  --status-warning: #fab219;
-  --status-critical: #d03b3b;
-  --status-none: #6e6d66;
+  --link: #62a4f1;
+  --focus: #8dbdf6;
+  --series-1: #62a4f1;
+  --rule: #8f8e86;
+  --range: #8f8e86;
+  --status-good: #2fb5c0;
+  --status-warning: #f0b429;
+  --status-critical: #f0635c;
+  --status-none: #7d7c75;
   --map-casing: #0b0b0b;
   --map-water: #1f2a33;
+  --shadow-sm: 0 1px 4px rgba(0, 0, 0, .5);
+  --shadow-md: 0 4px 14px rgba(0, 0, 0, .55);
 }
+@import "tokens";
 @import "components";
 // Darken OpenStreetMap tiles to sit on the dark page.
 .leaflet-tile-pane { filter: invert(1) hue-rotate(180deg) brightness(.85) contrast(.9) saturate(.6); }

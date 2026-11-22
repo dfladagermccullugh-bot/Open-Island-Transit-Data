@@ -1,6 +1,11 @@
 ---
 description: "How the feeds are collected, how arrival times are figured out from bus locations, and how each figure is defined."
 pagetitle: "Methods"
+toc: true
+toc-depth: 2
+toc-title: "On this page"
+toc-location: right
+page-layout: article
 ---
 
 {{< include ../docs/methods.md >}}

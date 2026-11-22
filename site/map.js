@@ -1,129 +1,198 @@
 // Route map: Island Transit's route lines (from its own schedule files,
-// maps/*.json on the data branch) on OpenStreetMap tiles, drawn with
-// Leaflet. Each line is colored by its on-time band (lib.js BANDS); the
-// legend always names the bands, so color is never the only cue.
+// maps/*.json on the data branch) on OpenStreetMap tiles, drawn with Leaflet.
+//
+// Each line is colored by its on-time band (lib.js BANDS). Color is never the
+// only cue: the key beside the map names the bands, every line names its
+// route and its figure when pointed at, and the stops of the picked route are
+// drawn in their band's shape.
+//
+// One map is made per page and kept: it measures its own box, so resizing the
+// window or turning a phone neither rebuilds it nor undoes the reader's
+// zooming, and `destroy()` takes it down cleanly.
 
-import {BANDS, NO_BAND, band, routeTitle, routeSub, lateness, pct, plural} from "./lib.js";
+import {NO_BAND, band, bandIconHTML, lateness, pct, plural, routeSub, routeTitle} from "./lib.js";
 
 const TILES = "https://tile.openstreetmap.org/{z}/{x}/{y}.png";
 const ATTRIBUTION =
   '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors';
+const LINE = 4, LINE_BOLD = 7, CASING = 7, CASING_BOLD = 10;
+// A finger needs a wider target than the eye: an unseen line this wide lies
+// over each route and takes the pointing and tapping.
+const HIT = 24;
 
 function esc(s) {
   return String(s ?? "").replace(/[&<>"']/g, c => ({"&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;"}[c]));
 }
 
-function routeTip(r, stats) {
+// "67% on time, typically 3.2 min late", or why there is no figure.
+export function routeSummary(stats) {
   const b = band(stats?.on_time_share_of_observed, stats?.observed);
-  const sub = routeSub(r);
-  const line = stats && b !== NO_BAND
-    ? `${pct(stats.on_time_share_of_observed)} on time · typically ${lateness(stats.deviation_s_median)}`
+  return stats && b !== NO_BAND
+    ? `${pct(stats.on_time_share_of_observed)} on time, typically ${lateness(stats.deviation_s_median)}`
     : "Too few departures seen to rate";
-  return `<strong>${esc(routeTitle(r))}</strong>${sub ? `<br>${esc(sub)}` : ""}<br>${esc(line)}`;
 }
 
-function stopTip(s) {
-  const b = band(s.on_time_share_of_observed, s.observed);
-  const line = b === NO_BAND
-    ? `${plural(s.observed, "departure")} seen: too few to rate`
-    : `${pct(s.on_time_share_of_observed)} on time · typically ${lateness(s.deviation_s_median)}`;
-  return `<strong>${esc(s.name)}</strong><br>${esc(line)}`;
+function stopSummary(s) {
+  return band(s.on_time_share_of_observed, s.observed) === NO_BAND
+    ? `${plural(s.observed, "departure")} seen, too few to rate`
+    : `${pct(s.on_time_share_of_observed)} on time, typically ${lateness(s.deviation_s_median)}`;
 }
 
-export function drawRouteMap(L, mapData, recent, {height = 460, onSelect = null, legend = true} = {}) {
+function routeTip(r, stats) {
+  const sub = routeSub(r);
+  return `<strong>${esc(routeTitle(r))}</strong>${sub ? `<br>${esc(sub)}` : ""}<br>${esc(routeSummary(stats))}`;
+}
+
+// drawRouteMap(L, mapData, recent, {onSelect, linkFor})
+//   onSelect(routeId)  called when a route line is clicked or tapped
+//   linkFor(routeId)   if given, a tap on a touch screen opens a small card
+//                      with a link to this address instead of calling
+//                      onSelect, so a finger resting on the map never leaves
+//                      the page by accident
+// Returns {node, map, setSelected(id), highlight(id), destroy()}.
+export function drawRouteMap(L, mapData, recent, {onSelect = null, linkFor = null} = {}) {
   const node = document.createElement("div");
   node.className = "route-map";
-  node.style.height = `${height}px`;
   node.setAttribute("role", "region");
-  node.setAttribute("aria-label", "Map of Island Transit routes colored by how often buses were on time");
+  node.setAttribute("aria-label",
+    "Map of Island Transit routes, colored by how often buses were on time. The same figures are listed beside the map.");
 
+  const calm = matchMedia("(prefers-reduced-motion: reduce)").matches;
   // Whole zoom levels only: fractional zoom leaves hairline seams between tiles.
-  const m = L.map(node, {scrollWheelZoom: false, zoomSnap: 1, attributionControl: true});
-  L.tileLayer(TILES, {maxZoom: 18, attribution: ATTRIBUTION}).addTo(m);
+  const m = L.map(node, {
+    scrollWheelZoom: false, zoomSnap: 1, attributionControl: true,
+    zoomAnimation: !calm, fadeAnimation: !calm, markerZoomAnimation: !calm,
+    // On a touch screen one finger scrolls the page; two move the map.
+    dragging: !L.Browser.mobile, tap: false,
+  });
+  m.attributionControl.setPrefix(false);
+
   const [w, s, e, n] = mapData.bbox;
   const all = L.latLngBounds([[s, w], [n, e]]);
-  let view = {bounds: all, padding: [4, 4], maxZoom: 12};
-  const fit = () => m.fitBounds(view.bounds, {padding: view.padding, maxZoom: view.maxZoom});
-  m.setView(all.getCenter(), 10);
+  let view = {bounds: all, padding: [8, 8], maxZoom: 12};
+  // True once the reader has zoomed or moved the map themselves. From then
+  // on a change in the map's size keeps their view instead of refitting.
+  let moved = false, fitting = false;
+  const fit = () => {
+    fitting = true;
+    m.fitBounds(view.bounds, {padding: view.padding, maxZoom: view.maxZoom, animate: false});
+    fitting = false;
+    moved = false;
+  };
+  m.on("zoomstart dragstart", () => { if (!fitting) moved = true; });
 
   const stats = recent?.routes ?? {};
   const layers = {};
   const casing = L.layerGroup().addTo(m);
   const lines = L.layerGroup().addTo(m);
+  const hits = L.layerGroup().addTo(m);
   const stopLayer = L.layerGroup().addTo(m);
+  let selected = null, hovered = null;
+
+  function restyle() {
+    for (const [id, l] of Object.entries(layers)) {
+      const bold = id === selected || id === hovered;
+      const dim = selected != null && id !== selected && id !== hovered;
+      l.line.setStyle({weight: bold ? LINE_BOLD : LINE});
+      l.under.setStyle({weight: bold ? CASING_BOLD : CASING});
+      l.line.getElement()?.classList.toggle("dim", dim);
+      l.under.getElement()?.classList.toggle("dim", dim);
+    }
+    const top = layers[hovered] ?? layers[selected];
+    if (top) {
+      top.under.bringToFront();
+      top.line.bringToFront();
+    }
+  }
 
   // Draw routes with the most trips last, so busy routes sit on top.
-  const routes = [...mapData.routes].sort((a, b) => a.trips - b.trips);
-  for (const r of routes) {
+  for (const r of [...(mapData.routes ?? [])].sort((a, b) => a.trips - b.trips)) {
     const st = stats[r.route_id];
     const b = band(st?.on_time_share_of_observed, st?.observed);
     const latlngs = r.paths.map(p => p.map(([lon, lat]) => [lat, lon]));
-    const under = L.polyline(latlngs, {className: "route-casing", weight: 7, interactive: false});
-    const line = L.polyline(latlngs, {className: `route-line band-${b.key}`, weight: 4});
-    line.bindTooltip(routeTip(r, st), {sticky: true, className: "map-tip"});
-    line.on("mouseover", () => line.setStyle({weight: 7}));
-    line.on("mouseout", () => line.setStyle({weight: layers[r.route_id].selected ? 7 : 4}));
-    if (onSelect) line.on("click", () => onSelect(r.route_id));
+    const under = L.polyline(latlngs, {className: "route-casing", weight: CASING, interactive: false});
+    const line = L.polyline(latlngs, {className: `route-line band-${b.key}`, weight: LINE, interactive: false});
+    const hit = L.polyline(latlngs, {className: "route-hit", weight: HIT, opacity: 0});
+    hit.bindTooltip(routeTip(r, st), {sticky: true, className: "map-tip"});
+    hit.on("mouseover", () => { hovered = r.route_id; restyle(); });
+    hit.on("mouseout", () => { hovered = null; restyle(); });
+    hit.on("click", ev => {
+      const touch = ev.originalEvent?.pointerType === "touch";
+      if (touch && linkFor) {
+        hit.closeTooltip();
+        L.popup({className: "map-card", closeButton: true, autoPanPadding: [16, 16]})
+          .setLatLng(ev.latlng)
+          .setContent(`${routeTip(r, st)}<br><a href="${esc(linkFor(r.route_id))}">See ${esc(routeTitle(r))} stop by stop</a>`)
+          .openOn(m);
+      } else if (onSelect) {
+        onSelect(r.route_id);
+      }
+    });
     under.addTo(casing);
     line.addTo(lines);
-    layers[r.route_id] = {line, under, bounds: line.getBounds(), selected: false};
+    hit.addTo(hits);
+    layers[r.route_id] = {line, under, bounds: line.getBounds()};
   }
 
-  if (legend) {
-    const ctl = L.control({position: "bottomleft"});
-    ctl.onAdd = () => {
-      const div = L.DomUtil.create("div", "map-legend");
-      const days = recent?.days ?? 0;
-      const when = days > 1 ? `, last ${days} days` : days === 1 ? ", latest day" : "";
-      div.innerHTML = `<div class="map-legend-title">Departures on time${when}</div>` +
-        [...BANDS, NO_BAND].map(b =>
-          `<div><span class="swatch band-${b.key}"></span>${esc(b.label)}</div>`).join("");
-      return div;
-    };
-    ctl.addTo(m);
-  }
-
+  // The tiles are added once the map's box has a size (see the end).
+  let tiles = null;
   const stopsById = Object.fromEntries((mapData.timepoint_stops ?? []).map(s => [s.stop_id, s]));
 
   function setSelected(id) {
+    selected = id != null && layers[id] ? id : null;
     stopLayer.clearLayers();
-    for (const [rid, l] of Object.entries(layers)) {
-      l.selected = rid === id;
-      const dim = id != null && !l.selected;
-      l.line.setStyle({weight: l.selected ? 7 : 4});
-      l.line.getElement()?.classList.toggle("dim", dim);
-      l.under.getElement()?.classList.toggle("dim", dim);
-      if (l.selected) {
-        l.under.bringToFront();
-        l.line.bringToFront();
-      }
-    }
-    if (id == null || !layers[id]) {
-      view = {bounds: all, padding: [4, 4], maxZoom: 12};
-      fit();
+    restyle();
+    if (selected == null) {
+      view = {bounds: all, padding: [8, 8], maxZoom: 12};
+      if (tiles) fit();
       return;
     }
-    for (const s of stats[id]?.stops ?? []) {
+    for (const s of stats[selected]?.stops ?? []) {
       const pos = stopsById[s.stop_id];
       if (!pos) continue;
       const b = band(s.on_time_share_of_observed, s.observed);
-      L.circleMarker([pos.lat, pos.lon], {radius: 7, weight: 2, className: `stop-dot band-${b.key}`})
-        .bindTooltip(stopTip(s), {className: "map-tip"})
-        .addTo(stopLayer);
+      // A marker, not a drawn circle: it can take the keyboard focus, and
+      // focusing it shows the same tip that pointing at it does.
+      const marker = L.marker([pos.lat, pos.lon], {
+        icon: L.divIcon({className: "stop-marker", html: bandIconHTML(b, 18), iconSize: [28, 28]}),
+        keyboard: true, riseOnHover: true,
+      }).bindTooltip(`<strong>${esc(s.name)}</strong><br>${esc(stopSummary(s))}`, {className: "map-tip", direction: "top", offset: [0, -10]});
+      marker.on("add", () => marker.getElement()?.setAttribute("aria-label", `${s.name}: ${stopSummary(s)}`));
+      marker.addTo(stopLayer);
     }
-    view = {bounds: layers[id].bounds, padding: [24, 24], maxZoom: 14};
-    fit();
+    view = {bounds: layers[selected].bounds, padding: [28, 28], maxZoom: 14};
+    if (tiles) fit();
   }
 
-  // Leaflet measures its container when created, before the page has laid
-  // it out; measure and fit again whenever its size changes.
+  // Make one route stand out without selecting it (a link being pointed at).
+  function highlight(id) {
+    hovered = id != null && layers[id] ? id : null;
+    restyle();
+  }
+
+  // Leaflet needs to know the size of its box, and the box has none until the
+  // page lays it out. Fit the view the first time the box has a size, and
+  // only then add the tiles, so each tile is fetched once.
   let size = "";
-  new ResizeObserver(() => {
+  const watcher = new ResizeObserver(() => {
     const now = `${node.clientWidth}x${node.clientHeight}`;
     if (node.clientWidth === 0 || now === size) return;
     size = now;
-    m.invalidateSize();
-    fit();
-  }).observe(node);
-  return {node, map: m, setSelected};
+    m.invalidateSize({animate: false});
+    if (!tiles) {
+      fit();
+      tiles = L.tileLayer(TILES, {maxZoom: 18, attribution: ATTRIBUTION}).addTo(m);
+      restyle();
+    } else if (!moved) {
+      fit();
+    }
+  });
+  watcher.observe(node);
+
+  function destroy() {
+    watcher.disconnect();
+    m.remove();
+  }
+
+  return {node, map: m, setSelected, highlight, destroy};
 }

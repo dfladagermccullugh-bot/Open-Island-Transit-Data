@@ -1,0 +1,250 @@
+{
+ "field_version": "field/0.3.0",
+ "definition": "inferred minus field-timed, seconds; arrival = bus within 40 m of the stop along its route, departure = more than 40 m past it, pass = bus level with the stop, inferred as the midpoint of arrival and departure",
+ "target_mae_s": 30.0,
+ "target_min_n": 5,
+ "meets_target": true,
+ "overall": {
+  "n": 5,
+  "bias_s": 3.8,
+  "median_s": 3.4,
+  "mae_s": 3.8,
+  "within_30s_share": 1.0,
+  "within_60s_share": 1.0,
+  "max_abs_s": 7.5
+ },
+ "arrival": {
+  "n": 0,
+  "bias_s": null,
+  "median_s": null,
+  "mae_s": null,
+  "within_30s_share": null,
+  "within_60s_share": null,
+  "max_abs_s": null
+ },
+ "departure": {
+  "n": 0,
+  "bias_s": null,
+  "median_s": null,
+  "mae_s": null,
+  "within_30s_share": null,
+  "within_60s_share": null,
+  "max_abs_s": null
+ },
+ "pass": {
+  "n": 5,
+  "bias_s": 3.8,
+  "median_s": 3.4,
+  "mae_s": 3.8,
+  "within_30s_share": 1.0,
+  "within_60s_share": 1.0,
+  "max_abs_s": 7.5
+ },
+ "by_stop": {
+  "178171": {
+   "arrival": {
+    "n": 0,
+    "bias_s": null,
+    "median_s": null,
+    "mae_s": null,
+    "within_30s_share": null,
+    "within_60s_share": null,
+    "max_abs_s": null
+   },
+   "departure": {
+    "n": 0,
+    "bias_s": null,
+    "median_s": null,
+    "mae_s": null,
+    "within_30s_share": null,
+    "within_60s_share": null,
+    "max_abs_s": null
+   },
+   "pass": {
+    "n": 1,
+    "bias_s": 7.5,
+    "median_s": 7.5,
+    "mae_s": 7.5,
+    "within_30s_share": 1.0,
+    "within_60s_share": 1.0,
+    "max_abs_s": 7.5
+   }
+  },
+  "178191": {
+   "arrival": {
+    "n": 0,
+    "bias_s": null,
+    "median_s": null,
+    "mae_s": null,
+    "within_30s_share": null,
+    "within_60s_share": null,
+    "max_abs_s": null
+   },
+   "departure": {
+    "n": 0,
+    "bias_s": null,
+    "median_s": null,
+    "mae_s": null,
+    "within_30s_share": null,
+    "within_60s_share": null,
+    "max_abs_s": null
+   },
+   "pass": {
+    "n": 1,
+    "bias_s": 2.0,
+    "median_s": 2.0,
+    "mae_s": 2.0,
+    "within_30s_share": 1.0,
+    "within_60s_share": 1.0,
+    "max_abs_s": 2.0
+   }
+  },
+  "178309": {
+   "arrival": {
+    "n": 0,
+    "bias_s": null,
+    "median_s": null,
+    "mae_s": null,
+    "within_30s_share": null,
+    "within_60s_share": null,
+    "max_abs_s": null
+   },
+   "departure": {
+    "n": 0,
+    "bias_s": null,
+    "median_s": null,
+    "mae_s": null,
+    "within_30s_share": null,
+    "within_60s_share": null,
+    "max_abs_s": null
+   },
+   "pass": {
+    "n": 1,
+    "bias_s": 4.2,
+    "median_s": 4.2,
+    "mae_s": 4.2,
+    "within_30s_share": 1.0,
+    "within_60s_share": 1.0,
+    "max_abs_s": 4.2
+   }
+  },
+  "197274": {
+   "arrival": {
+    "n": 0,
+    "bias_s": null,
+    "median_s": null,
+    "mae_s": null,
+    "within_30s_share": null,
+    "within_60s_share": null,
+    "max_abs_s": null
+   },
+   "departure": {
+    "n": 0,
+    "bias_s": null,
+    "median_s": null,
+    "mae_s": null,
+    "within_30s_share": null,
+    "within_60s_share": null,
+    "max_abs_s": null
+   },
+   "pass": {
+    "n": 1,
+    "bias_s": 1.9,
+    "median_s": 1.9,
+    "mae_s": 1.9,
+    "within_30s_share": 1.0,
+    "within_60s_share": 1.0,
+    "max_abs_s": 1.9
+   }
+  },
+  "197275": {
+   "arrival": {
+    "n": 0,
+    "bias_s": null,
+    "median_s": null,
+    "mae_s": null,
+    "within_30s_share": null,
+    "within_60s_share": null,
+    "max_abs_s": null
+   },
+   "departure": {
+    "n": 0,
+    "bias_s": null,
+    "median_s": null,
+    "mae_s": null,
+    "within_30s_share": null,
+    "within_60s_share": null,
+    "max_abs_s": null
+   },
+   "pass": {
+    "n": 1,
+    "bias_s": 3.4,
+    "median_s": 3.4,
+    "mae_s": 3.4,
+    "within_30s_share": 1.0,
+    "within_60s_share": 1.0,
+    "max_abs_s": 3.4
+   }
+  }
+ },
+ "timed_rows": 5,
+ "rows_waiting_for_their_day": 0,
+ "rows_with_no_scheduled_event": 0,
+ "timed_moments_not_inferred": 0,
+ "days": [
+  "2026-11-20"
+ ],
+ "pairs": [
+  {
+   "line": 3,
+   "service_date": "2026-11-20",
+   "trip_id": "1155575",
+   "stop_id": "197274",
+   "event": "pass",
+   "field": "2026-11-21T00:52:07+00:00",
+   "inferred": "2026-11-21T00:52:08.937371+00:00",
+   "difference_s": 1.9
+  },
+  {
+   "line": 4,
+   "service_date": "2026-11-20",
+   "trip_id": "1155575",
+   "stop_id": "178191",
+   "event": "pass",
+   "field": "2026-11-21T00:53:28+00:00",
+   "inferred": "2026-11-21T00:53:29.950602+00:00",
+   "difference_s": 2.0
+  },
+  {
+   "line": 6,
+   "service_date": "2026-11-20",
+   "trip_id": "1155575",
+   "stop_id": "197275",
+   "event": "pass",
+   "field": "2026-11-21T00:56:31+00:00",
+   "inferred": "2026-11-21T00:56:34.426198+00:00",
+   "difference_s": 3.4
+  },
+  {
+   "line": 7,
+   "service_date": "2026-11-20",
+   "trip_id": "1155575",
+   "stop_id": "178309",
+   "event": "pass",
+   "field": "2026-11-21T00:58:06+00:00",
+   "inferred": "2026-11-21T00:58:10.192449+00:00",
+   "difference_s": 4.2
+  },
+  {
+   "line": 8,
+   "service_date": "2026-11-20",
+   "trip_id": "1155575",
+   "stop_id": "178171",
+   "event": "pass",
+   "field": "2026-11-21T01:00:42+00:00",
+   "inferred": "2026-11-21T01:00:49.483035+00:00",
+   "difference_s": 7.5
+  }
+ ],
+ "unreadable_rows": []
+}

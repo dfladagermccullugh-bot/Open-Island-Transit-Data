@@ -1,0 +1,41 @@
+// Sizes shared by the light and dark themes: type, spacing, corners, shadows
+// and the reading measure. Colors are set by each theme file. Components use
+// only these names and the color names, so a size is changed in one place.
+
+// The one layout breakpoint, in container pixels. lib.js exports the same
+// number as NARROW for the charts.
+$bp-narrow: 640px;
+
+:root {
+  // Type: seven steps. Nothing on the site is set smaller than --fs-xs.
+  --fs-xs: .8rem;
+  --fs-sm: .875rem;
+  --fs-md: 1rem;
+  --fs-lg: 1.125rem;
+  --fs-xl: 1.375rem;
+  --fs-2xl: 1.75rem;
+  --fs-3xl: 2.25rem;
+  --fs-title: clamp(1.8rem, 4.5vw, 2.6rem);
+  --fs-hero: clamp(3rem, 11vw, 5rem);
+
+  --sp-1: .25rem;
+  --sp-2: .5rem;
+  --sp-3: .75rem;
+  --sp-4: 1rem;
+  --sp-5: 1.5rem;
+  --sp-6: 2rem;
+  --sp-7: 3rem;
+
+  --radius-sm: 3px;
+  --radius-md: 6px;
+  --radius-lg: 10px;
+
+  // Lines of prose stop here; charts, maps and tables use the full width.
+  --measure: 70ch;
+  // The map's height, also reserved before the map is drawn. Tall enough on
+  // a desk to show both islands at a zoom where the routes can be told apart.
+  --map-height: clamp(420px, 78vh, 640px);
+}
+@media (max-width: $bp-narrow) {
+  :root { --map-height: 440px; }
+}

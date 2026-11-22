@@ -1,0 +1,239 @@
+{
+ "gaps_version": "gaps/0.3.0",
+ "days": [
+  "2026-11-19",
+  "2026-11-20"
+ ],
+ "trips": 502,
+ "unobserved": 15,
+ "canceled_left_out": 0,
+ "thresholds": {
+  "min_days": 14,
+  "min_unobserved": 30
+ },
+ "rates": {
+  "by_hour": {
+   "3": {
+    "scheduled": 3,
+    "unobserved": 0,
+    "rate": 0.0
+   },
+   "4": {
+    "scheduled": 7,
+    "unobserved": 0,
+    "rate": 0.0
+   },
+   "5": {
+    "scheduled": 18,
+    "unobserved": 0,
+    "rate": 0.0
+   },
+   "6": {
+    "scheduled": 22,
+    "unobserved": 0,
+    "rate": 0.0
+   },
+   "7": {
+    "scheduled": 24,
+    "unobserved": 0,
+    "rate": 0.0
+   },
+   "8": {
+    "scheduled": 22,
+    "unobserved": 0,
+    "rate": 0.0
+   },
+   "9": {
+    "scheduled": 21,
+    "unobserved": 0,
+    "rate": 0.0
+   },
+   "10": {
+    "scheduled": 21,
+    "unobserved": 0,
+    "rate": 0.0
+   },
+   "11": {
+    "scheduled": 23,
+    "unobserved": 0,
+    "rate": 0.0
+   },
+   "12": {
+    "scheduled": 31,
+    "unobserved": 2,
+    "rate": 0.064516
+   },
+   "13": {
+    "scheduled": 44,
+    "unobserved": 1,
+    "rate": 0.022727
+   },
+   "14": {
+    "scheduled": 46,
+    "unobserved": 1,
+    "rate": 0.021739
+   },
+   "15": {
+    "scheduled": 44,
+    "unobserved": 1,
+    "rate": 0.022727
+   },
+   "16": {
+    "scheduled": 48,
+    "unobserved": 3,
+    "rate": 0.0625
+   },
+   "17": {
+    "scheduled": 50,
+    "unobserved": 2,
+    "rate": 0.04
+   },
+   "18": {
+    "scheduled": 48,
+    "unobserved": 3,
+    "rate": 0.0625
+   },
+   "19": {
+    "scheduled": 28,
+    "unobserved": 2,
+    "rate": 0.071429
+   },
+   "20": {
+    "scheduled": 2,
+    "unobserved": 0,
+    "rate": 0.0
+   }
+  },
+  "by_hour_band": {
+   "early (before 7)": {
+    "scheduled": 50,
+    "unobserved": 0,
+    "rate": 0.0
+   },
+   "morning peak (7-9)": {
+    "scheduled": 46,
+    "unobserved": 0,
+    "rate": 0.0
+   },
+   "midday (9-15)": {
+    "scheduled": 186,
+    "unobserved": 4,
+    "rate": 0.021505
+   },
+   "afternoon peak (15-18)": {
+    "scheduled": 142,
+    "unobserved": 6,
+    "rate": 0.042254
+   },
+   "evening (18 on)": {
+    "scheduled": 78,
+    "unobserved": 5,
+    "rate": 0.064103
+   }
+  },
+  "by_route": {
+   "6737": {
+    "scheduled": 24,
+    "unobserved": 1,
+    "rate": 0.041667
+   },
+   "6743": {
+    "scheduled": 16,
+    "unobserved": 0,
+    "rate": 0.0
+   },
+   "6744": {
+    "scheduled": 42,
+    "unobserved": 0,
+    "rate": 0.0
+   },
+   "7913": {
+    "scheduled": 43,
+    "unobserved": 1,
+    "rate": 0.023256
+   },
+   "7914": {
+    "scheduled": 24,
+    "unobserved": 0,
+    "rate": 0.0
+   },
+   "7915": {
+    "scheduled": 22,
+    "unobserved": 1,
+    "rate": 0.045455
+   },
+   "7916": {
+    "scheduled": 16,
+    "unobserved": 2,
+    "rate": 0.125
+   },
+   "7918": {
+    "scheduled": 36,
+    "unobserved": 2,
+    "rate": 0.055556
+   },
+   "7919": {
+    "scheduled": 38,
+    "unobserved": 0,
+    "rate": 0.0
+   },
+   "7920": {
+    "scheduled": 19,
+    "unobserved": 0,
+    "rate": 0.0
+   },
+   "7922": {
+    "scheduled": 81,
+    "unobserved": 2,
+    "rate": 0.024691
+   },
+   "7923": {
+    "scheduled": 30,
+    "unobserved": 5,
+    "rate": 0.166667
+   },
+   "9404": {
+    "scheduled": 98,
+    "unobserved": 1,
+    "rate": 0.010204
+   },
+   "9431": {
+    "scheduled": 5,
+    "unobserved": 0,
+    "rate": 0.0
+   },
+   "9432": {
+    "scheduled": 8,
+    "unobserved": 0,
+    "rate": 0.0
+   }
+  },
+  "by_day_type": {
+   "weekday": {
+    "scheduled": 502,
+    "unobserved": 15,
+    "rate": 0.02988
+   }
+  },
+  "by_trips_in_service": {
+   "1-9": {
+    "scheduled": 40,
+    "unobserved": 2,
+    "rate": 0.05
+   },
+   "10-14": {
+    "scheduled": 175,
+    "unobserved": 3,
+    "rate": 0.017143
+   },
+   "15-19": {
+    "scheduled": 287,
+    "unobserved": 10,
+    "rate": 0.034843
+   }
+  }
+ },
+ "model": null,
+ "model_status": "not fitted: needs 14 days and 30 unobserved trips (have 2 and 15)",
+ "limits": "The model treats trips as independent. Trips lost together on one day or one bus make its standard errors too small and its p-values too confident. Days with no service are left out, and so are trips the feed marked as canceled that no bus reported."
+}

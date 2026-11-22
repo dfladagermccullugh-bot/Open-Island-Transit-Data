@@ -1,6 +1,10 @@
 ---
 pagetitle: "Open Island Transit Data"
 description: "How often Island Transit's buses run on time, figured out from their live locations, with every number and file free to check."
+include-in-header:
+  - _head.html
+  - _leaflet.html
+  - _dataset.html
 ---
 
 ::: {.hero}
@@ -10,30 +14,16 @@ description: "How often Island Transit's buses run on time, figured out from the
 report vanishes as soon as the next one arrives. This site saves all of them
 and uses them to figure out how often the buses leave on time.]{.lede}
 
-```{ojs}
-//| echo: false
-import {liveStatus} from "./lib.js"
-// The badge says only what was just checked: saving, delayed, or unknown.
-liveBadge = {
-  const badge = (cls, text) => html`<a class="live ${cls}" href="#how-it-works" role="status"><span class="dot"></span>${text}</a>`;
-  yield badge("unknown", "Checking the collector…");
-  const status = await liveStatus();
-  const vp = status?.find(d => d.feed === "vehiclePositions") ?? null;
-  const age = vp?.last_ok_age_s;
-  const ago = s => s < 120 ? `${s} second${s === 1 ? "" : "s"} ago` : s < 7200 ? `${Math.round(s / 60)} minutes ago` : `${Math.round(s / 3600)} hours ago`;
-  if (vp == null) yield badge("unknown", "The collector's status can't be read right now");
-  else if (age == null) yield badge("down", "Collector delayed · no update in the last 2 days");
-  else if (age < 120) yield badge("ok", `Saving now · last update ${ago(age)}`);
-  else yield badge("down", `Collector delayed · last update ${ago(age)}`);
-}
+```{=html}
+<p class="live unknown" id="live"><span class="dot" aria-hidden="true"></span><span><span class="live-state" role="status">Checking the collector…</span><span class="live-age"></span></span></p>
 ```
 :::
 
 ```{ojs}
 //| echo: false
 //| output: false
-import {json, pct, count, lateness, longDate, routeMap, routeSlug} from "./lib.js"
-import {drawRouteMap} from "./map.js"
+import {json, pct, count, lateness, longDate, routeMap, routeSlug, routeOrder, routeTitle, band, bandIcon, bandLegend, emptyNote, guard, stats, h} from "./lib.js"
+import {drawRouteMap, routeSummary} from "./map.js"
 recent = json("data/ontime/recent.json")
 o = recent?.overall ?? null
 period = recent == null ? "" : recent.days === 1
@@ -41,109 +31,79 @@ period = recent == null ? "" : recent.days === 1
   : `over the ${recent.days} days to ${longDate(recent.last_service_date)}`
 ```
 
+::: {.slot-headline}
 ```{ojs}
 //| echo: false
-html`${o == null || o.observed === 0
-  ? html`<p class="empty">The on-time figures can't be shown right now. The saved data is still in the downloads.</p>`
+guard(() => o == null || !o.observed
+  ? emptyNote("unavailable", "The on-time figures")
   : html`<div class="headline">
       <div class="big">${pct(o.on_time_share_of_observed)}</div>
-      <div class="big-label">of departures left on time ${period}.
-        <span class="note">A bus counts as on time if it leaves from 1 minute early to 5 minutes late.${recent.schedule_change ? ` Island Transit changed its schedule on ${longDate(recent.schedule_change.effective)}, so this figure starts over from that day.` : ""}</span></div>
+      <p class="big-label">of departures left on time ${period}.
+        <span class="note">A bus counts as on time if it leaves from 1 minute early to 5 minutes late.${recent.schedule_change ? ` Island Transit changed its schedule on ${longDate(recent.schedule_change.effective)}, so this figure starts over from that day.` : ""}</span></p>
     </div>
-    <div class="stat-row">
-      <div class="stat"><div class="label">Typical departure</div>
-        <div class="value">${lateness(o.deviation_s_median)}</div></div>
-      <div class="stat"><div class="label">More than 5 minutes late</div>
-        <div class="value">${pct(o.late_share_of_observed)}</div></div>
-      <div class="stat"><div class="label">Departures checked</div>
-        <div class="value">${count(o.observed)}</div></div>
-    </div>`}`
+    ${stats([
+      {label: "Typical departure", value: lateness(o.deviation_s_median)},
+      {label: "More than 5 minutes late", value: pct(o.late_share_of_observed)},
+      {label: "Departures checked", value: count(o.observed)},
+    ])}`, "The on-time figures")
 ```
+:::
 
 ## Every route at a glance
 
-Pick any route on the map to see how it did at each stop.
+Pick any route on the map or from the list under it to see how it did at
+each stop.
 
 ```{ojs}
 //| echo: false
-html`<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/leaflet@1.9.4/dist/leaflet.css">`
-```
-
-```{ojs}
-//| echo: false
-L = require("leaflet@1.9.4")
+//| output: false
+L = require(new URL("vendor/leaflet-1.9.4/leaflet.js", document.baseURI).href)
 mapData = routeMap(recent?.timepoints)
-homeMap = mapData == null ? null : drawRouteMap(L, mapData, recent, {
-  height: width < 640 ? 440 : 640,
-  onSelect: id => {
-    const r = mapData.routes.find(r => r.route_id === id);
-    location.href = `routes.html#${routeSlug(r, id)}`;
-  },
-})
-html`${homeMap == null ? html`<p class="empty">The route map can't be shown right now.</p>` : homeMap.node}`
+routeHref = id => `routes.html#${routeSlug(mapData.routes.find(r => r.route_id === id), id)}`
+homeMap = {
+  if (mapData == null || !Array.isArray(mapData.routes)) return null;
+  const view = drawRouteMap(L, mapData, recent, {
+    onSelect: id => { location.href = routeHref(id); },
+    linkFor: routeHref,
+  });
+  invalidation.then(() => view.destroy());
+  return view;
+}
 ```
+
+::: {.slot-map}
+```{ojs}
+//| echo: false
+guard(() => {
+  if (homeMap == null) return emptyNote("unavailable", "The route map");
+  const days = recent?.days ?? 0;
+  const when = days > 1 ? `, last ${days} days` : days === 1 ? ", latest day" : "";
+  const links = [...mapData.routes].sort(routeOrder).map(r => {
+    const st = recent?.routes?.[r.route_id];
+    const a = h("a", {href: routeHref(r.route_id), "aria-label": `${routeTitle(r)}: ${routeSummary(st)}`},
+      bandIcon(band(st?.on_time_share_of_observed, st?.observed)), r.short_name || r.long_name || r.route_id);
+    for (const on of ["mouseenter", "focus"]) a.addEventListener(on, () => homeMap.highlight(r.route_id));
+    for (const off of ["mouseleave", "blur"]) a.addEventListener(off, () => homeMap.highlight(null));
+    return h("li", {}, a);
+  });
+  return html`${homeMap.node}
+    ${bandLegend({title: `Departures on time${when}`})}
+    <nav class="route-links" aria-label="Routes"><ul>${links}</ul></nav>`;
+}, "The route map")
+```
+:::
 
 ## How it works {#how-it-works}
 
-::: {.how}
 ```{=html}
-<svg viewBox="0 0 1000 190" role="img" aria-labelledby="how-title how-desc">
-  <title id="how-title">How the data flows</title>
-  <desc id="how-desc">Each bus reports its location to Island Transit's live feed. Every 20 seconds, our collector saves the latest update. Each night, our script checks those updates and turns them into on-time figures, which end up on this site and in free downloads.</desc>
-  <defs>
-    <marker id="arrowhead" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
-      <path class="arrowhead" d="M0,0 L10,5 L0,10 z"/>
-    </marker>
-  </defs>
-  <text class="lane" x="10" y="22">Island Transit</text>
-  <text class="lane" x="415" y="22">This project</text>
-  <g transform="translate(0,40)">
-    <rect class="box" x="10" y="0" width="175" height="120" rx="10"/>
-    <text class="t1" x="97" y="42" text-anchor="middle">The bus</text>
-    <text class="t2" x="97" y="68" text-anchor="middle">GPS on board reports</text>
-    <text class="t2" x="97" y="86" text-anchor="middle">where it is</text>
-
-    <rect class="box" x="212" y="0" width="175" height="120" rx="10"/>
-    <text class="t1" x="299" y="42" text-anchor="middle">The live feed</text>
-    <text class="t2" x="299" y="68" text-anchor="middle">what trip apps read;</text>
-    <text class="t2" x="299" y="86" text-anchor="middle">each update replaces</text>
-    <text class="t2" x="299" y="104" text-anchor="middle">the last one</text>
-
-    <rect class="box ours" x="415" y="0" width="175" height="120" rx="10"/>
-    <text class="t1" x="502" y="42" text-anchor="middle">Our collector</text>
-    <text class="t2" x="502" y="68" text-anchor="middle">saves every update,</text>
-    <text class="t2" x="502" y="86" text-anchor="middle">every 20 seconds,</text>
-    <text class="t2" x="502" y="104" text-anchor="middle">day and night</text>
-
-    <rect class="box ours" x="617" y="0" width="175" height="120" rx="10"/>
-    <text class="t1" x="704" y="42" text-anchor="middle">Nightly checks</text>
-    <text class="t2" x="704" y="68" text-anchor="middle">figure out when buses</text>
-    <text class="t2" x="704" y="86" text-anchor="middle">left each stop; grade</text>
-    <text class="t2" x="704" y="104" text-anchor="middle">the tracking data</text>
-
-    <rect class="box ours" x="815" y="0" width="175" height="120" rx="10"/>
-    <text class="t1" x="902" y="42" text-anchor="middle">You</text>
-    <text class="t2" x="902" y="68" text-anchor="middle">this site's charts</text>
-    <text class="t2" x="902" y="86" text-anchor="middle">and map, plus every</text>
-    <text class="t2" x="902" y="104" text-anchor="middle">file to download</text>
-
-    <path class="arrow" d="M187,60 L208,60" marker-end="url(#arrowhead)"/>
-    <path class="arrow" d="M389,60 L411,60" marker-end="url(#arrowhead)"/>
-    <path class="arrow" d="M592,60 L613,60" marker-end="url(#arrowhead)"/>
-    <path class="arrow" d="M794,60 L811,60" marker-end="url(#arrowhead)"/>
-  </g>
-</svg>
+<ol class="how-flow">
+  <li><span class="who">Island Transit</span><span class="what">The bus</span><span class="does">GPS on board reports where it is</span></li>
+  <li><span class="who">Island Transit</span><span class="what">The live feed</span><span class="does">what trip apps read; each update replaces the last one</span></li>
+  <li class="ours"><span class="who">This project</span><span class="what">Our collector</span><span class="does">saves every update, every 20 seconds, day and night</span></li>
+  <li class="ours"><span class="who">This project</span><span class="what">Nightly checks</span><span class="does">figure out when buses left each stop; grade the tracking data</span></li>
+  <li class="ours"><span class="who">This project</span><span class="what">You</span><span class="does">this site's charts and map, plus every file to download</span></li>
+</ol>
 ```
-
-::: {.how-steps}
-Each bus carries a GPS unit that reports where it is. Island Transit passes
-those reports along to trip-planning apps through a live feed, and every new
-update wipes out the one before it. Every 20 seconds, day and night, our
-collector asks the feed for its latest update and saves it. Each night, our
-script turns the saved updates into the charts, the map and the files you
-can download here.
-:::
-:::
 
 The feed tells us where a bus is, but it never says when the bus left a
 stop. So the script traces every bus along its route, finds the moment it

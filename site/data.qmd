@@ -23,17 +23,27 @@ we share the archived data.
 
 ```{ojs}
 //| echo: false
-import {json, count, longDate, REPO_URL, DATA_URL, RELEASES_URL} from "./lib.js"
+import {json, count, pct, megabytes, longDate, emptyNote, guard, h, REPO_URL, DATA_URL, DATA_RAW_URL, RELEASES_URL} from "./lib.js"
+import {makeCharts} from "./charts.js"
+ch = makeCharts({Plot})
 raw = json("data/manifest/raw.json")
-rows = raw == null ? [] : Object.values(raw.days).map(d => ({
-  day: d.service_date, fetches: d.fetch_rows, ok: d.ok_rows,
-  megabytes: (d.files ?? []).reduce((a, f) => a + f.bytes, 0) / 1e6,
-  release: d.release_tag}))
-html`${rows.length === 0 ? html`<p class="empty">The list of archived days can't be shown right now.</p>` : Inputs.table(rows.reverse(), {select: false,
-  header: {day: "Service day", fetches: "Fetch attempts", ok: "Successful", megabytes: "Size (MB)", release: "Release"},
-  format: {day: d => longDate(d), fetches: count, ok: count, megabytes: d => d.toFixed(1),
-           release: t => t ? html`<a href="${RELEASES_URL}/tag/${t}">${t}</a>` : "not yet uploaded"},
-  rows: 20, layout: "auto"})}`
+guard(() => {
+  const rows = Object.values(raw?.days ?? {}).map(d => ({
+    day: d.service_date, fetches: d.fetch_rows, ok: d.ok_rows,
+    bytes: (d.files ?? []).reduce((a, f) => a + (f.bytes ?? 0), 0),
+    release: d.release_tag}));
+  if (rows.length === 0) return emptyNote("unavailable", "The list of archived days");
+  return ch.table(rows, {
+    caption: "Archived service days", sort: {key: "day", descending: true}, pageSize: 20,
+    columns: [
+      {key: "day", label: "Service day", format: v => longDate(v)},
+      {key: "fetches", label: "Fetch attempts", align: "right", format: count},
+      {key: "ok", label: "Successful", align: "right", format: count},
+      {key: "bytes", label: "Size", align: "right", format: v => megabytes(v)},
+      {key: "release", label: "Release", format: t => t ? h("a", {href: `${RELEASES_URL}/tag/${t}`}, t) : "not yet uploaded"},
+    ],
+  });
+}, "The list of archived days")
 ```
 
 ## Monthly reports
@@ -44,21 +54,26 @@ match ours exactly.
 
 ```{ojs}
 //| echo: false
-import {pct} from "./lib.js"
 reports = json("data/reports/index.json")
-reportBase = `${DATA_URL}/reports/`
-reportRows = (reports ?? []).map(r => ({...r, megabytes: r.bytes / 1e6})).reverse()
-html`${reportRows.length === 0 ? html`<p class="empty">No month is complete yet.</p>` : Inputs.table(reportRows, {select: false,
-  columns: ["month", "days_archived", "days_missing", "vehicle_uptime", "trip_coverage",
-            "timepoint_observed_share", "on_time_share_of_observed", "megabytes"],
-  header: {month: "Month", days_archived: "Days archived", days_missing: "Days missing",
-           vehicle_uptime: "Collector uptime", trip_coverage: "Trip coverage",
-           timepoint_observed_share: "Timepoint events observed",
-           on_time_share_of_observed: "On time (of observed)", megabytes: "Size (MB)"},
-  format: {month: m => html`<a href="${reportBase}${m}.md">${m}</a>`,
-           vehicle_uptime: x => pct(x, 2), trip_coverage: x => pct(x, 1),
-           timepoint_observed_share: x => pct(x, 1), on_time_share_of_observed: x => pct(x, 1),
-           megabytes: d => d.toFixed(1)}})}`
+guard(() => {
+  const rows = Array.isArray(reports) ? reports : [];
+  if (rows.length === 0) return h("p", {class: "empty"}, "No month is complete yet.");
+  // The count of missing days was named days_missing at first.
+  const missing = r => r.days_missing_count ?? (Array.isArray(r.days_missing) ? r.days_missing.length : r.days_missing);
+  return ch.table(rows.map(r => ({...r, missing: missing(r)})), {
+    caption: "Monthly reports", sort: {key: "month", descending: true}, wide: true,
+    columns: [
+      {key: "month", label: "Month", format: m => h("a", {href: `${DATA_URL}/reports/${m}.md`}, m)},
+      {key: "days_archived", label: "Days archived", align: "right", format: count},
+      {key: "missing", label: "Days missing", align: "right", format: count},
+      {key: "vehicle_uptime", label: "Collector uptime", align: "right", format: v => pct(v, 2)},
+      {key: "trip_coverage", label: "Trip coverage", align: "right", format: v => pct(v, 1)},
+      {key: "timepoint_observed_share", label: "Timepoint events observed", align: "right", format: v => pct(v, 1)},
+      {key: "on_time_share_of_observed", label: "On time (of observed)", align: "right", format: v => pct(v, 1)},
+      {key: "bytes", label: "Size", align: "right", format: v => megabytes(v)},
+    ],
+  });
+}, "The list of monthly reports")
 ```
 
 ## What's in each file

@@ -1,0 +1,21 @@
+{
+  "name": "open-island-transit-data-site-tests",
+  "private": true,
+  "description": "Browser tests for the rendered site. The libraries the pages load from a CDN are installed here and served to the browser by the tests, so nothing is fetched from the network while they run.",
+  "type": "module",
+  "scripts": {
+    "test": "playwright test",
+    "smoke": "playwright test smoke.spec.mjs"
+  },
+  "devDependencies": {
+    "@observablehq/highlight.js": "2.0.0",
+    "@observablehq/inputs": "0.10.6",
+    "@observablehq/plot": "0.6.11",
+    "@playwright/test": "1.63.0",
+    "axe-core": "4.14.1",
+    "d3": "7.8.5",
+    "htl": "0.3.1",
+    "leaflet": "1.9.4",
+    "marked": "0.3.12"
+  }
+}

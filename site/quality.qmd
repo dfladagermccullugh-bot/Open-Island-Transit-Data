@@ -11,52 +11,52 @@ as the feed itself. That's why we grade the feed every day.
 ```{ojs}
 //| echo: false
 //| output: false
-import {csv, json, pct, num, count, routeLabel, longDate, isoDate, serviceDays, recentDays, dateAxis, RECENT_DAYS, DOTS_UP_TO, SERIES, DATA_URL} from "./lib.js"
+import {csv, json, pct, num, count, unit, routeLabel, longDate, pacificClock, plural, isFalse, isoDate, serviceDays, recentDays, withDates, showAllToggle, emptyNote, guard, stats, h, DATA_URL, DATA_RAW_URL} from "./lib.js"
+import {makeCharts} from "./charts.js"
+ch = makeCharts({Plot})
 daily = csv(d3, "data/quality/daily.csv")
+minutes = s => s == null ? null : s / 60
 // Days with scheduled service; a holiday is archived and listed under "All
 // days" but not graded or charted.
-days = serviceDays(daily).map(d => ({...d, prediction_min_5min: d.prediction_median_abs_s_5min == null ? null : d.prediction_median_abs_s_5min / 60,
-  day: isoDate(d.service_date), date: new Date(`${isoDate(d.service_date)}T12:00:00Z`)}))
+days = withDates(serviceDays(daily)).map(d => ({...d, prediction_min_5min: minutes(d.prediction_median_abs_s_5min)}))
 latestDate = days.length ? days.at(-1).day : null
 latest = latestDate ? json(`data/quality/days/${latestDate}.json`) : null
-noData = () => days.length === 0
-  ? html`<p class="empty">No day has been processed yet.</p>`
-  : html`<p class="empty">The details for ${longDate(latestDate)} can't be shown right now.</p>`
-// Charts are drawn at the width of their column, so text keeps its size on a phone.
-half = width < 768 ? width : Math.floor((width - 24) / 2)
-clock = iso => new Date(iso).toLocaleTimeString("en-US", {hour: "numeric", minute: "2-digit", timeZone: "America/Los_Angeles"})
-partial = latest?.scheduled_service?.trips_ended_before_collection > 0
+noData = () => days.length === 0 ? emptyNote("no-days") : emptyNote("unavailable", `The details for ${longDate(latestDate)}`)
+ev = latest?.events ?? null
+routeName = id => routeLabel(latest?.routes, id)
 ```
 
+::: {.slot-stats}
 ```{ojs}
 //| echo: false
-lq = days.at(-1) ?? null
-html`${lq == null ? noData() : html`<p class="note">These grades are for ${longDate(latestDate)}.${partial ? ` Collection began at ${clock(latest.paradata.observed_from)} Pacific that day, so the grades cover only part of it.` : ""}</p>
-<div class="stat-row">
-  <div class="stat"><div class="label">Did every scheduled trip show up?</div>
-    <div class="value">${pct(lq.trip_coverage)}</div>
-    <div class="note">of ${count(lq.scheduled_trips)} scheduled trips appeared in the tracking around the time they were due</div></div>
-  <div class="stat"><div class="label">Did the collector keep running?</div>
-    <div class="value">${pct(lq.vehicle_uptime, 1)}</div>
-    <div class="note">of 20-second checks got a good answer from the feed</div></div>
-  <div class="stat"><div class="label">How fresh are bus locations?</div>
-    <div class="value">${num(lq.position_age_s_median)} seconds</div>
-    <div class="note">typical age of a location when it first appears</div></div>
-  <div class="stat"><div class="label">How close are arrival predictions?</div>
-    <div class="value">${lq.prediction_min_5min == null ? "–" : `${num(lq.prediction_min_5min, 1)} min`}</div>
-    <div class="note">typical miss, for predictions made 5 minutes before the bus arrived${lq.prediction_over_30min_share_5min ? `; ${pct(lq.prediction_over_30min_share_5min, 0)} were off by more than 30 minutes` : ""}</div></div>
-  <div class="stat"><div class="label">Are buses where the route says?</div>
-    <div class="value">${pct(1 - lq.off_shape_share)}</div>
-    <div class="note">of locations were within 100 meters (about 330 feet) of the bus's published route</div></div>
-</div>`}`
+guard(() => {
+  const lq = days.at(-1);
+  if (lq == null) return noData();
+  const partial = latest?.scheduled_service?.trips_ended_before_collection > 0 && latest?.paradata?.observed_from;
+  const far = lq.prediction_over_30min_share_5min;
+  return html`<p class="note">These grades are for ${longDate(latestDate)}.${partial ? ` Collection began at ${pacificClock(latest.paradata.observed_from)} Pacific that day, so the grades cover only part of it.` : ""}</p>
+  ${stats([
+    {label: "Did every scheduled trip show up?", value: pct(lq.trip_coverage),
+     note: `of ${count(lq.scheduled_trips)} scheduled trips appeared in the tracking around the time they were due`},
+    {label: "Did the collector keep running?", value: pct(lq.vehicle_uptime, 1),
+     note: "of 20-second checks got a good answer from the feed"},
+    {label: "How fresh are bus locations?", value: unit(lq.position_age_s_median, "second"),
+     note: "typical age of a location when it first appears"},
+    {label: "How close are arrival predictions?", value: unit(lq.prediction_min_5min, "min", 1, "min"),
+     note: `typical miss, for predictions made 5 minutes before the bus arrived${far ? `; ${pct(far)} were off by more than 30 minutes` : ""}`},
+    {label: "Are buses where the route says?", value: lq.off_shape_share == null ? "–" : pct(1 - lq.off_shape_share),
+     note: "of locations were within 100 meters (about 330 feet) of the bus's published route"},
+  ])}`;
+}, "The day's grades")
 ```
+:::
 
 We sort the details below the way survey researchers grade any source of
-data, into [coverage]{.term tabindex="0" tip="Coverage asks whether every scheduled trip shows up in the tracking at all."},
-[nonresponse]{.term tabindex="0" tip="Nonresponse is data that should be there but is missing, such as a failed request, an empty feed, or a gap in a bus's reports."},
-[measurement error]{.term tabindex="0" tip="Measurement error is data that is there but wrong, such as GPS wobble, a bus that seems to jump, an old location, or a prediction that misses."},
-[processing error]{.term tabindex="0" tip="A processing error happens when data can't be matched up, such as a trip in the feed that isn't in the schedule."}
-and [paradata]{.term tabindex="0" tip="Paradata is data about the collection itself: every request the collector made, how long it took, and whether it worked."}.
+data, into [coverage]{.term tip="Coverage asks whether every scheduled trip shows up in the tracking at all."},
+[nonresponse]{.term tip="Nonresponse is data that should be there but is missing, such as a failed request, an empty feed, or a gap in a bus's reports."},
+[measurement error]{.term tip="Measurement error is data that is there but wrong, such as GPS wobble, a bus that seems to jump, an old location, or a prediction that misses."},
+[processing error]{.term tip="A processing error happens when data can't be matched up, such as a trip in the feed that isn't in the schedule."}
+and [paradata]{.term tip="Paradata is data about the collection itself: every request the collector made, how long it took, and whether it worked."}.
 Hover over or tap each term for a plain explanation, or see the
 [Methods](methods.qmd) page for the exact definitions.
 
@@ -64,75 +64,72 @@ Hover over or tap each term for a plain explanation, or see the
 
 ```{ojs}
 //| echo: false
-// Shown only once there are more days than the charts hold by default.
-viewof showAll = days.length > RECENT_DAYS
-  ? Inputs.toggle({label: "All days"})
-  : Object.assign(html`<span hidden></span>`, {value: false})
+viewof showAll = showAllToggle(days.length)
 ```
 
+::: {.slot-trends}
 ```{ojs}
 //| echo: false
-shownDays = recentDays(days, showAll)
-axis = dateAxis(shownDays.map(d => d.date), 5, half)
 series = [
-  {key: "trip_coverage", title: "Scheduled trips seen in the feed", unit: "share"},
-  {key: "vehicle_uptime", title: "Collector uptime (vehicle locations)", unit: "share"},
-  {key: "stale_in_service_rate", title: "Feed more than 2 minutes behind during service", unit: "share"},
-  {key: "position_age_s_median", title: "Typical age of a bus location when first seen (seconds)", unit: "s"},
-  {key: "longest_gap_s_median", title: "Typical longest tracking gap per trip (seconds)", unit: "s"},
-  {key: "timepoint_coverage", title: "Departures at timetable stops we could time", unit: "share"},
-  {key: "prediction_min_5min", title: "Typical arrival prediction miss, 5 minutes ahead (minutes)", unit: "min"},
+  {key: "trip_coverage", title: "Scheduled trips seen in the feed", share: true},
+  {key: "vehicle_uptime", title: "Collector uptime (vehicle locations)", share: true},
+  {key: "stale_in_service_rate", title: "Feed more than 2 minutes behind during service", share: true},
+  {key: "position_age_s_median", title: "Typical age of a bus location when first seen", word: "second"},
+  {key: "longest_gap_s_median", title: "Typical longest tracking gap per trip", word: "second"},
+  {key: "timepoint_coverage", title: "Departures at timetable stops we could time", share: true},
+  {key: "prediction_min_5min", title: "Typical arrival prediction miss, 5 minutes ahead", word: "minute"},
 ]
-shown = (s, d) => s.unit === "share" ? pct(d[s.key], 1) : `${num(d[s.key], 1)} ${s.unit === "min" ? "minutes" : "seconds"}`
-html`${days.length === 0 ? noData() : days.length < 2 ? html`<p class="empty">Charts that follow each measure over time will appear once there is a second day of data.</p>` : html`<div class="grid">${series.map(s => html`<div class="g-col-12 g-col-md-6">
-  <h3 class="chart-title">${s.title}</h3>
-  ${Plot.plot({
-    ariaLabel: `${s.title}, by service day`,
-    ariaDescription: `From ${longDate(shownDays[0].day)} to ${longDate(latestDate)}. Latest value: ${shown(s, days.at(-1))}.`,
-    style: {background: "transparent"},
-    width: half, height: 200, marginLeft: 50, marginRight: 30,
-    marginBottom: axis.marginBottom,
-    x: axis.x,
-    y: {grid: true, label: null, tickFormat: s.unit === "share" ? (d => `${Math.round(d * 100)}%`) : undefined,
-        domain: s.unit === "share" ? [0, 1] : undefined},
-    marks: [
-      Plot.ruleY([0]),
-      Plot.lineY(shownDays, {x: "date", y: s.key, stroke: SERIES, strokeWidth: 2}),
-      ...(shownDays.length <= DOTS_UP_TO ? [Plot.dot(shownDays, {x: "date", y: s.key, fill: SERIES, r: 4})] : []),
-      Plot.tip(shownDays, Plot.pointerX({x: "date", y: s.key,
-        title: d => `${longDate(d.day)}\n${shown(s, d)}`})),
-    ],
-  })}</div>`)}</div>`}`
+guard(() => {
+  if (days.length === 0) return noData();
+  if (days.length < 2) return emptyNote("one-day", "Charts that follow each measure over time");
+  const shown = recentDays(days, showAll);
+  const say = (s, v) => s.share ? pct(v, 1) : unit(v, s.word, 1);
+  return html`<div class="chart-grid">${series.map(s => ch.figure({
+    title: s.title, value: say(s, days.at(-1)[s.key]),
+    chart: ch.trend(shown, {
+      y: s.key, share: !!s.share, height: 200, maxTicks: 5, yLabel: s.share ? null : `${s.word}s`,
+      ariaLabel: `${s.title}, by service day`,
+      describe: `From ${longDate(shown[0].day)} to ${longDate(latestDate)}. Latest value: ${say(s, days.at(-1)[s.key])}. Every day's value is in the table under "All days".`,
+      tip: d => `${longDate(d.day)}\n${say(s, d[s.key])}`,
+    }),
+  }))}</div>`;
+}, "The charts over time")
 ```
+:::
 
 ## Details
 
 ```{ojs}
 //| echo: false
-html`${latest == null ? noData() : html`<p>These details are for ${longDate(latestDate)}, measured against Passio schedule version
-  <code>${latest.schedule.passio_version}</code>.</p>`}`
+guard(() => latest == null ? noData() : html`<p>These details are for ${longDate(latestDate)}${latest.schedule?.passio_version
+  ? html`, measured against Passio schedule version <code>${latest.schedule.passio_version}</code>` : ""}.</p>`, "The day's details")
 ```
 
 <details class="more"><summary>Trip coverage by route</summary>
 
 ```{ojs}
 //| echo: false
-byRoute = latest == null ? [] : Object.entries(latest.coverage.by_route).map(([id, c]) => ({
-  route: routeLabel(latest.routes, id), ...c}))
-html`${byRoute.length === 0 ? noData() : Plot.plot({
-  ariaLabel: `Share of scheduled trips seen in the tracking, by route, ${longDate(latestDate)}`,
-  ariaDescription: byRoute.map(d => `${d.route}: ${pct(d.coverage)}`).join("; "),
-  style: {background: "transparent"},
-  width: Math.max(320, Math.min(width, 960)), marginLeft: width < 640 ? 150 : 260, height: 28 * byRoute.length + 40,
-  x: {domain: [0, 1], grid: true, label: "Share of scheduled trips seen", tickFormat: d => `${Math.round(d * 100)}%`},
-  y: {label: null},
-  marks: [
-    Plot.barX(byRoute, {y: "route", x: "coverage", fill: SERIES, rx: 2, sort: {y: "x", reverse: true}}),
-    Plot.ruleX([0]),
-    Plot.tip(byRoute, Plot.pointerY({y: "route", x: "coverage",
-      title: d => `${d.route}\n${d.observed} of ${d.scheduled} trips (${pct(d.coverage)})`})),
-  ],
-})}`
+guard(() => {
+  const rows = Object.entries(latest?.coverage?.by_route ?? {}).map(([id, c]) => ({route: routeName(id), ...c}));
+  if (rows.length === 0) return noData();
+  return ch.figure({
+    chart: ch.bars(rows, {
+      category: "route", value: "coverage", axisLabel: "Share of scheduled trips seen",
+      ariaLabel: `Share of scheduled trips seen in the tracking, by route, ${longDate(latestDate)}`,
+      tip: d => `${d.route}\n${count(d.observed)} of ${count(d.scheduled)} trips (${pct(d.coverage)})`,
+    }),
+    table: ch.table(rows, {
+      caption: `Scheduled trips seen in the tracking, by route, ${longDate(latestDate)}`,
+      sort: {key: "coverage", descending: true}, pageSize: 40,
+      columns: [
+        {key: "route", label: "Route"},
+        {key: "coverage", label: "Trips seen", align: "right", format: v => pct(v)},
+        {key: "observed", label: "Seen", align: "right", format: count},
+        {key: "scheduled", label: "Scheduled", align: "right", format: count},
+      ],
+    }),
+  });
+}, "Trip coverage by route")
 ```
 
 </details>
@@ -144,24 +141,29 @@ at a trip's last stop) we could put a time on, using the bus locations.
 
 ```{ojs}
 //| echo: false
-ev = latest?.events ?? null
-stopRoute = ev == null ? [] : Object.entries(ev.stop_coverage.timepoints.by_route).map(([id, c]) => ({
-  route: routeLabel(latest.routes, id), ...c,
-  off_shape_share: ev.shape_fit.by_route[id]?.off_shape_share ?? null}))
-html`${stopRoute.length === 0 ? noData() : Plot.plot({
-  ariaLabel: `Share of scheduled timepoint events we could time, by route, ${longDate(latestDate)}`,
-  ariaDescription: stopRoute.map(d => `${d.route}: ${pct(d.coverage)}`).join("; "),
-  style: {background: "transparent"},
-  width: Math.max(320, Math.min(width, 960)), marginLeft: width < 640 ? 150 : 260, height: 28 * stopRoute.length + 40,
-  x: {domain: [0, 1], grid: true, label: "Share of scheduled timepoint events observed", tickFormat: d => `${Math.round(d * 100)}%`},
-  y: {label: null},
-  marks: [
-    Plot.barX(stopRoute, {y: "route", x: "coverage", fill: SERIES, rx: 2, sort: {y: "x", reverse: true}}),
-    Plot.ruleX([0]),
-    Plot.tip(stopRoute, Plot.pointerY({y: "route", x: "coverage",
-      title: d => `${d.route}\n${d.observed} of ${d.scheduled} events (${pct(d.coverage)})\nPositions off the route shape: ${pct(d.off_shape_share, 1)}`})),
-  ],
-})}`
+guard(() => {
+  const rows = Object.entries(ev?.stop_coverage?.timepoints?.by_route ?? {}).map(([id, c]) => ({
+    route: routeName(id), ...c, off_shape_share: ev?.shape_fit?.by_route?.[id]?.off_shape_share ?? null}));
+  if (rows.length === 0) return noData();
+  return ch.figure({
+    chart: ch.bars(rows, {
+      category: "route", value: "coverage", axisLabel: "Share of scheduled timepoint events observed",
+      ariaLabel: `Share of scheduled timepoint events we could time, by route, ${longDate(latestDate)}`,
+      tip: d => `${d.route}\n${count(d.observed)} of ${count(d.scheduled)} events (${pct(d.coverage)})\nPositions off the route shape: ${pct(d.off_shape_share, 1)}`,
+    }),
+    table: ch.table(rows, {
+      caption: `Scheduled timepoint events we could time, by route, ${longDate(latestDate)}`,
+      sort: {key: "coverage", descending: true}, pageSize: 40,
+      columns: [
+        {key: "route", label: "Route"},
+        {key: "coverage", label: "Events timed", align: "right", format: v => pct(v)},
+        {key: "observed", label: "Timed", align: "right", format: count},
+        {key: "scheduled", label: "Scheduled", align: "right", format: count},
+        {key: "off_shape_share", label: "Locations off route", align: "right", format: v => pct(v, 1)},
+      ],
+    }),
+  });
+}, "Timepoint events by route")
 ```
 
 </details>
@@ -179,11 +181,25 @@ by more than 30 minutes.
 
 ```{ojs}
 //| echo: false
-pred = ev == null ? [] : Object.entries(ev.prediction_error.by_horizon_min).map(([h, b]) => ({
-  "Minutes ahead": +h, "Predictions": b.n, "Mean error (s)": b.bias_s, "Median error (s)": b.median_s,
-  "Typical miss (s)": b.median_abs_s, "Mean miss (s)": b.mae_s, "Within 60 s": b.within_60s_share,
-  "Off by over 30 min": b.over_30min, "Dated another day": b.other_day}))
-html`${pred.length === 0 ? noData() : Inputs.table(pred, {select: false, format: {"Within 60 s": d => pct(d, 1)}, rows: 10})}`
+guard(() => {
+  const rows = Object.entries(ev?.prediction_error?.by_horizon_min ?? {}).map(([ahead, b]) => ({ahead: +ahead, ...b}));
+  if (rows.length === 0) return noData();
+  const seconds = v => num(v, 1);
+  return ch.table(rows, {
+    caption: `Arrival prediction error by minutes ahead, ${longDate(latestDate)}`, wide: true,
+    columns: [
+      {key: "ahead", label: "Minutes ahead", align: "right"},
+      {key: "n", label: "Predictions", align: "right", format: count},
+      {key: "bias_s", label: "Mean error (seconds)", align: "right", format: seconds},
+      {key: "median_s", label: "Median error (seconds)", align: "right", format: seconds},
+      {key: "median_abs_s", label: "Typical miss (seconds)", align: "right", format: seconds},
+      {key: "mae_s", label: "Mean miss (seconds)", align: "right", format: seconds},
+      {key: "within_60s_share", label: "Within 60 seconds", align: "right", format: v => pct(v, 1)},
+      {key: "over_30min", label: "Off by over 30 minutes", align: "right", format: count},
+      {key: "other_day", label: "Dated another day", align: "right", format: count},
+    ],
+  });
+}, "The prediction figures")
 ```
 
 </details>
@@ -196,11 +212,17 @@ send it.
 
 ```{ojs}
 //| echo: false
-items = latest == null ? [] : Object.entries(latest.nonresponse.items.missing_share)
-  .map(([field, share]) => ({field, share}))
-html`${items.length === 0 ? noData() : Inputs.table(items, {select: false,
-  columns: ["field", "share"], header: {field: "Field", share: "Missing"},
-  format: {share: d => pct(d, 1)}, rows: 25})}`
+guard(() => {
+  const rows = Object.entries(latest?.nonresponse?.items?.missing_share ?? {}).map(([field, share]) => ({field, share}));
+  if (rows.length === 0) return noData();
+  return ch.table(rows, {
+    caption: `Share of position reports missing each field, ${longDate(latestDate)}`, pageSize: 40,
+    columns: [
+      {key: "field", label: "Field", format: v => h("code", {}, v)},
+      {key: "share", label: "Missing", align: "right", format: v => pct(v, 1)},
+    ],
+  });
+}, "The table of empty fields")
 ```
 
 </details>
@@ -209,35 +231,47 @@ html`${items.length === 0 ? noData() : Inputs.table(items, {select: false,
 
 ```{ojs}
 //| echo: false
-other = latest == null ? [] : [
-  ["Fetch failures, vehicle positions", pct(latest.nonresponse.fetch.vehiclePositions.rate, 2)],
-  ["Empty vehicle feed while buses are scheduled", pct(latest.nonresponse.vehicle_feed.empty_in_service_rate, 2)],
-  ["Positions with no trip, an unknown trip, or a trip not scheduled that day", pct(latest.coverage.over_coverage.share, 2)],
-  ["Trips the feed marked as canceled",
-    latest.coverage.canceled_trips == null ? "not measured for this day" : latest.coverage.canceled_trips === 0 ? "none" : latest.coverage.canceled_trips],
-  ["Impossible jumps (over 130 km/h, about 80 mph)", latest.measurement.impossible_jumps_over_130_kmh],
-  ["Vehicle timestamps in the future / going backwards", `${latest.measurement.timestamps_in_future} / ${latest.measurement.timestamps_going_backwards}`],
-  ["Trip ids found in the schedule", pct(latest.processing.id_match.trip_id.match_rate, 1)],
-  ["Stop ids found in the schedule", pct(latest.processing.id_match.stop_id.match_rate, 1)],
-  ["Median response time, vehicle positions", `${num(latest.paradata.vehiclePositions.latency_ms_median)} ms`],
-  ...(latest.paradata.tripUpdates.refresh == null ? [] : [
-    ["Checks 20 seconds apart in which a trip's prediction had changed", pct(latest.paradata.tripUpdates.refresh.changed_share, 1)],
-    ["Typical time between new predictions for a trip", `${num(latest.paradata.tripUpdates.refresh.update_interval_s_median)} seconds`],
-  ]),
-  ["Distinct vehicles reporting", latest.coverage.vehicles_seen],
-  ...(ev == null ? [] : [
-    ["All stop events with an inferred time", pct(ev.stop_coverage.all_stops.coverage, 1)],
-    ["Positions more than 100 meters (330 ft) off the route shape", pct(ev.shape_fit.off_shape_share, 1)],
-    ["Positions moving against the route shape", pct(ev.shape_fit.wrong_direction_share, 1)],
-    ["Trips that left out part of the published route shape", `${ev.shape_fit.trips_skipping_part_of_shape} (${num(ev.shape_fit.skipped_km, 1)} km)`],
-    ["Route shapes that draw segments three times (corrected)", `${ev.retraced_shapes.shapes_retraced} of ${ev.retraced_shapes.shapes_used}`],
-    ["Trip ids seen that are not scheduled that day", `${ev.assignment.unassignable} of ${ev.assignment.observed_trip_ids}`],
-    ["Position jitter at terminals, 95th percentile", `${num(ev.jitter.jitter_m_p95, 1)} meters`],
-    ["Vehicles seen in the previous 30 days but not this day",
-      ev.missing_vehicles.missing_count == null ? "no earlier days" : ev.missing_vehicles.missing_count],
-  ]),
-].map(([measure, value]) => ({measure, value}))
-html`${other.length === 0 ? noData() : Inputs.table(other, {select: false, header: {measure: "Measure", value: "Value"}, rows: 30})}`
+guard(() => {
+  if (latest == null) return noData();
+  const q = latest, m = q.measurement ?? {}, fit = ev?.shape_fit ?? {};
+  const refresh = q.paradata?.tripUpdates?.refresh;
+  const canceled = q.coverage?.canceled_trips;
+  const of = (a, b) => a == null || b == null ? "–" : `${count(a)} of ${count(b)}`;
+  const rows = [
+    ["Fetch failures, vehicle positions", pct(q.nonresponse?.fetch?.vehiclePositions?.rate, 2)],
+    ["Empty vehicle feed while buses are scheduled", pct(q.nonresponse?.vehicle_feed?.empty_in_service_rate, 2)],
+    ["Positions with no trip, an unknown trip, or a trip not scheduled that day", pct(q.coverage?.over_coverage?.share, 2)],
+    ["Trips the feed marked as canceled", canceled == null ? "not measured for this day" : canceled === 0 ? "none" : count(canceled)],
+    ["Impossible jumps (over 130 km/h, about 80 mph)", count(m.impossible_jumps_over_130_kmh)],
+    ["Vehicle timestamps in the future", count(m.timestamps_in_future)],
+    ["Vehicle timestamps going backwards", count(m.timestamps_going_backwards)],
+    ["Trip ids found in the schedule", pct(q.processing?.id_match?.trip_id?.match_rate, 1)],
+    ["Stop ids found in the schedule", pct(q.processing?.id_match?.stop_id?.match_rate, 1)],
+    ["Median response time, vehicle positions", unit(q.paradata?.vehiclePositions?.latency_ms_median, "millisecond")],
+    ...(refresh == null ? [] : [
+      ["Checks 20 seconds apart in which a trip's prediction had changed", pct(refresh.changed_share, 1)],
+      ["Typical time between new predictions for a trip", unit(refresh.update_interval_s_median, "second")],
+    ]),
+    ["Distinct vehicles reporting", count(q.coverage?.vehicles_seen)],
+    ...(ev == null ? [] : [
+      ["All stop events with an inferred time", pct(ev.stop_coverage?.all_stops?.coverage, 1)],
+      ["Positions more than 100 meters (about 330 feet) off the route shape", pct(fit.off_shape_share, 1)],
+      ["Positions moving against the route shape", pct(fit.wrong_direction_share, 1)],
+      ["Trips that left out part of the published route shape", fit.trips_skipping_part_of_shape == null ? "–"
+        : `${count(fit.trips_skipping_part_of_shape)} (${num(fit.skipped_km, 1)} km, about ${num(fit.skipped_km * 0.621371, 1)} miles)`],
+      ["Route shapes that draw segments three times (corrected)", of(ev.retraced_shapes?.shapes_retraced, ev.retraced_shapes?.shapes_used)],
+      ["Trip ids seen that are not scheduled that day", of(ev.assignment?.unassignable, ev.assignment?.observed_trip_ids)],
+      ["Position jitter at terminals, 95th percentile", ev.jitter?.jitter_m_p95 == null ? "–"
+        : `${num(ev.jitter.jitter_m_p95, 1)} meters (about ${num(ev.jitter.jitter_m_p95 * 3.28084)} feet)`],
+      ["Vehicles seen in the previous 30 days but not this day",
+        ev.missing_vehicles == null ? "–" : ev.missing_vehicles.missing_count == null ? "no earlier days" : count(ev.missing_vehicles.missing_count)],
+    ]),
+  ].map(([measure, value]) => ({measure, value}));
+  return ch.table(rows, {
+    caption: `Other quality figures for ${longDate(latestDate)}`, pageSize: 40,
+    columns: [{key: "measure", label: "Measure", sortable: false}, {key: "value", label: "Value", align: "right", sortable: false}],
+  });
+}, "The day's other figures")
 ```
 
 </details>
@@ -255,48 +289,81 @@ called a logistic regression will test all of these at the same time.
 //| echo: false
 gaps = json("data/quality/gaps.json")
 pval = p => p == null ? "–" : p < 0.0001 ? "< 0.0001" : `= ${num(p, 4)}`
-gapTables = gaps == null || gaps.rates == null ? [] : [
-  ["Hour band (Pacific)", gaps.rates.by_hour_band],
-  ["Trips in service at the trip's start", gaps.rates.by_trips_in_service],
-  ["Day type", gaps.rates.by_day_type],
-  ["Route", Object.fromEntries(Object.entries(gaps.rates.by_route)
-    .map(([id, v]) => [routeLabel(latest && latest.routes, id), v]))],
-]
-html`${gapTables.length === 0 ? noData() : html`
-  <p>Over ${gaps.days.length} day${gaps.days.length === 1 ? "" : "s"}, ${count(gaps.trips)} trips were scheduled and
-    ${count(gaps.unobserved)} sent no position report within 30 minutes of their scheduled time.</p>
-  <div class="grid">${gapTables.map(([title, t]) => html`<div class="g-col-12 g-col-md-6">
-    <h3 class="chart-title">${title}</h3>
-    ${Inputs.table(Object.entries(t).map(([group, v]) => ({group, ...v})), {select: false,
-      columns: ["group", "scheduled", "unobserved", "rate"],
-      header: {group: "", scheduled: "Scheduled", unobserved: "Not seen", rate: "Share not seen"},
-      format: {scheduled: count, unobserved: count, rate: d => pct(d, 1)}, rows: 20, layout: "auto"})}</div>`)}</div>`}`
+guard(() => {
+  const rates = gaps?.rates;
+  if (rates == null || Object.keys(rates).length === 0) return noData();
+  const named = Object.fromEntries(Object.entries(rates.by_route ?? {}).map(([id, v]) => [routeName(id), v]));
+  const groups = [
+    ["Hour band (Pacific)", rates.by_hour_band, false],
+    ["Trips in service at the trip's start", rates.by_trips_in_service, false],
+    ["Day type", rates.by_day_type, false],
+    ["Route", named, true],
+  ].filter(([, t]) => t && Object.keys(t).length);
+  return html`
+    <p>Over ${plural(gaps.days?.length ?? 0, "day")}, ${count(gaps.trips)} trips were scheduled and
+      ${count(gaps.unobserved)} sent no position report within 30 minutes of their scheduled time.</p>
+    <div class="chart-grid">${groups.map(([title, t, sortable]) => html`<div>
+      <h3 class="chart-title">${title}</h3>
+      ${ch.table(Object.entries(t).map(([group, v]) => ({group, ...v})), {
+        caption: `Scheduled trips not seen, by ${title.toLowerCase()}`, pageSize: 40,
+        columns: [
+          {key: "group", label: "Group", sortable},
+          {key: "scheduled", label: "Scheduled", align: "right", format: count, sortable},
+          {key: "unobserved", label: "Not seen", align: "right", format: count, sortable},
+          {key: "rate", label: "Share not seen", align: "right", format: v => pct(v, 1), sortable},
+        ],
+      })}</div>`)}</div>`;
+}, "The gap tables")
 ```
 
 ```{ojs}
 //| echo: false
-html`${gaps == null ? "" : gaps.model == null ? html`<p><em>${gaps.model_status.startsWith("not fitted: needs") ? `The model hasn't been fitted yet, because it ${gaps.model_status.slice("not fitted: ".length)}.` : `Model status: ${gaps.model_status}.`}</em></p>` : html`
-  <p>This logistic regression looks at ${gaps.model.trips} trips and asks which ones the feed missed. We fit it with
+guard(() => {
+  if (gaps == null) return html``;
+  const model = gaps.model;
+  if (model == null) {
+    const status = gaps.model_status ?? "";
+    return status === "" ? html`` : html`<p><em>${status.startsWith("not fitted: needs")
+      ? `The model hasn't been fitted yet, because it ${status.slice("not fitted: ".length)}.`
+      : `Model status: ${status}.`}</em></p>`;
+  }
+  // The file named these with spaces at first and with underscores since.
+  const ref = model.reference_levels ?? {};
+  const level = key => ref[key] ?? ref[key.replace("_", " ")];
+  const test = model.lr_test_all_predictors ?? {};
+  const terms = (model.terms ?? []).filter(t => t.term !== "intercept").map(t => ({...t,
+    term: t.term.startsWith("route: ") ? `route: ${routeName(t.term.slice(7))}` : t.term.replaceAll("_", " "),
+    low: t.or_95ci?.[0], high: t.or_95ci?.[1]}));
+  return html`
+  <p>This logistic regression looks at ${count(model.trips)} trips and asks which ones the feed missed. We fit it with
   Firth's penalized likelihood, which keeps the estimates sensible even when a route never missed a trip.
-  Testing all the predictors together gives χ² = ${num(gaps.model.lr_test_all_predictors.statistic, 1)},
-  df = ${gaps.model.lr_test_all_predictors.df}, p ${pval(gaps.model.lr_test_all_predictors.p)}.
+  Testing all the predictors together gives χ² = ${num(test.statistic, 1)},
+  df = ${count(test.df)}, p ${pval(test.p)}.
   A small p-value means the gaps are not missing completely at random, so something about the hour, the route,
   the day or the number of buses out is tied to which trips go missing. The model treats every trip as
   separate, but trips lost on the same day or the same bus tend to go missing together, so the p-values
   here are more confident than they should be. Each odds ratio compares a group with
-  ${gaps.model.reference_levels["hour band"]}, route ${routeLabel(latest && latest.routes, gaps.model.reference_levels.route)}
-  and ${gaps.model.reference_levels["day type"]}.${gaps.model.converged ? "" : " The model did not settle on a stable answer (it did not converge), so treat these numbers with caution."}</p>
-  ${Inputs.table(gaps.model.terms.filter(t => t.term !== "intercept").map(t => ({...t,
-      term: t.term.startsWith("route: ") ? `route: ${routeLabel(latest && latest.routes, t.term.slice(7))}` : t.term,
-      ci: `${num(t.or_95ci[0], 2)} to ${num(t.or_95ci[1], 2)}`})), {select: false,
-    columns: ["term", "odds_ratio", "ci", "p"],
-    header: {term: "Term", odds_ratio: "Odds ratio", ci: "95% interval", p: "p"},
-    format: {odds_ratio: d => num(d, 2), p: d => pval(d).replace(/^= /, "")}, rows: 30})}`}`
+  ${level("hour_band")}, route ${routeName(level("route"))}
+  and ${level("day_type")}.${model.converged ? "" : " The model did not settle on a stable answer (it did not converge), so treat these numbers with caution."}</p>
+  ${ch.table(terms, {
+    caption: "Odds ratios from the model of which trips the feed missed", pageSize: 40,
+    columns: [
+      {key: "term", label: "Term"},
+      {key: "odds_ratio", label: "Odds ratio", align: "right", format: v => num(v, 2)},
+      {key: "low", label: "95% interval, low", align: "right", format: v => num(v, 2)},
+      {key: "high", label: "95% interval, high", align: "right", format: v => num(v, 2)},
+      {key: "p", label: "p", align: "right", format: v => pval(v).replace(/^= /, "")},
+    ],
+  })}`;
+}, "The model of gaps")
 ```
 
-The model and the data behind it are in
-[`quality/gaps.json`](https://github.com/dfladagermccullugh-bot/Open-Island-Transit-Data/blob/data/quality/gaps.json).
-Holidays on which Island Transit runs no buses are left out.
+```{ojs}
+//| echo: false
+html`<p>The model and the data behind it are in
+<a href="${DATA_RAW_URL}/quality/gaps.json"><code>quality/gaps.json</code></a>.
+Holidays on which Island Transit runs no buses are left out.</p>`
+```
 
 </details>
 
@@ -304,19 +371,33 @@ Holidays on which Island Transit runs no buses are left out.
 
 ```{ojs}
 //| echo: false
-allDays = daily.map(d => ({day: isoDate(d.service_date), service: d.service_expected === false ? "No service (holiday)" : "Yes",
-  trips: d.scheduled_trips, coverage: d.trip_coverage, uptime: d.vehicle_uptime, age: d.position_age_s_median,
-  timed: d.timepoint_coverage, off: d.off_shape_share, predict: d.prediction_median_abs_s_5min == null ? null : d.prediction_median_abs_s_5min / 60})).reverse()
-html`${allDays.length === 0 ? noData() : Inputs.table(allDays, {select: false,
-  header: {day: "Service day", service: "Buses scheduled", trips: "Scheduled trips", coverage: "Trips seen", uptime: "Collector uptime",
-           age: "Location age (s)", timed: "Timepoint events timed", off: "Locations off route", predict: "Typical prediction miss, 5 min ahead (min)"},
-  format: {day: d => longDate(d), trips: count, coverage: d => pct(d, 1), uptime: d => pct(d, 2), age: d => num(d, 1),
-           timed: d => pct(d, 1), off: d => pct(d, 1), predict: d => num(d, 1)},
-  rows: 15, layout: "auto"})}`
+guard(() => {
+  const rows = withDates(daily).map(d => ({...d, holiday: isFalse(d.service_expected), predict: minutes(d.prediction_median_abs_s_5min)})).reverse();
+  if (rows.length === 0) return noData();
+  return ch.table(rows, {
+    caption: "Daily quality figures for every archived day", wide: true, pageSize: 15,
+    columns: [
+      {key: "day", label: "Service day", format: v => longDate(v)},
+      {key: "holiday", label: "Buses scheduled", format: v => v ? "No service (holiday)" : "Yes", sortValue: d => d.holiday ? 0 : 1},
+      {key: "scheduled_trips", label: "Scheduled trips", align: "right", format: count},
+      {key: "trip_coverage", label: "Trips seen", align: "right", format: v => pct(v, 1)},
+      {key: "vehicle_uptime", label: "Collector uptime", align: "right", format: v => pct(v, 2)},
+      {key: "stale_in_service_rate", label: "Feed over 2 minutes behind", align: "right", format: v => pct(v, 1)},
+      {key: "position_age_s_median", label: "Location age (seconds)", align: "right", format: v => num(v, 1)},
+      {key: "longest_gap_s_median", label: "Longest gap per trip (seconds)", align: "right", format: v => num(v, 1)},
+      {key: "timepoint_coverage", label: "Timepoint events timed", align: "right", format: v => pct(v, 1)},
+      {key: "off_shape_share", label: "Locations off route", align: "right", format: v => pct(v, 1)},
+      {key: "predict", label: "Typical prediction miss, 5 minutes ahead (minutes)", align: "right", format: v => num(v, 1)},
+    ],
+  });
+}, "The table of all days")
 ```
 
-The file has every column, including the version of the code behind each
+```{ojs}
+//| echo: false
+html`<p>The file has every column, including the version of the code behind each
 day. You can download it as
-[`quality/daily.csv`](https://github.com/dfladagermccullugh-bot/Open-Island-Transit-Data/blob/data/quality/daily.csv).
+<a href="${DATA_RAW_URL}/quality/daily.csv"><code>quality/daily.csv</code></a>.</p>`
+```
 
 </details>

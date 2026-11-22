@@ -185,6 +185,11 @@ def processed_days() -> set[str] | None:
     return None if rows is None else {r["service_date"] for r in rows}
 
 
+def _yes(value: str | None) -> bool:
+    """True for "True" (the first daily tables) and "true" (written since)."""
+    return (value or "").strip().lower() == "true"
+
+
 def _num(row: dict[str, str], key: str) -> float | None:
     try:
         return float(row.get(key) or "")
@@ -200,7 +205,7 @@ def data_problems(
     expected; days without service are neither checked nor used for
     comparison. A column that an older row lacks is skipped."""
     out: list[str] = []
-    service = [r for r in rows if r.get("service_expected", "True") == "True"]
+    service = [r for r in rows if _yes(r.get("service_expected", "true"))]
     if service:
         last, earlier = service[-1], service[:-1]
         day = last["service_date"]
@@ -234,7 +239,7 @@ def data_problems(
                 f"note: {day} is the first day on a new Passio schedule version "
                 f"{last.get('passio_version')}"
             )
-        if last.get("passio_changed_during_day") == "True":
+        if _yes(last.get("passio_changed_during_day")):
             out.append(
                 f"note: {day}: the schedule downloads disagreed that day, and the version was "
                 f"pinned as: {last.get('passio_basis')}"

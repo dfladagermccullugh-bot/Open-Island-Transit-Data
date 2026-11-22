@@ -1,0 +1,21 @@
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "Dataset",
+  "name": "Open Island Transit Data",
+  "description": "A public archive of Island Transit's (Whidbey and Camano Islands, Washington) GTFS-Realtime feeds, saved every 20 seconds since November 19, 2026, with daily measures of the feed's quality and on-time figures inferred from vehicle positions.",
+  "url": "https://dfladagermccullugh-bot.github.io/Open-Island-Transit-Data/",
+  "sameAs": "https://github.com/dfladagermccullugh-bot/Open-Island-Transit-Data",
+  "keywords": ["public transit", "GTFS-Realtime", "on-time performance", "data quality", "Island Transit", "Whidbey Island", "Camano Island"],
+  "isAccessibleForFree": true,
+  "license": "https://github.com/dfladagermccullugh-bot/Open-Island-Transit-Data/blob/main/LICENSE-DATA.md",
+  "temporalCoverage": "2026-11-19/..",
+  "spatialCoverage": {"@type": "Place", "name": "Whidbey Island and Camano Island, Island County, Washington, United States"},
+  "creator": {"@type": "Person", "name": "Davin Fladager-McCullough"},
+  "distribution": [
+    {"@type": "DataDownload", "name": "Daily quality figures", "encodingFormat": "text/csv", "contentUrl": "https://raw.githubusercontent.com/dfladagermccullugh-bot/Open-Island-Transit-Data/data/quality/daily.csv"},
+    {"@type": "DataDownload", "name": "Daily on-time figures", "encodingFormat": "text/csv", "contentUrl": "https://raw.githubusercontent.com/dfladagermccullugh-bot/Open-Island-Transit-Data/data/ontime/daily.csv"},
+    {"@type": "DataDownload", "name": "Raw feed archive and parsed tables", "encodingFormat": "application/vnd.apache.parquet", "contentUrl": "https://github.com/dfladagermccullugh-bot/Open-Island-Transit-Data/releases"}
+  ]
+}
+</script>

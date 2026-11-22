@@ -5,9 +5,16 @@ $web-font-path: false;
 $font-family-sans-serif: system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", "Noto Sans", Arial, sans-serif;
 $body-bg: #fcfcfb;
 $body-color: #0b0b0b;
-$link-color: #2a78d6;
+$primary: #1f66c1;
+$link-color: #1f66c1;
+$navbar-bg: #f4f3f0;
+$navbar-fg: #0b0b0b;
+$navbar-hl: #1f66c1;
 
 /*-- scss:rules --*/
+// Every text color keeps a contrast of at least 4.5 to 1, and every color
+// that carries meaning in a chart or on the map at least 3 to 1, against the
+// surface, the card and the panel. tests/test_site_tokens.py checks it.
 :root {
   --surface: #fcfcfb;
   --panel: #f1f0ec;
@@ -15,15 +22,22 @@ $link-color: #2a78d6;
   --card: #ffffff;
   --text-primary: #0b0b0b;
   --text-secondary: #52514e;
-  --text-muted: #8a8984;
+  --text-muted: #6b6a65;
   --border: rgba(0, 0, 0, .12);
   --border-strong: rgba(0, 0, 0, .3);
-  --series-1: #2a78d6;
-  --status-good: #0ca30c;
-  --status-warning: #fab219;
-  --status-critical: #d03b3b;
-  --status-none: #a3a29c;
+  --link: #1f66c1;
+  --focus: #1f66c1;
+  --series-1: #1f66c1;
+  --rule: #8a8984;
+  --range: #8a8984;
+  --status-good: #0b7a8f;
+  --status-warning: #c27400;
+  --status-critical: #ab1f33;
+  --status-none: #878680;
   --map-casing: #1a1a19;
   --map-water: #dfe9f3;
+  --shadow-sm: 0 1px 4px rgba(0, 0, 0, .18);
+  --shadow-md: 0 4px 14px rgba(0, 0, 0, .15);
 }
+@import "tokens";
 @import "components";

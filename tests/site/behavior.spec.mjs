@@ -1,0 +1,278 @@
+// What the pages do when a reader uses them: picking routes, resizing,
+// using only the keyboard, tapping on a phone, and reading days that need
+// special handling.
+import {expect, expectClean, open, settle, test} from "./fixtures.mjs";
+import {useScenario} from "./scenarios.mjs";
+
+const desktopOnly = ({}, info) => test.skip(!info.project.name.startsWith("desktop"), "a desk-sized window");
+const phoneOnly = ({}, info) => test.skip(!info.project.name.startsWith("phone"), "a touch screen");
+
+test.describe("picking a route", () => {
+  test("the picker, the address, the caption and the detail move together", async ({page, problems}) => {
+    await open(page, "routes");
+    await expect(page.locator("#map-caption")).toContainText("All routes are shown");
+    await page.locator("#route-select").selectOption({label: "Route 60 · Freeland - Langley - Clinton"});
+    await expect(page).toHaveURL(/routes\.html#60$/);
+    await expect(page.locator("#map-caption")).toContainText("Route 60");
+    await expect(page.locator("#route-detail h2")).toContainText("Route 60");
+    // The Back button returns to all routes, and Forward to the route.
+    await page.goBack();
+    await expect(page.locator("#route-select")).toHaveValue("");
+    await expect(page.locator("#route-detail h2")).toContainText("All routes");
+    await page.goForward();
+    await expect(page.locator("#route-detail h2")).toContainText("Route 60");
+    await expectClean(page, problems);
+  });
+
+  test("a route's name in the table of all routes opens that route", async ({page}) => {
+    await open(page, "routes");
+    await page.locator("#route-detail table a", {hasText: "Route 1C"}).click();
+    await expect(page.locator("#route-select")).not.toHaveValue("");
+    await expect(page.locator("#route-detail h2")).toContainText("Route 1C");
+  });
+
+  test("an address that names no route shows all routes and is tidied", async ({page}) => {
+    await open(page, "routes", {hash: "#no-such-route"});
+    await expect(page.locator("#route-detail h2")).toContainText("All routes");
+    await expect(page).toHaveURL(/routes\.html$/);
+  });
+
+  test("the picked route's stops can be reached and read with the keyboard", async ({page}) => {
+    await open(page, "routes", {hash: "#60"});
+    const stop = page.locator(".stop-marker").first();
+    await expect(stop).toHaveAttribute("aria-label", /on time|too few/);
+    await stop.focus();
+    await expect(page.locator(".leaflet-tooltip.map-tip")).toBeVisible();
+  });
+});
+
+test.describe("resizing and turning the screen", () => {
+  test.beforeEach(desktopOnly);
+
+  test("keeps the picked route, the same map, the reader's zoom and open sections", async ({page, problems}) => {
+    await open(page, "routes", {hash: "#60"});
+    await page.locator(".route-map").evaluate(n => (n.dataset.mark = "same-map"));
+    await page.locator(".leaflet-control-zoom-in").click();
+    await page.waitForTimeout(400);
+    // Leaflet keeps its zoom as the scale of this element.
+    const zoom = () => page.locator(".route-map .leaflet-proxy").evaluate(n => n.style.transform.match(/scale\(([^)]+)\)/)[1]);
+    const before = await zoom();
+    await page.locator("details.as-table").first().evaluate(n => (n.open = true));
+
+    for (const width of [800, 390, 1280]) {
+      await page.setViewportSize({width, height: 900});
+      await settle(page);
+      await page.waitForTimeout(250);
+      await expect(page.locator("#route-select")).toHaveValue(/.+/);
+      await expect(page.locator("#route-detail h2")).toContainText("Route 60");
+      await expect(page.locator(".route-map")).toHaveAttribute("data-mark", "same-map");
+      await expect(page.locator(".route-map")).toHaveCount(1);
+    }
+    expect(await zoom()).toBe(before);
+    expect(await page.locator("details.as-table").first().evaluate(n => n.open)).toBe(true);
+    await expectClean(page, problems);
+  });
+
+  test("charts redraw to fit and never spill past the page", async ({page}) => {
+    await open(page, "quality");
+    for (const width of [1280, 700, 360]) {
+      await page.setViewportSize({width, height: 900});
+      await settle(page);
+      await page.waitForTimeout(250);
+      const spill = await page.evaluate(() => document.documentElement.scrollWidth - document.documentElement.clientWidth);
+      expect(spill, `sideways scroll at ${width}px`).toBeLessThanOrEqual(1);
+    }
+  });
+});
+
+test.describe("the home page map", () => {
+  test("each route is a link under the map, named with its figure", async ({page}) => {
+    await open(page, "index");
+    const link = page.locator(".route-links a", {hasText: /^60$/});
+    await expect(link).toHaveAttribute("aria-label", /Route 60: .*(on time|too few)/i);
+    await link.click();
+    await expect(page).toHaveURL(/routes\.html#60$/);
+  });
+
+  test("a tap on a route opens a card with a link and stays on the page", async ({page}, info) => {
+    phoneOnly({}, info);
+    await open(page, "index");
+    await page.locator(".route-map").scrollIntoViewIfNeeded();
+    const line = page.locator(".route-hit").last();
+    // Tap a point that is on the line itself, halfway along it.
+    const point = await line.evaluate(n => {
+      const p = n.getPointAtLength(n.getTotalLength() / 2);
+      const m = n.getScreenCTM();
+      return {x: p.x * m.a + m.e, y: p.y * m.d + m.f};
+    });
+    await page.touchscreen.tap(point.x, point.y);
+    await expect(page.locator(".map-card .leaflet-popup-content a")).toBeVisible();
+    await expect(page).toHaveURL(/index\.html$/);
+  });
+});
+
+test.describe("terms that explain themselves", () => {
+  test("open on focus, close on Escape, and are described to screen readers", async ({page}) => {
+    await open(page, "quality");
+    const term = page.locator(".term", {hasText: "nonresponse"});
+    await expect(term).toHaveAttribute("role", "button");
+    const describedBy = await term.getAttribute("aria-describedby");
+    await expect(page.locator(`#${describedBy}`)).toContainText("should be there but is missing");
+    await term.focus();
+    const tip = page.locator(".term-tip");
+    await expect(tip).toBeVisible();
+    await expect(tip).toContainText("should be there but is missing");
+    await page.keyboard.press("Escape");
+    await expect(tip).toBeHidden();
+    await expect(term).toBeFocused();
+    // The box never hangs off the edge of the screen.
+    await page.keyboard.press("Enter");
+    await expect(tip).toBeVisible();
+    const box = await tip.boundingBox();
+    const width = page.viewportSize().width;
+    expect(box.x).toBeGreaterThanOrEqual(0);
+    expect(box.x + box.width).toBeLessThanOrEqual(width);
+  });
+});
+
+test.describe("tables", () => {
+  test("sort from the keyboard and say how they are sorted", async ({page}) => {
+    await open(page, "routes");
+    const header = page.locator("#route-detail th", {hasText: "On time"});
+    await expect(header).toHaveAttribute("aria-sort", "none");
+    await header.locator("button").focus();
+    await page.keyboard.press("Enter");
+    await expect(header).toHaveAttribute("aria-sort", "descending");
+    const shares = await page.locator("#route-detail tbody tr td:nth-child(3)").allInnerTexts();
+    const numbers = shares.filter(t => t !== "–").map(t => parseFloat(t));
+    expect(numbers).toEqual([...numbers].sort((a, b) => b - a));
+    // Missing values stay at the bottom whichever way the column runs.
+    await page.keyboard.press("Enter");
+    await expect(header).toHaveAttribute("aria-sort", "ascending");
+    const again = await page.locator("#route-detail tbody tr td:nth-child(3)").allInnerTexts();
+    expect(again.indexOf("–") === -1 || again.lastIndexOf("–") === again.length - 1).toBe(true);
+  });
+
+  test("the band column sorts by band, best first", async ({page}) => {
+    await open(page, "routes");
+    const header = page.locator("#route-detail th", {hasText: "Band"});
+    await header.locator("button").click();
+    await header.locator("button").click();
+    await expect(header).toHaveAttribute("aria-sort", /ending/);
+    const bands = await page.locator("#route-detail tbody tr td:last-child").allInnerTexts();
+    const rank = t => (/80%/.test(t) ? 3 : /60 to/.test(t) ? 2 : /Under/.test(t) ? 1 : 0);
+    const ranks = bands.map(rank);
+    const sorted = [...ranks].sort((a, b) => a - b);
+    expect(ranks.join() === sorted.join() || ranks.join() === sorted.reverse().join()).toBe(true);
+  });
+});
+
+test.describe("days that need special handling", () => {
+  for (const scenario of ["holiday-False", "holiday-false"]) {
+    test(`a holiday is listed as a day without service (${scenario})`, async ({page}) => {
+      await useScenario(page, scenario);
+      await open(page, "quality");
+      const row = page.locator("details.more", {hasText: "All days"}).locator("tbody tr", {hasText: "November 26, 2026"});
+      await page.locator("details.more > summary", {hasText: "All days"}).click();
+      await expect(row).toContainText("No service (holiday)");
+      // The day's grades at the top stay those of the last day with service.
+      await expect(page.locator("main")).toContainText("These grades are for November 20, 2026");
+    });
+  }
+
+  test("a missing figure is shown as missing, never as 100%", async ({page}) => {
+    await useScenario(page, "long");
+    await page.route("**/data/quality/daily.csv", async route => {
+      const response = await route.fetch();
+      const text = await response.text();
+      const lines = text.trim().split("\n");
+      const columns = lines[0].split(",");
+      const cells = lines.at(-1).split(",");
+      cells[columns.indexOf("off_shape_share")] = "";
+      await route.fulfill({body: [...lines.slice(0, -1), cells.join(",")].join("\n")});
+    });
+    await open(page, "quality");
+    const stat = page.locator(".stat", {hasText: "Are buses where the route says?"});
+    await expect(stat.locator(".value")).toHaveText("–");
+  });
+
+  test("with one day of data the pages say a line needs a second day", async ({page, problems}) => {
+    await useScenario(page, "one-day");
+    await open(page, "ontime");
+    await expect(page.locator("main")).toContainText("once a second day comes in");
+    // The built site holds only the latest day's detail file, so the detail
+    // of this made-up first day is missing; the page is built to expect that.
+    await expectClean(page, problems.filter(p => !/Failed to load resource.*404/.test(p)));
+  });
+
+  test("a long history shows the latest 90 days and offers the rest", async ({page}) => {
+    await useScenario(page, "long");
+    await open(page, "ontime");
+    const toggle = page.getByLabel("Show all 120 days");
+    await expect(toggle).toBeVisible();
+    await toggle.check();
+    await settle(page);
+    await page.locator("details.as-table > summary").first().click();
+    await expect(page.locator("details.as-table").first().locator(".show-more")).toContainText("120");
+  });
+
+  test("a schedule change is explained where the figures start over", async ({page}) => {
+    await useScenario(page, "schedule-change");
+    await open(page, "index");
+    await expect(page.locator(".headline")).toContainText("changed its schedule on December 27, 2026");
+  });
+});
+
+test.describe("the collector badge", () => {
+  test("says the collector is saving, in a region screen readers announce", async ({page}) => {
+    await open(page, "index");
+    const state = page.locator("#live .live-state");
+    await expect(state).toHaveText("Saving now");
+    await expect(state).toHaveAttribute("role", "status");
+    await expect(page.locator("#live .live-age")).toContainText("last update in the last minute");
+  });
+
+  test.describe("when the status cannot be read", () => {
+    test.use({status: "down"});
+    test("says so plainly and logs nothing but the failed request", async ({page, problems}) => {
+      await open(page, "index");
+      await expect(page.locator("#live .live-state")).toHaveText("The collector's status can't be read right now");
+      expect(problems.filter(p => !/Failed to load resource/.test(p))).toEqual([]);
+    });
+  });
+
+  test.describe("when the collector is behind", () => {
+    test.use({status: [{feed: "vehiclePositions", last_ok_age_s: 3000}]});
+    test("says how long ago the last update was", async ({page}) => {
+      await open(page, "index");
+      await expect(page.locator("#live .live-state")).toHaveText("Collector delayed");
+      await expect(page.locator("#live .live-age")).toContainText("50 minutes ago");
+    });
+  });
+});
+
+test.describe("loading", () => {
+  test("the map library comes from the site itself, minified, and tiles load once", async ({page, asked}) => {
+    await open(page, "index");
+    expect(asked.filter(u => /leaflet/.test(u))).toEqual([]);
+    const tiles = asked.filter(u => u.includes("tile.openstreetmap.org"));
+    expect(tiles.length).toBeGreaterThan(0);
+    expect(new Set(tiles).size).toBe(tiles.length);
+    const zooms = new Set(tiles.map(u => new URL(u).pathname.split("/")[1]));
+    expect([...zooms]).toHaveLength(1);
+  });
+
+  test("the page does not jump while its figures arrive", async ({page}) => {
+    await page.addInitScript(() => {
+      window.__shift = 0;
+      new PerformanceObserver(list => {
+        for (const e of list.getEntries()) if (!e.hadRecentInput) window.__shift += e.value;
+      }).observe({type: "layout-shift", buffered: true});
+    });
+    for (const name of ["index", "routes", "quality"]) {
+      await open(page, name);
+      const shift = await page.evaluate(() => window.__shift);
+      expect(shift, `layout shift on ${name}`).toBeLessThan(0.1);
+    }
+  });
+});

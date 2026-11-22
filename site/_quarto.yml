@@ -4,8 +4,13 @@ project:
   resources:
     - data/**
     - lib.js
+    - charts.js
     - map.js
+    - page.js
+    - vendor/**
     - favicon.svg
+    - favicon-32.png
+    - apple-touch-icon.png
     - social-card.png
 
 website:
@@ -59,4 +64,6 @@ format:
     toc: false
     page-layout: full
     lang: en-US
-    include-after-body: _stamp.html
+    canonical-url: true
+    include-in-header: _head.html
+    include-after-body: _after.html

@@ -1,6 +1,11 @@
 ---
 description: "Every file and column in the Open Island Transit Data archive."
 pagetitle: "Codebook"
+toc: true
+toc-depth: 2
+toc-title: "On this page"
+toc-location: right
+page-layout: article
 ---
 
 {{< include ../docs/codebook.md >}}
