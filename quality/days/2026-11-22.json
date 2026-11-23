@@ -1,0 +1,2261 @@
+{
+ "service_date": "2026-11-22",
+ "quality_version": "quality/0.5.0",
+ "computed_at": "2026-11-23T08:41:04+00:00",
+ "scheduled_service": {
+  "trips": 168,
+  "trips_ended_before_collection": 0,
+  "first_departure": "2026-11-22T14:00:00+00:00",
+  "last_arrival": "2026-11-23T03:15:00+00:00",
+  "scheduled_hours": 13.25
+ },
+ "paradata": {
+  "observed_from": "2026-11-22T08:00:00+00:00",
+  "vehiclePositions": {
+   "slots_expected": 4320,
+   "slots_logged": 4314,
+   "slots_ok": 4314,
+   "uptime": 0.998611,
+   "not_logged": 6,
+   "logged_not_ok": 0,
+   "tick_phase_s": 6.31,
+   "latency_ms_median": 288.0,
+   "latency_ms_p95": 311.3,
+   "collector_versions": [
+    "collect/0.3.0"
+   ]
+  },
+  "tripUpdates": {
+   "slots_expected": 4320,
+   "slots_logged": 4314,
+   "slots_ok": 4314,
+   "uptime": 0.998611,
+   "not_logged": 6,
+   "logged_not_ok": 0,
+   "tick_phase_s": 6.31,
+   "latency_ms_median": 287.0,
+   "latency_ms_p95": 309.0,
+   "collector_versions": [
+    "collect/0.3.0"
+   ],
+   "refresh": {
+    "pairs": 31790,
+    "changed": 7867,
+    "changed_share": 0.247468,
+    "update_interval_s_median": 63.0,
+    "update_interval_s_p90": 64.0,
+    "poll_interval_s": 20
+   }
+  },
+  "serviceAlerts": {
+   "slots_expected": 288,
+   "slots_logged": 288,
+   "slots_ok": 288,
+   "uptime": 1.0,
+   "not_logged": 0,
+   "logged_not_ok": 0,
+   "tick_phase_s": 0.03,
+   "latency_ms_median": 284.0,
+   "latency_ms_p95": 309.9,
+   "collector_versions": [
+    "collect/0.3.0"
+   ]
+  }
+ },
+ "nonresponse": {
+  "fetch": {
+   "vehiclePositions": {
+    "attempted": 4314,
+    "failed": 0,
+    "rate": 0.0,
+    "by_error": {}
+   },
+   "tripUpdates": {
+    "attempted": 4314,
+    "failed": 0,
+    "rate": 0.0,
+    "by_error": {}
+   },
+   "serviceAlerts": {
+    "attempted": 288,
+    "failed": 0,
+    "rate": 0.0,
+    "by_error": {}
+   }
+  },
+  "vehicle_feed": {
+   "in_service_fetches": 2382,
+   "ok_in_service_fetches": 2382,
+   "empty_in_service": 0,
+   "empty_in_service_rate": 0.0,
+   "stale_in_service": 0,
+   "stale_in_service_rate": 0.0,
+   "no_timestamp_in_service": 0,
+   "by_hour": {
+    "0": {
+     "attempted": 179
+    },
+    "1": {
+     "attempted": 180
+    },
+    "2": {
+     "attempted": 180
+    },
+    "3": {
+     "attempted": 180
+    },
+    "4": {
+     "attempted": 179
+    },
+    "5": {
+     "attempted": 180
+    },
+    "6": {
+     "attempted": 180,
+     "in_service": 180,
+     "ok_in_service": 180
+    },
+    "7": {
+     "attempted": 180,
+     "in_service": 180,
+     "ok_in_service": 180
+    },
+    "8": {
+     "attempted": 179,
+     "in_service": 179,
+     "ok_in_service": 179
+    },
+    "9": {
+     "attempted": 180,
+     "in_service": 180,
+     "ok_in_service": 180
+    },
+    "10": {
+     "attempted": 180,
+     "in_service": 180,
+     "ok_in_service": 180
+    },
+    "11": {
+     "attempted": 180,
+     "in_service": 180,
+     "ok_in_service": 180
+    },
+    "12": {
+     "attempted": 179,
+     "in_service": 179,
+     "ok_in_service": 179
+    },
+    "13": {
+     "attempted": 180,
+     "in_service": 180,
+     "ok_in_service": 180
+    },
+    "14": {
+     "attempted": 180,
+     "in_service": 180,
+     "ok_in_service": 180
+    },
+    "15": {
+     "attempted": 180,
+     "in_service": 180,
+     "ok_in_service": 180
+    },
+    "16": {
+     "attempted": 180,
+     "in_service": 180,
+     "ok_in_service": 180
+    },
+    "17": {
+     "attempted": 179,
+     "in_service": 179,
+     "ok_in_service": 179
+    },
+    "18": {
+     "attempted": 180,
+     "in_service": 180,
+     "ok_in_service": 180
+    },
+    "19": {
+     "attempted": 180,
+     "in_service": 45,
+     "ok_in_service": 45
+    },
+    "20": {
+     "attempted": 180
+    },
+    "21": {
+     "attempted": 179
+    },
+    "22": {
+     "attempted": 180
+    },
+    "23": {
+     "attempted": 180
+    }
+   }
+  },
+  "items": {
+   "position_reports": 20092,
+   "missing_share": {
+    "vehicle_id": 0.0,
+    "vehicle_label": 0.0,
+    "vehicle_ts": 0.0,
+    "trip_id": 0.0,
+    "route_id": 0.0,
+    "direction_id": 1.0,
+    "start_date": 1.0,
+    "start_time": 1.0,
+    "trip_schedule_relationship": 1.0,
+    "lat": 0.0,
+    "lon": 0.0,
+    "bearing": 0.0,
+    "speed": 0.0,
+    "odometer": 1.0,
+    "current_stop_sequence": 0.0,
+    "stop_id": 0.0,
+    "current_status": 1.0,
+    "congestion_level": 1.0,
+    "occupancy_status": 0.0,
+    "occupancy_percentage": 1.0
+   }
+  },
+  "trip_gaps": {
+   "trips_with_two_or_more_reports": 165,
+   "longest_gap_s_median": 29.0,
+   "longest_gap_s_p95": 1284.6,
+   "trips_with_gap_over_90s": 71,
+   "share_of_trip_time_in_gaps_mean": 0.0971
+  }
+ },
+ "coverage": {
+  "scheduled_trips": 168,
+  "observed_scheduled_trips": 165,
+  "trip_coverage": 0.982143,
+  "canceled_trips": 0,
+  "canceled_by": {
+   "flag": 0,
+   "alert": 0
+  },
+  "canceled_trip_ids": [],
+  "canceled_but_observed": 0,
+  "trip_coverage_excluding_canceled": 0.982143,
+  "window_min": 30,
+  "trips_seen_only_outside_window": 0,
+  "routes_never_reporting": [],
+  "by_route": {
+   "6737": {
+    "scheduled": 9,
+    "observed": 8,
+    "canceled": 0,
+    "coverage": 0.888889
+   },
+   "6744": {
+    "scheduled": 25,
+    "observed": 25,
+    "canceled": 0,
+    "coverage": 1.0
+   },
+   "7913": {
+    "scheduled": 10,
+    "observed": 8,
+    "canceled": 0,
+    "coverage": 0.8
+   },
+   "7914": {
+    "scheduled": 7,
+    "observed": 7,
+    "canceled": 0,
+    "coverage": 1.0
+   },
+   "7915": {
+    "scheduled": 6,
+    "observed": 6,
+    "canceled": 0,
+    "coverage": 1.0
+   },
+   "7918": {
+    "scheduled": 17,
+    "observed": 17,
+    "canceled": 0,
+    "coverage": 1.0
+   },
+   "7920": {
+    "scheduled": 13,
+    "observed": 13,
+    "canceled": 0,
+    "coverage": 1.0
+   },
+   "7922": {
+    "scheduled": 20,
+    "observed": 20,
+    "canceled": 0,
+    "coverage": 1.0
+   },
+   "7924": {
+    "scheduled": 10,
+    "observed": 10,
+    "canceled": 0,
+    "coverage": 1.0
+   },
+   "9404": {
+    "scheduled": 31,
+    "observed": 31,
+    "canceled": 0,
+    "coverage": 1.0
+   },
+   "9430": {
+    "scheduled": 20,
+    "observed": 20,
+    "canceled": 0,
+    "coverage": 1.0
+   }
+  },
+  "trips": {
+   "columns": [
+    "trip_id",
+    "route_id",
+    "start_hour",
+    "scheduled_in_service",
+    "observed",
+    "canceled"
+   ],
+   "rows": [
+    [
+     "1155116",
+     "9404",
+     6,
+     2,
+     true,
+     false
+    ],
+    [
+     "1155216",
+     "9404",
+     6,
+     2,
+     true,
+     false
+    ],
+    [
+     "1155218",
+     "9404",
+     6,
+     6,
+     true,
+     false
+    ],
+    [
+     "1155249",
+     "7920",
+     6,
+     6,
+     true,
+     false
+    ],
+    [
+     "1155301",
+     "6744",
+     6,
+     6,
+     true,
+     false
+    ],
+    [
+     "1155492",
+     "7918",
+     6,
+     6,
+     true,
+     false
+    ],
+    [
+     "1155522",
+     "7922",
+     6,
+     6,
+     true,
+     false
+    ],
+    [
+     "1155437",
+     "7918",
+     6,
+     5,
+     true,
+     false
+    ],
+    [
+     "1155200",
+     "9404",
+     7,
+     5,
+     true,
+     false
+    ],
+    [
+     "1155309",
+     "6744",
+     7,
+     5,
+     true,
+     false
+    ],
+    [
+     "1155363",
+     "9430",
+     7,
+     5,
+     true,
+     false
+    ],
+    [
+     "1155551",
+     "7922",
+     7,
+     5,
+     true,
+     false
+    ],
+    [
+     "1155221",
+     "9404",
+     7,
+     6,
+     true,
+     false
+    ],
+    [
+     "1155440",
+     "7918",
+     7,
+     6,
+     true,
+     false
+    ],
+    [
+     "1155121",
+     "9404",
+     7,
+     7,
+     true,
+     false
+    ],
+    [
+     "1155250",
+     "7920",
+     7,
+     7,
+     true,
+     false
+    ],
+    [
+     "1155302",
+     "6744",
+     7,
+     7,
+     true,
+     false
+    ],
+    [
+     "1154977",
+     "6737",
+     7,
+     7,
+     false,
+     false
+    ],
+    [
+     "1155383",
+     "9430",
+     7,
+     7,
+     true,
+     false
+    ],
+    [
+     "1155141",
+     "9404",
+     8,
+     9,
+     true,
+     false
+    ],
+    [
+     "1155322",
+     "6744",
+     8,
+     9,
+     true,
+     false
+    ],
+    [
+     "1155370",
+     "9430",
+     8,
+     9,
+     true,
+     false
+    ],
+    [
+     "1155469",
+     "7918",
+     8,
+     9,
+     true,
+     false
+    ],
+    [
+     "1155523",
+     "7922",
+     8,
+     9,
+     true,
+     false
+    ],
+    [
+     "1155088",
+     "7915",
+     8,
+     9,
+     true,
+     false
+    ],
+    [
+     "1155176",
+     "9404",
+     8,
+     9,
+     true,
+     false
+    ],
+    [
+     "1155261",
+     "7920",
+     8,
+     9,
+     true,
+     false
+    ],
+    [
+     "1155335",
+     "6744",
+     8,
+     9,
+     true,
+     false
+    ],
+    [
+     "1155552",
+     "7922",
+     8,
+     9,
+     true,
+     false
+    ],
+    [
+     "1155450",
+     "7918",
+     8,
+     8,
+     true,
+     false
+    ],
+    [
+     "1154985",
+     "6737",
+     8,
+     11,
+     true,
+     false
+    ],
+    [
+     "1155070",
+     "7914",
+     8,
+     11,
+     true,
+     false
+    ],
+    [
+     "1155390",
+     "9430",
+     8,
+     11,
+     true,
+     false
+    ],
+    [
+     "1155145",
+     "9404",
+     9,
+     12,
+     true,
+     false
+    ],
+    [
+     "1155323",
+     "6744",
+     9,
+     12,
+     true,
+     false
+    ],
+    [
+     "1155364",
+     "9430",
+     9,
+     12,
+     true,
+     false
+    ],
+    [
+     "1155524",
+     "7922",
+     9,
+     12,
+     true,
+     false
+    ],
+    [
+     "1155640",
+     "7924",
+     9,
+     12,
+     true,
+     false
+    ],
+    [
+     "1155094",
+     "7915",
+     9,
+     9,
+     true,
+     false
+    ],
+    [
+     "1155645",
+     "7924",
+     9,
+     9,
+     true,
+     false
+    ],
+    [
+     "1155184",
+     "9404",
+     9,
+     9,
+     true,
+     false
+    ],
+    [
+     "1155251",
+     "7920",
+     9,
+     9,
+     true,
+     false
+    ],
+    [
+     "1155350",
+     "6744",
+     9,
+     9,
+     true,
+     false
+    ],
+    [
+     "1155553",
+     "7922",
+     9,
+     9,
+     true,
+     false
+    ],
+    [
+     "1155021",
+     "7913",
+     9,
+     9,
+     true,
+     false
+    ],
+    [
+     "1155071",
+     "7914",
+     9,
+     9,
+     true,
+     false
+    ],
+    [
+     "1155384",
+     "9430",
+     9,
+     9,
+     true,
+     false
+    ],
+    [
+     "1155201",
+     "9404",
+     10,
+     9,
+     true,
+     false
+    ],
+    [
+     "1155351",
+     "6744",
+     10,
+     9,
+     true,
+     false
+    ],
+    [
+     "1155375",
+     "9430",
+     10,
+     9,
+     true,
+     false
+    ],
+    [
+     "1155525",
+     "7922",
+     10,
+     9,
+     true,
+     false
+    ],
+    [
+     "1155046",
+     "7913",
+     10,
+     10,
+     true,
+     false
+    ],
+    [
+     "1155122",
+     "9404",
+     10,
+     7,
+     true,
+     false
+    ],
+    [
+     "1155252",
+     "7920",
+     10,
+     7,
+     true,
+     false
+    ],
+    [
+     "1155303",
+     "6744",
+     10,
+     7,
+     true,
+     false
+    ],
+    [
+     "1155554",
+     "7922",
+     10,
+     7,
+     true,
+     false
+    ],
+    [
+     "1155478",
+     "7918",
+     10,
+     6,
+     true,
+     false
+    ],
+    [
+     "1154986",
+     "6737",
+     10,
+     10,
+     true,
+     false
+    ],
+    [
+     "1155026",
+     "7913",
+     10,
+     10,
+     true,
+     false
+    ],
+    [
+     "1155075",
+     "7914",
+     10,
+     10,
+     true,
+     false
+    ],
+    [
+     "1155395",
+     "9430",
+     10,
+     10,
+     true,
+     false
+    ],
+    [
+     "1155142",
+     "9404",
+     11,
+     10,
+     true,
+     false
+    ],
+    [
+     "1155324",
+     "6744",
+     11,
+     10,
+     true,
+     false
+    ],
+    [
+     "1155371",
+     "9430",
+     11,
+     10,
+     true,
+     false
+    ],
+    [
+     "1155641",
+     "7924",
+     11,
+     10,
+     true,
+     false
+    ],
+    [
+     "1155051",
+     "7913",
+     11,
+     11,
+     true,
+     false
+    ],
+    [
+     "1155458",
+     "7918",
+     11,
+     11,
+     true,
+     false
+    ],
+    [
+     "1155646",
+     "7924",
+     11,
+     8,
+     true,
+     false
+    ],
+    [
+     "1155177",
+     "9404",
+     11,
+     9,
+     true,
+     false
+    ],
+    [
+     "1155272",
+     "7920",
+     11,
+     9,
+     true,
+     false
+    ],
+    [
+     "1155325",
+     "6744",
+     11,
+     9,
+     true,
+     false
+    ],
+    [
+     "1155526",
+     "7922",
+     11,
+     9,
+     true,
+     false
+    ],
+    [
+     "1154987",
+     "6737",
+     11,
+     11,
+     true,
+     false
+    ],
+    [
+     "1155027",
+     "7913",
+     11,
+     11,
+     false,
+     false
+    ],
+    [
+     "1155076",
+     "7914",
+     11,
+     11,
+     true,
+     false
+    ],
+    [
+     "1155391",
+     "9430",
+     11,
+     11,
+     true,
+     false
+    ],
+    [
+     "1155160",
+     "9404",
+     12,
+     9,
+     true,
+     false
+    ],
+    [
+     "1155310",
+     "6744",
+     12,
+     9,
+     true,
+     false
+    ],
+    [
+     "1155377",
+     "9430",
+     12,
+     9,
+     true,
+     false
+    ],
+    [
+     "1155555",
+     "7922",
+     12,
+     9,
+     true,
+     false
+    ],
+    [
+     "1155052",
+     "7913",
+     12,
+     10,
+     false,
+     false
+    ],
+    [
+     "1155167",
+     "9404",
+     12,
+     7,
+     true,
+     false
+    ],
+    [
+     "1155091",
+     "7915",
+     12,
+     9,
+     true,
+     false
+    ],
+    [
+     "1155226",
+     "9404",
+     12,
+     9,
+     true,
+     false
+    ],
+    [
+     "1155273",
+     "7920",
+     12,
+     9,
+     true,
+     false
+    ],
+    [
+     "1155304",
+     "6744",
+     12,
+     9,
+     true,
+     false
+    ],
+    [
+     "1155481",
+     "7918",
+     12,
+     9,
+     true,
+     false
+    ],
+    [
+     "1155527",
+     "7922",
+     12,
+     9,
+     true,
+     false
+    ],
+    [
+     "1154978",
+     "6737",
+     12,
+     10,
+     true,
+     false
+    ],
+    [
+     "1155082",
+     "7914",
+     12,
+     10,
+     true,
+     false
+    ],
+    [
+     "1155397",
+     "9430",
+     12,
+     10,
+     true,
+     false
+    ],
+    [
+     "1155148",
+     "9404",
+     13,
+     11,
+     true,
+     false
+    ],
+    [
+     "1155336",
+     "6744",
+     13,
+     11,
+     true,
+     false
+    ],
+    [
+     "1155379",
+     "9430",
+     13,
+     11,
+     true,
+     false
+    ],
+    [
+     "1155556",
+     "7922",
+     13,
+     11,
+     true,
+     false
+    ],
+    [
+     "1155441",
+     "7918",
+     13,
+     11,
+     true,
+     false
+    ],
+    [
+     "1155222",
+     "9404",
+     13,
+     9,
+     true,
+     false
+    ],
+    [
+     "1155097",
+     "7915",
+     13,
+     9,
+     true,
+     false
+    ],
+    [
+     "1155193",
+     "9404",
+     13,
+     8,
+     true,
+     false
+    ],
+    [
+     "1155274",
+     "7920",
+     13,
+     8,
+     true,
+     false
+    ],
+    [
+     "1155337",
+     "6744",
+     13,
+     8,
+     true,
+     false
+    ],
+    [
+     "1154979",
+     "6737",
+     13,
+     10,
+     true,
+     false
+    ],
+    [
+     "1155022",
+     "7913",
+     13,
+     10,
+     true,
+     false
+    ],
+    [
+     "1155399",
+     "9430",
+     13,
+     10,
+     true,
+     false
+    ],
+    [
+     "1155143",
+     "9404",
+     14,
+     11,
+     true,
+     false
+    ],
+    [
+     "1155338",
+     "6744",
+     14,
+     11,
+     true,
+     false
+    ],
+    [
+     "1155372",
+     "9430",
+     14,
+     11,
+     true,
+     false
+    ],
+    [
+     "1155470",
+     "7918",
+     14,
+     11,
+     true,
+     false
+    ],
+    [
+     "1155528",
+     "7922",
+     14,
+     11,
+     true,
+     false
+    ],
+    [
+     "1155643",
+     "7924",
+     14,
+     11,
+     true,
+     false
+    ],
+    [
+     "1155047",
+     "7913",
+     14,
+     12,
+     true,
+     false
+    ],
+    [
+     "1155648",
+     "7924",
+     14,
+     8,
+     true,
+     false
+    ],
+    [
+     "1155130",
+     "9404",
+     14,
+     9,
+     true,
+     false
+    ],
+    [
+     "1155262",
+     "7920",
+     14,
+     9,
+     true,
+     false
+    ],
+    [
+     "1155339",
+     "6744",
+     14,
+     9,
+     true,
+     false
+    ],
+    [
+     "1155557",
+     "7922",
+     14,
+     9,
+     true,
+     false
+    ],
+    [
+     "1155451",
+     "7918",
+     14,
+     8,
+     true,
+     false
+    ],
+    [
+     "1154988",
+     "6737",
+     14,
+     10,
+     true,
+     false
+    ],
+    [
+     "1155028",
+     "7913",
+     14,
+     10,
+     true,
+     false
+    ],
+    [
+     "1155077",
+     "7914",
+     14,
+     10,
+     true,
+     false
+    ],
+    [
+     "1155392",
+     "9430",
+     14,
+     10,
+     true,
+     false
+    ],
+    [
+     "1155212",
+     "9404",
+     15,
+     10,
+     true,
+     false
+    ],
+    [
+     "1155305",
+     "6744",
+     15,
+     10,
+     true,
+     false
+    ],
+    [
+     "1155365",
+     "9430",
+     15,
+     10,
+     true,
+     false
+    ],
+    [
+     "1155529",
+     "7922",
+     15,
+     10,
+     true,
+     false
+    ],
+    [
+     "1155053",
+     "7913",
+     15,
+     11,
+     true,
+     false
+    ],
+    [
+     "1155092",
+     "7915",
+     15,
+     8,
+     true,
+     false
+    ],
+    [
+     "1155185",
+     "9404",
+     15,
+     8,
+     true,
+     false
+    ],
+    [
+     "1155263",
+     "7920",
+     15,
+     8,
+     true,
+     false
+    ],
+    [
+     "1155326",
+     "6744",
+     15,
+     8,
+     true,
+     false
+    ],
+    [
+     "1155558",
+     "7922",
+     15,
+     8,
+     true,
+     false
+    ],
+    [
+     "1154980",
+     "6737",
+     15,
+     11,
+     true,
+     false
+    ],
+    [
+     "1155083",
+     "7914",
+     15,
+     11,
+     true,
+     false
+    ],
+    [
+     "1155385",
+     "9430",
+     15,
+     11,
+     true,
+     false
+    ],
+    [
+     "1155471",
+     "7918",
+     15,
+     11,
+     true,
+     false
+    ],
+    [
+     "1155149",
+     "9404",
+     16,
+     12,
+     true,
+     false
+    ],
+    [
+     "1155327",
+     "6744",
+     16,
+     12,
+     true,
+     false
+    ],
+    [
+     "1155373",
+     "9430",
+     16,
+     12,
+     true,
+     false
+    ],
+    [
+     "1155530",
+     "7922",
+     16,
+     12,
+     true,
+     false
+    ],
+    [
+     "1155642",
+     "7924",
+     16,
+     12,
+     true,
+     false
+    ],
+    [
+     "1155452",
+     "7918",
+     16,
+     8,
+     true,
+     false
+    ],
+    [
+     "1155098",
+     "7915",
+     16,
+     10,
+     true,
+     false
+    ],
+    [
+     "1155647",
+     "7924",
+     16,
+     10,
+     true,
+     false
+    ],
+    [
+     "1155123",
+     "9404",
+     16,
+     10,
+     true,
+     false
+    ],
+    [
+     "1155280",
+     "7920",
+     16,
+     10,
+     true,
+     false
+    ],
+    [
+     "1155328",
+     "6744",
+     16,
+     10,
+     true,
+     false
+    ],
+    [
+     "1155559",
+     "7922",
+     16,
+     10,
+     true,
+     false
+    ],
+    [
+     "1155393",
+     "9430",
+     16,
+     8,
+     true,
+     false
+    ],
+    [
+     "1155214",
+     "9404",
+     17,
+     8,
+     true,
+     false
+    ],
+    [
+     "1155340",
+     "6744",
+     17,
+     8,
+     true,
+     false
+    ],
+    [
+     "1155644",
+     "7924",
+     17,
+     8,
+     true,
+     false
+    ],
+    [
+     "1154990",
+     "6737",
+     17,
+     6,
+     true,
+     false
+    ],
+    [
+     "1155472",
+     "7918",
+     17,
+     7,
+     true,
+     false
+    ],
+    [
+     "1155649",
+     "7924",
+     17,
+     6,
+     true,
+     false
+    ],
+    [
+     "1155178",
+     "9404",
+     17,
+     9,
+     true,
+     false
+    ],
+    [
+     "1155264",
+     "7920",
+     17,
+     9,
+     true,
+     false
+    ],
+    [
+     "1155352",
+     "6744",
+     17,
+     9,
+     true,
+     false
+    ],
+    [
+     "1155531",
+     "7922",
+     17,
+     9,
+     true,
+     false
+    ],
+    [
+     "1155453",
+     "7918",
+     17,
+     6,
+     true,
+     false
+    ],
+    [
+     "1155353",
+     "6744",
+     18,
+     5,
+     true,
+     false
+    ],
+    [
+     "1155560",
+     "7922",
+     18,
+     5,
+     true,
+     false
+    ],
+    [
+     "1155161",
+     "9404",
+     18,
+     6,
+     true,
+     false
+    ],
+    [
+     "1155231",
+     "9404",
+     18,
+     7,
+     true,
+     false
+    ],
+    [
+     "1155281",
+     "7920",
+     18,
+     7,
+     true,
+     false
+    ],
+    [
+     "1155306",
+     "6744",
+     18,
+     7,
+     true,
+     false
+    ],
+    [
+     "1155482",
+     "7918",
+     18,
+     7,
+     true,
+     false
+    ],
+    [
+     "1155164",
+     "9404",
+     18,
+     5,
+     true,
+     false
+    ],
+    [
+     "1155486",
+     "7918",
+     19,
+     3,
+     true,
+     false
+    ]
+   ]
+  },
+  "vehicles_seen": 14,
+  "over_coverage": {
+   "position_reports": 20092,
+   "no_trip_id": 0,
+   "trip_id_not_in_static": 0,
+   "trip_not_scheduled_today": 2,
+   "share": 0.0001
+  },
+  "stop_updates_flagged_skipped": 0,
+  "alerts_seen": 0,
+  "vehicle_ids": [
+   "17426",
+   "17431",
+   "17447",
+   "17448",
+   "17452",
+   "17453",
+   "17454",
+   "17460",
+   "17463",
+   "17464",
+   "17465",
+   "17467",
+   "17977",
+   "18551"
+  ]
+ },
+ "measurement": {
+  "position_age_s_median": 4.0,
+  "position_age_s_p95": 7.7,
+  "position_age_definition": "first fetch request time minus vehicle timestamp",
+  "timestamps_in_future": 47,
+  "timestamps_going_backwards": 0,
+  "consecutive_report_pairs": 20078,
+  "impossible_jumps_over_130_kmh": 0
+ },
+ "processing": {
+  "id_match": {
+   "trip_id": {
+    "present": 20092,
+    "in_static": 20092,
+    "match_rate": 1.0
+   },
+   "route_id": {
+    "present": 20092,
+    "in_static": 20092,
+    "match_rate": 1.0
+   },
+   "stop_id": {
+    "present": 20092,
+    "in_static": 20092,
+    "match_rate": 1.0
+   }
+  },
+  "vehicle_table_rows": 20095,
+  "distinct_position_reports": 20092,
+  "parser": {
+   "serviceAlerts": {
+    "attempted": 288,
+    "parsed": 288,
+    "failed": 0,
+    "decode_errors": 0,
+    "decode_error_rate": 0.0
+   },
+   "tripUpdates": {
+    "attempted": 4314,
+    "parsed": 4314,
+    "failed": 0,
+    "decode_errors": 0,
+    "decode_error_rate": 0.0
+   },
+   "vehiclePositions": {
+    "attempted": 4314,
+    "parsed": 4314,
+    "failed": 0,
+    "decode_errors": 0,
+    "decode_error_rate": 0.0
+   }
+  },
+  "static_downloads": [
+   {
+    "static_fetch_id": 7,
+    "source": "passio",
+    "requested_at": "2026-11-22T10:15:00.581+00:00",
+    "complete": true,
+    "problems": [],
+    "missing": [],
+    "version": "passio-9b1efa882037"
+   },
+   {
+    "static_fetch_id": 8,
+    "source": "passio",
+    "requested_at": "2026-11-22T16:30:00.288+00:00",
+    "complete": true,
+    "problems": [],
+    "missing": [],
+    "version": "passio-9b1efa882037"
+   }
+  ],
+  "timepoints": {
+   "folder": "passio-9b1efa882037__timetable-2026-09-27-970aa207",
+   "reference": "2026-09-27",
+   "printed_names": 147,
+   "resolved_names": 146,
+   "resolved_share": 0.9932,
+   "timepoint_route_stops": 169
+  }
+ },
+ "events": {
+  "events_version": "events/0.3.1",
+  "stop_coverage": {
+   "timepoints": {
+    "scheduled": 1219,
+    "observed": 986,
+    "coverage": 0.80886,
+    "not_observed_by_reason": {
+     "gap": 46,
+     "no_reports": 19,
+     "not_reached": 114,
+     "past_when_first_seen": 35,
+     "skipped": 19
+    },
+    "by_route": {
+     "6737": {
+      "scheduled": 81,
+      "observed": 30,
+      "coverage": 0.37037
+     },
+     "6744": {
+      "scheduled": 250,
+      "observed": 238,
+      "coverage": 0.952
+     },
+     "7913": {
+      "scheduled": 40,
+      "observed": 27,
+      "coverage": 0.675
+     },
+     "7914": {
+      "scheduled": 70,
+      "observed": 51,
+      "coverage": 0.728571
+     },
+     "7915": {
+      "scheduled": 51,
+      "observed": 49,
+      "coverage": 0.960784
+     },
+     "7918": {
+      "scheduled": 121,
+      "observed": 93,
+      "coverage": 0.768595
+     },
+     "7920": {
+      "scheduled": 130,
+      "observed": 115,
+      "coverage": 0.884615
+     },
+     "7922": {
+      "scheduled": 120,
+      "observed": 97,
+      "coverage": 0.808333
+     },
+     "7924": {
+      "scheduled": 55,
+      "observed": 35,
+      "coverage": 0.636364
+     },
+     "9404": {
+      "scheduled": 221,
+      "observed": 196,
+      "coverage": 0.886878
+     },
+     "9430": {
+      "scheduled": 80,
+      "observed": 55,
+      "coverage": 0.6875
+     }
+    }
+   },
+   "all_stops": {
+    "scheduled": 4789,
+    "observed": 4263,
+    "coverage": 0.890165,
+    "not_observed_by_reason": {
+     "gap": 116,
+     "no_reports": 71,
+     "not_reached": 171,
+     "past_when_first_seen": 57,
+     "skipped": 110,
+     "unplaced": 1
+    },
+    "by_route": {
+     "6737": {
+      "scheduled": 369,
+      "observed": 235,
+      "coverage": 0.636856
+     },
+     "6744": {
+      "scheduled": 550,
+      "observed": 524,
+      "coverage": 0.952727
+     },
+     "7913": {
+      "scheduled": 135,
+      "observed": 103,
+      "coverage": 0.762963
+     },
+     "7914": {
+      "scheduled": 287,
+      "observed": 199,
+      "coverage": 0.69338
+     },
+     "7915": {
+      "scheduled": 123,
+      "observed": 121,
+      "coverage": 0.98374
+     },
+     "7918": {
+      "scheduled": 478,
+      "observed": 424,
+      "coverage": 0.887029
+     },
+     "7920": {
+      "scheduled": 299,
+      "observed": 283,
+      "coverage": 0.946488
+     },
+     "7922": {
+      "scheduled": 580,
+      "observed": 518,
+      "coverage": 0.893103
+     },
+     "7924": {
+      "scheduled": 170,
+      "observed": 140,
+      "coverage": 0.823529
+     },
+     "9404": {
+      "scheduled": 1628,
+      "observed": 1571,
+      "coverage": 0.964988
+     },
+     "9430": {
+      "scheduled": 170,
+      "observed": 145,
+      "coverage": 0.852941
+     }
+    }
+   }
+  },
+  "shape_fit": {
+   "position_reports": 19860,
+   "tracked_reports": 19531,
+   "off_shape": 549,
+   "off_shape_share": 0.028109,
+   "wrong_direction": 58,
+   "wrong_direction_share": 0.00297,
+   "threshold_m": 100,
+   "trips_skipping_part_of_shape": 30,
+   "skipped_km": 192.7,
+   "skipping_by_route": {
+    "6737": 8,
+    "7914": 7,
+    "7922": 10,
+    "7924": 5
+   },
+   "trips_not_readable": 0,
+   "by_route": {
+    "6737": {
+     "position_reports": 1400,
+     "tracked_reports": 1380,
+     "off_shape": 55,
+     "off_shape_share": 0.039855,
+     "wrong_direction": 6,
+     "wrong_direction_share": 0.004348
+    },
+    "6744": {
+     "position_reports": 2062,
+     "tracked_reports": 2016,
+     "off_shape": 66,
+     "off_shape_share": 0.032738,
+     "wrong_direction": 3,
+     "wrong_direction_share": 0.001488
+    },
+    "7913": {
+     "position_reports": 582,
+     "tracked_reports": 530,
+     "off_shape": 18,
+     "off_shape_share": 0.033962,
+     "wrong_direction": 2,
+     "wrong_direction_share": 0.003774
+    },
+    "7914": {
+     "position_reports": 1292,
+     "tracked_reports": 1275,
+     "off_shape": 89,
+     "off_shape_share": 0.069804,
+     "wrong_direction": 6,
+     "wrong_direction_share": 0.004706
+    },
+    "7915": {
+     "position_reports": 1004,
+     "tracked_reports": 909,
+     "off_shape": 15,
+     "off_shape_share": 0.016502,
+     "wrong_direction": 2,
+     "wrong_direction_share": 0.0022
+    },
+    "7918": {
+     "position_reports": 1859,
+     "tracked_reports": 1858,
+     "off_shape": 105,
+     "off_shape_share": 0.056512,
+     "wrong_direction": 10,
+     "wrong_direction_share": 0.005382
+    },
+    "7920": {
+     "position_reports": 1072,
+     "tracked_reports": 1011,
+     "off_shape": 60,
+     "off_shape_share": 0.059347,
+     "wrong_direction": 9,
+     "wrong_direction_share": 0.008902
+    },
+    "7922": {
+     "position_reports": 1799,
+     "tracked_reports": 1782,
+     "off_shape": 7,
+     "off_shape_share": 0.003928,
+     "wrong_direction": 2,
+     "wrong_direction_share": 0.001122
+    },
+    "7924": {
+     "position_reports": 712,
+     "tracked_reports": 708,
+     "off_shape": 19,
+     "off_shape_share": 0.026836,
+     "wrong_direction": 5,
+     "wrong_direction_share": 0.007062
+    },
+    "9404": {
+     "position_reports": 6005,
+     "tracked_reports": 5989,
+     "off_shape": 115,
+     "off_shape_share": 0.019202,
+     "wrong_direction": 11,
+     "wrong_direction_share": 0.001837
+    },
+    "9430": {
+     "position_reports": 2073,
+     "tracked_reports": 2073,
+     "off_shape": 0,
+     "off_shape_share": 0.0,
+     "wrong_direction": 2,
+     "wrong_direction_share": 0.000965
+    }
+   }
+  },
+  "retraced_shapes": {
+   "shapes_used": 29,
+   "shapes_retraced": 1,
+   "retraced_m_by_shape": {
+    "74559": 21170
+   },
+   "reported_from_m": 100
+  },
+  "assignment": {
+   "observed_trip_ids": 166,
+   "unassignable": 1,
+   "unassignable_share": 0.006024,
+   "trip_id_not_in_static": [],
+   "trip_not_scheduled_today": [
+    "1154989"
+   ],
+   "scheduled_trips_with_reports": 165,
+   "trips_with_no_usable_report": 1,
+   "trips_with_more_than_one_vehicle": 1
+  },
+  "prediction_error": {
+   "observed_events_with_predictions": 3626,
+   "definition": "predicted minus inferred time; arrival, or departure at a trip's first stop",
+   "by_horizon_min": {
+    "1": {
+     "n": 2630,
+     "other_day": 39,
+     "other_day_share": 0.014612,
+     "bias_s": 623.3,
+     "median_s": -6.0,
+     "mae_s": 680.6,
+     "median_abs_s": 66.5,
+     "within_60s_share": 0.465779,
+     "over_30min": 44,
+     "over_30min_share": 0.01673
+    },
+    "2": {
+     "n": 2643,
+     "other_day": 40,
+     "other_day_share": 0.014909,
+     "bias_s": 685.4,
+     "median_s": -14.1,
+     "mae_s": 765.6,
+     "median_abs_s": 88.5,
+     "within_60s_share": 0.366629,
+     "over_30min": 56,
+     "over_30min_share": 0.021188
+    },
+    "5": {
+     "n": 2513,
+     "other_day": 45,
+     "other_day_share": 0.017592,
+     "bias_s": 689.0,
+     "median_s": -25.9,
+     "mae_s": 829.5,
+     "median_abs_s": 126.6,
+     "within_60s_share": 0.253482,
+     "over_30min": 52,
+     "over_30min_share": 0.020692
+    },
+    "10": {
+     "n": 2323,
+     "other_day": 22,
+     "other_day_share": 0.009382,
+     "bias_s": 412.1,
+     "median_s": -38.0,
+     "mae_s": 610.5,
+     "median_abs_s": 140.0,
+     "within_60s_share": 0.256565,
+     "over_30min": 45,
+     "over_30min_share": 0.019372
+    },
+    "15": {
+     "n": 1967,
+     "other_day": 14,
+     "other_day_share": 0.007067,
+     "bias_s": 327.5,
+     "median_s": -42.3,
+     "mae_s": 554.2,
+     "median_abs_s": 150.8,
+     "within_60s_share": 0.232334,
+     "over_30min": 47,
+     "over_30min_share": 0.023894
+    },
+    "30": {
+     "n": 1183,
+     "other_day": 3,
+     "other_day_share": 0.00253,
+     "bias_s": 382.6,
+     "median_s": -50.6,
+     "mae_s": 722.5,
+     "median_abs_s": 183.8,
+     "within_60s_share": 0.180896,
+     "over_30min": 113,
+     "over_30min_share": 0.09552
+    }
+   }
+  },
+  "jitter": {
+   "dwells": 197,
+   "reports": 2549,
+   "jitter_m_median": 2.1,
+   "jitter_m_p95": 6.8,
+   "definition": "distance from the dwell's median position; speed under 0.5 m/s, within 150 m of a first or last stop, at least 3 reports"
+  },
+  "missing_vehicles": {
+   "previous_days_available": 3,
+   "vehicles_seen_previously": 39,
+   "missing_count": 28,
+   "missing_today": [
+    "17425",
+    "17428",
+    "17429",
+    "17430",
+    "17433",
+    "17434",
+    "17435",
+    "17443",
+    "17444",
+    "17446",
+    "17449",
+    "17450",
+    "17451",
+    "17455",
+    "17456",
+    "17462",
+    "17466",
+    "17468",
+    "17469",
+    "17470",
+    "17471",
+    "17472",
+    "20383",
+    "20388",
+    "20390",
+    "20391",
+    "21513",
+    "21514"
+   ],
+   "new_today": [
+    "17426",
+    "17464",
+    "18551"
+   ]
+  }
+ },
+ "routes": {
+  "7920": {
+   "short_name": "2",
+   "long_name": "Ault Field Rd/ Oak Harbor"
+  },
+  "6744": {
+   "short_name": "10",
+   "long_name": "Central Oak Harbor"
+  },
+  "9404": {
+   "short_name": "1",
+   "long_name": "Clinton / Oak Harbor"
+  },
+  "7923": {
+   "short_name": "58",
+   "long_name": "Clinton Ferry/ Scatchet Head"
+  },
+  "7924": {
+   "short_name": "4",
+   "long_name": "Deception Pass/ Oak Harbor"
+  },
+  "7914": {
+   "short_name": "2C",
+   "long_name": "East Camano"
+  },
+  "7916": {
+   "short_name": "412",
+   "long_name": "Everett/ Camano Island"
+  },
+  "7922": {
+   "short_name": "60",
+   "long_name": "Freeland - Langley - Clinton"
+  },
+  "7919": {
+   "short_name": "411W",
+   "long_name": "March Point Anacortes/ Oak Harbor"
+  },
+  "7915": {
+   "short_name": "411C",
+   "long_name": "Mount Vernon/ Camano Island"
+  },
+  "9431": {
+   "short_name": "",
+   "long_name": "Naswi Am"
+  },
+  "9432": {
+   "short_name": "",
+   "long_name": "Naswi Pm"
+  },
+  "9430": {
+   "short_name": "",
+   "long_name": "Naswi Wkend"
+  },
+  "7918": {
+   "short_name": "6",
+   "long_name": "Oak Harbor/ Coupeville Ferry"
+  },
+  "7913": {
+   "short_name": "3C",
+   "long_name": "Stanwood/ Camano Island"
+  },
+  "6737": {
+   "short_name": "1C",
+   "long_name": "West Camano Shuttle"
+  },
+  "6743": {
+   "short_name": "9",
+   "long_name": "West Oak Harbor"
+  }
+ },
+ "schedule": {
+  "passio_version": "passio-9b1efa882037",
+  "passio_basis": "complete download that day",
+  "passio_changed_during_day": false,
+  "trillium_version": "trillium-a4cf6ffeea6a",
+  "trillium_removes_service_today": [],
+  "service_expected": true,
+  "no_service_day": null,
+  "note": "Scheduled trips come from the Passio calendar, which has no holiday exceptions. On a day Island Transit lists as having no service, service_expected is false and the day is left out of figures that pool several days."
+ },
+ "inputs": {
+  "raw_sha256": "8d7cce1c8240712d7b15c1cc2563a1032c8a1e10e3594e2001a0461b75239753",
+  "vehicles_sha256": "bb4e77c652d2b1ab23723efaff90cd8aea7266bfeafd1498dcaeb73c16ef935d",
+  "tables_version": "tables/0.1.0",
+  "stop_events_sha256": "b4bdb36259c63eb9e1287e1fb1a4a6c3a939efd21e96a31137eebc42a147f3ba",
+  "code_sha": "e7b8af67068ae3bded7cc2f76ea53b458d57fcdc"
+ }
+}
