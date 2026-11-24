@@ -377,6 +377,144 @@
    "release_tag": "raw-2026-11",
    "archived_at": "2026-11-23T08:40:40+00:00",
    "code_sha": "e7b8af67068ae3bded7cc2f76ea53b458d57fcdc"
+  },
+  "2026-11-23": {
+   "service_date": "2026-11-23",
+   "fetch_rows": 8916,
+   "raw_rows": 8914,
+   "digest": "b2e44b3c1511d2a80ab9fcd6ca42f5b9",
+   "ok_rows": 8914,
+   "first_fetch_id": 30684,
+   "last_fetch_id": 39599,
+   "static": [
+    {
+     "static_fetch_id": 9,
+     "source": "passio",
+     "url": "https://passio3.com/islandtransit/passioTransit/gtfs/google_transit.zip",
+     "requested_at": "2026-11-23T10:15:00.491+00:00",
+     "responded_at": "2026-11-23T10:15:01.297+00:00",
+     "latency_ms": 806,
+     "http_status": 200,
+     "bytes": 523673,
+     "sha256": "b9dd6e243d47e516615c213f7ee376dc4396a0d2d865c36c1ecd4b010ae43ee8",
+     "zip_has_directory": true,
+     "files": [
+      "agency.txt",
+      "feed_info.txt",
+      "stops.txt",
+      "routes.txt",
+      "trips.txt",
+      "stop_times.txt",
+      "shapes.txt",
+      "calendar.txt"
+     ],
+     "error_class": null,
+     "error_msg": null,
+     "collector_version": "collect/0.3.0",
+     "logged_at": "2026-11-23T10:15:01.512869+00:00",
+     "file": "static-2026-11-23-passio-9.zip"
+    },
+    {
+     "static_fetch_id": 10,
+     "source": "trillium",
+     "url": "https://data.trilliumtransit.com/gtfs/islandtransit-wa-us/islandtransit-wa-us.zip",
+     "requested_at": "2026-11-23T10:20:00.196+00:00",
+     "responded_at": "2026-11-23T10:20:00.263+00:00",
+     "latency_ms": 67,
+     "http_status": 200,
+     "bytes": 1068058,
+     "sha256": "1be99962507fc442320eab7d192a3c81a09562dc9231864e6ddb160217614cc1",
+     "zip_has_directory": true,
+     "files": [
+      "areas.txt",
+      "shapes.txt",
+      "agency.txt",
+      "calendar.txt",
+      "calendar_attributes.txt",
+      "calendar_dates.txt",
+      "directions.txt",
+      "fare_attributes.txt",
+      "fare_rules.txt",
+      "farezone_attributes.txt",
+      "feed_info.txt",
+      "frequencies.txt",
+      "routes.txt",
+      "runcut.txt",
+      "stop_attributes.txt",
+      "stop_times.txt",
+      "stops.txt",
+      "timetable_stop_order.txt",
+      "timetables.txt",
+      "transfers.txt",
+      "trips.txt",
+      "linked_datasets.txt",
+      "location_groups.txt",
+      "booking_rules.txt"
+     ],
+     "error_class": null,
+     "error_msg": null,
+     "collector_version": "collect/0.3.0",
+     "logged_at": "2026-11-23T10:20:00.509172+00:00",
+     "file": "static-2026-11-23-trillium-10.zip"
+    },
+    {
+     "static_fetch_id": 11,
+     "source": "passio",
+     "url": "https://passio3.com/islandtransit/passioTransit/gtfs/google_transit.zip",
+     "requested_at": "2026-11-23T16:30:00.099+00:00",
+     "responded_at": "2026-11-23T16:30:05.352+00:00",
+     "latency_ms": 5253,
+     "http_status": 200,
+     "bytes": 523673,
+     "sha256": "6d8f938d40676ff3773d84f5daaf48661142c4a3d20ff6ebb6a7a59c293145e9",
+     "zip_has_directory": true,
+     "files": [
+      "agency.txt",
+      "feed_info.txt",
+      "stops.txt",
+      "routes.txt",
+      "trips.txt",
+      "stop_times.txt",
+      "shapes.txt",
+      "calendar.txt"
+     ],
+     "error_class": null,
+     "error_msg": null,
+     "collector_version": "collect/0.3.0",
+     "logged_at": "2026-11-23T16:30:05.714992+00:00",
+     "file": "static-2026-11-23-passio-11.zip"
+    }
+   ],
+   "files": [
+    {
+     "name": "raw-2026-11-23.parquet",
+     "bytes": 2476798,
+     "sha256": "dedf9ce126ef78ea6ec224c346f1c5972b9296870022414e9badd8d76818c4ee"
+    },
+    {
+     "name": "fetch-log-2026-11-23.csv",
+     "bytes": 2560246,
+     "sha256": "bc94fb8364177f441958e7179e1ad85ae06c69d879fdd5679103a2a3f09ceb80"
+    },
+    {
+     "name": "static-2026-11-23-passio-9.zip",
+     "bytes": 523673,
+     "sha256": "b9dd6e243d47e516615c213f7ee376dc4396a0d2d865c36c1ecd4b010ae43ee8"
+    },
+    {
+     "name": "static-2026-11-23-trillium-10.zip",
+     "bytes": 1068058,
+     "sha256": "1be99962507fc442320eab7d192a3c81a09562dc9231864e6ddb160217614cc1"
+    },
+    {
+     "name": "static-2026-11-23-passio-11.zip",
+     "bytes": 523673,
+     "sha256": "6d8f938d40676ff3773d84f5daaf48661142c4a3d20ff6ebb6a7a59c293145e9"
+    }
+   ],
+   "release_tag": "raw-2026-11",
+   "archived_at": "2026-11-24T08:40:37+00:00",
+   "code_sha": "8601a0ab6d07fb245411a65cd10b2c8b42a0bde6"
   }
  }
 }
