@@ -25,7 +25,7 @@
     "feed_version": "20260917"
    },
    "first_seen": "2026-11-19T21:24:27.234+00:00",
-   "last_seen": "2026-11-22T16:30:00.288+00:00",
+   "last_seen": "2026-11-23T16:30:00.099+00:00",
    "first_day": "2026-11-19",
    "example": {
     "release_tag": "raw-2026-11",
@@ -39,7 +39,9 @@
     5,
     6,
     7,
-    8
+    8,
+    9,
+    11
    ]
   },
   "trillium-a4cf6ffeea6a": {
@@ -83,7 +85,7 @@
     "feed_id": "islandtransit-wa-us"
    },
    "first_seen": "2026-11-19T21:24:28.069+00:00",
-   "last_seen": "2026-11-19T21:24:28.069+00:00",
+   "last_seen": "2026-11-23T10:20:00.196+00:00",
    "first_day": "2026-11-19",
    "example": {
     "release_tag": "raw-2026-11",
@@ -91,7 +93,8 @@
     "sha256": "1be99962507fc442320eab7d192a3c81a09562dc9231864e6ddb160217614cc1"
    },
    "downloads": [
-    2
+    2,
+    10
    ]
   }
  },
@@ -207,6 +210,48 @@
    "missing": [],
    "version": "passio-9b1efa882037",
    "content_sha256": "9b1efa882037745402a69eb435f5848330e47dbff45a3f4d15c0c3f2abecb5a9"
+  },
+  "9": {
+   "static_fetch_id": 9,
+   "source": "passio",
+   "day": "2026-11-23",
+   "requested_at": "2026-11-23T10:15:00.491+00:00",
+   "release_tag": "raw-2026-11",
+   "file": "static-2026-11-23-passio-9.zip",
+   "sha256": "b9dd6e243d47e516615c213f7ee376dc4396a0d2d865c36c1ecd4b010ae43ee8",
+   "complete": true,
+   "problems": [],
+   "missing": [],
+   "version": "passio-9b1efa882037",
+   "content_sha256": "9b1efa882037745402a69eb435f5848330e47dbff45a3f4d15c0c3f2abecb5a9"
+  },
+  "10": {
+   "static_fetch_id": 10,
+   "source": "trillium",
+   "day": "2026-11-23",
+   "requested_at": "2026-11-23T10:20:00.196+00:00",
+   "release_tag": "raw-2026-11",
+   "file": "static-2026-11-23-trillium-10.zip",
+   "sha256": "1be99962507fc442320eab7d192a3c81a09562dc9231864e6ddb160217614cc1",
+   "complete": true,
+   "problems": [],
+   "missing": [],
+   "version": "trillium-a4cf6ffeea6a",
+   "content_sha256": "a4cf6ffeea6a230b2047bfeb0721f5e6400c4a11d675bb399715bce696ca1d60"
+  },
+  "11": {
+   "static_fetch_id": 11,
+   "source": "passio",
+   "day": "2026-11-23",
+   "requested_at": "2026-11-23T16:30:00.099+00:00",
+   "release_tag": "raw-2026-11",
+   "file": "static-2026-11-23-passio-11.zip",
+   "sha256": "6d8f938d40676ff3773d84f5daaf48661142c4a3d20ff6ebb6a7a59c293145e9",
+   "complete": true,
+   "problems": [],
+   "missing": [],
+   "version": "passio-9b1efa882037",
+   "content_sha256": "9b1efa882037745402a69eb435f5848330e47dbff45a3f4d15c0c3f2abecb5a9"
   }
  },
  "days": {
@@ -261,6 +306,20 @@
    "trillium": {
     "version": "trillium-a4cf6ffeea6a",
     "basis": "carried forward from 2026-11-19",
+    "changed_during_day": false
+   },
+   "crosswalk": "passio-9b1efa882037__trillium-a4cf6ffeea6a",
+   "timepoints": "passio-9b1efa882037__timetable-2026-09-27-970aa207"
+  },
+  "2026-11-23": {
+   "passio": {
+    "version": "passio-9b1efa882037",
+    "basis": "complete download that day",
+    "changed_during_day": false
+   },
+   "trillium": {
+    "version": "trillium-a4cf6ffeea6a",
+    "basis": "complete download that day",
     "changed_during_day": false
    },
    "crosswalk": "passio-9b1efa882037__trillium-a4cf6ffeea6a",
