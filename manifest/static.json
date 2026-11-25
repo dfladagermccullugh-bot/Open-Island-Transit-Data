@@ -25,7 +25,7 @@
     "feed_version": "20260917"
    },
    "first_seen": "2026-11-19T21:24:27.234+00:00",
-   "last_seen": "2026-11-23T16:30:00.099+00:00",
+   "last_seen": "2026-11-24T16:30:00.745+00:00",
    "first_day": "2026-11-19",
    "example": {
     "release_tag": "raw-2026-11",
@@ -41,7 +41,9 @@
     7,
     8,
     9,
-    11
+    11,
+    12,
+    13
    ]
   },
   "trillium-a4cf6ffeea6a": {
@@ -252,6 +254,34 @@
    "missing": [],
    "version": "passio-9b1efa882037",
    "content_sha256": "9b1efa882037745402a69eb435f5848330e47dbff45a3f4d15c0c3f2abecb5a9"
+  },
+  "12": {
+   "static_fetch_id": 12,
+   "source": "passio",
+   "day": "2026-11-24",
+   "requested_at": "2026-11-24T10:15:00.091+00:00",
+   "release_tag": "raw-2026-11",
+   "file": "static-2026-11-24-passio-12.zip",
+   "sha256": "e34032b5fae870482551cb9f57a647ede9d9b7d91396a276e67169bd80aa266c",
+   "complete": true,
+   "problems": [],
+   "missing": [],
+   "version": "passio-9b1efa882037",
+   "content_sha256": "9b1efa882037745402a69eb435f5848330e47dbff45a3f4d15c0c3f2abecb5a9"
+  },
+  "13": {
+   "static_fetch_id": 13,
+   "source": "passio",
+   "day": "2026-11-24",
+   "requested_at": "2026-11-24T16:30:00.745+00:00",
+   "release_tag": "raw-2026-11",
+   "file": "static-2026-11-24-passio-13.zip",
+   "sha256": "8fc674afdafc27ca91599fb64688860e9b8f8a5dad1a7fa283c42fcf6164d618",
+   "complete": true,
+   "problems": [],
+   "missing": [],
+   "version": "passio-9b1efa882037",
+   "content_sha256": "9b1efa882037745402a69eb435f5848330e47dbff45a3f4d15c0c3f2abecb5a9"
   }
  },
  "days": {
@@ -320,6 +350,20 @@
    "trillium": {
     "version": "trillium-a4cf6ffeea6a",
     "basis": "complete download that day",
+    "changed_during_day": false
+   },
+   "crosswalk": "passio-9b1efa882037__trillium-a4cf6ffeea6a",
+   "timepoints": "passio-9b1efa882037__timetable-2026-09-27-970aa207"
+  },
+  "2026-11-24": {
+   "passio": {
+    "version": "passio-9b1efa882037",
+    "basis": "complete download that day",
+    "changed_during_day": false
+   },
+   "trillium": {
+    "version": "trillium-a4cf6ffeea6a",
+    "basis": "carried forward from 2026-11-23",
     "changed_during_day": false
    },
    "crosswalk": "passio-9b1efa882037__trillium-a4cf6ffeea6a",
