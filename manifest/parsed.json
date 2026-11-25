@@ -311,6 +311,68 @@
    "release_tag": "parsed-2026-11",
    "built_at": "2026-11-24T08:41:02+00:00",
    "code_sha": "8601a0ab6d07fb245411a65cd10b2c8b42a0bde6"
+  },
+  "2026-11-24": {
+   "service_date": "2026-11-24",
+   "tables_version": "tables/0.1.0",
+   "rows": {
+    "vehicles": 46475,
+    "trip-updates": 19748,
+    "trip-update-stops": 343345,
+    "alerts": 0
+   },
+   "fetches": {
+    "serviceAlerts": {
+     "attempted": 288,
+     "parsed": 288,
+     "failed": 0,
+     "decode_errors": 0
+    },
+    "tripUpdates": {
+     "attempted": 4314,
+     "parsed": 4314,
+     "failed": 0,
+     "decode_errors": 0
+    },
+    "vehiclePositions": {
+     "attempted": 4314,
+     "parsed": 4314,
+     "failed": 0,
+     "decode_errors": 0
+    }
+   },
+   "duplicate_keys": {
+    "vehicles": 0,
+    "trip-updates": 420,
+    "trip-update-stops": 2502,
+    "alerts": 0
+   },
+   "files": [
+    {
+     "name": "vehicles-2026-11-24.parquet",
+     "bytes": 759843,
+     "sha256": "a3f54ab6eb39ed871142082b15d235e14309dea07c71b3eb587d7772646064d9"
+    },
+    {
+     "name": "trip-updates-2026-11-24.parquet",
+     "bytes": 140254,
+     "sha256": "f68d5443ba158331026c125d5be10b3312bee0d332c58815f7ddd5b82eac85de"
+    },
+    {
+     "name": "trip-update-stops-2026-11-24.parquet",
+     "bytes": 1790085,
+     "sha256": "12d515303072fe024ae3e9d5f332e09c58eec92becb69a69f7260f668ff8317e"
+    },
+    {
+     "name": "alerts-2026-11-24.parquet",
+     "bytes": 3621,
+     "sha256": "44b56eb964a1916a69a4029f8cee647a56dffb5390dbf9c6455b79cc916bd393"
+    }
+   ],
+   "raw_sha256": "bb0b7db85e3b39b36ec4f8b7e9e84c14d0406889b8b29d3e4d3de3ea6e4cf383",
+   "release_tag": "parsed-2026-11",
+   "built_at": "2026-11-25T08:41:01+00:00",
+   "code_sha": "8601a0ab6d07fb245411a65cd10b2c8b42a0bde6"
   }
  }
 }
