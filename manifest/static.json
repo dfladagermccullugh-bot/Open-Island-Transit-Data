@@ -25,7 +25,7 @@
     "feed_version": "20260917"
    },
    "first_seen": "2026-11-19T21:24:27.234+00:00",
-   "last_seen": "2026-11-24T16:30:00.745+00:00",
+   "last_seen": "2026-11-25T16:30:00.249+00:00",
    "first_day": "2026-11-19",
    "example": {
     "release_tag": "raw-2026-11",
@@ -43,7 +43,9 @@
     9,
     11,
     12,
-    13
+    13,
+    14,
+    15
    ]
   },
   "trillium-a4cf6ffeea6a": {
@@ -282,6 +284,34 @@
    "missing": [],
    "version": "passio-9b1efa882037",
    "content_sha256": "9b1efa882037745402a69eb435f5848330e47dbff45a3f4d15c0c3f2abecb5a9"
+  },
+  "14": {
+   "static_fetch_id": 14,
+   "source": "passio",
+   "day": "2026-11-25",
+   "requested_at": "2026-11-25T10:15:00.097+00:00",
+   "release_tag": "raw-2026-11",
+   "file": "static-2026-11-25-passio-14.zip",
+   "sha256": "ff7e566b94c89a5b807bc5966725a96f5563495c8d824af64f2d7fa472d15f46",
+   "complete": true,
+   "problems": [],
+   "missing": [],
+   "version": "passio-9b1efa882037",
+   "content_sha256": "9b1efa882037745402a69eb435f5848330e47dbff45a3f4d15c0c3f2abecb5a9"
+  },
+  "15": {
+   "static_fetch_id": 15,
+   "source": "passio",
+   "day": "2026-11-25",
+   "requested_at": "2026-11-25T16:30:00.249+00:00",
+   "release_tag": "raw-2026-11",
+   "file": "static-2026-11-25-passio-15.zip",
+   "sha256": "bbba8a3c10dd23c74fbb647a302fc7ba2a0b4b1d0e065bb78dcdd71ed6a837ea",
+   "complete": true,
+   "problems": [],
+   "missing": [],
+   "version": "passio-9b1efa882037",
+   "content_sha256": "9b1efa882037745402a69eb435f5848330e47dbff45a3f4d15c0c3f2abecb5a9"
   }
  },
  "days": {
@@ -356,6 +386,20 @@
    "timepoints": "passio-9b1efa882037__timetable-2026-09-27-970aa207"
   },
   "2026-11-24": {
+   "passio": {
+    "version": "passio-9b1efa882037",
+    "basis": "complete download that day",
+    "changed_during_day": false
+   },
+   "trillium": {
+    "version": "trillium-a4cf6ffeea6a",
+    "basis": "carried forward from 2026-11-23",
+    "changed_during_day": false
+   },
+   "crosswalk": "passio-9b1efa882037__trillium-a4cf6ffeea6a",
+   "timepoints": "passio-9b1efa882037__timetable-2026-09-27-970aa207"
+  },
+  "2026-11-25": {
    "passio": {
     "version": "passio-9b1efa882037",
     "basis": "complete download that day",
