@@ -29,6 +29,7 @@ OPTIONAL = (
     "ontime/periods.json",
     "quality/periods.json",
     "quality/notes.json",
+    "compare/summary.json",
 )
 
 

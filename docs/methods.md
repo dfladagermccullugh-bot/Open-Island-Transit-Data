@@ -447,3 +447,40 @@ observer's guide is `docs/field-check.md`. Checks 2 and 3 run in
 site, and the site job runs the first eight before it copies the data in.
 `scripts/check_versions.py` makes sure a change to the code behind a number
 comes with a new version, so every day is rebuilt with it.)
+
+## 6. Comparisons
+
+Bus agencies define "on time" in different ways, so their published
+figures can't be set side by side as they are. We keep each agency's
+published rule and figure, with its source, in a reference file, and put
+each on the same footing as ours in one of two ways.
+
+The first, which we mark R, recounts our own departures at timepoints over
+the last 28 days with service under the other agency's window, for example
+up to 3 minutes late instead of 5. In this recount every timed moment counts
+alike, so an early arrival at a last stop counts as early, which our own
+published figure does not. That makes the recount under our own rule a
+little lower than our published figure, and it is the number the recounts
+under other rules should be read against.
+
+The second, which we mark B, turns the other agency's published figure into
+a figure under our window, 1 minute early to 5 minutes late. We don't have
+that agency's departure times, so we assume they spread out like ours, but
+wider or narrower by a factor of 0.4, 0.5, 0.6, 0.8, 1, 1.25 or 1.6. For each factor
+we shift the whole spread later or earlier until it gives the agency's own
+figure under its own rule, then count how much of it falls inside our
+window. We report the lowest and highest of those results. When no shift
+can reproduce the agency's figure for a factor, that factor is left out,
+and the page says how many were used. A figure that only the narrow
+factors can reproduce means that agency's buses keep closer to their
+schedule than ours do. A rule without a window, such as the
+excess wait time some cities use for frequent buses, can't be converted
+this way, and its figure is listed as published only.
+
+Neither way adjusts for what each agency times (a departure or an
+arrival), at which stops, how it treats a trip that never ran, or the
+period its figure covers. A third way, running our own method on a sample
+of each agency's live feed, is planned.
+
+(Code and files: `pipeline/compare.py` writes `compare/summary.json`; the
+rules and figures, with sources, are in `reference/peers/definitions.csv`.)

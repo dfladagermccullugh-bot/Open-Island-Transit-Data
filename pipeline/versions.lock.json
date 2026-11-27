@@ -166,6 +166,15 @@
     "pipeline/stats.py"
    ],
    "hash": "fdeb2a35cc6a5fdc699ac23122e8a004febbe3fb9bfb745f0d0dac636180767b"
+  },
+  "compare": {
+   "version": "compare/0.1.0",
+   "constant": "pipeline/compare.py::COMPARE_VERSION",
+   "sources": [
+    "pipeline/compare.py",
+    "pipeline/stats.py"
+   ],
+   "hash": "6953ebbd9226cb2e7fed44e7203d67e3ce81fef8257d68e29ff53cbee8b270f9"
   }
  }
 }

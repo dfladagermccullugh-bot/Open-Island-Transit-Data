@@ -166,6 +166,20 @@ jobs:
         if: always()
         run: scripts/publish_data.sh "After periods:"
 
+      # Comparisons with other bus systems (pipeline/compare.py), from our
+      # deviations and the peers' published rules in reference/peers/.
+      - name: Write the comparisons
+        id: compare
+        if: always()
+        timeout-minutes: 3
+        run: |
+          set +e
+          python -m pipeline.compare --data data-branch
+          echo "code=$?" >> "$GITHUB_OUTPUT"
+      - name: Publish after comparisons
+        if: always()
+        run: scripts/publish_data.sh "After comparisons:"
+
       # The tiered data checks (scripts/anomaly.py), written for the site
       # as quality/notes.json. A finding here does not fail the nightly
       # job; the watchdog reports it.
@@ -256,7 +270,7 @@ jobs:
           always() && (
           steps.archive.outputs.code != '0' || steps.tables.outputs.code != '0' ||
           steps.static.outputs.code != '0' || steps.events.outputs.code != '0' ||
-          steps.field.outputs.code != '0' || steps.periods.outputs.code != '0' ||
+          steps.field.outputs.code != '0' || steps.periods.outputs.code != '0' || steps.compare.outputs.code != '0' ||
           steps.quality.outputs.code != '0' || steps.monthly.outputs.code != '0' ||
           steps.index.outputs.code != '0' || steps.gate.outputs.code != '0' ||
           steps.frictionless.outputs.code != '0')

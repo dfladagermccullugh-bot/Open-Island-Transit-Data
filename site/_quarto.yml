@@ -37,6 +37,8 @@ website:
         text: On time
       - href: quality.qmd
         text: Data quality
+      - href: compare.qmd
+        text: Compare
       - href: data.qmd
         text: Download
       - href: methods.qmd

@@ -1,0 +1,107 @@
+---
+description: "How Island Transit's on-time record compares with other bus systems, adjusted for their different definitions of on time."
+title: "Compared with other bus systems"
+subtitle: "Each agency's figure on the same footing as ours"
+---
+
+Bus agencies don't all mean the same thing by "on time." One counts a bus up
+to 5 minutes late, another only up to 3, and some time arrivals at every
+stop while others time departures at a few. So two published percentages
+can't be set side by side as they are: a stricter rule makes the same buses
+look worse. Below, each agency's own figure is put on the same footing as
+ours in one of two ways, and each row says which.
+
+```{ojs}
+//| echo: false
+//| output: false
+import {json, pct, count, longDate, emptyNote, guard, h} from "./lib.js"
+import {makeCharts} from "./charts.js"
+ch = makeCharts({Plot})
+cmp = json("data/compare/summary.json")
+peers = (cmp?.peers ?? []).filter(p => p && p.agency)
+it = cmp?.island_transit ?? null
+// A peer with no window either measures something else (headways, waiting
+// time) or published nothing we could find.
+rule = p => p.window != null ? `${p.window[0] ?? 0} min early to ${p.window[1]} min late`
+  : /headway|wait/i.test(`${p.measured} ${p.note}`) ? "not a punctuality window" : "rule not found"
+```
+
+The first way recounts our own departures under the other agency's rule
+(marked R). That shows how Island Transit would score if it used that
+agency's definition. The second turns the other agency's published figure
+into a figure under our rule, 1 minute early to 5 minutes late (marked B).
+We don't have the other agency's departure times, so we assume its buses
+run early and late in a pattern like ours, only wider or narrower, and try
+several such patterns. The result is a range, not a single number, and a
+wide range means the answer depends a lot on that assumption.
+
+::: {.slot-chart}
+```{ojs}
+//| echo: false
+guard(() => {
+  if (!cmp || !it) return emptyNote("unavailable", "The comparisons");
+  const rows = peers.filter(p => p.converted_to_our_window?.low != null)
+    .map(p => ({name: `${p.agency} (${p.country})`, lo: p.converted_to_our_window.low, hi: p.converted_to_our_window.high}));
+  const ours = it.recount_under_our_rule;
+  if (rows.length === 0) return html`<p class="empty">No other agency's figure could be converted yet.</p>`;
+  const all = [{name: "Island Transit (ours)", lo: ours, hi: ours, us: true}, ...rows];
+  return ch.figure({
+    title: "On time under our rule, 1 minute early to 5 minutes late",
+    note: `Island Transit: ${pct(ours, 1)} of ${count(it.departures)} departures at timepoints from ${longDate(it.first_service_date)} to ${longDate(it.last_service_date)}, with every moment counted alike. Each bar spans the converted figure under the assumptions tried.`,
+    chart: ch.responsive((width, narrow) => Plot.plot({
+      ariaLabel: "Converted on-time shares of other bus systems, beside Island Transit's",
+      ariaDescription: all.map(d => `${d.name}: ${d.us ? pct(d.lo, 1) : `${pct(d.lo)} to ${pct(d.hi)}`}`).join("; "),
+      style: {background: "transparent", fontSize: "12px", overflow: "visible"},
+      width, height: 34 * all.length + 50,
+      marginLeft: narrow ? 6 : Math.min(320, 14 + 6.6 * Math.max(...all.map(d => d.name.length))), marginRight: 30, marginTop: narrow ? 24 : 8, marginBottom: 36,
+      x: {domain: [0, 1], grid: true, tickFormat: d => pct(d), label: null},
+      y: {domain: all.map(d => d.name), label: null, axis: narrow ? null : "left", tickSize: 0},
+      marks: [
+        Plot.ruleY(all, {y: "name", x1: "lo", x2: "hi", stroke: "var(--range)", strokeWidth: 6, strokeLinecap: "round"}),
+        Plot.dot(all.filter(d => d.us), {y: "name", x: "lo", r: 6, fill: "var(--series-1)", stroke: "var(--surface)", strokeWidth: 1.5}),
+        narrow ? Plot.text(all, {y: "name", x: 0, text: "name", textAnchor: "start", dy: -16, fill: "currentColor"}) : null,
+        Plot.tip(all, Plot.pointerY({y: "name", x: "hi", title: d => d.us ? `${d.name}\n${pct(d.lo, 1)}` : `${d.name}\n${pct(d.lo)} to ${pct(d.hi)} under our rule`})),
+      ],
+    }), {height: 34 * all.length + 50}),
+    methods: "comparisons",
+  });
+}, "The comparison chart")
+```
+:::
+
+## Every agency we looked at
+
+```{ojs}
+//| echo: false
+guard(() => {
+  if (!cmp) return emptyNote("unavailable", "The comparison table");
+  const rows = peers.map(p => ({
+    ...p,
+    theirRule: rule(p) + (p.window != null && p.measured ? `, ${p.measured}` : ""),
+    theirs: p.published_share,
+    ourUnderTheirs: p.island_under_their_rule ?? null,
+    range: p.converted_to_our_window?.low == null ? null : `${pct(p.converted_to_our_window.low)} to ${pct(p.converted_to_our_window.high)}`,
+    how: p.classes?.length ? p.classes.join(", ") : "published only",
+  }));
+  return html`${ch.table(rows, {
+    caption: "Other bus systems' on-time rules and figures, and how they compare",
+    wide: true,
+    columns: [
+      {key: "agency", label: "Agency", format: (v, r) => r.sources?.[0] ? h("a", {href: r.sources[0]}, v) : v},
+      {key: "region", label: "Where"},
+      {key: "theirRule", label: "Their rule"},
+      {key: "theirs", label: "Their figure", align: "right", format: (v, r) => v == null ? "–" : `${pct(v, 1)}${r.published_period ? ` (${r.published_period})` : ""}`},
+      {key: "ourUnderTheirs", label: "Island Transit under their rule (R)", align: "right", format: v => v == null ? "–" : pct(v, 1)},
+      {key: "range", label: "Theirs under our rule (B)", align: "right", sortValue: r => r.converted_to_our_window?.low ?? null},
+      {key: "how", label: "Compared by"},
+      {key: "confidence", label: "Source"},
+    ],
+  })}
+  <p class="note">"Source" says how firm the published rule and figure are: high when an official source states both. Rules that don't use a window, such as the excess wait time some cities use for frequent buses, can't be compared this way and are listed as published only.</p>`;
+}, "The comparison table")
+```
+
+These comparisons are rough by nature. They can't adjust for differences in
+what each agency times (a departure or an arrival), at which stops, or how
+it counts a trip that never ran, and the agencies' figures cover different
+periods from ours. Each row links to the agency's own report.

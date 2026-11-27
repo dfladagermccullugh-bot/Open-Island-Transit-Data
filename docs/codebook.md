@@ -508,6 +508,22 @@ given by hour of the day; the other figures are listed under
 `note`, `look` or `problem`) and the findings under `problems`, `looks` and
 `notes`. It has no time stamp, so it changes only when a finding does.
 
+## `compare/summary.json`
+
+Since `compare/0.1.0` (November 27, 2026), written each night by
+`pipeline/compare.py` (`docs/methods.md`, section 6). `island_transit` gives
+the period and number of our departures at timepoints that the comparisons
+use (the last 28 service days) and `recount_under_our_rule`, the share of
+them from 1 minute early to 5 minutes late with every moment counted alike.
+Each entry of `peers` is one agency from `reference/peers/definitions.csv`:
+its `window` (minutes early, minutes late), what it times (`measured`), how
+it treats canceled trips, its `published_share` and `published_period`,
+`sources` and `confidence`; `island_under_their_rule` (class R, our
+departures recounted under its window); `converted_to_our_window` (class B,
+its figure under our window: `low`, `high`, and how many of the
+`assumed_scales` could reproduce its figure); and `classes`, the ways it
+could be compared.
+
 ## `reports/`
 
 `pipeline/monthly.py` writes a report for each month once its last day has
