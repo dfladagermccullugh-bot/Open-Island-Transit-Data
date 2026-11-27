@@ -5,7 +5,7 @@
  "description": "Island Transit's (Whidbey and Camano Islands, Washington) GTFS-Realtime feeds, saved every 20 seconds since November 19, 2026, with daily measures of the feed's quality and on-time figures inferred from vehicle positions.",
  "homepage": "https://dfladagermccullugh-bot.github.io/Open-Island-Transit-Data/",
  "repository": "https://github.com/dfladagermccullugh-bot/Open-Island-Transit-Data",
- "version": "dictionary/0.1.1",
+ "version": "dictionary/0.1.2",
  "dataFormat": "format/0.2.0",
  "licenses": [
   {
@@ -248,6 +248,11 @@
       "name": "unresolved_jumps",
       "type": "number",
       "description": "Impossible jumps that were not left out, because there was no jump back or the bus could have made it by driving fast (often a timestamp a few seconds off). Since `quality/0.6.0`"
+     },
+     {
+      "name": "complete",
+      "type": "boolean",
+      "description": "False when the day's quality file was written before its stop events existed; the nightly catch-up and the watchdog then treat the day as not processed, and the next run rebuilds it. Since `quality/0.6.1`"
      },
      {
       "name": "quality_version",
@@ -1330,6 +1335,11 @@
       "name": "departure_status",
       "type": "string",
       "description": "`observed`; `gap` (reports more than 120 s apart, no time given); `not_reached` (tracking ended before the stop); `past_when_first_seen`; `skipped` (the bus left out the part of the shape the stop is on); `no_shape` (the trip has no shape); `unplaced` (the stop could not be placed on the shape in stop order within 150 m of it); `no_reports` (no vehicle carried the trip id); `not_applicable` (no arrival at the first stop, no departure at the last)"
+     },
+     {
+      "name": "report_source",
+      "type": "string",
+      "description": "Where the two position reports that timed this stop came from (the least direct of them if the arrival and departure differ): `own` (the trip's own id), `borrowed_before` (the same bus before its first report under this trip's id, often still showing the previous trip's id at the first stop), `borrowed_after` (the same bus after its last report under this trip's id, often already showing the next trip's id), `borrowed_within` (the same bus between them, with no trip id or another one). Empty when the stop was not observed. Since `events/0.5.0` (`docs/methods.md`, section 3)"
      }
     ],
     "missingValues": [
@@ -1393,6 +1403,21 @@
       "name": "glitch_reports",
       "type": "integer",
       "description": "That vehicle's reports in the window that were left out as GPS glitches (`pipeline/glitch.py`, `docs/methods.md` section 3). `position_reports` does not include them. Since `events/0.4.0`"
+     },
+     {
+      "name": "reports_borrowed_before",
+      "type": "integer",
+      "description": "Reports of the same bus under another trip id or none that the trip also used: before its first own report (from 30 minutes before its start, or the end of the bus's previous trip if later), after its last own report (up to 30 minutes after its end, but not past the moment the bus left its next trip's first stop), and in between. `position_reports` counts only its own. Since `events/0.5.0`"
+     },
+     {
+      "name": "reports_borrowed_after",
+      "type": "integer",
+      "description": "Reports of the same bus under another trip id or none that the trip also used: before its first own report (from 30 minutes before its start, or the end of the bus's previous trip if later), after its last own report (up to 30 minutes after its end, but not past the moment the bus left its next trip's first stop), and in between. `position_reports` counts only its own. Since `events/0.5.0`"
+     },
+     {
+      "name": "reports_borrowed_within",
+      "type": "integer",
+      "description": "Reports of the same bus under another trip id or none that the trip also used: before its first own report (from 30 minutes before its start, or the end of the bus's previous trip if later), after its last own report (up to 30 minutes after its end, but not past the moment the bus left its next trip's first stop), and in between. `position_reports` counts only its own. Since `events/0.5.0`"
      },
      {
       "name": "reports_used",
