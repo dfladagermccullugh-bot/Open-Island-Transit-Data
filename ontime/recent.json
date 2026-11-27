@@ -4,7 +4,9 @@
  "first_service_date": "2026-11-19",
  "last_service_date": "2026-11-25",
  "days": 7,
- "days_without_service": [],
+ "days_without_service": [
+  "2026-11-26"
+ ],
  "timetable_reference": "2026-09-27",
  "schedule_change": null,
  "definition": {
