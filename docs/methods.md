@@ -120,6 +120,7 @@ gaps in each.
 |---|---|
 | Position age | Fetch time minus vehicle timestamp: median and 95th percentile |
 | Impossible jumps | Consecutive positions from one vehicle implying more than 130 km/h (about 80 mph) |
+| GPS glitches | Positions left out before tracking because the bus would have had to jump somewhere and back faster than 130 km/h (section 3), and impossible jumps that were kept because there was no jump back (unresolved) |
 | Off-route positions | Positions more than 100 meters (about 330 feet) from the trip's shape, divided by the positions tracked along that shape |
 | Jitter | Displacement while the bus is stationary at a terminal: 95th percentile, meters |
 | Clock anomalies | Vehicle timestamps in the future or going backwards |
@@ -215,6 +216,20 @@ within 150 meters (about 490 feet) of the shape, the script marks it
 `unplaced` and gives it no time, and each placed stop's distance from the
 shape is written beside it.
 
+Before tracking a bus, the script sets aside GPS glitches. It lines up each
+bus's positions in time order, whatever trip each one names, and works out
+how fast the bus would have had to go between them. A bus that seems to
+travel faster than 130 km/h (about 80 mph) to a spot and then straight back,
+to where its positions before and after agree, did not really go there. The
+script leaves out that position, or that run of positions if it lasts two
+minutes or less. When a bus jumps and never comes back, we can't tell which
+side of the jump is wrong, so the script keeps both and counts the jump as
+unresolved. Most unresolved jumps are a position whose time stamp is a few
+seconds off, which barely moves a stop time. On November 24, 2026, between
+about 5 and 10 in the morning, the feed sent many glitches: our script left
+out 22 positions from 12 buses and counted 42 unresolved jumps. On the six
+other days to November 25 it left out none.
+
 Second, the script projects each bus position onto the shape to find how far
 along the route the bus has traveled. Tracking starts at the first position
 within 300 meters (about 1,000 feet) of the start of the shape, because a bus
@@ -288,9 +303,9 @@ one.
 | Schedule changes daily | Each service day is pinned to the static version in effect that day, and keeps it. If two complete downloads on one day differ, the day gets the version whose scheduled trips the live feed reported |
 | A trip the schedule files describe badly | If a trip names a stop that is missing from the schedule, that trip gets no stop times and is counted (`problem` in `trip-tracks`); the rest of the day is unaffected |
 
-(Code: `pipeline/events/infer.py`; shapes, projection and the rule for equal
-distances: `pipeline/events/geometry.py`; timepoints:
-`pipeline/gtfs/timepoints.py`.)
+(Code: `pipeline/events/infer.py`; GPS glitches: `pipeline/glitch.py`;
+shapes, projection and the rule for equal distances:
+`pipeline/events/geometry.py`; timepoints: `pipeline/gtfs/timepoints.py`.)
 
 ## 4. On-time performance
 

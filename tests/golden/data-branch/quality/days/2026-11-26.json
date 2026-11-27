@@ -1,6 +1,6 @@
 {
  "service_date": "2026-11-26",
- "quality_version": "quality/0.5.0",
+ "quality_version": "quality/0.6.0",
  "computed_at": "2026-12-08T09:00:00+00:00",
  "scheduled_service": {
   "trips": 4,
@@ -230,7 +230,17 @@
   "timestamps_in_future": 0,
   "timestamps_going_backwards": 0,
   "consecutive_report_pairs": 0,
-  "impossible_jumps_over_130_kmh": 0
+  "impossible_jumps_over_130_kmh": 0,
+  "glitches": {
+   "glitch_version": "glitch/0.1.0",
+   "removed_reports": 0,
+   "spikes": 0,
+   "plateaus": 0,
+   "plateau_reports": 0,
+   "unresolved_jumps": 0,
+   "removed_near_another_bus": 0,
+   "vehicles_with_removed_reports": 0
+  }
  },
  "processing": {
   "id_match": {
@@ -296,7 +306,7 @@
   }
  },
  "events": {
-  "events_version": "events/0.3.2",
+  "events_version": "events/0.4.0",
   "stop_coverage": {
    "timepoints": {
     "scheduled": 12,

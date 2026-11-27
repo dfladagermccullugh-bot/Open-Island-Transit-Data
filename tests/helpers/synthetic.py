@@ -53,6 +53,9 @@ RUNS: dict[date, tuple[tuple[str, str, int], ...]] = {
 }
 # Seconds after T2's real departure during which B2 sends nothing, on day two.
 SILENCE = {DAYS[1]: ("T2", 300, 480)}
+# Seconds after T1's real departure during which B1's GPS puts it about 5.5 km
+# north of the road and back, on day two: a GPS glitch (pipeline/glitch.py).
+GLITCH = {DAYS[1]: ("T1", 200, 250, 0.05)}
 
 
 def _zip(files: dict[str, str]) -> bytes:
@@ -159,7 +162,9 @@ def vehicle_feed(day: date, now: datetime) -> bytes:
         e.id = vehicle
         v = e.vehicle
         v.trip.trip_id, v.trip.route_id = trip, "R1"
-        v.position.latitude = LAT
+        jump = GLITCH.get(day)
+        glitching = jump and jump[0] == trip and jump[1] <= since < jump[2]
+        v.position.latitude = LAT + (jump[3] if jump and glitching else 0.0)
         v.position.longitude = LON + STEP * (len(STOPS) - 1) * done
         v.position.bearing = 90.0
         v.position.speed = 9.3 if moving else 0.0

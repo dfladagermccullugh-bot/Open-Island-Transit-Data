@@ -1,6 +1,6 @@
 {
  "service_date": "2026-11-25",
- "quality_version": "quality/0.5.0",
+ "quality_version": "quality/0.6.0",
  "computed_at": "2026-12-08T09:00:00+00:00",
  "scheduled_service": {
   "trips": 4,
@@ -230,7 +230,17 @@
   "timestamps_in_future": 0,
   "timestamps_going_backwards": 0,
   "consecutive_report_pairs": 172,
-  "impossible_jumps_over_130_kmh": 0
+  "impossible_jumps_over_130_kmh": 2,
+  "glitches": {
+   "glitch_version": "glitch/0.1.0",
+   "removed_reports": 3,
+   "spikes": 0,
+   "plateaus": 1,
+   "plateau_reports": 3,
+   "unresolved_jumps": 0,
+   "removed_near_another_bus": 0,
+   "vehicles_with_removed_reports": 1
+  }
  },
  "processing": {
   "id_match": {
@@ -296,7 +306,7 @@
   }
  },
  "events": {
-  "events_version": "events/0.3.2",
+  "events_version": "events/0.4.0",
   "stop_coverage": {
    "timepoints": {
     "scheduled": 12,
@@ -326,8 +336,8 @@
    }
   },
   "shape_fit": {
-   "position_reports": 174,
-   "tracked_reports": 163,
+   "position_reports": 171,
+   "tracked_reports": 160,
    "off_shape": 0,
    "off_shape_share": 0.0,
    "wrong_direction": 0,
@@ -339,8 +349,8 @@
    "trips_not_readable": 0,
    "by_route": {
     "R1": {
-     "position_reports": 174,
-     "tracked_reports": 163,
+     "position_reports": 171,
+     "tracked_reports": 160,
      "off_shape": 0,
      "off_shape_share": 0.0,
      "wrong_direction": 0,

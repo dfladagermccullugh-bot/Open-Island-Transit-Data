@@ -19,6 +19,7 @@ from collections.abc import Container, Iterable
 from datetime import date, datetime, timedelta
 from typing import Any
 
+from pipeline import glitch
 from pipeline.archive.days import day_bounds
 from pipeline.common import Row, stamp
 from pipeline.config import PACIFIC
@@ -26,7 +27,7 @@ from pipeline.geo import meters_between
 from pipeline.gtfs.schedule import ServiceWindows, Trip
 from pipeline.stats import mean, quantile, rounded, share
 
-QUALITY_VERSION = "quality/0.5.0"
+QUALITY_VERSION = "quality/0.6.0"
 
 
 SLOT_SECONDS = {"vehiclePositions": 20, "tripUpdates": 20, "serviceAlerts": 300}
@@ -431,6 +432,7 @@ def measurement(vehicles: list[Row]) -> dict[str, Any]:
         "timestamps_going_backwards": backwards,
         "consecutive_report_pairs": pairs,
         "impossible_jumps_over_130_kmh": jumps,
+        "glitches": glitch.flag(vehicles).summary(),
     }
 
 

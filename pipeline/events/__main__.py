@@ -90,6 +90,7 @@ TRACK_SCHEMA = pa.schema(
         ("vehicles_with_trip_id", pa.int32()),
         ("vehicle_key", pa.string()),
         ("position_reports", pa.int32()),
+        ("glitch_reports", pa.int32()),
         ("reports_used", pa.int32()),
         ("reports_before_start", pa.int32()),
         ("reports_after_end", pa.int32()),

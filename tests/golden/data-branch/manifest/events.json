@@ -4,7 +4,7 @@
  "days": {
   "2026-11-24": {
    "service_date": "2026-11-24",
-   "events_version": "events/0.3.2",
+   "events_version": "events/0.4.0",
    "ontime_version": "ontime/0.3.0",
    "validate_version": "validate/0.2.0",
    "service_expected": true,
@@ -33,7 +33,7 @@
   },
   "2026-11-25": {
    "service_date": "2026-11-25",
-   "events_version": "events/0.3.2",
+   "events_version": "events/0.4.0",
    "ontime_version": "ontime/0.3.0",
    "validate_version": "validate/0.2.0",
    "service_expected": true,
@@ -62,7 +62,7 @@
   },
   "2026-11-26": {
    "service_date": "2026-11-26",
-   "events_version": "events/0.3.2",
+   "events_version": "events/0.4.0",
    "ontime_version": "ontime/0.3.0",
    "validate_version": "validate/0.2.0",
    "service_expected": false,

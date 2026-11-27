@@ -252,6 +252,7 @@ retraced segments (`docs/methods.md`, section 3).
 | `vehicles_with_trip_id` | Vehicles that carried the trip's id within 30 minutes of its schedule |
 | `vehicle_key` | The one whose reports were used (the one with the most) |
 | `position_reports` | That vehicle's reports in the window |
+| `glitch_reports` | That vehicle's reports in the window that were left out as GPS glitches (`pipeline/glitch.py`, `docs/methods.md` section 3). `position_reports` does not include them. Since `events/0.4.0` |
 | `reports_used` | Reports placed on the shape |
 | `reports_before_start`, `reports_after_end` | Reports from before tracking began or after the bus reached the end; never compared with the shape |
 | `off_shape_reports`, `wrong_direction_reports` | Reports set aside while tracking. Since `events/0.3.1`, a report equally near two segments of the shape is measured on the earlier one, and one nearest a corner has its direction checked against the segment leaving the corner, so the counts are the same on any computer (`docs/methods.md`, section 3) |
@@ -448,6 +449,8 @@ is named `hour_band: <band>`, `route: <route id>`, `day_type: <type>` or
 | `trip_update_interval_s_median` | Typical time between the feed's timestamps on two successive updates of a trip, seconds |
 | `passio_basis` | How the day's Passio version was chosen (see `manifest/static.json`) |
 | `passio_changed_during_day` | True when complete Passio downloads on that day differed, which marks a schedule change |
+| `glitch_reports_removed` | Position reports left out as GPS glitches: a bus jumping somewhere impossible and back (`measurement.glitches` in the day file). Since `quality/0.6.0` |
+| `unresolved_jumps` | Impossible jumps that were not left out, because there was no jump back or the bus could have made it by driving fast (often a timestamp a few seconds off). Since `quality/0.6.0` |
 | `quality_version` | Version of the quality code |
 
 Counts of positions (`over_coverage_share`, `trip_id_match_rate`, the share

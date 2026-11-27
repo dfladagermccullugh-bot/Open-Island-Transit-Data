@@ -6,8 +6,10 @@ static version pinned to it:
 1. Every stop of a trip is placed on the trip's shape, in stop order.
 2. The trip's position reports (from the parsed vehicles table) are those
    carrying its ``trip_id`` with a vehicle timestamp within the scheduled
-   window +/- ``WINDOW_MIN``. If several vehicles carry the same trip id, the
-   one with the most reports is used and the count is kept.
+   window +/- ``WINDOW_MIN``, less any report ``pipeline/glitch.py`` marks
+   as a GPS glitch (since ``events/0.4.0``; counted in ``glitch_reports``).
+   If several vehicles carry the same trip id, the one with the most
+   reports is used and the count is kept.
 3. Tracking starts at the first report near the start of the shape (a bus
    often shows its next trip id while finishing the previous trip) and stops
    when the bus reaches the end. Each report is projected onto the shape,
@@ -38,6 +40,7 @@ from collections import defaultdict
 from dataclasses import dataclass, field
 from datetime import UTC, date, datetime, timedelta
 
+from pipeline import glitch
 from pipeline.common import Row
 from pipeline.events.geometry import Shape
 from pipeline.gtfs.schedule import Trip, day_origin, scheduled_trips
@@ -46,7 +49,7 @@ from pipeline.gtfs.tables import seconds as _seconds
 from pipeline.gtfs.timepoints import is_timepoint
 from pipeline.gtfs.zipread import ZipContents
 
-EVENTS_VERSION = "events/0.3.2"  # 0.3.2: a timepoint is a route, direction and stop
+EVENTS_VERSION = "events/0.4.0"  # 0.4.0: GPS glitches removed (pipeline/glitch.py)
 
 WINDOW_MIN = 30
 OFF_SHAPE_M = 100.0
@@ -362,6 +365,7 @@ def infer_day(
     origin = day_origin(day)
     margin = timedelta(minutes=WINDOW_MIN)
 
+    glitches = glitch.flag(vehicles)
     by_trip: dict[str, list[Row]] = defaultdict(list)
     for v in vehicles:
         if v["trip_id"] is not None and v["vehicle_ts"] is not None and v["lat"] is not None:
@@ -372,8 +376,12 @@ def infer_day(
     for trip in trips if trips is not None else scheduled_trips(contents, day):
         lo, hi = trip.start - margin, trip.end + margin
         per_vehicle: dict[str, dict[float, Row]] = defaultdict(dict)
+        dropped: dict[str, set[float]] = defaultdict(set)
         for v in by_trip.get(trip.trip_id, []):
             if lo <= v["vehicle_ts"] <= hi:
+                if (v["vehicle_key"], v["vehicle_ts"]) in glitches.removed:
+                    dropped[v["vehicle_key"]].add(_epoch(v["vehicle_ts"]))
+                    continue
                 per_vehicle[v["vehicle_key"]].setdefault(_epoch(v["vehicle_ts"]), v)
         vehicle_key = max(per_vehicle, key=lambda k: len(per_vehicle[k]), default=None)
         reports = _reports(per_vehicle, vehicle_key)
@@ -385,6 +393,7 @@ def infer_day(
             "vehicles_with_trip_id": len(per_vehicle),
             "vehicle_key": vehicle_key,
             "position_reports": len(reports),
+            "glitch_reports": len(dropped.get(vehicle_key, ())) if vehicle_key else 0,
             "problem": None,
         }
         try:

@@ -99,7 +99,7 @@
  },
  "passio_version": "passio-20af7aa7267e",
  "timepoints": "passio-20af7aa7267e__timetable-2026-09-27-a09fbb25",
- "events_version": "events/0.3.2",
+ "events_version": "events/0.4.0",
  "routes": {
   "R1": {
    "short_name": "1",

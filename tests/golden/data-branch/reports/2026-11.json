@@ -219,9 +219,9 @@
    "days": 2,
    "min": 0.0,
    "min_date": "2026-11-24",
-   "median": 0.0,
-   "max": 0.0,
-   "max_date": "2026-11-24"
+   "median": 1.0,
+   "max": 2.0,
+   "max_date": "2026-11-25"
   },
   "timepoint_coverage": {
    "days": 2,
@@ -374,6 +374,22 @@
    "median": 60.0,
    "max": 60.0,
    "max_date": "2026-11-24"
+  },
+  "glitch_reports_removed": {
+   "days": 2,
+   "min": 0.0,
+   "min_date": "2026-11-24",
+   "median": 1.5,
+   "max": 3.0,
+   "max_date": "2026-11-25"
+  },
+  "unresolved_jumps": {
+   "days": 2,
+   "min": 0.0,
+   "min_date": "2026-11-24",
+   "median": 0.0,
+   "max": 0.0,
+   "max_date": "2026-11-24"
   }
  },
  "releases": {
@@ -400,10 +416,10 @@
    "tables/0.1.0"
   ],
   "events": [
-   "events/0.3.2"
+   "events/0.4.0"
   ],
   "quality": [
-   "quality/0.5.0"
+   "quality/0.6.0"
   ],
   "ontime": [
    "ontime/0.3.0"

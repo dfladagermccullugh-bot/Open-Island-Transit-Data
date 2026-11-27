@@ -49,7 +49,7 @@
    "hash": "bc9e67031b19d343e47595b3abf766b3678a2aec26446d16d19233453c39bddb"
   },
   "events": {
-   "version": "events/0.3.2",
+   "version": "events/0.4.0",
    "constant": "pipeline/events/infer.py::EVENTS_VERSION",
    "sources": [
     "pipeline/events/infer.py",
@@ -58,9 +58,10 @@
     "pipeline/gtfs/tables.py",
     "pipeline/geo.py",
     "pipeline/stats.py",
-    "pipeline/gtfs/timepoints.py::timepoint_pairs"
+    "pipeline/gtfs/timepoints.py::timepoint_pairs",
+    "pipeline/glitch.py"
    ],
-   "hash": "4f6870485e513b7b85e6bceefe6f59c634311a67efb36cac69efb0262edf6358"
+   "hash": "798865df9a90c234da476082b4a3ac73fa70ee8850a142401c63b3ca1a3b4972"
   },
   "ontime": {
    "version": "ontime/0.3.0",
@@ -101,7 +102,7 @@
    "hash": "1c9ae40195076e09f9246adaf9ceb131a8e5ff0a544cec8d5b8e7ab71b3fbdb0"
   },
   "quality": {
-   "version": "quality/0.5.0",
+   "version": "quality/0.6.0",
    "constant": "pipeline/quality/metrics.py::QUALITY_VERSION",
    "sources": [
     "pipeline/quality/metrics.py",
@@ -116,9 +117,10 @@
     "pipeline/geo.py",
     "pipeline/stats.py",
     "pipeline/events/ontime.py::classify",
-    "pipeline/columns.py::QUALITY_HEADLINE"
+    "pipeline/columns.py::QUALITY_HEADLINE",
+    "pipeline/glitch.py"
    ],
-   "hash": "470c00244d74b7bd1a2fc10668808798e8328aa85025df03d8e515746d183f36"
+   "hash": "6128b73316c1f905a83d11530bf6765809c97b24c91677b240e5d26b5afd5e91"
   },
   "gaps": {
    "version": "gaps/0.4.0",

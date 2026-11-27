@@ -108,7 +108,7 @@
    "departure_gap_s": "double",
    "departure_status": "string"
   },
-  "content": "432d8e2b57ff3975b8dc57093741760e3e87b72c52c80a7f18373cfba30fc4cf"
+  "content": "c36a362608e9b0a1f197134151e743bc62ea521b135a5191c00c6e7321bb2e80"
  },
  "parsed-2026-11/stop-events-2026-11-26.parquet": {
   "rows": 16,
@@ -144,6 +144,7 @@
    "vehicles_with_trip_id": "int32",
    "vehicle_key": "string",
    "position_reports": "int32",
+   "glitch_reports": "int32",
    "reports_used": "int32",
    "reports_before_start": "int32",
    "reports_after_end": "int32",
@@ -156,7 +157,7 @@
    "skipped_m": "double",
    "problem": "string"
   },
-  "content": "0a29f4cebfe655ebae6d3755d61f626d9ca915532f614980a1f091b892e0b762"
+  "content": "9ff3a32fbfc82ded6d515ec2a61232493071fec077af3bf4cab2a3a97005bc4c"
  },
  "parsed-2026-11/trip-tracks-2026-11-25.parquet": {
   "rows": 4,
@@ -168,6 +169,7 @@
    "vehicles_with_trip_id": "int32",
    "vehicle_key": "string",
    "position_reports": "int32",
+   "glitch_reports": "int32",
    "reports_used": "int32",
    "reports_before_start": "int32",
    "reports_after_end": "int32",
@@ -180,7 +182,7 @@
    "skipped_m": "double",
    "problem": "string"
   },
-  "content": "7a03d7abc417312208dba2aaf973e469283a021b0b39629e5ab7271a3d04c019"
+  "content": "b0bd8c834c04f035ec013b081804c610f7fdd0beba393323d715d2bd244508ea"
  },
  "parsed-2026-11/trip-tracks-2026-11-26.parquet": {
   "rows": 4,
@@ -192,6 +194,7 @@
    "vehicles_with_trip_id": "int32",
    "vehicle_key": "string",
    "position_reports": "int32",
+   "glitch_reports": "int32",
    "reports_used": "int32",
    "reports_before_start": "int32",
    "reports_after_end": "int32",
@@ -204,7 +207,7 @@
    "skipped_m": "double",
    "problem": "string"
   },
-  "content": "4002a7e0168492072e765c693e61212a88093986cdd4dd91d8730ac8504f71ee"
+  "content": "d29317b3bac756d2eac396ca08ad562874c56b1f87245058a2b8c4323d577c37"
  },
  "parsed-2026-11/trip-update-stops-2026-11-24.parquet": {
   "rows": 512,
@@ -424,7 +427,7 @@
    "last_requested_at": "timestamp[us, tz=UTC]",
    "times_seen": "int32"
   },
-  "content": "16e230dfeb7d5941e7a7c41c8d32dbcc81bca5beb7988a18094b3291634ebb9f"
+  "content": "5d05d67613c92addb9b3059184b25794c59731bb985f9ff052e22e0ffdae828c"
  },
  "parsed-2026-11/vehicles-2026-11-26.parquet": {
   "rows": 0,
@@ -459,7 +462,7 @@
   "content": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945"
  },
  "raw-2026-11/fetch-log-2026-11-24.csv": "e89c3d291fd3ba693dbf1b878593bf9613cc678fb8275cb13d5e587fb7743134",
- "raw-2026-11/fetch-log-2026-11-25.csv": "fbdb2f4a109e9cd72d05ec38b2a232b835c42c7f5aa9b96e265ea634eb319a5a",
+ "raw-2026-11/fetch-log-2026-11-25.csv": "9c7cce70525407a293f4dc6f00870236e83fd0c413268b95637315977a28f937",
  "raw-2026-11/fetch-log-2026-11-26.csv": "1f0ae7eeef4e181a0a78cc19b98ad29f4093f06e096e52d3064b1886eac55c1e",
  "raw-2026-11/raw-2026-11-24.parquet": {
   "rows": 682,
@@ -505,7 +508,7 @@
    "logged_at": "timestamp[us, tz=UTC]",
    "body": "binary"
   },
-  "content": "d34ce45830e51bea9b540aba852de7c85cd4c8d307e739c92981a41d9fd4ad76"
+  "content": "3db9dd5ab20102490f5ec403d9dbf394b7c8cbf4e3868caf6baf0df371642fe6"
  },
  "raw-2026-11/raw-2026-11-26.parquet": {
   "rows": 682,
