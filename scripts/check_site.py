@@ -37,6 +37,7 @@ PAGES = (
     "glossary",
     "limits",
     "compare",
+    "stops",
     "404",
 )
 FILES = (

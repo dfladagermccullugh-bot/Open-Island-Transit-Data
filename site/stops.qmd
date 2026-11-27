@@ -1,0 +1,149 @@
+---
+description: "Pick a stop to see its recent departures against the timetable, and open any trip to see how it ran stop by stop."
+title: "Stops and trips"
+subtitle: "Every departure from a timetable stop over the last 28 days with service"
+---
+
+Pick a stop to see each departure from it, how far from the timetable it
+was, and how we knew. Pick one of its trips to follow that bus stop by
+stop. Times are in Pacific time; a dash means we could not time that
+departure.
+
+```{ojs}
+//| echo: false
+//| output: false
+import {json, pct, count, longDate, lateness, emptyNote, guard, h} from "./lib.js"
+import {makeCharts} from "./charts.js"
+ch = makeCharts({Plot})
+index = json("data/views/stops/index.json")
+stopList = (index?.stops ?? []).filter(s => s && s.stop_id)
+fromHash = () => decodeURIComponent(location.hash.slice(1))
+SOURCES = ({own: "the trip's own reports", borrowed_before: "the bus before it showed this trip",
+  borrowed_after: "the bus after it stopped showing this trip", borrowed_within: "the bus while it showed no trip"})
+RESULTS = ({on_time: "on time", early: "early", late: "late", gap: "no time: a gap in the bus's reports",
+  not_reached: "no time: tracking ended first", past_when_first_seen: "no time: the bus was past it when first seen",
+  no_reports: "no time: no reports for this trip", skipped: "no time: the bus left out this part of the route",
+  unplaced: "no time: the stop is off the route's line"})
+```
+
+```{ojs}
+//| echo: false
+viewof stopId = {
+  if (stopList.length === 0) return Object.assign(emptyNote("unavailable", "The list of stops"), {value: null});
+  const wanted = fromHash();
+  const start = stopList.some(s => s.stop_id === wanted) ? wanted : stopList[0].stop_id;
+  const select = h("select", {id: "stop-pick"}, ...stopList.map(s =>
+    h("option", {value: s.stop_id, selected: s.stop_id === start ? "" : null}, `${s.name} (routes ${s.routes.length})`)));
+  const label = h("label", {for: "stop-pick", class: "picker-label"}, "Stop");
+  const box = h("div", {class: "picker route-picker"}, label, select);
+  box.value = start;
+  select.addEventListener("change", () => {
+    box.value = select.value;
+    history.replaceState(history.state, "", `#${encodeURIComponent(select.value)}`);
+    box.dispatchEvent(new Event("input", {bubbles: true}));
+  });
+  return box;
+}
+```
+
+```{ojs}
+//| echo: false
+//| output: false
+stop = stopId ? json(`data/views/stops/${encodeURIComponent(stopId)}.json`) : null
+info = stopList.find(s => s.stop_id === stopId) ?? null
+cols = index?.columns ?? []
+rows = (stop?.rows ?? []).map(r => Object.fromEntries(cols.map((c, i) => [c, r[i]])))
+  .map(r => ({...r, date: new Date(`${r.service_date}T12:00:00Z`)}))
+```
+
+::: {.slot-chart}
+```{ojs}
+//| echo: false
+guard(() => {
+  if (!info) return emptyNote("unavailable", "This stop");
+  const timed = rows.filter(r => r.minutes_late != null);
+  const onTime = timed.filter(r => r.result === "on_time").length;
+  const say = timed.length ? `${pct(onTime / timed.length)} of the ${count(timed.length)} departures we could time were on time; we could not time ${count(rows.length - timed.length)}.` : "We could not time any departure here yet.";
+  return ch.figure({
+    title: info.name,
+    note: `${say} Each dot is one departure; the shaded band is 1 minute early to 5 minutes late.`,
+    chart: ch.responsive((width) => Plot.plot({
+      ariaLabel: `Minutes from the timetable of each departure from ${info.name}, by day`,
+      ariaDescription: say,
+      style: {background: "transparent", fontSize: "12px", overflow: "visible"},
+      width, height: 260, marginLeft: 48, marginBottom: 34,
+      x: {type: "utc", label: null, tickFormat: d => d.toLocaleDateString("en-US", {month: "short", day: "numeric", timeZone: "UTC"}), ticks: 6},
+      y: {label: "Minutes late (negative: early)", grid: true},
+      marks: [
+        Plot.rectY([0], {x1: timed.length ? timed[0].date : new Date(), x2: timed.length ? timed.at(-1).date : new Date(), y1: -1, y2: 5, fill: "var(--status-good)", fillOpacity: 0.13}),
+        Plot.ruleY([0], {stroke: "var(--rule)"}),
+        Plot.dot(timed, {x: "date", y: "minutes_late", r: 2.5, fill: "var(--series-1)", fillOpacity: 0.7}),
+        Plot.tip(timed, Plot.pointer({x: "date", y: "minutes_late",
+          title: d => `${longDate(d.service_date)} ${d.scheduled}\nTrip ${d.trip_id}\n${lateness(d.minutes_late * 60)}`})),
+      ],
+    }), {height: 260}),
+    methods: "arrival-and-departure-times",
+  });
+}, "The stop chart")
+```
+:::
+
+```{ojs}
+//| echo: false
+viewof tripKey = {
+  const recent = [...rows].reverse();
+  const tripDays = new Set(index?.days?.slice(-7) ?? []);
+  const options = recent.filter(r => tripDays.has(r.service_date));
+  if (options.length === 0) return Object.assign(h("p", {class: "empty"}, "No trip from the last 7 days to follow."), {value: null});
+  const select = h("select", {id: "trip-pick"}, ...options.map(r =>
+    h("option", {value: `${r.service_date}|${r.trip_id}`}, `${longDate(r.service_date)}, scheduled ${r.scheduled} (trip ${r.trip_id})`)));
+  const box = h("div", {class: "picker route-picker"}, h("label", {for: "trip-pick", class: "picker-label"}, "Follow a trip"), select);
+  box.value = select.value;
+  select.addEventListener("change", () => { box.value = select.value; box.dispatchEvent(new Event("input", {bubbles: true})); });
+  return box;
+}
+```
+
+```{ojs}
+//| echo: false
+guard(() => {
+  if (!tripKey) return html``;
+  const [date, trip] = tripKey.split("|");
+  return (async () => {
+    const day = await json(`data/views/trips/${date}.json`);
+    const stops = day?.trips?.[trip];
+    if (!stops) return emptyNote("unavailable", "This trip");
+    const names = Object.fromEntries(stopList.map(s => [s.stop_id, s.name]));
+    const c = day.columns;
+    const list = stops.map(r => Object.fromEntries(c.map((k, i) => [k, r[i]])));
+    return ch.table(list, {
+      caption: `Trip ${trip} on ${longDate(date)}, stop by stop`,
+      columns: [
+        {key: "stop_sequence", label: "Stop", format: (v, r) => `${v}. ${names[r.stop_id] ?? r.stop_id}${r.is_timepoint ? " (timepoint)" : ""}`},
+        {key: "scheduled_departure", label: "Scheduled", format: (v, r) => v ?? r.scheduled_arrival ?? "–"},
+        {key: "departure", label: "Left", format: (v, r) => v ?? r.arrival ?? "–"},
+        {key: "report_source", label: "Timed from", format: v => v ? SOURCES[v] ?? v : "–"},
+      ],
+    });
+  })();
+}, "The trip view")
+```
+
+<details class="more"><summary>Every departure from this stop</summary>
+
+```{ojs}
+//| echo: false
+guard(() => rows.length === 0 ? emptyNote("unavailable", "The departures") : ch.table([...rows].reverse(), {
+  caption: `Departures from ${info?.name ?? "this stop"}`,
+  columns: [
+    {key: "service_date", label: "Day", format: v => longDate(v)},
+    {key: "scheduled", label: "Scheduled"},
+    {key: "minutes_late", label: "Minutes late", align: "right", format: v => v == null ? "–" : v.toFixed(1)},
+    {key: "result", label: "Result", format: v => RESULTS[v] ?? v},
+    {key: "report_source", label: "Timed from", format: v => v ? SOURCES[v] ?? v : "–"},
+    {key: "trip_id", label: "Trip"},
+  ],
+}), "The departures table")
+```
+
+</details>

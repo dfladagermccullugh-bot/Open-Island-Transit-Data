@@ -472,3 +472,15 @@ test.describe("what this data can and can't tell you", () => {
     await expect(page.locator(".slot-headline a", {hasText: "What these figures can't tell you"})).toHaveAttribute("href", "limits.html");
   });
 });
+
+test.describe("stops and trips", () => {
+  test("a stop opened by its address shows its departures and one trip stop by stop", async ({page}) => {
+    await open(page, "stops", {hash: "#178409"});
+    await expect(page.locator("#stop-pick")).toHaveValue("178409");
+    await expect(page.locator("main")).toContainText("Clinton Ferry Terminal");
+    await expect(page.locator("main")).toContainText("departures we could time were on time");
+    const trip = page.locator("table", {has: page.locator("caption", {hasText: /^Trip \d+ on /})});
+    await expect(trip).toBeVisible();
+    await expect(trip).toContainText("(timepoint)");
+  });
+});
