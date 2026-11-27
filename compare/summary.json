@@ -38,7 +38,27 @@
     "https://www.skagittransit.org/assets/1/7/DRAFT_Skagit_Transit_TDP_2026-2031_060826.pdf"
    ],
    "confidence": "medium",
-   "classes": []
+   "classes": [
+    "A"
+   ],
+   "our_method_on_their_feed": {
+    "service_date": "2026-11-27",
+    "sample_start": "2026-11-27T15:29:52+00:00",
+    "sample_end": "2026-11-27T17:29:56+00:00",
+    "timepoints": "marked in the schedule",
+    "trips_measured": 83,
+    "moments_measured": 218,
+    "on_time_share": 0.7385,
+    "on_time_interval_95": [
+     0.6803,
+     0.7982
+    ],
+    "by_stop_radius_m": {
+     "30": 0.7302,
+     "40": 0.7385,
+     "50": 0.7364
+    }
+   }
   },
   {
    "agency": "Intercity Transit",
@@ -58,9 +78,28 @@
    ],
    "confidence": "medium",
    "classes": [
-    "R"
+    "R",
+    "A"
    ],
-   "island_under_their_rule": 0.6683
+   "island_under_their_rule": 0.6683,
+   "our_method_on_their_feed": {
+    "service_date": "2026-11-27",
+    "sample_start": "2026-11-27T15:29:44+00:00",
+    "sample_end": "2026-11-27T17:29:53+00:00",
+    "timepoints": "marked in the schedule",
+    "trips_measured": 262,
+    "moments_measured": 1047,
+    "on_time_share": 0.8271,
+    "on_time_interval_95": [
+     0.8056,
+     0.8484
+    ],
+    "by_stop_radius_m": {
+     "30": 0.8242,
+     "40": 0.8271,
+     "50": 0.826
+    }
+   }
   },
   {
    "agency": "Kitsap Transit",
@@ -134,7 +173,8 @@
    "confidence": "high",
    "classes": [
     "R",
-    "B"
+    "B",
+    "A"
    ],
    "island_under_their_rule": 0.499,
    "converted_to_our_window": {
@@ -142,6 +182,24 @@
     "high": 0.9195,
     "assumptions_used": 3,
     "assumptions_tried": 7
+   },
+   "our_method_on_their_feed": {
+    "service_date": "2026-11-27",
+    "sample_start": "2026-11-27T15:30:32+00:00",
+    "sample_end": "2026-11-27T17:30:53+00:00",
+    "timepoints": "marked in the schedule",
+    "trips_measured": 423,
+    "moments_measured": 1688,
+    "on_time_share": 0.7464,
+    "on_time_interval_95": [
+     0.7152,
+     0.7764
+    ],
+    "by_stop_radius_m": {
+     "30": 0.7402,
+     "40": 0.7464,
+     "50": 0.7494
+    }
    }
   },
   {
@@ -175,20 +233,20 @@
    },
    "our_method_on_their_feed": {
     "service_date": "2026-11-27",
-    "sample_start": "2026-11-27T07:48:03+00:00",
-    "sample_end": "2026-11-27T09:48:08+00:00",
+    "sample_start": "2026-11-27T15:29:43+00:00",
+    "sample_end": "2026-11-27T17:30:01+00:00",
     "timepoints": "marked in the schedule",
-    "trips_measured": 53,
-    "moments_measured": 117,
-    "on_time_share": 0.8718,
+    "trips_measured": 439,
+    "moments_measured": 1621,
+    "on_time_share": 0.7002,
     "on_time_interval_95": [
-     0.7948,
-     0.9464
+     0.6675,
+     0.7329
     ],
     "by_stop_radius_m": {
-     "30": 0.8707,
-     "40": 0.8718,
-     "50": 0.8729
+     "30": 0.6911,
+     "40": 0.7002,
+     "50": 0.7011
     }
    }
   },

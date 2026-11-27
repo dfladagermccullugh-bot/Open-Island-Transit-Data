@@ -1,24 +1,27 @@
 {
- "sample_version": "compare-sample/0.1.0",
+ "sample_version": "compare-sample/0.2.0",
  "agency": "halifax",
  "service_date": "2026-11-27",
- "sample_start": "2026-11-27T07:48:03+00:00",
- "sample_end": "2026-11-27T09:48:08+00:00",
+ "sample_start": "2026-11-27T15:29:43+00:00",
+ "sample_end": "2026-11-27T17:30:01+00:00",
  "timepoints": "marked in the schedule",
- "vehicles_seen": 84,
- "position_reports": 3916,
- "trips_measured": 53,
- "moments_measured": 117,
- "on_time_share": 0.8718,
+ "agency_timezone": "America/Halifax",
+ "vehicles_seen": 154,
+ "trips_reported": 500,
+ "trips_in_schedule": 494,
+ "position_reports": 30432,
+ "trips_measured": 439,
+ "moments_measured": 1621,
+ "on_time_share": 0.7002,
  "on_time_interval_95": [
-  0.7948,
-  0.9464
+  0.6675,
+  0.7329
  ],
- "deviation_s_median": 22.472125,
+ "deviation_s_median": 55.502479,
  "by_stop_radius_m": {
-  "30": 0.8707,
-  "40": 0.8718,
-  "50": 0.8729
+  "30": 0.6911,
+  "40": 0.7002,
+  "50": 0.7011
  },
- "fetches": 357
+ "fetches": 358
 }

@@ -1,24 +1,27 @@
 {
- "sample_version": "compare-sample/0.1.0",
+ "sample_version": "compare-sample/0.2.0",
  "agency": "intercity",
- "service_date": "2026-11-26",
- "sample_start": "2026-11-27T07:48:06+00:00",
- "sample_end": "2026-11-27T09:48:23+00:00",
+ "service_date": "2026-11-27",
+ "sample_start": "2026-11-27T15:29:44+00:00",
+ "sample_end": "2026-11-27T17:29:53+00:00",
  "timepoints": "marked in the schedule",
- "vehicles_seen": 0,
- "position_reports": 0,
- "trips_measured": 0,
- "moments_measured": 0,
- "on_time_share": null,
+ "agency_timezone": "America/Los_Angeles",
+ "vehicles_seen": 66,
+ "trips_reported": 294,
+ "trips_in_schedule": 294,
+ "position_reports": 22301,
+ "trips_measured": 262,
+ "moments_measured": 1047,
+ "on_time_share": 0.8271,
  "on_time_interval_95": [
-  null,
-  null
+  0.8056,
+  0.8484
  ],
- "deviation_s_median": null,
+ "deviation_s_median": 21.229959,
  "by_stop_radius_m": {
-  "30": null,
-  "40": null,
-  "50": null
+  "30": 0.8242,
+  "40": 0.8271,
+  "50": 0.826
  },
- "fetches": 359
+ "fetches": 355
 }

@@ -1,24 +1,27 @@
 {
- "sample_version": "compare-sample/0.1.0",
+ "sample_version": "compare-sample/0.2.0",
  "agency": "bctransit-victoria",
  "service_date": "2026-11-27",
- "sample_start": "2026-11-27T07:48:38+00:00",
- "sample_end": "2026-11-27T09:48:45+00:00",
+ "sample_start": "2026-11-27T15:30:32+00:00",
+ "sample_end": "2026-11-27T17:30:53+00:00",
  "timepoints": "marked in the schedule",
- "vehicles_seen": 22,
- "position_reports": 1200,
- "trips_measured": 0,
- "moments_measured": 0,
- "on_time_share": null,
+ "agency_timezone": "America/Vancouver",
+ "vehicles_seen": 167,
+ "trips_reported": 472,
+ "trips_in_schedule": 472,
+ "position_reports": 42509,
+ "trips_measured": 423,
+ "moments_measured": 1688,
+ "on_time_share": 0.7464,
  "on_time_interval_95": [
-  null,
-  null
+  0.7152,
+  0.7764
  ],
- "deviation_s_median": null,
+ "deviation_s_median": 18.35402,
  "by_stop_radius_m": {
-  "30": null,
-  "40": null,
-  "50": null
+  "30": 0.7402,
+  "40": 0.7464,
+  "50": 0.7494
  },
- "fetches": 354
+ "fetches": 352
 }

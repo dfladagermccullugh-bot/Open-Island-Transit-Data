@@ -1,24 +1,27 @@
 {
- "sample_version": "compare-sample/0.1.0",
+ "sample_version": "compare-sample/0.2.0",
  "agency": "skagit",
- "service_date": "2026-11-26",
- "sample_start": "2026-11-27T07:47:56+00:00",
- "sample_end": "2026-11-27T09:48:12+00:00",
+ "service_date": "2026-11-27",
+ "sample_start": "2026-11-27T15:29:52+00:00",
+ "sample_end": "2026-11-27T17:29:56+00:00",
  "timepoints": "marked in the schedule",
- "vehicles_seen": 0,
- "position_reports": 0,
- "trips_measured": 0,
- "moments_measured": 0,
- "on_time_share": null,
+ "agency_timezone": "America/Los_Angeles",
+ "vehicles_seen": 22,
+ "trips_reported": 93,
+ "trips_in_schedule": 93,
+ "position_reports": 5008,
+ "trips_measured": 83,
+ "moments_measured": 218,
+ "on_time_share": 0.7385,
  "on_time_interval_95": [
-  null,
-  null
+  0.6803,
+  0.7982
  ],
- "deviation_s_median": null,
+ "deviation_s_median": 17.646495,
  "by_stop_radius_m": {
-  "30": null,
-  "40": null,
-  "50": null
+  "30": 0.7302,
+  "40": 0.7385,
+  "50": 0.7364
  },
- "fetches": 356
+ "fetches": 359
 }
