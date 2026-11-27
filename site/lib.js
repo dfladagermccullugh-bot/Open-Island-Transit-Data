@@ -358,6 +358,18 @@ export function showAllToggle(days) {
   return label;
 }
 
+// " · the figures run through <date>" when the site's figures (as the
+// collector last read them from the site, status_now.site_data_through) are
+// more than two days old; empty otherwise. Holidays and the nightly job's
+// hour make one or two days ordinary.
+export function staleFigures(through, now = new Date()) {
+  if (!through) return "";
+  const today = new Date(now.toLocaleString("en-US", {timeZone: "America/Los_Angeles"}));
+  const day = new Date(`${through}T12:00:00`);
+  const days = Math.floor((today - day) / 86_400_000);
+  return days > 2 ? ` · the figures run through ${longDate(through)}, ${days} days ago` : "";
+}
+
 // Keep a live badge up to date. `el` holds .live-state (announced to screen
 // readers when it changes) and .live-age (not announced: it changes every
 // minute). Checks again each minute while the tab is visible. Returns a
@@ -379,10 +391,11 @@ export function watchLiveStatus(el, {every = 60_000, read = liveStatus} = {}) {
     if (stopped) return;
     const vp = Array.isArray(status) ? status.find(d => d.feed === "vehiclePositions") : null;
     const age = vp?.last_ok_age_s;
+    const behind = staleFigures(vp?.site_data_through);
     if (vp == null) show("unknown", "The collector's status can't be read right now");
-    else if (age == null) show("down", "Collector delayed", " · no update in the last 2 days");
-    else if (age < 120) show("ok", "Saving now", ` · last update ${ago(age)}`);
-    else show("down", "Collector delayed", ` · last update ${ago(age)}`);
+    else if (age == null) show("down", "Collector delayed", " · no update in the last 2 days" + behind);
+    else if (age < 120) show("ok", "Saving now", ` · last update ${ago(age)}` + behind);
+    else show("down", "Collector delayed", ` · last update ${ago(age)}` + behind);
   }
   const onVisible = () => { if (!document.hidden) check(); };
   document.addEventListener("visibilitychange", onVisible);

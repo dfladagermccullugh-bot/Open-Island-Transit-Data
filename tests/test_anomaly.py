@@ -145,3 +145,10 @@ def test_an_edited_daily_table_fails_the_publishing_rules(tmp_path):
 def test_notes_file_has_no_time_stamp(tmp_path):
     out = anomaly.notes_file(anomaly.Findings(notes=["x"]), "2026-12-04")
     assert out["status"] == "note" and "checked_at" not in out
+
+
+def test_a_site_that_stopped_deploying_is_something_to_look_at():
+    f = anomaly.Findings()
+    anomaly.check_site(f, date(2026, 12, 1), NOW)  # December 8: 7 days behind
+    anomaly.check_site(f, date(2026, 12, 6), NOW)  # 2 days: ordinary
+    assert len(f.looks) == 1

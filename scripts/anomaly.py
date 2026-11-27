@@ -254,6 +254,21 @@ def check_token(f: Findings, expires: datetime | None, now: datetime) -> None:
         f.add("look", f"the dispatch token expires {expires:%B %d, %Y} ({days:.0f} days)")
 
 
+SITE_BEHIND_DAYS = 3
+
+
+def check_site(f: Findings, data_through: date | None, now: datetime) -> None:
+    """The live site's figures (``status_now.site_data_through``, read from
+    the site every 6 hours since migration 0007) more than three days behind.
+    Holidays add a day, so a day or two behind is ordinary."""
+    if data_through is None:
+        return
+    behind = (now.astimezone(PACIFIC).date() - data_through).days
+    if behind > SITE_BEHIND_DAYS:
+        f.add("look", f"the live site's figures run through {data_through:%B %d, %Y}, "
+              f"{behind} days ago; did the site job stop deploying?")  # fmt: skip
+
+
 def check_workflows(f: Findings, states: dict[str, str]) -> None:
     for name, state in sorted(states.items()):
         if state == "disabled_inactivity":
@@ -276,7 +291,7 @@ def read_rows(path: Path) -> list[dict[str, str]]:
 
 def evaluate(data: Path, now: datetime, last_holiday: date | None = None,
              token_expires: datetime | None = None, workflows: dict[str, str] | None = None,
-             gate: bool = True) -> Findings:  # fmt: skip
+             gate: bool = True, site_through: date | None = None) -> Findings:  # fmt: skip
     """Every finding for a data branch checkout."""
     f = Findings()
     quality = read_rows(data / "quality" / "daily.csv")
@@ -296,6 +311,7 @@ def evaluate(data: Path, now: datetime, last_holiday: date | None = None,
         data / "manifest" / "raw.json").exists() else {"days": {}}  # fmt: skip
     check_processed(f, quality, min(raw["days"], default=None), now)
     check_token(f, token_expires, now)
+    check_site(f, site_through, now)
     check_workflows(f, workflows or {})
     check_holidays(f, last_holiday, now.astimezone(PACIFIC).date())
     return f

@@ -249,6 +249,15 @@ test.describe("the collector badge", () => {
       await expect(page.locator("#live .live-age")).toContainText("50 minutes ago");
     });
   });
+
+  test.describe("when the site's figures have fallen behind", () => {
+    test.use({status: [{feed: "vehiclePositions", last_ok_age_s: 7, site_data_through: "2026-01-02"}]});
+    test("says which day the figures run through", async ({page}) => {
+      await open(page, "index");
+      await expect(page.locator("#live .live-state")).toHaveText("Saving now");
+      await expect(page.locator("#live .live-age")).toContainText("the figures run through January 2, 2026");
+    });
+  });
 });
 
 test.describe("loading", () => {

@@ -286,17 +286,20 @@ def problems(collector: Collector, now: datetime, processed: set[str] | None = N
     return out
 
 
-def token_expiry(collector: Collector | None = None) -> datetime | None:
-    """When the dispatch token expires, as the collector last saw it
-    (``status_now.dispatch_token_expires_at``, migration 0007), or None."""
+def outside_checks(collector: Collector | None = None) -> tuple[datetime | None, date | None]:
+    """(When the dispatch token expires, the day the live site's figures run
+    through), as the collector last saw them (``status_now``, migration
+    0007); None for what is not known. GitHub sends no expiry for a token
+    that has none."""
     try:
-        for row in (collector or Collector()).status():
-            value = row.get("dispatch_token_expires_at")
-            if value:
-                return _when(value)
+        rows = (collector or Collector()).status()
     except Exception:  # unreadable status is reported by the collector check
-        return None
-    return None
+        return None, None
+    expires = next((_when(r["dispatch_token_expires_at"]) for r in rows
+                    if r.get("dispatch_token_expires_at")), None)  # fmt: skip
+    through = next((date.fromisoformat(r["site_data_through"]) for r in rows
+                    if r.get("site_data_through")), None)  # fmt: skip
+    return expires, through
 
 
 def workflow_states(repo: str = REPO) -> dict[str, str]:
@@ -325,7 +328,10 @@ def data_dir_main(now: datetime, data: Path) -> int:
     if not (data / "quality" / "daily.csv").exists():
         print("data check: quality/daily.csv could not be read at " + now.isoformat())
         return 2
-    found = anomaly.evaluate(data, now, last_listed(), token_expiry(), workflow_states())
+    expires, site_through = outside_checks()
+    found = anomaly.evaluate(
+        data, now, last_listed(), expires, workflow_states(), site_through=site_through
+    )
     print(anomaly.report(found, now))
     return found.exit_code()
 
