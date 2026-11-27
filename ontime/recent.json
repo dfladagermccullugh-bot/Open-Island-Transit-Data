@@ -18,7 +18,7 @@
  "timepoints": "passio-9b1efa882037__timetable-2026-09-27-d7e09c5d",
  "passio_version": "passio-9b1efa882037",
  "ontime_versions": [
-  "ontime/0.4.0"
+  "ontime/0.4.1"
  ],
  "overall": {
   "scheduled": 14664,

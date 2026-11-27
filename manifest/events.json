@@ -5,7 +5,7 @@
   "2026-11-19": {
    "service_date": "2026-11-19",
    "events_version": "events/0.5.0",
-   "ontime_version": "ontime/0.4.0",
+   "ontime_version": "ontime/0.4.1",
    "validate_version": "validate/0.3.0",
    "service_expected": true,
    "passio_version": "passio-9b1efa882037",
@@ -28,13 +28,13 @@
     }
    ],
    "release_tag": "parsed-2026-11",
-   "built_at": "2026-11-27T04:23:11+00:00",
-   "code_sha": "d13bd8f0878d95d207343f24c227ae5d131b779e"
+   "built_at": "2026-11-27T04:51:48+00:00",
+   "code_sha": "da591bb13bf152126eb40002f35e56a93c1403a8"
   },
   "2026-11-20": {
    "service_date": "2026-11-20",
    "events_version": "events/0.5.0",
-   "ontime_version": "ontime/0.4.0",
+   "ontime_version": "ontime/0.4.1",
    "validate_version": "validate/0.3.0",
    "service_expected": true,
    "passio_version": "passio-9b1efa882037",
@@ -57,13 +57,13 @@
     }
    ],
    "release_tag": "parsed-2026-11",
-   "built_at": "2026-11-27T04:23:04+00:00",
-   "code_sha": "d13bd8f0878d95d207343f24c227ae5d131b779e"
+   "built_at": "2026-11-27T04:51:42+00:00",
+   "code_sha": "da591bb13bf152126eb40002f35e56a93c1403a8"
   },
   "2026-11-21": {
    "service_date": "2026-11-21",
    "events_version": "events/0.5.0",
-   "ontime_version": "ontime/0.4.0",
+   "ontime_version": "ontime/0.4.1",
    "validate_version": "validate/0.3.0",
    "service_expected": true,
    "passio_version": "passio-9b1efa882037",
@@ -86,13 +86,13 @@
     }
    ],
    "release_tag": "parsed-2026-11",
-   "built_at": "2026-11-27T04:22:52+00:00",
-   "code_sha": "d13bd8f0878d95d207343f24c227ae5d131b779e"
+   "built_at": "2026-11-27T04:51:33+00:00",
+   "code_sha": "da591bb13bf152126eb40002f35e56a93c1403a8"
   },
   "2026-11-22": {
    "service_date": "2026-11-22",
    "events_version": "events/0.5.0",
-   "ontime_version": "ontime/0.4.0",
+   "ontime_version": "ontime/0.4.1",
    "validate_version": "validate/0.3.0",
    "service_expected": true,
    "passio_version": "passio-9b1efa882037",
@@ -115,13 +115,13 @@
     }
    ],
    "release_tag": "parsed-2026-11",
-   "built_at": "2026-11-27T04:22:45+00:00",
-   "code_sha": "d13bd8f0878d95d207343f24c227ae5d131b779e"
+   "built_at": "2026-11-27T04:51:27+00:00",
+   "code_sha": "da591bb13bf152126eb40002f35e56a93c1403a8"
   },
   "2026-11-23": {
    "service_date": "2026-11-23",
    "events_version": "events/0.5.0",
-   "ontime_version": "ontime/0.4.0",
+   "ontime_version": "ontime/0.4.1",
    "validate_version": "validate/0.3.0",
    "service_expected": true,
    "passio_version": "passio-9b1efa882037",
@@ -144,13 +144,13 @@
     }
    ],
    "release_tag": "parsed-2026-11",
-   "built_at": "2026-11-27T04:22:38+00:00",
-   "code_sha": "d13bd8f0878d95d207343f24c227ae5d131b779e"
+   "built_at": "2026-11-27T04:51:21+00:00",
+   "code_sha": "da591bb13bf152126eb40002f35e56a93c1403a8"
   },
   "2026-11-24": {
    "service_date": "2026-11-24",
    "events_version": "events/0.5.0",
-   "ontime_version": "ontime/0.4.0",
+   "ontime_version": "ontime/0.4.1",
    "validate_version": "validate/0.3.0",
    "service_expected": true,
    "passio_version": "passio-9b1efa882037",
@@ -173,13 +173,13 @@
     }
    ],
    "release_tag": "parsed-2026-11",
-   "built_at": "2026-11-27T04:22:27+00:00",
-   "code_sha": "d13bd8f0878d95d207343f24c227ae5d131b779e"
+   "built_at": "2026-11-27T04:51:12+00:00",
+   "code_sha": "da591bb13bf152126eb40002f35e56a93c1403a8"
   },
   "2026-11-25": {
    "service_date": "2026-11-25",
    "events_version": "events/0.5.0",
-   "ontime_version": "ontime/0.4.0",
+   "ontime_version": "ontime/0.4.1",
    "validate_version": "validate/0.3.0",
    "service_expected": true,
    "passio_version": "passio-9b1efa882037",
@@ -202,8 +202,8 @@
     }
    ],
    "release_tag": "parsed-2026-11",
-   "built_at": "2026-11-27T04:22:15+00:00",
-   "code_sha": "d13bd8f0878d95d207343f24c227ae5d131b779e"
+   "built_at": "2026-11-27T04:51:04+00:00",
+   "code_sha": "da591bb13bf152126eb40002f35e56a93c1403a8"
   }
  }
 }
