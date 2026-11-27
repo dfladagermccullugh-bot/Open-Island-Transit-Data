@@ -1,0 +1,16 @@
+{
+ "passio_version": "passio-9b1efa882037",
+ "timepoints_version": "timepoints/0.2.0",
+ "reference": "2026-09-27",
+ "printed_names": 147,
+ "resolved_names": 146,
+ "unresolved": [
+  [
+   "2C",
+   "South Loop",
+   "not a stop: an on-request loop"
+  ]
+ ],
+ "timepoint_route_stops": 177,
+ "timepoint_route_direction_stops": 203
+}

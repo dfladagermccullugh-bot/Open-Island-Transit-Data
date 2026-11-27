@@ -1,0 +1,247 @@
+route_short_name,day_type,direction,order,printed_stop,passio_route_id,passio_direction_id,passio_stop_id,passio_stop_name,match
+1,weekday,southbound,1,Harbor Station at SE Bayshore Dr,9404,1,178398,Harbor Station Transfer Center Bayshore Dr,name 0.71
+1,weekday,southbound,2,SW Erie St at Walmart,9404,1,197232,Walmart at Erie St,name 0.83
+1,weekday,southbound,3,S Main St at Coupeville Elem.,9404,1,178399,Main St at Coupeville Elementary School,name 0.84
+1,weekday,southbound,4,SR 525 at Greenbank,9404,1,178384,SR 525 at Greenbank,name 1.00
+1,weekday,southbound,5,SR 525 at Classic Rd,9404,1,178397,SR 525 at Classic Rd,name 1.00
+1,weekday,southbound,6,Smugglers Cove at S.W. State Park,9404,1,178434,Smugglers Cove Rd at SW State Park,name 0.84
+1,weekday,southbound,7,Freeland at Main St,9404,1,197237,Main St at Freeland,name 0.82
+1,weekday,southbound,8,Bayview P&R,9404,1,178194,Bayview P&R,name 1.00
+1,weekday,southbound,9,SR 525 at Cultus Bay Rd,9404,1,197239,SR 525 at Cultus Bay Rd,name 1.00
+1,weekday,southbound,10,Clinton P&R,9404,1,178406,SR 525 at Clinton Park & Ride,override
+1,weekday,southbound,11,Clinton Ferry Terminal,9404,1,178409,Clinton Ferry Terminal,name 1.00
+1,weekday,northbound,1,Clinton Ferry Terminal,9404,0,178409,Clinton Ferry Terminal,name 1.00
+1,weekday,northbound,2,Clinton P&R,9404,0,197242,Clinton Park & Ride at Deer Lake Rd,override
+1,weekday,northbound,3,SR 525 at Langley Rd,9404,0,197245,SR 525 at Langley Rd,name 1.00
+1,weekday,northbound,4,Bayview P&R,9404,0,178413,Bayview P&R,name 1.00
+1,weekday,northbound,5,Freeland at Main St,9404,0,178249,Freeland at Main St,name 1.00
+1,weekday,northbound,6,SR 525 at Classic Rd,9404,0,178369,SR 525 at Classic Rd,name 1.00
+1,weekday,northbound,7,Smugglers Cove at S.W. State Park,9404,0,178422,S Smugglers Cove Rd at S.W. State Park,name 0.84
+1,weekday,northbound,8,Coupeville P&R,9404,0,178316,Coupeville Park & Ride,name 1.00
+1,weekday,northbound,9,Arnold Rd at Monroe Landing Rd,9404,0,178197,Arnold Rd at Monroe Landing Rd,name 1.00
+1,weekday,northbound,10,SW Erie St at Walmart,9404,0,197231,Walmart at Erie St,name 0.83
+1,weekday,northbound,11,Harbor Station at SE Bayshore Dr,9404,0,178398,Harbor Station Transfer Center Bayshore Dr,name 0.71
+2,weekday,loop,1,Harbor Station at SE Bayshore Dr,7920,0,178398,Harbor Station Transfer Center Bayshore Dr,name 0.71
+2,weekday,loop,2,SW Barrington Dr at Hagen,7920,0,178401,Barrington Dr at Haggens,name 0.68
+2,weekday,loop,3,SW Erie St at Walmart,7920,0,197232,Walmart at Erie St,name 0.83
+2,weekday,loop,4,NW Heller St at Oak Harbor High School,7920,0,178373,Heller St at Oak Harbor High School,name 1.00
+2,weekday,loop,5,Ault Field Rd at Langley Blvd,7920,0,178481,Ault Field Rd at Langley Blvd,name 1.00
+2,weekday,loop,6,N Oak Harbor St at Oak Hollow,7920,0,178144,Oak Harbor Rd at Oak Hallow,override
+2,weekday,loop,7,N Oak Harbor St at NW Columbia Dr,7920,0,178143,Oak Harbor St at Columbia Dr,name 1.00
+2,weekday,loop,8,E Whidbey Ave at Saar's Super Saver,7920,0,178149,Whidbey Ave at Saars Super Saver Foods,name 0.87
+2,weekday,loop,9,SE Jerome St at Senior Center/Pool,7920,0,197267,Jerome St at Senior Ctr/Pool,name 0.78
+2,weekday,loop,10,Harbor Station at SE Bayshore Dr,7920,0,178398,Harbor Station Transfer Center Bayshore Dr,name 0.71
+4,weekend,northbound,1,Harbor Station at SE Bayshore Dr,7924,0,178398,Harbor Station Transfer Center Bayshore Dr,name 0.71
+4,weekend,northbound,2,NE Goldie St at WhidbeyHealth (North),7924,0,197260,Goldie Rd at Whidbey-Health,override
+4,weekend,northbound,3,SR20 at Whispering Pines,7924,0,178349,SR 20 at Whispering Pines,name 0.63
+4,weekend,northbound,4,SR20 at Northgate Dr,7924,0,178347,SR 20 at Northgate Dr,name 0.63
+4,weekend,northbound,5,Troxell Rd at Monkey Hill Rd,7924,0,178346,Troxell at Monkey Hill Rd (on request),name 0.70
+4,weekend,northbound,6,Deception Pass State Park,7924,0,178501,Deception Pass State Park at Cranberry Lake,name 0.71
+4,weekend,southbound,1,Deception Pass State Park,7924,1,178501,Deception Pass State Park at Cranberry Lake,name 0.71
+4,weekend,southbound,2,SR20 at Banta Rd,7924,1,178344,SR 20 at Banta Rd,name 0.63
+4,weekend,southbound,3,SR20 at Liberty Market,7924,1,178343,SR 20 at Liberty Market,name 0.63
+4,weekend,southbound,4,WhidbeyHealth at NE Goldie St,7924,1,197264,Goldie Rd at Whidbey Health,override
+4,weekend,southbound,5,Harbor Station at SE Bayshore Dr,7924,1,178398,Harbor Station Transfer Center Bayshore Dr,name 0.71
+6,weekday,southbound,1,Harbor Station at SE Bayshore Dr,7918,1,178398,Harbor Station Transfer Center Bayshore Dr,name 0.71
+6,weekday,southbound,2,SW Erie St at Walmart,7918,1,197232,Walmart at Erie St,name 0.83
+6,weekday,southbound,3,Ft Nugent Rd at West Beach Rd,7918,1,178321,Fort Nugent/West Beach,name 0.61
+6,weekday,southbound,4,SR 20 at Libby Rd,7918,1,178450,SR 20 at Libbey Rd,name 0.75
+6,weekday,southbound,5,SR 20 at Sherman Rd,7918,1,178449,SR 20 at Sherman St,name 0.68
+6,weekday,southbound,6,Coupeville Library,7918,1,178319,Coupeville Library,name 1.00
+6,weekday,southbound,7,Coupeville Elementary,7918,1,178399,Main St at Coupeville Elementary School,override
+6,weekday,southbound,8,Coupeville Ferry,7918,1,178134,Engle Rd at Coupeville Ferry Terminal,override
+6,weekday,northbound,1,Coupeville Ferry,7918,0,178134,Engle Rd at Coupeville Ferry Terminal,override
+6,weekday,northbound,2,SR 20 at Race Rd,7918,0,197248,SR 20 at Race Rd,name 1.00
+6,weekday,northbound,3,Koenig Ln at SR 20,7918,0,218437,Koenig Ln at SR 20,name 1.00
+6,weekday,northbound,4,S Main St at Coupeville P&R,7918,0,178316,Coupeville Park & Ride,name 0.72
+6,weekday,northbound,5,WhidbeyHealth,7918,0,197226,Main St at Whidbey Health Medical Center,override
+6,weekday,northbound,6,SR 20 at Libbey Rd,7918,0,178140,Libbey Rd at SR 20,name 0.86
+6,weekday,northbound,7,Ft Nugent Rd at West Beach Rd,7918,0,178311,Fort Nugent/West Beach,name 0.61
+6,weekday,northbound,8,SW Erie St at Walmart,7918,0,197231,Walmart at Erie St,name 0.83
+6,weekday,northbound,9,Harbor Station at SE Bayshore Dr,7918,0,178398,Harbor Station Transfer Center Bayshore Dr,name 0.71
+9,weekday,loop,1,Harbor Station at SE Bayshore Dr,6743,0,178398,Harbor Station Transfer Center Bayshore Dr,name 0.71
+9,weekday,loop,2,SW Erie St at Walmart,6743,0,178196,Walmart at Erie St,override
+9,weekday,loop,2,SW Erie St at Walmart,6743,0,178323,Walmart at Erie St,override
+9,weekday,loop,3,SW 24th Ave at Ridgeway Dr,6743,0,178489,SW 24th Ave at Ridgeway Dr,name 1.00
+9,weekday,loop,4,SW Ft Nugent Ave at Stremler Dr (Park Terrace),6743,0,178310,Fort Nugent at Stremler Dr,override
+9,weekday,loop,5,Swantown Rd at SW Fairway Dr,6743,0,178490,Swantown Rd at Fairway Ln,name 0.71
+9,weekday,loop,6,Monticello Way at Orchard Loop,6743,0,178491,Monticello Way at Orchard Loop,name 1.00
+9,weekday,loop,7,NW Crosby Ave at NW Scenic Vista St,6743,0,178492,NW Crosby Rd at NW Scenic Vista St,name 0.75
+9,weekday,loop,8,NW Heller at NW 5th Ave (Hillcrest Elem),6743,0,178148,Heller St at Hillcrest Elementary School,override
+9,weekday,loop,9,SW Barrington Dr at SW Kaleeton Loop,6743,0,178493,SW Barrington Dr at Kaleeton Loop,name 1.00
+9,weekday,loop,10,SW Barrington Dr at Walmart,6743,0,178159,Barrington Dr at Walmart,name 1.00
+9,weekday,loop,11,SW Bayshore Dr at Grocery Outlet,6743,0,178494,Bayshore Dr at Grocery Outlet,name 1.00
+9,weekday,loop,12,SW Erie St at Walmart (northbound),6743,0,178196,Walmart at Erie St,override
+9,weekday,loop,12,SW Erie St at Walmart (northbound),6743,0,178323,Walmart at Erie St,override
+9,weekday,loop,13,SE Barrington Dr at City Beach (OH Post Office),6743,0,178241,Barrington Dr at Post Office,name 0.66
+9,weekday,loop,14,SE Ireland St at SE 8th Ave,6743,0,178495,SE Ireland St at SE 8th Ave,name 1.00
+9,weekday,loop,15,Harbor Station at SE Bayshore Dr,6743,0,178398,Harbor Station Transfer Center Bayshore Dr,name 0.71
+10,weekday,loop,1,Harbor Station at SE Bayshore Dr,6744,0,178398,Harbor Station Transfer Center Bayshore Dr,name 0.71
+10,weekday,loop,2,SVC/OH Library,6744,0,197268,Skagit Valley College/Library,override
+10,weekday,loop,3,NE Midway Blvd at NE 4th Ave (Log Cabin),6744,0,178351,Midway Blvd at NE 4th Ave,name 0.74
+10,weekday,loop,4,NE 7th Ave at Lexy Manor,6744,0,178157,NE 7th Ave at Lexy Manor,name 1.00
+10,weekday,loop,5,NW Crosby Ave at Parkwood Manor,6744,0,178150,Crosby Ave at Parkwood Manor,name 1.00
+10,weekday,loop,6,NW Heller St at Hillcrest Elementary,6744,0,178148,Heller St at Hillcrest Elementary School,name 0.84
+10,weekday,loop,7,W Whidbey Ave at Saar's Super Saver,6744,0,178149,Whidbey Ave at Saars Super Saver Foods,name 0.87
+10,weekday,loop,8,SW 6th Ave at Oak Harbor Intermediate,6744,0,178297,SW 6th Ave at Oak Harbor Intermediate School,name 0.86
+10,weekday,loop,9,SW Barrington Dr at Walmart,6744,0,178159,Barrington Dr at Walmart,name 1.00
+10,weekday,loop,10,Harbor Station at SE Bayshore Dr,6744,0,178398,Harbor Station Transfer Center Bayshore Dr,name 0.71
+58,weekday,southbound,1,Clinton Ferry Terminal,7923,0,178409,Clinton Ferry Terminal,name 1.00
+58,weekday,southbound,2,Clinton P&R at Deer Lake Rd,7923,0,197274,Clinton Park & Ride at Deer Lake Rd,name 1.00
+58,weekday,southbound,3,Deer Lake Rd at Haven Way,7923,0,178120,Deer Lake Road at Haven Way,name 1.00
+58,weekday,southbound,4,Cultus Bay Rd at French Rd,7923,0,197284,Cultus Bay Rd at French Rd,name 1.00
+58,weekday,southbound,5,Bailey's Corner at Jewett Rd,7923,0,197279,Jewett Rd at Bailey's Store,override
+58,weekday,southbound,6,Scatchet Head at Bailey Rd,7923,0,197281,Scatchet Head Rd at Bailey Rd,name 0.96
+58,weekday,southbound,7,Blakely at Swede Hill Rd,7923,0,197717,Blakely at Swede Hill Rd,name 1.00
+58,weekday,northbound,1,Blakely at Swede Hill Rd,7923,1,197717,Blakely at Swede Hill Rd,name 1.00
+58,weekday,northbound,2,Scatchet Head at Bailey Rd,7923,1,197281,Scatchet Head Rd at Bailey Rd,name 0.96
+58,weekday,northbound,3,Bailey's Corner at Jewett Rd,7923,1,197285,Jewett Rd at Bailey's Store,override
+58,weekday,northbound,4,Cultus Bay Rd at French Rd,7923,1,197283,Cultus Bay Rd at French Rd,name 1.00
+58,weekday,northbound,5,Cultus Bay Rd at Deer Lake Rd,7923,1,178176,Cultus Bay Rd at E Deer Lake Rd,name 1.00
+58,weekday,northbound,6,SR 525 at Clinton P&R,7923,1,178406,SR 525 at Clinton Park & Ride,name 1.00
+58,weekday,northbound,7,Clinton Ferry Terminal,7923,1,178409,Clinton Ferry Terminal,name 1.00
+60,weekday,southbound,1,Freeland at Main Street,7922,1,178249,Freeland at Main St,name 1.00
+60,weekday,southbound,2,Bayview P&R,7922,1,178194,Bayview P&R,name 1.00
+60,weekday,southbound,3,Maxwelton Rd at South Whidbey HS,7922,1,178203,Maxwelton Rd at SW High School,name 0.72
+60,weekday,southbound,4,Camano Ave at Langley P&R,7922,1,178171,Camano Ave at Langley P&R,name 1.00
+60,weekday,southbound,5,Langley at 3rd St & Anthes Ave,7922,1,178388,Anthes Ave at Third St,override
+60,weekday,southbound,6,Langley Rd at SR 525,7922,1,197273,Langley Rd at Ken's Korner,override
+60,weekday,southbound,7,Clinton Park & Ride,7922,1,178406,SR 525 at Clinton Park & Ride,override
+60,weekday,southbound,8,Clinton Ferry Terminal,7922,1,178409,Clinton Ferry Terminal,name 1.00
+60,weekday,northbound,1,Clinton Ferry Terminal,7922,0,178409,Clinton Ferry Terminal,name 1.00
+60,weekday,northbound,2,Clinton Park & Ride,7922,0,197274,Clinton Park & Ride at Deer Lake Rd,override
+60,weekday,northbound,3,Langley Rd at Ken's Korner,7922,0,197275,Langley Rd at Ken's Korner,name 1.00
+60,weekday,northbound,4,Camano Ave at Langley P&R,7922,0,178171,Camano Ave at Langley P&R,name 1.00
+60,weekday,northbound,5,Langley at 3rd St & Anthes Ave,7922,0,178388,Anthes Ave at Third St,override
+60,weekday,northbound,6,Maxwelton Rd at South Whidbey HS,7922,0,178385,South Whidbey High School,name 0.71
+60,weekday,northbound,7,Bayview P&R,7922,0,178413,Bayview P&R,name 1.00
+60,weekday,northbound,8,Freeland at Main Street,7922,0,178249,Freeland at Main St,name 1.00
+411W,weekday,northbound,1,Harbor Station at SE Bayshore Dr,7919,0,178398,Harbor Station Transfer Center Bayshore Dr,name 0.71
+411W,weekday,northbound,2,SE Goldie St at WhidbeyHealth North,7919,0,197260,Goldie Rd at Whidbey-Health,override
+411W,weekday,northbound,3,SR 20 at Whispering Pines,7919,0,178349,SR 20 at Whispering Pines,name 1.00
+411W,weekday,northbound,4,SR 20 at Northgate Dr,7919,0,178347,SR 20 at Northgate Dr,name 1.00
+411W,weekday,northbound,5,Troxell Rd at Monkey Hill Rd,7919,0,178346,Troxell at Monkey Hill Rd (on request),name 0.70
+411W,weekday,northbound,6,SR 20 at Ducken Rd,7919,0,178201,SR 20 at Ducken Rd,name 1.00
+411W,weekday,northbound,7,March Point P&R,7919,0,197263,March Point,override
+411W,weekday,southbound,1,March Point P&R,7919,1,197263,March Point,override
+411W,weekday,southbound,2,SR 20 at Deception Pass State Park,7919,1,178331,SR 20 at Deception Pass State Park,name 1.00
+411W,weekday,southbound,3,SR 20 at Banta Rd,7919,1,178344,SR 20 at Banta Rd,name 1.00
+411W,weekday,southbound,4,SR 20 at Liberty Market,7919,1,178343,SR 20 at Liberty Market,name 1.00
+411W,weekday,southbound,5,SE Goldie St at WhidbeyHealth North,7919,1,197264,Goldie Rd at Whidbey Health,override
+411W,weekday,southbound,6,Harbor Station at SE Bayshore Dr,7919,1,178398,Harbor Station Transfer Center Bayshore Dr,name 0.71
+1C,weekday,loop,1,Terry's Corner,6737,0,178376,Terry's Corner,name 1.00
+1C,weekday,loop,2,Huntington Store,6737,0,178280,Huntington Store,name 1.00
+1C,weekday,loop,3,Chapman,6737,0,178232,Chapman and Rowe,override
+1C,weekday,loop,4,Cama Beach at Welcome Center,6737,0,178124,Cama Beach,override
+1C,weekday,loop,5,Lost Lake,6737,0,178228,Lost Lake,name 1.00
+1C,weekday,loop,6,Russell Rd at Sunrise Blvd,6737,0,218433,Russell Rd at Sunrise Blvd,name 1.00
+1C,weekday,loop,7,Camano Plaza,6737,0,178240,Camano Plaza at E Camano Dr,name 0.66
+1C,weekday,loop,8,Arrowhead Road,6737,0,178215,Arrowhead Rd at Chick Rd (Baker View Ln),override
+1C,weekday,loop,9,Terry's Corner,6737,0,178376,Terry's Corner,name 1.00
+2C,weekday,loop,1,Terry's Corner,7914,0,178376,Terry's Corner,name 1.00
+2C,weekday,loop,2,Camano Plaza,7914,0,178240,Camano Plaza at E Camano Dr,name 0.66
+2C,weekday,loop,3,E Camano Drive at Elger Bay Rd,7914,0,178276,Camano Island Health System,override
+2C,weekday,loop,4,Shuksan,7914,0,197213,E Camano Dr at Shuksan Dr,override
+2C,weekday,loop,5,South Loop,,,,,not a stop: an on-request loop
+2C,weekday,loop,6,Elger Bay Store,7914,0,188843,Elger Bay Rd at Elger Bay Grocery,override
+2C,weekday,loop,7,Russell Rd at Sunrise Blvd,7914,0,218433,Russell Rd at Sunrise Blvd,name 1.00
+2C,weekday,loop,8,Camano Plaza,7914,0,178240,Camano Plaza at E Camano Dr,name 0.66
+2C,weekday,loop,9,Arrowhead Rd,7914,0,178215,Arrowhead Rd at Chick Rd (Baker View Ln),override
+2C,weekday,loop,10,Terry's Corner,7914,0,178376,Terry's Corner,name 1.00
+3C,weekday,eastbound,1,Terry's Corner,7913,0,178376,Terry's Corner,name 1.00
+3C,weekday,eastbound,2,Camano St,7913,0,178275,Camano St,name 1.00
+3C,weekday,eastbound,3,Viking Village,7913,0,178272,Viking Village,name 1.00
+3C,weekday,eastbound,4,Haggen,7913,0,178271,Haggen Grocery,override
+3C,weekday,eastbound,5,YMCA,,,178270,Church Creek,override
+3C,weekday,westbound,1,CVS,7913,1,178283,Rite-Aid Stanwood,override
+3C,weekday,westbound,2,Stanwood Library,7913,1,178136,Stanwood Library,name 1.00
+3C,weekday,westbound,3,Terry's Corner,7913,1,178376,Terry's Corner,name 1.00
+411C,weekday,northbound,1,Terry's Corner,7915,0,178376,Terry's Corner,name 1.00
+411C,weekday,northbound,2,CVS,7915,0,178283,Rite-Aid Stanwood,override
+411C,weekday,northbound,3,Stanwood P&R,7915,0,178160,Stanwood P&R II,name 0.85
+411C,weekday,northbound,4,Les Schwab,7915,0,178307,Pioneer Hwy at Les Schwab,override
+411C,weekday,northbound,5,Conway,7915,0,178287,Conway,name 1.00
+411C,weekday,northbound,6,Skagit Station,7915,0,178371,Skagit Station,name 1.00
+411C,weekday,southbound,1,Skagit Station,7915,1,178371,Skagit Station,name 1.00
+411C,weekday,southbound,2,Conway,7915,1,178286,Conway,name 1.00
+411C,weekday,southbound,3,North Star,7915,1,178267,Pioneer Hwy at North Star Cold Storage,override
+411C,weekday,southbound,4,CVS,7915,1,178283,Rite-Aid Stanwood,override
+411C,weekday,southbound,5,Camano St,7915,1,178125,Camano St,name 1.00
+411C,weekday,southbound,6,Terry's Corner,7915,1,178376,Terry's Corner,name 1.00
+411C,saturday,northbound,1,Terry's Corner,7915,0,178376,Terry's Corner,name 1.00
+411C,saturday,northbound,2,Camano St,7915,0,178275,Camano St,name 1.00
+411C,saturday,northbound,3,Viking Village,7915,0,178272,Viking Village,name 1.00
+411C,saturday,northbound,4,Haggen,7915,0,178271,Haggen Grocery,override
+411C,saturday,northbound,5,272nd at Pioneer Hwy,7915,0,178268,Bayview Garden on 272nd St at 78th,override
+411C,saturday,northbound,6,Conway,7915,0,178287,Conway,name 1.00
+411C,saturday,northbound,7,Skagit Station,7915,0,178371,Skagit Station,name 1.00
+411C,saturday,southbound,1,Skagit Station,7915,1,178371,Skagit Station,name 1.00
+411C,saturday,southbound,2,Conway,7915,1,178286,Conway,name 1.00
+411C,saturday,southbound,3,North Star,7915,1,178267,Pioneer Hwy at North Star Cold Storage,override
+411C,saturday,southbound,4,Haggen,7915,1,178271,Haggen Grocery,override
+411C,saturday,southbound,5,CVS,7915,1,178283,Rite-Aid Stanwood,override
+411C,saturday,southbound,6,Stanwood Library,7915,1,178136,Stanwood Library,name 1.00
+411C,saturday,southbound,7,Terry's Corner,7915,1,178376,Terry's Corner,name 1.00
+412,weekday,southbound,1,Terry's Corner,7916,0,178376,Terry's Corner,name 1.00
+412,weekday,southbound,2,CVS,7916,0,178283,Rite-Aid Stanwood,override
+412,weekday,southbound,3,Stanwood P&R,7916,0,178160,Stanwood P&R II,name 0.85
+412,weekday,southbound,4,I-5 P&R,7916,0,178261,I-5 P&R,name 1.00
+412,weekday,southbound,5,EVCC Tower at Broadway,7916,0,178260,EVCC Tower & Broadway,name 0.81
+412,weekday,southbound,6,Everett Station,7916,0,178258,Everett Station,name 1.00
+412,weekday,northbound,1,Everett Station,7916,1,178258,Everett Station,name 1.00
+412,weekday,northbound,2,EVCC Tower at Broadway,7916,1,178259,EVCC Tower & Broadway,name 0.81
+412,weekday,northbound,3,I-5 P&R,7916,1,178296,I-5 P&R,name 1.00
+412,weekday,northbound,4,CVS,7916,1,178283,Rite-Aid Stanwood,override
+412,weekday,northbound,5,Stanwood P&R,7916,1,178160,Stanwood P&R II,name 0.85
+412,weekday,northbound,6,Terry's Corner,7916,1,178376,Terry's Corner,name 1.00
+,weekday AM,loop,1,Harbor Station at Bayshore Dr,9430,1,178398,Harbor Station Transfer Center Bayshore Dr,name 0.71
+,weekday AM,loop,1,Harbor Station at Bayshore Dr,9431,0,178398,Harbor Station Transfer Center Bayshore Dr,name 0.71
+,weekday AM,loop,1,Harbor Station at Bayshore Dr,9432,0,178398,Harbor Station Transfer Center Bayshore Dr,name 0.71
+,weekday AM,loop,2,Guam Ave at Community Center,9431,0,218472,Guam Ave at Community,name 0.79
+,weekday AM,loop,2,Guam Ave at Community Center,9432,0,218472,Guam Ave at Community,name 0.79
+,weekday AM,loop,3,Eastern Dr at Larch Dr,9431,0,218476,Eastern Dr at Larch Dr,name 1.00
+,weekday AM,loop,3,Eastern Dr at Larch Dr,9432,0,218476,Eastern Dr at Larch Dr,name 1.00
+,weekday AM,loop,4,Crescent Harbor Rd at Western Dr,9431,0,218479,Cresent Harbor Rd at Western Dr,name 0.79
+,weekday AM,loop,4,Crescent Harbor Rd at Western Dr,9432,0,218479,Cresent Harbor Rd at Western Dr,name 0.79
+,weekday AM,loop,5,Midway St at Hangar 6,9431,0,218480,Midway St at Hangar 6,name 1.00
+,weekday AM,loop,5,Midway St at Hangar 6,9432,0,218480,Midway St at Hangar 6,name 1.00
+,weekday AM,loop,6,Saratoga St at Medical,9431,0,218486,Saratoga St at Medical,name 1.00
+,weekday AM,loop,6,Saratoga St at Medical,9432,0,218486,Saratoga St at Medical,name 1.00
+,weekday AM,loop,7,Intruder St at Barracks,9430,1,218443,Intruder St at Barracks,name 1.00
+,weekday AM,loop,7,Intruder St at Barracks,9431,0,218443,Intruder St at Barracks,name 1.00
+,weekday AM,loop,7,Intruder St at Barracks,9432,0,218443,Intruder St at Barracks,name 1.00
+,weekday AM,loop,8,Goldie Rd at WhidbeyHealth,9430,1,197264,Goldie Rd at Whidbey Health,override
+,weekday AM,loop,8,Goldie Rd at WhidbeyHealth,9431,0,197264,Goldie Rd at Whidbey Health,override
+,weekday AM,loop,9,Harbor Station at Bayshore Dr,9430,1,178398,Harbor Station Transfer Center Bayshore Dr,name 0.71
+,weekday AM,loop,9,Harbor Station at Bayshore Dr,9431,0,178398,Harbor Station Transfer Center Bayshore Dr,name 0.71
+,weekday AM,loop,9,Harbor Station at Bayshore Dr,9432,0,178398,Harbor Station Transfer Center Bayshore Dr,name 0.71
+,weekday PM,loop,1,Harbor Station at Bayshore Dr,9430,0,178398,Harbor Station Transfer Center Bayshore Dr,name 0.71
+,weekday PM,loop,1,Harbor Station at Bayshore Dr,9431,0,178398,Harbor Station Transfer Center Bayshore Dr,name 0.71
+,weekday PM,loop,1,Harbor Station at Bayshore Dr,9432,0,178398,Harbor Station Transfer Center Bayshore Dr,name 0.71
+,weekday PM,loop,2,Goldie Rd at WhidbeyHealth,9430,0,197260,Goldie Rd at Whidbey-Health,override
+,weekday PM,loop,2,Goldie Rd at WhidbeyHealth,9432,0,197260,Goldie Rd at Whidbey-Health,override
+,weekday PM,loop,3,Midway St at Hangar 6,9431,0,218480,Midway St at Hangar 6,name 1.00
+,weekday PM,loop,3,Midway St at Hangar 6,9432,0,218480,Midway St at Hangar 6,name 1.00
+,weekday PM,loop,4,Saratoga St at Medical,9431,0,218486,Saratoga St at Medical,name 1.00
+,weekday PM,loop,4,Saratoga St at Medical,9432,0,218486,Saratoga St at Medical,name 1.00
+,weekday PM,loop,5,Intruder St at Barracks,9430,0,218443,Intruder St at Barracks,name 1.00
+,weekday PM,loop,5,Intruder St at Barracks,9431,0,218443,Intruder St at Barracks,name 1.00
+,weekday PM,loop,5,Intruder St at Barracks,9432,0,218443,Intruder St at Barracks,name 1.00
+,weekday PM,loop,6,Eastern Dr at Larch Dr,9431,0,218476,Eastern Dr at Larch Dr,name 1.00
+,weekday PM,loop,6,Eastern Dr at Larch Dr,9432,0,218476,Eastern Dr at Larch Dr,name 1.00
+,weekday PM,loop,7,Guam Ave at Community Center,9431,0,218472,Guam Ave at Community,name 0.79
+,weekday PM,loop,7,Guam Ave at Community Center,9432,0,218472,Guam Ave at Community,name 0.79
+,weekday PM,loop,8,Guam Ave at Raven Dr,9431,0,218475,Guam Ave at Raven Dr,name 1.00
+,weekday PM,loop,8,Guam Ave at Raven Dr,9432,0,218475,Guam Ave at Raven Dr,name 1.00
+,weekday PM,loop,9,Harbor Station at Bayshore Dr,9430,0,178398,Harbor Station Transfer Center Bayshore Dr,name 0.71
+,weekday PM,loop,9,Harbor Station at Bayshore Dr,9431,0,178398,Harbor Station Transfer Center Bayshore Dr,name 0.71
+,weekday PM,loop,9,Harbor Station at Bayshore Dr,9432,0,178398,Harbor Station Transfer Center Bayshore Dr,name 0.71
+,weekday AM and PM,seaplane base,1,Harbor Station at Bayshore Dr,9430,0,178398,Harbor Station Transfer Center Bayshore Dr,name 0.71
+,weekday AM and PM,seaplane base,1,Harbor Station at Bayshore Dr,9431,0,178398,Harbor Station Transfer Center Bayshore Dr,name 0.71
+,weekday AM and PM,seaplane base,1,Harbor Station at Bayshore Dr,9432,0,178398,Harbor Station Transfer Center Bayshore Dr,name 0.71
+,weekday AM and PM,seaplane base,2,Goldie Rd at WhidbeyHealth,9430,0,197260,Goldie Rd at Whidbey-Health,override
+,weekday AM and PM,seaplane base,2,Goldie Rd at WhidbeyHealth,9432,0,197260,Goldie Rd at Whidbey-Health,override
+,weekday AM and PM,seaplane base,3,Intruder St at Barracks,9430,0,218443,Intruder St at Barracks,name 1.00
+,weekday AM and PM,seaplane base,3,Intruder St at Barracks,9431,0,218443,Intruder St at Barracks,name 1.00
+,weekday AM and PM,seaplane base,3,Intruder St at Barracks,9432,0,218443,Intruder St at Barracks,name 1.00
+,weekday AM and PM,seaplane base,4,NEX/Commissary at Seaplane Base,9430,0,218444,Seaplane Base NEX/ Commisary,override
