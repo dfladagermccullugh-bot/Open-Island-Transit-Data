@@ -1,24 +1,28 @@
 {
- "ontime_version": "ontime/0.3.0",
+ "ontime_version": "ontime/0.4.0",
  "definition": {
   "window_s": [-60,300],
   "measured": "departure at timepoints; arrival at the last stop",
   "timepoints": "stops printed in Island Transit's timetables"
  },
  "scheduled": 1282,
- "observed": 1048,
- "observed_share": 0.8175,
- "on_time": 848,
- "early": 14,
- "late": 186,
- "on_time_share_of_observed": 0.8092,
- "deviation_s_median": 126.9,
+ "observed": 1128,
+ "observed_share": 0.8799,
+ "on_time": 913,
+ "early": 21,
+ "late": 194,
+ "on_time_share_of_observed": 0.8094,
+ "deviation_s_median": 122.8,
+ "canceled": {
+  "trip_ids": [],
+  "timepoint_events_left_out": 0
+ },
  "by_route": {
   "6737": {
    "scheduled": 81,
-   "observed": 25,
-   "observed_share": 0.3086,
-   "on_time": 25,
+   "observed": 29,
+   "observed_share": 0.358,
+   "on_time": 29,
    "early": 0,
    "late": 0,
    "on_time_share_of_observed": 1.0,
@@ -26,234 +30,234 @@
   },
   "6744": {
    "scheduled": 250,
-   "observed": 242,
-   "observed_share": 0.968,
-   "on_time": 230,
+   "observed": 249,
+   "observed_share": 0.996,
+   "on_time": 237,
    "early": 2,
    "late": 10,
-   "on_time_share_of_observed": 0.9504,
-   "deviation_s_median": 83.9
+   "on_time_share_of_observed": 0.9518,
+   "deviation_s_median": 82.6
   },
   "7913": {
    "scheduled": 35,
-   "observed": 29,
-   "observed_share": 0.8286,
-   "on_time": 24,
+   "observed": 31,
+   "observed_share": 0.8857,
+   "on_time": 26,
    "early": 2,
    "late": 3,
-   "on_time_share_of_observed": 0.8276,
-   "deviation_s_median": 158.1
+   "on_time_share_of_observed": 0.8387,
+   "deviation_s_median": 152.6
   },
   "7914": {
    "scheduled": 70,
-   "observed": 42,
-   "observed_share": 0.6,
-   "on_time": 33,
+   "observed": 46,
+   "observed_share": 0.6571,
+   "on_time": 37,
    "early": 0,
    "late": 9,
-   "on_time_share_of_observed": 0.7857,
-   "deviation_s_median": 191.5
+   "on_time_share_of_observed": 0.8043,
+   "deviation_s_median": 171.2
   },
   "7915": {
    "scheduled": 42,
-   "observed": 37,
-   "observed_share": 0.881,
-   "on_time": 34,
+   "observed": 40,
+   "observed_share": 0.9524,
+   "on_time": 37,
    "early": 2,
    "late": 1,
-   "on_time_share_of_observed": 0.9189,
-   "deviation_s_median": 104.4
+   "on_time_share_of_observed": 0.925,
+   "deviation_s_median": 93.6
   },
   "7918": {
    "scheduled": 129,
-   "observed": 105,
-   "observed_share": 0.814,
-   "on_time": 83,
-   "early": 1,
+   "observed": 112,
+   "observed_share": 0.8682,
+   "on_time": 86,
+   "early": 5,
    "late": 21,
-   "on_time_share_of_observed": 0.7905,
-   "deviation_s_median": 133.0
+   "on_time_share_of_observed": 0.7679,
+   "deviation_s_median": 122.1
   },
   "7919": {
    "scheduled": 65,
-   "observed": 48,
-   "observed_share": 0.7385,
-   "on_time": 27,
-   "early": 0,
-   "late": 21,
-   "on_time_share_of_observed": 0.5625,
-   "deviation_s_median": 273.0
+   "observed": 56,
+   "observed_share": 0.8615,
+   "on_time": 33,
+   "early": 1,
+   "late": 22,
+   "on_time_share_of_observed": 0.5893,
+   "deviation_s_median": 263.5
   },
   "7920": {
    "scheduled": 130,
-   "observed": 117,
-   "observed_share": 0.9,
-   "on_time": 108,
+   "observed": 118,
+   "observed_share": 0.9077,
+   "on_time": 109,
    "early": 0,
    "late": 9,
-   "on_time_share_of_observed": 0.9231,
-   "deviation_s_median": 97.4
+   "on_time_share_of_observed": 0.9237,
+   "deviation_s_median": 94.8
   },
   "7922": {
    "scheduled": 160,
-   "observed": 136,
-   "observed_share": 0.85,
-   "on_time": 102,
-   "early": 1,
-   "late": 33,
-   "on_time_share_of_observed": 0.75,
-   "deviation_s_median": 184.7
+   "observed": 149,
+   "observed_share": 0.9313,
+   "on_time": 114,
+   "early": 0,
+   "late": 35,
+   "on_time_share_of_observed": 0.7651,
+   "deviation_s_median": 172.5
   },
   "9404": {
    "scheduled": 250,
-   "observed": 223,
-   "observed_share": 0.892,
-   "on_time": 148,
+   "observed": 233,
+   "observed_share": 0.932,
+   "on_time": 155,
    "early": 0,
-   "late": 75,
-   "on_time_share_of_observed": 0.6637,
-   "deviation_s_median": 196.0
+   "late": 78,
+   "on_time_share_of_observed": 0.6652,
+   "deviation_s_median": 192.4
   },
   "9430": {
    "scheduled": 70,
-   "observed": 44,
-   "observed_share": 0.6286,
-   "on_time": 34,
-   "early": 6,
-   "late": 4,
-   "on_time_share_of_observed": 0.7727,
-   "deviation_s_median": 43.3
+   "observed": 65,
+   "observed_share": 0.9286,
+   "on_time": 50,
+   "early": 9,
+   "late": 6,
+   "on_time_share_of_observed": 0.7692,
+   "deviation_s_median": 45.5
   }
  },
  "by_hour": {
   "6": {
    "scheduled": 50,
-   "observed": 43,
-   "observed_share": 0.86,
-   "on_time": 32,
+   "observed": 45,
+   "observed_share": 0.9,
+   "on_time": 33,
    "early": 0,
-   "late": 11,
-   "on_time_share_of_observed": 0.7442,
+   "late": 12,
+   "on_time_share_of_observed": 0.7333,
    "deviation_s_median": 164.4
   },
   "7": {
    "scheduled": 68,
-   "observed": 56,
-   "observed_share": 0.8235,
-   "on_time": 45,
-   "early": 0,
+   "observed": 60,
+   "observed_share": 0.8824,
+   "on_time": 48,
+   "early": 1,
    "late": 11,
-   "on_time_share_of_observed": 0.8036,
-   "deviation_s_median": 92.0
+   "on_time_share_of_observed": 0.8,
+   "deviation_s_median": 87.2
   },
   "8": {
    "scheduled": 105,
-   "observed": 83,
-   "observed_share": 0.7905,
-   "on_time": 82,
-   "early": 0,
+   "observed": 91,
+   "observed_share": 0.8667,
+   "on_time": 89,
+   "early": 1,
    "late": 1,
-   "on_time_share_of_observed": 0.988,
-   "deviation_s_median": 58.7
+   "on_time_share_of_observed": 0.978,
+   "deviation_s_median": 53.0
   },
   "9": {
    "scheduled": 116,
-   "observed": 91,
-   "observed_share": 0.7845,
-   "on_time": 85,
-   "early": 3,
+   "observed": 101,
+   "observed_share": 0.8707,
+   "on_time": 94,
+   "early": 4,
    "late": 3,
-   "on_time_share_of_observed": 0.9341,
-   "deviation_s_median": 70.9
+   "on_time_share_of_observed": 0.9307,
+   "deviation_s_median": 66.3
   },
   "10": {
    "scheduled": 97,
-   "observed": 79,
-   "observed_share": 0.8144,
-   "on_time": 72,
+   "observed": 84,
+   "observed_share": 0.866,
+   "on_time": 77,
    "early": 2,
    "late": 5,
-   "on_time_share_of_observed": 0.9114,
+   "on_time_share_of_observed": 0.9167,
    "deviation_s_median": 125.7
   },
   "11": {
    "scheduled": 115,
-   "observed": 96,
-   "observed_share": 0.8348,
-   "on_time": 86,
+   "observed": 106,
+   "observed_share": 0.9217,
+   "on_time": 96,
    "early": 1,
    "late": 9,
-   "on_time_share_of_observed": 0.8958,
-   "deviation_s_median": 131.8
+   "on_time_share_of_observed": 0.9057,
+   "deviation_s_median": 124.1
   },
   "12": {
    "scheduled": 109,
-   "observed": 89,
-   "observed_share": 0.8165,
-   "on_time": 60,
-   "early": 2,
-   "late": 27,
-   "on_time_share_of_observed": 0.6742,
-   "deviation_s_median": 164.1
+   "observed": 99,
+   "observed_share": 0.9083,
+   "on_time": 68,
+   "early": 3,
+   "late": 28,
+   "on_time_share_of_observed": 0.6869,
+   "deviation_s_median": 153.4
   },
   "13": {
    "scheduled": 106,
-   "observed": 83,
-   "observed_share": 0.783,
-   "on_time": 61,
-   "early": 1,
-   "late": 21,
-   "on_time_share_of_observed": 0.7349,
-   "deviation_s_median": 167.1
+   "observed": 92,
+   "observed_share": 0.8679,
+   "on_time": 68,
+   "early": 2,
+   "late": 22,
+   "on_time_share_of_observed": 0.7391,
+   "deviation_s_median": 161.7
   },
   "14": {
    "scheduled": 116,
-   "observed": 101,
-   "observed_share": 0.8707,
-   "on_time": 83,
+   "observed": 105,
+   "observed_share": 0.9052,
+   "on_time": 85,
    "early": 1,
-   "late": 17,
-   "on_time_share_of_observed": 0.8218,
+   "late": 19,
+   "on_time_share_of_observed": 0.8095,
    "deviation_s_median": 155.7
   },
   "15": {
    "scheduled": 107,
-   "observed": 90,
-   "observed_share": 0.8411,
-   "on_time": 70,
+   "observed": 97,
+   "observed_share": 0.9065,
+   "on_time": 76,
    "early": 1,
-   "late": 19,
-   "on_time_share_of_observed": 0.7778,
-   "deviation_s_median": 153.2
+   "late": 20,
+   "on_time_share_of_observed": 0.7835,
+   "deviation_s_median": 141.6
   },
   "16": {
    "scheduled": 121,
-   "observed": 95,
-   "observed_share": 0.7851,
-   "on_time": 63,
-   "early": 1,
-   "late": 31,
-   "on_time_share_of_observed": 0.6632,
+   "observed": 99,
+   "observed_share": 0.8182,
+   "on_time": 64,
+   "early": 2,
+   "late": 33,
+   "on_time_share_of_observed": 0.6465,
    "deviation_s_median": 178.9
   },
   "17": {
    "scheduled": 91,
-   "observed": 71,
-   "observed_share": 0.7802,
-   "on_time": 54,
-   "early": 0,
+   "observed": 76,
+   "observed_share": 0.8352,
+   "on_time": 58,
+   "early": 1,
    "late": 17,
-   "on_time_share_of_observed": 0.7606,
-   "deviation_s_median": 130.7
+   "on_time_share_of_observed": 0.7632,
+   "deviation_s_median": 127.4
   },
   "18": {
    "scheduled": 76,
-   "observed": 69,
-   "observed_share": 0.9079,
-   "on_time": 54,
+   "observed": 71,
+   "observed_share": 0.9342,
+   "on_time": 56,
    "early": 2,
    "late": 13,
-   "on_time_share_of_observed": 0.7826,
+   "on_time_share_of_observed": 0.7887,
    "deviation_s_median": 161.3
   },
   "19": {
@@ -299,66 +303,66 @@
     "name": "Lost Lake",
     "stop_sequence_median": 26,
     "scheduled": 9,
-    "observed": 6,
-    "observed_share": 0.6667,
-    "on_time": 6,
+    "observed": 7,
+    "observed_share": 0.7778,
+    "on_time": 7,
     "early": 0,
     "late": 0,
     "on_time_share_of_observed": 1.0,
-    "deviation_s_median": 131.8,
-    "deviations_s": [-16,6,85,179,182,216]
+    "deviation_s_median": 178.6,
+    "deviations_s": [-16,6,85,179,182,216,225]
    },
    "178232": {
     "name": "Chapman and Rowe",
     "stop_sequence_median": 18,
     "scheduled": 9,
-    "observed": 6,
-    "observed_share": 0.6667,
-    "on_time": 6,
+    "observed": 7,
+    "observed_share": 0.7778,
+    "on_time": 7,
     "early": 0,
     "late": 0,
     "on_time_share_of_observed": 1.0,
-    "deviation_s_median": 179.7,
-    "deviations_s": [30,57,154,206,215,243]
+    "deviation_s_median": 205.5,
+    "deviations_s": [30,57,154,206,215,243,255]
    },
    "178240": {
     "name": "Camano Plaza at E Camano Dr",
     "stop_sequence_median": 36,
     "scheduled": 9,
-    "observed": 1,
-    "observed_share": 0.1111,
-    "on_time": 1,
+    "observed": 0,
+    "observed_share": 0.0,
+    "on_time": 0,
     "early": 0,
     "late": 0,
-    "on_time_share_of_observed": 1.0,
-    "deviation_s_median": 216.2,
-    "deviations_s": [216]
+    "on_time_share_of_observed": null,
+    "deviation_s_median": null,
+    "deviations_s": []
    },
    "178280": {
     "name": "Huntington Store",
     "stop_sequence_median": 7,
     "scheduled": 9,
-    "observed": 6,
-    "observed_share": 0.6667,
-    "on_time": 6,
+    "observed": 7,
+    "observed_share": 0.7778,
+    "on_time": 7,
     "early": 0,
     "late": 0,
     "on_time_share_of_observed": 1.0,
-    "deviation_s_median": 66.6,
-    "deviations_s": [25,41,62,72,82,91]
+    "deviation_s_median": 71.6,
+    "deviations_s": [25,41,62,72,72,82,91]
    },
    "178376": {
     "name": "Terry's Corner",
     "stop_sequence_median": 41,
     "scheduled": 18,
-    "observed": 6,
-    "observed_share": 0.3333,
-    "on_time": 6,
+    "observed": 8,
+    "observed_share": 0.4444,
+    "on_time": 8,
     "early": 0,
     "late": 0,
     "on_time_share_of_observed": 1.0,
-    "deviation_s_median": 23.0,
-    "deviations_s": [10,12,19,27,32,260]
+    "deviation_s_median": 21.7,
+    "deviations_s": [7,10,12,19,25,27,32,260]
    },
    "218433": {
     "name": "Russell Rd at Sunrise Blvd",
@@ -470,14 +474,14 @@
     "name": "Harbor Station Transfer Center Bayshore Dr",
     "stop_sequence_median": 22,
     "scheduled": 50,
-    "observed": 42,
-    "observed_share": 0.84,
-    "on_time": 41,
+    "observed": 49,
+    "observed_share": 0.98,
+    "on_time": 48,
     "early": 0,
     "late": 1,
-    "on_time_share_of_observed": 0.9762,
-    "deviation_s_median": 14.0,
-    "deviations_s": [-363,-266,-266,-258,-241,-227,-223,-214,-206,-181,-170,-155,-118,-117,-112,-97,-63,-41,10,13,13,15,19,19,20,25,25,27,31,31,33,40,42,46,52,55,108,109,109,180,192,734]
+    "on_time_share_of_observed": 0.9796,
+    "deviation_s_median": 12.4,
+    "deviations_s": [-363,-266,-266,-258,-241,-230,-227,-223,-216,-214,-206,-181,-170,-155,-118,-117,-112,-97,-92,-63,-41,-18,9,10,12,13,13,15,19,19,20,25,25,25,27,31,31,33,40,42,46,52,55,108,109,109,180,192,742]
    },
    "197268": {
     "name": "Skagit Valley College/Library",
@@ -563,14 +567,14 @@
     "name": "Terry's Corner",
     "stop_sequence_median": 15,
     "scheduled": 10,
-    "observed": 4,
-    "observed_share": 0.4,
-    "on_time": 4,
+    "observed": 6,
+    "observed_share": 0.6,
+    "on_time": 6,
     "early": 0,
     "late": 0,
     "on_time_share_of_observed": 1.0,
-    "deviation_s_median": 14.5,
-    "deviations_s": [-468,1,28,50]
+    "deviation_s_median": -135.9,
+    "deviations_s": [-468,-354,-273,1,28,50]
    }
   },
   "7914": {
@@ -617,14 +621,14 @@
     "name": "Terry's Corner",
     "stop_sequence_median": 41,
     "scheduled": 14,
-    "observed": 7,
-    "observed_share": 0.5,
-    "on_time": 6,
+    "observed": 11,
+    "observed_share": 0.7857,
+    "on_time": 10,
     "early": 0,
     "late": 1,
-    "on_time_share_of_observed": 0.8571,
-    "deviation_s_median": 26.4,
-    "deviations_s": [-324,7,14,26,70,92,469]
+    "on_time_share_of_observed": 0.9091,
+    "deviation_s_median": 21.3,
+    "deviations_s": [-324,-223,7,10,14,21,26,49,70,92,469]
    },
    "188843": {
     "name": "Elger Bay Rd at Elger Bay Grocery",
@@ -801,14 +805,14 @@
     "name": "Terry's Corner",
     "stop_sequence_median": 21,
     "scheduled": 6,
-    "observed": 3,
-    "observed_share": 0.5,
-    "on_time": 3,
+    "observed": 6,
+    "observed_share": 1.0,
+    "on_time": 6,
     "early": 0,
     "late": 0,
     "on_time_share_of_observed": 1.0,
-    "deviation_s_median": 15.1,
-    "deviations_s": [5,15,60]
+    "deviation_s_median": -195.8,
+    "deviations_s": [-525,-484,-396,5,15,60]
    }
   },
   "7918": {
@@ -816,14 +820,14 @@
     "name": "Engle Rd at Coupeville Ferry Terminal",
     "stop_sequence_median": 5,
     "scheduled": 16,
-    "observed": 1,
-    "observed_share": 0.0625,
-    "on_time": 1,
-    "early": 0,
+    "observed": 6,
+    "observed_share": 0.375,
+    "on_time": 2,
+    "early": 4,
     "late": 0,
-    "on_time_share_of_observed": 1.0,
-    "deviation_s_median": 214.9,
-    "deviations_s": [215]
+    "on_time_share_of_observed": 0.3333,
+    "deviation_s_median": -178.8,
+    "deviations_s": [-808,-354,-235,-123,-44,215]
    },
    "178140": {
     "name": "Libbey Rd at SR 20",
@@ -894,14 +898,14 @@
     "name": "Harbor Station Transfer Center Bayshore Dr",
     "stop_sequence_median": 22,
     "scheduled": 15,
-    "observed": 12,
-    "observed_share": 0.8,
-    "on_time": 9,
+    "observed": 13,
+    "observed_share": 0.8667,
+    "on_time": 10,
     "early": 0,
     "late": 3,
-    "on_time_share_of_observed": 0.75,
-    "deviation_s_median": 73.6,
-    "deviations_s": [-128,14,38,53,63,65,83,131,139,303,348,351]
+    "on_time_share_of_observed": 0.7692,
+    "deviation_s_median": 64.6,
+    "deviations_s": [-128,-38,14,38,53,63,65,83,131,139,303,348,351]
    },
    "178399": {
     "name": "Main St at Coupeville Elementary School",
@@ -985,14 +989,14 @@
     "name": "SR 20 at Race Rd",
     "stop_sequence_median": 2,
     "scheduled": 7,
-    "observed": 6,
-    "observed_share": 0.8571,
-    "on_time": 5,
+    "observed": 7,
+    "observed_share": 1.0,
+    "on_time": 6,
     "early": 0,
     "late": 1,
-    "on_time_share_of_observed": 0.8333,
-    "deviation_s_median": 22.9,
-    "deviations_s": [-46,-13,20,26,274,308]
+    "on_time_share_of_observed": 0.8571,
+    "deviation_s_median": 25.8,
+    "deviations_s": [-46,-13,20,26,54,274,308]
    },
    "218437": {
     "name": "Koenig Ln at SR 20",
@@ -1104,14 +1108,14 @@
     "name": "Harbor Station Transfer Center Bayshore Dr",
     "stop_sequence_median": 18,
     "scheduled": 10,
-    "observed": 1,
-    "observed_share": 0.1,
-    "on_time": 1,
-    "early": 0,
+    "observed": 5,
+    "observed_share": 0.5,
+    "on_time": 4,
+    "early": 1,
     "late": 0,
-    "on_time_share_of_observed": 1.0,
-    "deviation_s_median": -153.9,
-    "deviations_s": [-154]
+    "on_time_share_of_observed": 0.8,
+    "deviation_s_median": 51.2,
+    "deviations_s": [-200,-154,51,71,259]
    },
    "197260": {
     "name": "Goldie Rd at Whidbey-Health",
@@ -1130,14 +1134,14 @@
     "name": "March Point",
     "stop_sequence_median": 20,
     "scheduled": 10,
-    "observed": 6,
-    "observed_share": 0.6,
-    "on_time": 5,
+    "observed": 10,
+    "observed_share": 1.0,
+    "on_time": 8,
     "early": 0,
-    "late": 1,
-    "on_time_share_of_observed": 0.8333,
+    "late": 2,
+    "on_time_share_of_observed": 0.8,
     "deviation_s_median": 75.3,
-    "deviations_s": [-4,36,45,106,175,349]
+    "deviations_s": [-116,-102,-4,36,45,106,175,282,319,349]
    },
    "197264": {
     "name": "Goldie Rd at Whidbey Health",
@@ -1210,14 +1214,14 @@
     "name": "Harbor Station Transfer Center Bayshore Dr",
     "stop_sequence_median": 23,
     "scheduled": 26,
-    "observed": 13,
-    "observed_share": 0.5,
-    "on_time": 12,
+    "observed": 14,
+    "observed_share": 0.5385,
+    "on_time": 13,
     "early": 0,
     "late": 1,
-    "on_time_share_of_observed": 0.9231,
-    "deviation_s_median": 22.8,
-    "deviations_s": [-315,-29,10,11,17,19,23,27,30,32,53,148,319]
+    "on_time_share_of_observed": 0.9286,
+    "deviation_s_median": 21.1,
+    "deviations_s": [-315,-300,-29,10,11,17,19,23,27,30,32,53,148,319]
    },
    "178401": {
     "name": "Barrington Dr at Haggens",
@@ -1316,14 +1320,14 @@
     "name": "Freeland at Main St",
     "stop_sequence_median": 31,
     "scheduled": 20,
-    "observed": 11,
-    "observed_share": 0.55,
-    "on_time": 7,
-    "early": 1,
-    "late": 3,
-    "on_time_share_of_observed": 0.6364,
-    "deviation_s_median": 69.9,
-    "deviations_s": [-1621,23,35,36,46,70,73,149,325,340,363]
+    "observed": 17,
+    "observed_share": 0.85,
+    "on_time": 12,
+    "early": 0,
+    "late": 5,
+    "on_time_share_of_observed": 0.7059,
+    "deviation_s_median": 54.7,
+    "deviations_s": [-8,5,23,26,35,36,41,46,55,70,73,149,314,325,340,340,363]
    },
    "178385": {
     "name": "South Whidbey High School",
@@ -1368,14 +1372,14 @@
     "name": "Clinton Ferry Terminal",
     "stop_sequence_median": 27,
     "scheduled": 20,
-    "observed": 11,
-    "observed_share": 0.55,
-    "on_time": 11,
+    "observed": 18,
+    "observed_share": 0.9,
+    "on_time": 18,
     "early": 0,
     "late": 0,
     "on_time_share_of_observed": 1.0,
-    "deviation_s_median": 174.9,
-    "deviations_s": [12,20,45,85,87,175,192,216,246,283,290]
+    "deviation_s_median": 86.0,
+    "deviations_s": [-99,0,12,20,26,45,56,60,85,87,144,175,192,216,239,246,283,290]
    },
    "178413": {
     "name": "Bayview P&R",
@@ -1474,14 +1478,14 @@
     "name": "Coupeville Park & Ride",
     "stop_sequence_median": 44,
     "scheduled": 16,
-    "observed": 14,
-    "observed_share": 0.875,
+    "observed": 15,
+    "observed_share": 0.9375,
     "on_time": 9,
     "early": 0,
-    "late": 5,
-    "on_time_share_of_observed": 0.6429,
-    "deviation_s_median": 248.5,
-    "deviations_s": [9,14,134,164,184,214,225,272,275,489,509,555,649,681]
+    "late": 6,
+    "on_time_share_of_observed": 0.6,
+    "deviation_s_median": 271.8,
+    "deviations_s": [9,14,134,164,184,214,225,272,275,377,489,509,555,650,681]
    },
    "178369": {
     "name": "SR 525 at Classic Rd",
@@ -1526,27 +1530,27 @@
     "name": "Harbor Station Transfer Center Bayshore Dr",
     "stop_sequence_median": 22,
     "scheduled": 27,
-    "observed": 13,
-    "observed_share": 0.4815,
-    "on_time": 12,
+    "observed": 17,
+    "observed_share": 0.6296,
+    "on_time": 14,
     "early": 0,
-    "late": 1,
-    "on_time_share_of_observed": 0.9231,
+    "late": 3,
+    "on_time_share_of_observed": 0.8235,
     "deviation_s_median": 18.0,
-    "deviations_s": [-11,3,4,12,14,16,18,34,39,73,168,214,714]
+    "deviations_s": [-168,-63,-11,3,4,12,14,16,18,34,39,73,168,214,336,636,714]
    },
    "178399": {
     "name": "Main St at Coupeville Elementary School",
     "stop_sequence_median": 19,
     "scheduled": 15,
-    "observed": 14,
-    "observed_share": 0.9333,
-    "on_time": 11,
+    "observed": 15,
+    "observed_share": 1.0,
+    "on_time": 12,
     "early": 0,
     "late": 3,
-    "on_time_share_of_observed": 0.7857,
-    "deviation_s_median": 117.1,
-    "deviations_s": [-7,16,32,37,73,86,89,145,161,208,279,336,351,504]
+    "on_time_share_of_observed": 0.8,
+    "deviation_s_median": 89.1,
+    "deviations_s": [-59,-7,16,32,37,73,86,89,145,161,208,279,336,352,504]
    },
    "178406": {
     "name": "SR 525 at Clinton Park & Ride",
@@ -1565,14 +1569,14 @@
     "name": "Clinton Ferry Terminal",
     "stop_sequence_median": 40,
     "scheduled": 24,
-    "observed": 14,
-    "observed_share": 0.5833,
-    "on_time": 13,
+    "observed": 18,
+    "observed_share": 0.75,
+    "on_time": 17,
     "early": 0,
     "late": 1,
-    "on_time_share_of_observed": 0.9286,
-    "deviation_s_median": 34.5,
-    "deviations_s": [-44,9,11,17,25,26,30,39,40,44,188,238,299,418]
+    "on_time_share_of_observed": 0.9444,
+    "deviation_s_median": 39.5,
+    "deviations_s": [-154,-44,9,11,17,25,26,30,39,40,44,87,171,188,238,257,299,418]
    },
    "178413": {
     "name": "Bayview P&R",
@@ -1697,14 +1701,14 @@
     "name": "Harbor Station Transfer Center Bayshore Dr",
     "stop_sequence_median": 9,
     "scheduled": 20,
-    "observed": 4,
-    "observed_share": 0.2,
-    "on_time": 3,
-    "early": 1,
-    "late": 0,
-    "on_time_share_of_observed": 0.75,
-    "deviation_s_median": -19.4,
-    "deviations_s": [-238,-26,-13,35]
+    "observed": 16,
+    "observed_share": 0.8,
+    "on_time": 11,
+    "early": 4,
+    "late": 1,
+    "on_time_share_of_observed": 0.6875,
+    "deviation_s_median": -6.5,
+    "deviations_s": [-296,-251,-246,-238,-147,-57,-26,-13,0,35,47,54,75,142,171,994]
    },
    "197260": {
     "name": "Goldie Rd at Whidbey-Health",
@@ -1749,14 +1753,14 @@
     "name": "Seaplane Base NEX/ Commisary",
     "stop_sequence_median": 8,
     "scheduled": 10,
-    "observed": 0,
-    "observed_share": 0.0,
-    "on_time": 0,
+    "observed": 9,
+    "observed_share": 0.9,
+    "on_time": 8,
     "early": 0,
-    "late": 0,
-    "on_time_share_of_observed": null,
-    "deviation_s_median": null,
-    "deviations_s": []
+    "late": 1,
+    "on_time_share_of_observed": 0.8889,
+    "deviation_s_median": 45.5,
+    "deviations_s": [-375,-367,-95,-78,45,51,157,165,638]
    }
   }
  },
@@ -1765,7 +1769,7 @@
  "no_service_day": null,
  "passio_version": "passio-9b1efa882037",
  "timepoints": "passio-9b1efa882037__timetable-2026-09-27-d7e09c5d",
- "events_version": "events/0.4.0",
+ "events_version": "events/0.5.0",
  "routes": {
   "7920": {
    "short_name": "2",
@@ -1837,23 +1841,23 @@
   }
  },
  "validation": {
-  "validate_version": "validate/0.2.0",
+  "validate_version": "validate/0.3.0",
   "feed_agreement": {
-   "compared": 4030,
-   "inside_change_interval_share": 0.605,
-   "within_tolerance_share": 0.9395,
+   "compared": 4059,
+   "inside_change_interval_share": 0.6034,
+   "within_tolerance_share": 0.9382,
    "tolerance_s": 30.0,
    "feed_change_after_departure_s": {
     "p5": -29.7,
     "median": 2.9,
-    "p95": 16.4
+    "p95": 16.5
    },
    "feed_sequence_going_backwards": 104,
    "by_route": {
     "6737": {
-     "compared": 180,
-     "within_tolerance": 173,
-     "share": 0.9611
+     "compared": 200,
+     "within_tolerance": 192,
+     "share": 0.96
     },
     "6744": {
      "compared": 480,
@@ -1876,14 +1880,14 @@
      "share": 0.982
     },
     "7918": {
-     "compared": 419,
+     "compared": 420,
      "within_tolerance": 394,
-     "share": 0.9403
+     "share": 0.9381
     },
     "7919": {
-     "compared": 160,
+     "compared": 163,
      "within_tolerance": 138,
-     "share": 0.8625
+     "share": 0.8466
     },
     "7920": {
      "compared": 271,
@@ -1891,14 +1895,14 @@
      "share": 0.9668
     },
     "7922": {
-     "compared": 503,
-     "within_tolerance": 483,
-     "share": 0.9602
+     "compared": 505,
+     "within_tolerance": 484,
+     "share": 0.9584
     },
     "9404": {
-     "compared": 1530,
-     "within_tolerance": 1440,
-     "share": 0.9412
+     "compared": 1533,
+     "within_tolerance": 1442,
+     "share": 0.9406
     },
     "9430": {
      "compared": 130,
@@ -1908,10 +1912,10 @@
    }
   },
   "travel_times": {
-   "segments": 8160,
+   "segments": 8317,
    "negative": 0,
    "over_max_speed": 21,
-   "across_skipped_stretch": 32,
+   "across_skipped_stretch": 33,
    "max_speed_ms": 36.3,
    "max_allowed_ms": 35.0,
    "fastest": [
@@ -2016,7 +2020,121 @@
      "report_gap_s": 40.0
     }
    ]
+  },
+  "trip_offsets": {
+   "trips_measured": 163,
+   "shifted_trips": 8,
+   "flagged_routes": [],
+   "rule": {
+    "min_stops": 4,
+    "iqr_under_s": 60.0,
+    "median_beyond_s": 240.0,
+    "route_share": 0.5
+   },
+   "by_route": {
+    "6737": {
+     "trips": 7,
+     "shifted": 0
+    },
+    "6744": {
+     "trips": 25,
+     "shifted": 1
+    },
+    "7913": {
+     "trips": 10,
+     "shifted": 0
+    },
+    "7914": {
+     "trips": 6,
+     "shifted": 0
+    },
+    "7915": {
+     "trips": 6,
+     "shifted": 0
+    },
+    "7918": {
+     "trips": 15,
+     "shifted": 0
+    },
+    "7919": {
+     "trips": 10,
+     "shifted": 0
+    },
+    "7920": {
+     "trips": 13,
+     "shifted": 0
+    },
+    "7922": {
+     "trips": 20,
+     "shifted": 5
+    },
+    "9404": {
+     "trips": 31,
+     "shifted": 2
+    },
+    "9430": {
+     "trips": 20,
+     "shifted": 0
+    }
+   },
+   "shifted": [
+    {
+     "trip_id": "1155220",
+     "route_id": "9404",
+     "median_s": 847.8,
+     "iqr_s": 49.3
+    },
+    {
+     "trip_id": "1155520",
+     "route_id": "7922",
+     "median_s": 516.5,
+     "iqr_s": 46.5
+    },
+    {
+     "trip_id": "1155215",
+     "route_id": "9404",
+     "median_s": 454.0,
+     "iqr_s": 46.0
+    },
+    {
+     "trip_id": "1155549",
+     "route_id": "7922",
+     "median_s": 429.6,
+     "iqr_s": 56.2
+    },
+    {
+     "trip_id": "1155521",
+     "route_id": "7922",
+     "median_s": 319.6,
+     "iqr_s": 54.0
+    },
+    {
+     "trip_id": "1155550",
+     "route_id": "7922",
+     "median_s": 312.7,
+     "iqr_s": 53.9
+    },
+    {
+     "trip_id": "1155548",
+     "route_id": "7922",
+     "median_s": 294.7,
+     "iqr_s": 52.2
+    },
+    {
+     "trip_id": "1155349",
+     "route_id": "6744",
+     "median_s": 245.5,
+     "iqr_s": 30.3
+    }
+   ]
   }
  },
- "feed_agreement_share": 0.9395
+ "continuity": {
+  "vehicles": 13,
+  "vehicles_on_two_or_more_routes": 8,
+  "consecutive_trip_pairs": 152,
+  "block_disagreements": 2,
+  "trips_with_borrowed_reports": 150
+ },
+ "feed_agreement_share": 0.9382
 }
