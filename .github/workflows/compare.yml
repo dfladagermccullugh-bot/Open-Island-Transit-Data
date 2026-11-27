@@ -103,7 +103,9 @@ jobs:
 
   publish:
     needs: sample
-    if: always() && needs.sample.result != 'skipped'
+    # Not after a cancel: a cancelled run has no samples to keep, and its
+    # code may be older than the comparisons already published.
+    if: ${{ !cancelled() && needs.sample.result != 'skipped' }}
     runs-on: ubuntu-latest
     timeout-minutes: 10
     env:
