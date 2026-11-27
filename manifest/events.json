@@ -4,7 +4,7 @@
  "days": {
   "2026-11-19": {
    "service_date": "2026-11-19",
-   "events_version": "events/0.3.2",
+   "events_version": "events/0.4.0",
    "ontime_version": "ontime/0.3.0",
    "validate_version": "validate/0.2.0",
    "service_expected": true,
@@ -19,21 +19,21 @@
     {
      "name": "stop-events-2026-11-19.parquet",
      "bytes": 111770,
-     "sha256": "ee498bcf2d078b3a5571be275effe9ae4379507c8c85511c046de14725442061"
+     "sha256": "45625a598f6b5ef878f5c475518b8487f20932a6877c75f1b79d0d70ce821a9e"
     },
     {
      "name": "trip-tracks-2026-11-19.parquet",
-     "bytes": 12464,
-     "sha256": "7684f226d2b9ed4d100f81720f345abf8c3934bfb30fae96d29f13c5f09425ff"
+     "bytes": 12772,
+     "sha256": "7e1a00b9d017c7feb0e2b3ebdd37d34c47c6204ce2fb05cfa91803ff80716281"
     }
    ],
    "release_tag": "parsed-2026-11",
-   "built_at": "2026-11-27T03:42:18+00:00",
-   "code_sha": "cc3b3a4de18ad80a4f7fc9247c419aac7d1e13de"
+   "built_at": "2026-11-27T04:08:01+00:00",
+   "code_sha": "1bdcc6c5da8c906787260f3ffb0992a1b1c71dee"
   },
   "2026-11-20": {
    "service_date": "2026-11-20",
-   "events_version": "events/0.3.2",
+   "events_version": "events/0.4.0",
    "ontime_version": "ontime/0.3.0",
    "validate_version": "validate/0.2.0",
    "service_expected": true,
@@ -48,21 +48,21 @@
     {
      "name": "stop-events-2026-11-20.parquet",
      "bytes": 178667,
-     "sha256": "a06a9e4980bb5326bf093447bc99611cc021b691bbdf3dbbba84a52bd5c00028"
+     "sha256": "30822cf2badd788a500e4e6e5e65756e298198a610625373a2fe82fd1900d64b"
     },
     {
      "name": "trip-tracks-2026-11-20.parquet",
-     "bytes": 14468,
-     "sha256": "f9a58004abf9f2ea41ed93dcb98a4df8bea8a499486fe0590fcc3868df1a3108"
+     "bytes": 14776,
+     "sha256": "785d3efe2d3422d21ca37eb835808f4dda3331d5ef500d8bf1a6d265484a27ee"
     }
    ],
    "release_tag": "parsed-2026-11",
-   "built_at": "2026-11-27T03:42:16+00:00",
-   "code_sha": "cc3b3a4de18ad80a4f7fc9247c419aac7d1e13de"
+   "built_at": "2026-11-27T04:07:57+00:00",
+   "code_sha": "1bdcc6c5da8c906787260f3ffb0992a1b1c71dee"
   },
   "2026-11-21": {
    "service_date": "2026-11-21",
-   "events_version": "events/0.3.2",
+   "events_version": "events/0.4.0",
    "ontime_version": "ontime/0.3.0",
    "validate_version": "validate/0.2.0",
    "service_expected": true,
@@ -77,21 +77,21 @@
     {
      "name": "stop-events-2026-11-21.parquet",
      "bytes": 91078,
-     "sha256": "ddcc20ce36e254634a80ab79b3cc6cab836dc36c7448834875c06636dd62d301"
+     "sha256": "1bd30935e22dc97da13f0187bc2a4c565759f7fe80830dee46c1c3e62565f52e"
     },
     {
      "name": "trip-tracks-2026-11-21.parquet",
-     "bytes": 10372,
-     "sha256": "208f4608ea9d56a35e8ec581defc9c518d02b283912b358d6f360de2a7c82702"
+     "bytes": 10680,
+     "sha256": "e600260bfcaf5cf24d52bc6c43145e0b7ce0e73edd9578913739ed316d216fc3"
     }
    ],
    "release_tag": "parsed-2026-11",
-   "built_at": "2026-11-27T03:42:12+00:00",
-   "code_sha": "cc3b3a4de18ad80a4f7fc9247c419aac7d1e13de"
+   "built_at": "2026-11-27T04:07:51+00:00",
+   "code_sha": "1bdcc6c5da8c906787260f3ffb0992a1b1c71dee"
   },
   "2026-11-22": {
    "service_date": "2026-11-22",
-   "events_version": "events/0.3.2",
+   "events_version": "events/0.4.0",
    "ontime_version": "ontime/0.3.0",
    "validate_version": "validate/0.2.0",
    "service_expected": true,
@@ -106,21 +106,21 @@
     {
      "name": "stop-events-2026-11-22.parquet",
      "bytes": 90461,
-     "sha256": "a6d53455c6a8c0bc79c2475f2be04802c22acc2f15b4cf854f2e28980a32b3c9"
+     "sha256": "130cd78a8d2a3a4bbcec0fbd2c2389b3d785aa50d6b46feb744f5b10be2ab30e"
     },
     {
      "name": "trip-tracks-2026-11-22.parquet",
-     "bytes": 10205,
-     "sha256": "18d7901a92058fe4de2f6f654f8c0868b9f1b7c874c55f00ff6eb0467d0456ad"
+     "bytes": 10513,
+     "sha256": "e9f3661eb87129ebac24b9390ab2ad34dff206a7c62bbcb23d36701a9f5b9e04"
     }
    ],
    "release_tag": "parsed-2026-11",
-   "built_at": "2026-11-27T03:42:09+00:00",
-   "code_sha": "cc3b3a4de18ad80a4f7fc9247c419aac7d1e13de"
+   "built_at": "2026-11-27T04:07:46+00:00",
+   "code_sha": "1bdcc6c5da8c906787260f3ffb0992a1b1c71dee"
   },
   "2026-11-23": {
    "service_date": "2026-11-23",
-   "events_version": "events/0.3.2",
+   "events_version": "events/0.4.0",
    "ontime_version": "ontime/0.3.0",
    "validate_version": "validate/0.2.0",
    "service_expected": true,
@@ -135,21 +135,21 @@
     {
      "name": "stop-events-2026-11-23.parquet",
      "bytes": 177893,
-     "sha256": "c00a33e443fdf5cfa99c16f74d97dbb19303684f97431517de907df3b8319dd5"
+     "sha256": "9db3f309c979336a3abb0caa26426f91d602f278ee634b57d34b4a527be00e08"
     },
     {
      "name": "trip-tracks-2026-11-23.parquet",
-     "bytes": 14422,
-     "sha256": "bd40d7793d1437bfa80990c166887ad2be1f1c7b684b5ffc79893e17aadf3ecf"
+     "bytes": 14730,
+     "sha256": "1bb866468f5ed55a5bd49497f265ccaf52f8b0c9c028bff066ccb438f11e0c45"
     }
    ],
    "release_tag": "parsed-2026-11",
-   "built_at": "2026-11-27T03:42:07+00:00",
-   "code_sha": "cc3b3a4de18ad80a4f7fc9247c419aac7d1e13de"
+   "built_at": "2026-11-27T04:07:42+00:00",
+   "code_sha": "1bdcc6c5da8c906787260f3ffb0992a1b1c71dee"
   },
   "2026-11-24": {
    "service_date": "2026-11-24",
-   "events_version": "events/0.3.2",
+   "events_version": "events/0.4.0",
    "ontime_version": "ontime/0.3.0",
    "validate_version": "validate/0.2.0",
    "service_expected": true,
@@ -163,22 +163,22 @@
    "files": [
     {
      "name": "stop-events-2026-11-24.parquet",
-     "bytes": 176433,
-     "sha256": "a14fbc58615529084151b5f229ed12553412498c4d14f6b5e822e1d321f52003"
+     "bytes": 176441,
+     "sha256": "7ae85dd58af29e81eba78224c840f02a571f1f4974865cf761e9b7c5cbbd5755"
     },
     {
      "name": "trip-tracks-2026-11-24.parquet",
-     "bytes": 14582,
-     "sha256": "9d740921332b532836e2a4e4bf8c2b7db675d332ca8abf1b22a3cc2b5420ce8e"
+     "bytes": 14932,
+     "sha256": "9ac1b3e429ceab4a08ce6f47210eddeb37f551021808c724a241f919a8860430"
     }
    ],
    "release_tag": "parsed-2026-11",
-   "built_at": "2026-11-27T03:42:03+00:00",
-   "code_sha": "cc3b3a4de18ad80a4f7fc9247c419aac7d1e13de"
+   "built_at": "2026-11-27T04:07:36+00:00",
+   "code_sha": "1bdcc6c5da8c906787260f3ffb0992a1b1c71dee"
   },
   "2026-11-25": {
    "service_date": "2026-11-25",
-   "events_version": "events/0.3.2",
+   "events_version": "events/0.4.0",
    "ontime_version": "ontime/0.3.0",
    "validate_version": "validate/0.2.0",
    "service_expected": true,
@@ -193,17 +193,17 @@
     {
      "name": "stop-events-2026-11-25.parquet",
      "bytes": 178607,
-     "sha256": "cedd0726527088e0c9687e81e66e15b659809c91031c5397b37f5038c6485d31"
+     "sha256": "15ceb88cc1bf446fd09f2b8f780a103e13f1b54bab000161242ff41add0d719d"
     },
     {
      "name": "trip-tracks-2026-11-25.parquet",
-     "bytes": 14474,
-     "sha256": "0542fa515261bb9d7e194ca17813423fe4aa2748bb1b17c2f1ed0fb541dc8f42"
+     "bytes": 14782,
+     "sha256": "4071355208d5441432e426e533dd0b58011f964d597bce001f553509ab6221c5"
     }
    ],
    "release_tag": "parsed-2026-11",
-   "built_at": "2026-11-27T03:42:00+00:00",
-   "code_sha": "cc3b3a4de18ad80a4f7fc9247c419aac7d1e13de"
+   "built_at": "2026-11-27T04:07:30+00:00",
+   "code_sha": "1bdcc6c5da8c906787260f3ffb0992a1b1c71dee"
   }
  }
 }

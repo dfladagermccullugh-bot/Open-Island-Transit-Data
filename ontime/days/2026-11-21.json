@@ -1765,7 +1765,7 @@
  "no_service_day": null,
  "passio_version": "passio-9b1efa882037",
  "timepoints": "passio-9b1efa882037__timetable-2026-09-27-d7e09c5d",
- "events_version": "events/0.3.2",
+ "events_version": "events/0.4.0",
  "routes": {
   "7920": {
    "short_name": "2",

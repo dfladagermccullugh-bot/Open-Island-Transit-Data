@@ -2412,7 +2412,7 @@
  "no_service_day": null,
  "passio_version": "passio-9b1efa882037",
  "timepoints": "passio-9b1efa882037__timetable-2026-09-27-d7e09c5d",
- "events_version": "events/0.3.2",
+ "events_version": "events/0.4.0",
  "routes": {
   "7920": {
    "short_name": "2",
@@ -2488,7 +2488,7 @@
   "feed_agreement": {
    "compared": 8403,
    "inside_change_interval_share": 0.5716,
-   "within_tolerance_share": 0.9365,
+   "within_tolerance_share": 0.9363,
    "tolerance_s": 30.0,
    "feed_change_after_departure_s": {
     "p5": -28.7,
@@ -2559,8 +2559,8 @@
     },
     "9404": {
      "compared": 3648,
-     "within_tolerance": 3448,
-     "share": 0.9452
+     "within_tolerance": 3447,
+     "share": 0.9449
     },
     "9431": {
      "compared": 110,
@@ -2685,5 +2685,5 @@
    ]
   }
  },
- "feed_agreement_share": 0.9365
+ "feed_agreement_share": 0.9363
 }
