@@ -124,6 +124,8 @@ h3 { margin-top: var(--sp-6); }
 // outrank it; otherwise its white controls show up on the dark page.
 .route-map.leaflet-container { font: inherit; background: var(--map-water); }
 .route-map.leaflet-container a { color: var(--link); }
+// Underlined, so a link is told apart from the text around it by more than color.
+.route-map .leaflet-control-attribution a { text-decoration: underline; }
 .route-map.leaflet-container:focus-visible { outline: 2px solid var(--focus); outline-offset: 2px; }
 .route-map.leaflet-container .leaflet-control-attribution { background: var(--card); color: var(--text-secondary); font-size: var(--fs-xs); padding: 0 var(--sp-2); }
 .route-map .leaflet-bar { border: 1px solid var(--border-strong); box-shadow: var(--shadow-sm); }

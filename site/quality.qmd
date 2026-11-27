@@ -13,6 +13,7 @@ as the feed itself. That's why we grade the feed every day.
 //| output: false
 import {csv, json, pct, num, count, unit, routeLabel, longDate, pacificClock, plural, isFalse, isoDate, serviceDays, recentDays, withDates, showAllToggle, emptyNote, guard, stats, h, DATA_URL, DATA_RAW_URL, periodInput, periodName, fmtShare, hourLabel} from "./lib.js"
 import {makeCharts} from "./charts.js"
+import {Plot, d3} from "./vendor/plot-0.6.11/plot.js"
 ch = makeCharts({Plot})
 daily = csv(d3, "data/quality/daily.csv")
 minutes = s => s == null ? null : s / 60

@@ -425,12 +425,12 @@ test.describe("the home page headline", () => {
 
 test.describe("weight", () => {
   // The JavaScript a page loads, compressed as a server sends it, stays
-  // within a budget. The plan of November 27, 2026 asked for 450 KB; the
-  // Routes page needs 496 KB (Quarto's Observable runtime alone is 212 KB,
-  // and the chart library needs d3, 91 KB), so the budget is 500 KB and can
-  // only come down. The Download page needs no chart library at all.
-  const BUDGET_KB = 500;
-  for (const name of ["index", "routes", "ontime", "quality", "data"]) {
+  // within 450 KB (the plan of November 27, 2026; Lighthouse checks the same
+  // budget in CI). Quarto's Observable runtime alone is 212 KB, so the pages
+  // load a trimmed chart library (site/vendor/plot-0.6.11, about 95 KB)
+  // instead of all of Plot and d3 (154 KB). The Download page needs none.
+  const BUDGET_KB = 450;
+  for (const name of ["index", "routes", "replay", "stops", "ontime", "quality", "compare", "data"]) {
     test(`${name} loads at most ${BUDGET_KB} KB of JavaScript`, async ({page}) => {
       const {gzipSync} = await import("node:zlib");
       const scripts = [], fonts = [];
@@ -450,6 +450,8 @@ test.describe("weight", () => {
       console.log(`${name}: ${total.toFixed(0)} KB of JavaScript (gzipped): ${sizes.join(", ")}`);
       expect(total, sizes.join("\n")).toBeLessThanOrEqual(BUDGET_KB);
       if (name === "data") expect(scripts.some(r => /plot|\/d3@/.test(r.url()))).toBe(false);
+      // Never the full libraries from the CDN.
+      expect(scripts.filter(r => /\/d3@|plot\.umd/.test(r.url())).map(r => r.url())).toEqual([]);
       // No icon font: the one icon on the page is drawn inline.
       expect(fonts.filter(u => /bootstrap-icons/.test(u))).toEqual([]);
     });

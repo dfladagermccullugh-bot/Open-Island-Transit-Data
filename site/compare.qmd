@@ -16,6 +16,7 @@ ours in one of two ways, and each row says which.
 //| output: false
 import {json, pct, count, longDate, emptyNote, guard, h} from "./lib.js"
 import {makeCharts} from "./charts.js"
+import {Plot} from "./vendor/plot-0.6.11/plot.js"
 ch = makeCharts({Plot})
 cmp = json("data/compare/summary.json")
 peers = (cmp?.peers ?? []).filter(p => p && p.agency)

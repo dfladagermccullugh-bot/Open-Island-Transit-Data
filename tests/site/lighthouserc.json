@@ -1,0 +1,51 @@
+{
+  "ci": {
+    "collect": {
+      "staticDistDir": "../../site/_site",
+      "url": [
+        "http://localhost/index.html",
+        "http://localhost/routes.html",
+        "http://localhost/stops.html",
+        "http://localhost/replay.html",
+        "http://localhost/ontime.html",
+        "http://localhost/quality.html",
+        "http://localhost/compare.html",
+        "http://localhost/data.html",
+        "http://localhost/limits.html",
+        "http://localhost/methods.html",
+        "http://localhost/codebook.html",
+        "http://localhost/glossary.html"
+      ],
+      "numberOfRuns": 1,
+      "settings": {
+        "onlyCategories": [
+          "accessibility"
+        ],
+        "chromeFlags": "--headless=new --no-sandbox",
+        "onlyAudits": [
+          "resource-summary"
+        ]
+      }
+    },
+    "assert": {
+      "assertions": {
+        "categories:accessibility": [
+          "error",
+          {
+            "minScore": 0.95
+          }
+        ],
+        "resource-summary:script:size": [
+          "error",
+          {
+            "maxNumericValue": 460800
+          }
+        ]
+      }
+    },
+    "upload": {
+      "target": "filesystem",
+      "outputDir": "lighthouse-report"
+    }
+  }
+}

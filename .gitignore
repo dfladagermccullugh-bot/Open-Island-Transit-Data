@@ -16,3 +16,5 @@ node_modules/
 /site/data/
 /tests/site/playwright-report/
 /tests/site/test-results/
+/tests/site/lighthouse-report/
+/tests/site/.lighthouseci/

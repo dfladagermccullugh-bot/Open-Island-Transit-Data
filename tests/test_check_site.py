@@ -142,3 +142,27 @@ def test_a_renamed_methods_heading_breaks_its_links(site):
     assert check_site.problems(site) == [
         "methods.html: no heading #validation, which the Methods links point to"
     ]
+
+
+def _with_cell(site, page, code):
+    path = site / f"{page}.html"
+    path.write_text(path.read_text().replace("</body>", f"<script>{code}</script></body>"))
+
+
+def test_a_page_drawing_charts_must_load_the_trimmed_bundle(site):
+    _with_cell(site, "ontime", "ch = makeCharts({Plot}); Plot.plot({marks: [Plot.dot([])]})")
+    assert check_site.problems(site) == [
+        "ontime.html: uses Plot without importing vendor/plot-0.6.11/plot.js"
+    ]
+
+
+def test_a_plot_function_the_bundle_leaves_out_is_caught(site):
+    _with_cell(site, "quality", 'import {Plot} from "./vendor/plot-0.6.11/plot.js"; '
+               "Plot.plot({marks: [Plot.areaY([]), Plot.dot([])]})")  # fmt: skip
+    problems = check_site.problems(site)
+    assert len(problems) == 1 and "calls Plot.areaY" in problems[0]
+
+
+def test_the_bundle_holds_what_its_entry_file_lists():
+    have = check_site.bundled()
+    assert {"plot", "dot", "tip", "lineY"} <= have["Plot"] and have["d3"] == {"csv", "autoType"}

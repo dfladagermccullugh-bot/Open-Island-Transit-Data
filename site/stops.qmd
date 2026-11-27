@@ -15,6 +15,7 @@ departure. To watch every bus move over a whole day, see
 //| output: false
 import {json, pct, count, longDate, lateness, emptyNote, guard, h} from "./lib.js"
 import {makeCharts} from "./charts.js"
+import {Plot} from "./vendor/plot-0.6.11/plot.js"
 ch = makeCharts({Plot})
 index = json("data/views/stops/index.json")
 stopList = (index?.stops ?? []).filter(s => s && s.stop_id)

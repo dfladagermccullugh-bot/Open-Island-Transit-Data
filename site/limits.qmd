@@ -14,6 +14,7 @@ toc-location: right
 import {csv, json, pct, num, count, unit, longDate, isoDate, plural, h} from "./lib.js"
 head = json("data/ontime/headline.json")
 fc = json("data/ontime/field-check.json")
+import {d3} from "./vendor/plot-0.6.11/plot.js"
 quality = csv(d3, "data/quality/daily.csv")
 ontime = csv(d3, "data/ontime/daily.csv")
 lastQ = quality.filter(d => String(d.service_expected).toLowerCase() !== "false").at(-1) ?? null

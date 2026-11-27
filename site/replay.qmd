@@ -12,7 +12,9 @@ bus takes the color and shape of its last timed stop: on time (1 minute
 early to 5 minutes late), early, or late. A bus that has not passed a
 timed stop on its trip yet, or is not running a trip, is drawn as a ring.
 Point at a bus, or tap it, to see its route and the routes it ran that
-day: buses often change routes during the day. Times are in Pacific time.
+day: buses often change routes during the day. Buses at the same place, such
+as several waiting at a transfer center, are drawn side by side around it.
+Times are in Pacific time.
 
 ```{ojs}
 //| echo: false
@@ -20,6 +22,7 @@ day: buses often change routes during the day. Times are in Pacific time.
 import {json, routeMap, routeTitle, longDate, lateness, emptyNote, guard, h, BANDS, NO_BAND, bandIconHTML, bandIcon, plural} from "./lib.js"
 import {drawRouteMap} from "./map.js"
 import {makeCharts} from "./charts.js"
+import {Plot} from "./vendor/plot-0.6.11/plot.js"
 ch = makeCharts({Plot})
 L = require(new URL("vendor/leaflet-1.9.4/leaflet.js", document.baseURI).href)
 recent = json("data/ontime/recent.json")
@@ -184,7 +187,50 @@ mapView == null ? emptyNote("unavailable", "The map") : mapView.node
 // its place, its icon and its tip change.
 markers = {
   const keep = new Map();
-  invalidation.then(() => mapView?.buses.clearLayers());
+  const GAP = 30;  // pixels between bus centers: a 28-pixel marker and a little room
+  // Buses at the same place, such as several waiting at a transfer center,
+  // are drawn side by side in a small ring around it, so each can be pointed
+  // at and tapped. The ring depends on the zoom, so it is redrawn with it.
+  keep.fan = () => {
+    const map = mapView?.map;
+    if (!map || !map._loaded) return;
+    const shown = [...keep.values()].filter(m => mapView.buses.hasLayer(m) && m.home);
+    const home = new Map(shown.map(m => [m, map.latLngToLayerPoint(m.home)]));
+    const at = new Map();
+    const done = new Set();
+    for (const m of shown) {
+      if (done.has(m)) continue;
+      const group = shown.filter(o => !done.has(o) && home.get(o).distanceTo(home.get(m)) < GAP);
+      group.forEach(o => done.add(o));
+      const c = group.reduce((s, o) => s.add(home.get(o)), L.point(0, 0)).divideBy(group.length);
+      // Neighbors on the ring are GAP apart in both directions, so square
+      // markers do not overlap at their corners.
+      const r = group.length === 1 ? 0 : (GAP * Math.SQRT2 / 2) / Math.sin(Math.PI / group.length);
+      group.forEach((o, k) => {
+        const a = 2 * Math.PI * k / group.length - Math.PI / 2;
+        at.set(o, c.add(L.point(r * Math.cos(a), r * Math.sin(a))));
+      });
+    }
+    // Then push apart any two whose squares still overlap (two rings that
+    // happen to be close).
+    for (let pass = 0; pass < 30; pass++) {
+      let moved = false;
+      for (let i = 0; i < shown.length; i++) for (let j = i + 1; j < shown.length; j++) {
+        const a = at.get(shown[i]), b = at.get(shown[j]);
+        const dx = b.x - a.x, dy = b.y - a.y;
+        if (Math.max(Math.abs(dx), Math.abs(dy)) >= GAP) continue;
+        const d = Math.hypot(dx, dy) || 1, ux = dx ? dx / d : 1, uy = dy / d;
+        const push = (GAP - Math.max(Math.abs(dx), Math.abs(dy))) / 2 + 0.5;
+        at.set(shown[i], L.point(a.x - ux * push, a.y - uy * push));
+        at.set(shown[j], L.point(b.x + ux * push, b.y + uy * push));
+        moved = true;
+      }
+      if (!moved) break;
+    }
+    for (const m of shown) m.setLatLng(map.layerPointToLatLng(at.get(m)));
+  };
+  mapView?.map.on("load zoomend", keep.fan);
+  invalidation.then(() => { mapView?.map.off("load zoomend", keep.fan); mapView?.buses.clearLayers(); });
   return keep;
 }
 {
@@ -204,7 +250,8 @@ markers = {
       m.on("add", () => m.getElement()?.setAttribute("aria-label", m.label));
       markers.set(b.bus, m);
     }
-    m.setLatLng([b.lat, b.lon]);
+    m.home = L.latLng(b.lat, b.lon);
+    m.setLatLng(m.home);
     if (m.state !== b.state.key) {
       m.setIcon(L.divIcon({className: "bus-marker", html: bandIconHTML(b.state, 16), iconSize: [28, 28]}));
       m.state = b.state.key;
@@ -215,6 +262,7 @@ markers = {
     m.getElement()?.setAttribute("aria-label", m.label);
   }
   for (const [bus, m] of markers) if (!seen.has(bus)) mapView.buses.removeLayer(m);
+  markers.fan();
 }
 ```
 

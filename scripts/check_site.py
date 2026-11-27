@@ -67,7 +67,51 @@ VENDORED = {
     "vendor/leaflet-1.9.4/leaflet.css": (
         "a7837102824184820dfa198d1ebcd109ff6d0ff9a2672a074b9a1b4d147d04c6"
     ),
+    # The chart library: the parts of Observable Plot 0.6.11 and d3 7.8.5 the
+    # pages use, built by tests/site/make-plot.mjs (rerun it, then update these).
+    "vendor/plot-0.6.11/plot.js": (
+        "dc5f1cb2ac893763890f117a5ab3c70924a45d6ca50f1215c8bbf893a76b59e1"
+    ),
+    "vendor/plot-0.6.11/LICENSE": (
+        "2c3b44516eaa6a3ef8964ac46d7db232807cf04afc48937b4d5913c8b6c7b14b"
+    ),
 }
+# The functions that bundle holds, as its entry file lists them.
+PLOT_ENTRY = Path(__file__).resolve().parents[1] / "tests" / "site" / "build" / "plot-entry.js"
+
+
+def bundled(entry: Path = PLOT_ENTRY) -> dict[str, set[str]]:
+    """``{"Plot": {...}, "d3": {...}}``: the names each export of the bundle holds."""
+    text = entry.read_text(encoding="utf-8")
+    out = {}
+    for name in ("Plot", "d3"):
+        m = re.search(r"export const " + name + r" = \{([^}]*)\}", text)
+        out[name] = set(re.findall(r"[A-Za-z]+", m.group(1))) if m else set()
+    return out
+
+
+def chart_problems(site: Path) -> list[str]:
+    """A page that draws with Plot or reads with d3 loads the trimmed bundle,
+    and calls only what the bundle holds; otherwise it would fail, or fall
+    back to the full libraries from the CDN."""
+    have = bundled()
+    out = []
+    for page in sorted(site.glob("*.html")):
+        text = page.read_text(encoding="utf-8")
+        for lib in ("Plot", "d3"):
+            called = set(re.findall(rf"\b{lib}\.([A-Za-z]+)\(", text))
+            if not called:
+                continue
+            if "vendor/plot-0.6.11/plot.js" not in text:
+                out.append(f"{page.name}: uses {lib} without importing vendor/plot-0.6.11/plot.js")
+            for fn in sorted(called - have[lib]):
+                out.append(
+                    f"{page.name}: calls {lib}.{fn}, which the chart bundle does not hold "
+                    "(add it to tests/site/build/plot-entry.js and rerun make-plot.mjs)"
+                )
+    return out
+
+
 HEAD = {
     "description": r'<meta name="description" content="[^"]{20,}"',
     "page language": r'<html[^>]*\blang="en-US"',
@@ -144,7 +188,7 @@ def problems(site: Path) -> list[str]:
         for a in METHOD_ANCHORS:
             if f'id="{a}"' not in text and f'data-anchor-id="{a}"' not in text:
                 out.append(f"methods.html: no heading #{a}, which the Methods links point to")
-    return out + data_problems(site)
+    return out + chart_problems(site) + data_problems(site)
 
 
 def main() -> int:

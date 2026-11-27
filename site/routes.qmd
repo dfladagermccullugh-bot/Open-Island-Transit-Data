@@ -22,6 +22,7 @@ move over a whole day, see [Replay a day](replay.qmd).
 import {json, pct, count, band, routeTitle, routeSub, routeOrder, routeSlug, routeFromHash, lateness, plural, longDate, routeMap, withDates, bandIcon, bandTag, bandLegend, emptyNote, guard, stats, h, MIN_OBSERVED, DATA_URL, DATA_RAW_URL} from "./lib.js"
 import {drawRouteMap, routeSummary} from "./map.js"
 import {makeCharts} from "./charts.js"
+import {Plot} from "./vendor/plot-0.6.11/plot.js"
 ch = makeCharts({Plot})
 L = require(new URL("vendor/leaflet-1.9.4/leaflet.js", document.baseURI).href)
 recent = json("data/ontime/recent.json")

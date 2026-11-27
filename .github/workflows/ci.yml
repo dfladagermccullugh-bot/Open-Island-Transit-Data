@@ -83,10 +83,17 @@ jobs:
         run: scripts/test_site.sh
         env:
           PLAYWRIGHT_INSTALL: "1"
+      # Lighthouse on every page of the site just rendered and tested: an
+      # accessibility score of at least 0.95 and at most 450 KB of compressed
+      # JavaScript (tests/site/lighthouserc.json).
+      - name: Lighthouse
+        run: scripts/test_site.sh lighthouse
       - name: Keep the report when a test fails
         if: failure()
         uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 # v7.0.2
         with:
           name: site-test-report
-          path: tests/site/playwright-report
+          path: |
+            tests/site/playwright-report
+            tests/site/lighthouse-report
           retention-days: 7

@@ -8,6 +8,12 @@
 #   scripts/test_site.sh smoke   Only "every page runs clean", on the site
 #                                already rendered in site/_site (the one about
 #                                to be deployed, built from the live data).
+#   scripts/test_site.sh lighthouse
+#                                Lighthouse on every page of the site already
+#                                rendered in site/_site: accessibility score at
+#                                least 0.95, at most 450 KB of JavaScript
+#                                (tests/site/lighthouserc.json). Set CHROME_PATH
+#                                where no Chrome is installed.
 #   scripts/test_site.sh live [URL]
 #                                The same "runs clean" tests on the published
 #                                site, plus the two that load the map pages
@@ -27,6 +33,14 @@ if [ "$what" = "live" ]; then
   npm ci --no-audit --no-fund
   npx playwright test smoke.spec.mjs behavior.spec.mjs \
     --grep "runs clean|opened by its address|tile server|without stylesheets"
+  exit
+fi
+
+if [ "$what" = "lighthouse" ]; then
+  cd tests/site
+  npm ci --no-audit --no-fund
+  rm -rf lighthouse-report .lighthouseci
+  npx lhci autorun
   exit
 fi
 
