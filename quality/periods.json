@@ -846,6 +846,56 @@
       "days": 1
      }
     }
+   },
+   {
+    "period": "2026-11-26",
+    "service_expected": false,
+    "metrics": {
+     "trip_coverage": {
+      "value": 0.0,
+      "numerator": 0,
+      "denominator": 341,
+      "days": 1
+     },
+     "timepoint_coverage": {
+      "value": 0.0,
+      "numerator": 0,
+      "denominator": 2725,
+      "days": 1
+     },
+     "vehicle_uptime": {
+      "value": 0.99838,
+      "numerator": 4313,
+      "denominator": 4320,
+      "days": 1
+     },
+     "off_shape_share": {
+      "value": null,
+      "numerator": 0,
+      "denominator": 0,
+      "days": 1
+     },
+     "feed_agreement_share": {
+      "value": null,
+      "numerator": 0,
+      "denominator": 0,
+      "days": 0
+     },
+     "impossible_jumps": {
+      "value": 0,
+      "days": 1
+     },
+     "glitch_reports_removed": {
+      "value": 0,
+      "days": 1
+     },
+     "position_age_s_p95": {
+      "value": null,
+      "low": null,
+      "high": null,
+      "days": 0
+     }
+    }
    }
   ],
   "week": [

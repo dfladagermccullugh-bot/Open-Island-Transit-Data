@@ -666,6 +666,22 @@
     "late_share_of_observed": 0.2856,
     "deviation_s_median": 171.0,
     "deviations_counted": 2353
+   },
+   {
+    "period": "2026-11-26",
+    "service_expected": false,
+    "days": 1,
+    "scheduled": 2725,
+    "observed": 0,
+    "on_time": 0,
+    "early": 0,
+    "late": 0,
+    "observed_share": 0.0,
+    "on_time_share_of_observed": null,
+    "early_share_of_observed": null,
+    "late_share_of_observed": null,
+    "deviation_s_median": null,
+    "deviations_counted": 0
    }
   ],
   "week": [
@@ -689,7 +705,9 @@
    {
     "period": "2026-11-23",
     "partial": true,
-    "days_without_service": [],
+    "days_without_service": [
+     "2026-11-26"
+    ],
     "days": 3,
     "scheduled": 8175,
     "observed": 7003,
@@ -708,7 +726,9 @@
    {
     "period": "2026-11",
     "partial": true,
-    "days_without_service": [],
+    "days_without_service": [
+     "2026-11-26"
+    ],
     "days": 7,
     "scheduled": 14664,
     "observed": 12602,
