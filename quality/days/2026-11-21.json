@@ -1,7 +1,7 @@
 {
  "service_date": "2026-11-21",
  "quality_version": "quality/0.5.0",
- "computed_at": "2026-11-22T08:40:55+00:00",
+ "computed_at": "2026-11-27T03:42:45+00:00",
  "scheduled_service": {
   "trips": 168,
   "trips_ended_before_collection": 0,
@@ -1770,27 +1770,27 @@
    }
   ],
   "timepoints": {
-   "folder": "passio-9b1efa882037__timetable-2026-09-27-970aa207",
+   "folder": "passio-9b1efa882037__timetable-2026-09-27-d7e09c5d",
    "reference": "2026-09-27",
    "printed_names": 147,
    "resolved_names": 146,
    "resolved_share": 0.9932,
-   "timepoint_route_stops": 169
+   "timepoint_route_stops": 177
   }
  },
  "events": {
-  "events_version": "events/0.3.1",
+  "events_version": "events/0.3.2",
   "stop_coverage": {
    "timepoints": {
-    "scheduled": 1223,
-    "observed": 991,
-    "coverage": 0.810303,
+    "scheduled": 1282,
+    "observed": 1048,
+    "coverage": 0.817473,
     "not_observed_by_reason": {
      "gap": 37,
      "no_reports": 21,
      "not_reached": 111,
-     "past_when_first_seen": 49,
-     "skipped": 14
+     "past_when_first_seen": 46,
+     "skipped": 19
     },
     "by_route": {
      "6737": {
@@ -1804,9 +1804,9 @@
       "coverage": 0.968
      },
      "7913": {
-      "scheduled": 40,
-      "observed": 31,
-      "coverage": 0.775
+      "scheduled": 35,
+      "observed": 29,
+      "coverage": 0.828571
      },
      "7914": {
       "scheduled": 70,
@@ -1814,14 +1814,14 @@
       "coverage": 0.6
      },
      "7915": {
-      "scheduled": 45,
-      "observed": 40,
-      "coverage": 0.888889
+      "scheduled": 42,
+      "observed": 37,
+      "coverage": 0.880952
      },
      "7918": {
-      "scheduled": 121,
-      "observed": 97,
-      "coverage": 0.801653
+      "scheduled": 129,
+      "observed": 105,
+      "coverage": 0.813953
      },
      "7919": {
       "scheduled": 65,
@@ -1834,19 +1834,19 @@
       "coverage": 0.9
      },
      "7922": {
-      "scheduled": 120,
-      "observed": 101,
-      "coverage": 0.841667
+      "scheduled": 160,
+      "observed": 136,
+      "coverage": 0.85
      },
      "9404": {
-      "scheduled": 221,
-      "observed": 194,
-      "coverage": 0.877828
+      "scheduled": 250,
+      "observed": 223,
+      "coverage": 0.892
      },
      "9430": {
-      "scheduled": 80,
-      "observed": 54,
-      "coverage": 0.675
+      "scheduled": 70,
+      "observed": 44,
+      "coverage": 0.628571
      }
     }
    },
@@ -2256,7 +2256,7 @@
   "raw_sha256": "252a12d179f5480b8c19ee898e77a2661fb79e1d26f62f3ddf2461991917f3d3",
   "vehicles_sha256": "5ccdae03d48a7340abc944f06e7af039530641cc4c817f4d33b6ff5996736325",
   "tables_version": "tables/0.1.0",
-  "stop_events_sha256": "20f2a8efe7021476d9ad93853f8e388e655a98eccf888d408b1c6db82eab9c57",
-  "code_sha": "105ddf4515323b976b3a88781c7e783ffbabaf16"
+  "stop_events_sha256": "ddcc20ce36e254634a80ab79b3cc6cab836dc36c7448834875c06636dd62d301",
+  "code_sha": "cc3b3a4de18ad80a4f7fc9247c419aac7d1e13de"
  }
 }
