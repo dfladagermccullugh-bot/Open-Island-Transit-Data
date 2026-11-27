@@ -7,7 +7,8 @@ subtitle: "Every departure from a timetable stop over the last 28 days with serv
 Pick a stop to see each departure from it, how far from the timetable it
 was, and how we knew. Pick one of its trips to follow that bus stop by
 stop. Times are in Pacific time; a dash means we could not time that
-departure.
+departure. To watch every bus move over a whole day, see
+[Replay a day](replay.qmd).
 
 ```{ojs}
 //| echo: false

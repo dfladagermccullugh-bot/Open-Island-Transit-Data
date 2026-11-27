@@ -26,7 +26,9 @@ async function scan(page) {
     // pixels where a neighbor covers part of it. WCAG 2.5.8 allows this when
     // the same thing can be done with another control on the page: every
     // stop and its figures are in the chart and the table under the map.
-    window.axe.configure({rules: [{id: "target-size", selector: "*:not(.stop-marker)"}]});
+    // The same holds for the buses on the replay page: buses waiting at one
+    // transfer center overlap, and every bus is listed in the table under it.
+    window.axe.configure({rules: [{id: "target-size", selector: "*:not(.stop-marker):not(.bus-marker)"}]});
     const r = await window.axe.run(document, {runOnly: {type: "tag", values: tags}});
     return r.violations.map(v => ({
       id: v.id,

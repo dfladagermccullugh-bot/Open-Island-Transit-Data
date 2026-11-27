@@ -110,6 +110,16 @@ h3 { margin-top: var(--sp-6); }
 .stop-marker { display: grid; place-items: center; background: none; border: none; cursor: pointer; }
 .stop-marker .band-icon { margin: 0; filter: drop-shadow(0 0 1.5px var(--card)) drop-shadow(0 0 1.5px var(--card)); }
 .stop-marker.band-none .band-icon, .stop-marker .band-icon.band-none circle { fill: var(--card); }
+// Replay a day: the buses, and the bar with the time slider.
+.bus-marker { display: grid; place-items: center; background: none; border: none; }
+.bus-marker .band-icon { margin: 0; filter: drop-shadow(0 0 1.5px var(--card)) drop-shadow(0 0 1.5px var(--card)); }
+.bus-marker .band-icon.band-none circle { fill: var(--card); }
+.replay-bar { display: flex; flex-wrap: wrap; align-items: center; gap: var(--sp-2) var(--sp-3); margin: var(--sp-3) 0; }
+.replay-bar input[type=range] { flex: 1 1 14rem; min-width: 10rem; accent-color: var(--series-1); }
+.replay-bar label { font-weight: 600; }
+.replay-time { font-variant-numeric: tabular-nums; min-width: 5.5em; font-weight: 600; }
+.replay-bar button, .replay-bar select { font: inherit; color: var(--text-primary); background: var(--card); border: 1px solid var(--border-strong); border-radius: var(--radius-sm); padding: var(--sp-1) var(--sp-3); min-height: 44px; }
+.replay-bar button:focus-visible, .replay-bar select:focus-visible { outline: 2px solid var(--focus); outline-offset: 2px; }
 // Leaflet's own stylesheet loads after ours, so these rules name the map to
 // outrank it; otherwise its white controls show up on the dark page.
 .route-map.leaflet-container { font: inherit; background: var(--map-water); }

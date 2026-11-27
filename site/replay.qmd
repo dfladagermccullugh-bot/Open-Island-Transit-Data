@@ -1,0 +1,249 @@
+---
+description: "Watch a whole day of Island Transit's buses on the map again, each colored by how far it ran from the timetable."
+title: "Replay a day"
+subtitle: "Every bus we saw, minute by minute, on one of the last 14 days with service"
+include-in-header:
+  - _head.html
+  - _leaflet.html
+---
+
+Pick a day and move the slider, or press Play, to watch the buses go. Each
+bus takes the color and shape of its last timed stop: on time (1 minute
+early to 5 minutes late), early, or late. A bus that has not passed a
+timed stop on its trip yet, or is not running a trip, is drawn as a ring.
+Point at a bus, or tap it, to see its route and the routes it ran that
+day: buses often change routes during the day. Times are in Pacific time.
+
+```{ojs}
+//| echo: false
+//| output: false
+import {json, routeMap, routeTitle, longDate, lateness, emptyNote, guard, h, BANDS, NO_BAND, bandIconHTML, bandIcon, plural} from "./lib.js"
+import {drawRouteMap} from "./map.js"
+import {makeCharts} from "./charts.js"
+ch = makeCharts({Plot})
+L = require(new URL("vendor/leaflet-1.9.4/leaflet.js", document.baseURI).href)
+recent = json("data/ontime/recent.json")
+mapData = routeMap(recent?.timepoints)
+replayIndex = json("data/views/replay/index.json")
+replayDays = (replayIndex?.days ?? []).filter(d => typeof d === "string")
+routeById = Object.fromEntries((mapData?.routes ?? []).map(r => [r.route_id, r]))
+routeName = id => id == null ? "no trip" : routeById[id] ? routeTitle(routeById[id]) : `route ${id}`
+// What a bus's last timed stop said, drawn like the on-time bands.
+STATES = [
+  {key: "good", short: "on time", shape: "circle", label: "On time at its last timed stop"},
+  {key: "warning", short: "early", shape: "triangle", label: "Early at its last timed stop"},
+  {key: "critical", short: "late", shape: "square", label: "Late at its last timed stop"},
+  {key: "none", short: "not timed", shape: "ring", label: "Not timed yet on this trip, or not on a trip"},
+]
+clockOf = s => {
+  const hh = Math.floor(s / 3600) % 24, mm = Math.floor(s / 60) % 60;
+  return `${(hh + 11) % 12 + 1}:${String(mm).padStart(2, "0")} ${hh < 12 ? "AM" : "PM"}`;
+}
+```
+
+```{ojs}
+//| echo: false
+viewof day = {
+  if (replayDays.length === 0) return Object.assign(emptyNote("unavailable", "The list of days"), {value: null});
+  const wanted = decodeURIComponent(location.hash.slice(1));
+  const start = replayDays.includes(wanted) ? wanted : replayDays.at(-1);
+  const select = h("select", {id: "day-pick"}, ...[...replayDays].reverse().map(d =>
+    h("option", {value: d, selected: d === start ? "" : null}, longDate(d))));
+  const box = h("div", {class: "picker route-picker"}, h("label", {for: "day-pick"}, "Day"), select);
+  box.value = start;
+  select.addEventListener("change", () => {
+    box.value = select.value;
+    history.replaceState(history.state, "", `#${select.value}`);
+    box.dispatchEvent(new Event("input", {bubbles: true}));
+  });
+  return box;
+}
+```
+
+```{ojs}
+//| echo: false
+//| output: false
+raw = day ? json(`data/views/replay/${day}.json`) : null
+// A trip's timed stops; a malformed entry is left out rather than trusted.
+tripList = (raw?.trips ?? []).map(x => ({trip_id: x?.trip_id ?? null, route_id: x?.route_id ?? null,
+  timed: (Array.isArray(x?.timed) ? x.timed : []).filter(e => Array.isArray(e) && e.every(Number.isFinite))}))
+// Undo the delta coding once per day: absolute times and positions.
+buses = {
+  if (!Array.isArray(raw?.buses) || !Number.isFinite(raw.scale)) return [];
+  const sum = a => { let x = 0; return a.map(d => (x += d)); };
+  const whole = a => Array.isArray(a) && a.length > 0 && a.every(Number.isFinite);
+  return raw.buses.filter(b => b && whole(b.t) && whole(b.lat) && whole(b.lon) && b.lat.length === b.t.length
+    && b.lon.length === b.t.length && Array.isArray(b.trips) && b.trips.every(r => Array.isArray(r) && r.every(Number.isInteger)))
+  .map(b => {
+    const t = sum(b.t), lat = sum(b.lat).map(v => v / raw.scale), lon = sum(b.lon).map(v => v / raw.scale);
+    const tripAt = new Int32Array(t.length).fill(-1);
+    b.trips.forEach(([from, k], j) => tripAt.fill(k, from, b.trips[j + 1]?.[0] ?? t.length));
+    // The routes this bus ran, in order, with the time it started each.
+    const runs = [];
+    for (const [from, k] of b.trips) {
+      const route = tripList[k]?.route_id ?? null;
+      if (route != null && runs.at(-1)?.route !== route) runs.push({route, from: t[from]});
+    }
+    return {bus: b.bus, t, lat, lon, tripAt, runs};
+  });
+}
+span = buses.length ? [Math.min(...buses.map(b => b.t[0])), Math.max(...buses.map(b => b.t.at(-1)))] : [0, 0]
+```
+
+::: {.replay-controls}
+```{ojs}
+//| echo: false
+viewof clock = {
+  // Whole minutes at both ends, so every step of the slider is a clock time
+  // ending in :00, :20 or :40. It starts at 8 AM, when most buses are out.
+  const lo = Math.floor(span[0] / 60) * 60, hi = Math.ceil(span[1] / 60) * 60;
+  const first = lo <= 28800 && 28800 <= hi ? 28800 : lo;
+  const input = h("input", {type: "range", id: "replay-clock", min: lo, max: hi, step: 20, value: first, "aria-valuetext": clockOf(first)});
+  const shown = h("output", {for: "replay-clock", class: "replay-time"}, clockOf(first));
+  const play = h("button", {type: "button", class: "replay-play", "aria-pressed": "false"}, "Play");
+  const speed = h("select", {id: "replay-speed", "aria-label": "Speed"},
+    h("option", {value: "60"}, "1 minute a second"),
+    h("option", {value: "300", selected: ""}, "5 minutes a second"),
+    h("option", {value: "900"}, "15 minutes a second"));
+  const box = h("div", {class: "replay-bar"}, h("label", {for: "replay-clock"}, "Time"), input, shown, play, speed);
+  box.value = first;
+  const set = s => {
+    box.value = Math.max(lo, Math.min(hi, s));
+    input.value = box.value;
+    shown.textContent = clockOf(box.value);
+    input.setAttribute("aria-valuetext", clockOf(box.value));
+    box.dispatchEvent(new Event("input", {bubbles: true}));
+  };
+  input.addEventListener("input", () => set(+input.value));
+  let timer = null;
+  const stop = () => { clearInterval(timer); timer = null; play.textContent = "Play"; play.setAttribute("aria-pressed", "false"); };
+  play.addEventListener("click", () => {
+    if (timer) return stop();
+    if (box.value >= hi) set(lo);
+    play.textContent = "Pause";
+    play.setAttribute("aria-pressed", "true");
+    timer = setInterval(() => {
+      set(box.value + +speed.value / 10);
+      if (box.value >= hi) stop();
+    }, 100);
+  });
+  if (lo === hi) { input.disabled = true; play.disabled = true; }
+  invalidation.then(stop);
+  return box;
+}
+```
+:::
+
+```{ojs}
+//| echo: false
+//| output: false
+mapView = {
+  if (!mapData?.routes) return null;
+  const view = drawRouteMap(L, mapData, null, {plain: true,
+    label: "Map of Island Transit's buses at the time picked, on the route lines. The same buses are listed under the map."});
+  view.buses = L.layerGroup().addTo(view.map);
+  invalidation.then(() => view.destroy());
+  return view;
+}
+// Where each bus was, what it was running and how its last timed stop went,
+// at the time on the slider. A bus not heard from in 5 minutes is not shown.
+now = {
+  const out = [];
+  for (const b of buses) {
+    let i = -1, lo = 0, hi = b.t.length - 1;
+    while (lo <= hi) { const mid = (lo + hi) >> 1; if (b.t[mid] <= clock) { i = mid; lo = mid + 1; } else hi = mid - 1; }
+    if (i < 0 || clock - b.t[i] > 300) continue;
+    let lat = b.lat[i], lon = b.lon[i];
+    const j = i + 1;
+    if (j < b.t.length && b.t[j] - b.t[i] <= 120 && b.tripAt[j] === b.tripAt[i]) {
+      const f = (clock - b.t[i]) / (b.t[j] - b.t[i]);
+      lat += f * (b.lat[j] - lat);
+      lon += f * (b.lon[j] - lon);
+    }
+    const k = b.tripAt[i];
+    const trip = tripList[k] ?? null;
+    const last = trip?.timed.filter(x => x[0] <= clock).at(-1) ?? null;
+    const state = STATES[last ? last[2] : 3];
+    out.push({bus: b.bus, lat, lon, trip, state, late: last ? last[1] * 6 : null, runs: b.runs});
+  }
+  return out;
+}
+```
+
+::: {.slot-map}
+```{ojs}
+//| echo: false
+mapView == null ? emptyNote("unavailable", "The map") : mapView.node
+```
+:::
+
+```{ojs}
+//| echo: false
+//| output: false
+// Move the bus markers. Each bus keeps one marker for the whole day; only
+// its place, its icon and its tip change.
+markers = {
+  const keep = new Map();
+  invalidation.then(() => mapView?.buses.clearLayers());
+  return keep;
+}
+{
+  if (!mapView) return;
+  const seen = new Set();
+  for (const b of now) {
+    seen.add(b.bus);
+    const runs = b.runs.map(r => `${routeName(r.route)} from ${clockOf(r.from)}`).join(", ");
+    const tip = `<strong>Bus ${b.bus}</strong><br>${b.trip ? `${routeName(b.trip.route_id)}, trip ${b.trip.trip_id}` : "Not running a trip"}<br>${
+      b.late != null ? `${lateness(b.late)} at its last timed stop` : "Not timed yet on this trip"}${runs ? `<br>Its day: ${runs}` : ""}`;
+    let m = markers.get(b.bus);
+    if (!m) {
+      m = L.marker([b.lat, b.lon], {keyboard: true, icon: L.divIcon({className: "bus-marker", html: "", iconSize: [28, 28]})})
+        .bindTooltip("", {className: "map-tip", direction: "top", offset: [0, -10]});
+      m.state = null;
+      // Leaflet makes the marker's element only once the map shows it.
+      m.on("add", () => m.getElement()?.setAttribute("aria-label", m.label));
+      markers.set(b.bus, m);
+    }
+    m.setLatLng([b.lat, b.lon]);
+    if (m.state !== b.state.key) {
+      m.setIcon(L.divIcon({className: "bus-marker", html: bandIconHTML(b.state, 16), iconSize: [28, 28]}));
+      m.state = b.state.key;
+    }
+    m.setTooltipContent(tip);
+    m.label = `Bus ${b.bus}: ${b.trip ? routeName(b.trip.route_id) : "not running a trip"}, ${b.state.label.toLowerCase()}`;
+    if (!mapView.buses.hasLayer(m)) mapView.buses.addLayer(m);
+    m.getElement()?.setAttribute("aria-label", m.label);
+  }
+  for (const [bus, m] of markers) if (!seen.has(bus)) mapView.buses.removeLayer(m);
+}
+```
+
+```{ojs}
+//| echo: false
+h("div", {class: "band-legend"}, h("ul", {}, ...STATES.map(s => h("li", {}, bandIcon(s), s.label))))
+```
+
+```{ojs}
+//| echo: false
+guard(() => {
+  if (!raw) return emptyNote("unavailable", "This day's buses");
+  const count = k => now.filter(b => b.state.key === k).length;
+  const say = now.length === 0 ? `No bus was out at ${clockOf(clock)} on ${longDate(day)}.`
+    : `At ${clockOf(clock)} on ${longDate(day)}, we saw ${plural(now.length, "bus", "buses")}: ${count("good")} on time, ${count("warning")} early, ${count("critical")} late and ${count("none")} not timed yet or not on a trip.`;
+  return html`<p class="replay-summary">${say}</p>${now.length === 0 ? "" : ch.table(now.map(b => ({...b, route: b.trip ? routeName(b.trip.route_id) : "No trip"})), {
+    caption: `Buses at ${clockOf(clock)}`,
+    columns: [
+      {key: "bus", label: "Bus"},
+      {key: "route", label: "Route"},
+      {key: "late", label: "Last timed stop", format: (v, r) => v == null ? "Not timed yet" : `${lateness(v)} (${r.state.short})`},
+      {key: "runs", label: "Routes that day", format: v => v.map(r => routeName(r.route)).join(", ") || "–"},
+    ],
+  })}`;
+}, "The list of buses")
+```
+
+The buses' places come from the live feed every 20 seconds, with GPS glitches
+taken out as they are for the on-time figures. Between two reports less than
+2 minutes apart, a bus is drawn along the straight line between them, so it
+can cut a corner. The timetable times come from Island Transit's printed
+timetables, as on the rest of this site.

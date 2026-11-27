@@ -3,7 +3,7 @@
 import {PAGES, expect, expectClean, open, test} from "./fixtures.mjs";
 import {SCENARIOS, useScenario} from "./scenarios.mjs";
 
-const DATA_PAGES = ["index", "routes", "ontime", "quality", "data", "limits", "compare", "stops"];
+const DATA_PAGES = ["index", "routes", "ontime", "quality", "data", "limits", "compare", "stops", "replay"];
 
 for (const name of PAGES) {
   test(`${name} runs clean`, async ({page, problems}) => {

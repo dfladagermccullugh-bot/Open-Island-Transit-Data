@@ -54,10 +54,11 @@ jobs:
         run: python -m pipeline.invariants --data data-branch --light --allow-old-versions
       - name: Copy the published metrics into the site
         run: python scripts/site_data.py data-branch site/data
-      # The stop and trip views (scripts/site_views.py): built from the
-      # Release files of the last 28 service days, checked by SHA-256, and
-      # kept in the site only, so the data branch does not grow with them.
-      - name: Build the stop and trip views
+      # The stop, trip and replay views (scripts/site_views.py): built from
+      # the Release files of the last 28 service days (14 for the replay),
+      # checked by SHA-256, and kept in the site only, so the data branch
+      # does not grow with them.
+      - name: Build the stop, trip and replay views
         run: |
           pip install pyarrow -c constraints.txt
           python scripts/site_views.py data-branch site/data

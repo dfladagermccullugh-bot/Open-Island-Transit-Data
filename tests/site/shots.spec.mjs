@@ -6,7 +6,7 @@ import {useScenario} from "./scenarios.mjs";
 const out = process.env.SHOTS;
 const VIEWS = [
   ["index", ""], ["routes", ""], ["routes", "#60"], ["ontime", ""], ["quality", ""],
-  ["data", ""], ["methods", ""], ["codebook", ""], ["glossary", ""], ["limits", ""], ["compare", ""], ["stops", ""],
+  ["data", ""], ["methods", ""], ["codebook", ""], ["glossary", ""], ["limits", ""], ["compare", ""], ["stops", ""], ["replay", ""],
 ];
 
 test.skip(!out, "set SHOTS=<folder> to take pictures");

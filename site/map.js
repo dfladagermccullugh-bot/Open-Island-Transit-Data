@@ -46,17 +46,20 @@ function routeTip(r, stats) {
 // drawRouteMap(L, mapData, recent, {onSelect, linkFor, onStop})
 //   onStop(stopId)     called when a stop marker of the picked route is pointed
 //                      at or focused, and with null when it no longer is
+//   plain              draw every line in one neutral color, named but
+//                      without figures (a page that draws its own marks)
+//   label              the map's name for screen readers
 //   onSelect(routeId)  called when a route line is clicked or tapped
 //   linkFor(routeId)   if given, a tap on a touch screen opens a small card
 //                      with a link to this address instead of calling
 //                      onSelect, so a finger resting on the map never leaves
 //                      the page by accident
 // Returns {node, map, setSelected(id), highlight(id), destroy()}.
-export function drawRouteMap(L, mapData, recent, {onSelect = null, linkFor = null, onStop = null} = {}) {
+export function drawRouteMap(L, mapData, recent, {onSelect = null, linkFor = null, onStop = null, plain = false, label = null} = {}) {
   const node = document.createElement("div");
   node.className = "route-map";
   node.setAttribute("role", "region");
-  node.setAttribute("aria-label",
+  node.setAttribute("aria-label", label ??
     "Map of Island Transit routes, colored by how often buses were on time. The same figures are listed beside the map.");
   // The box is bounded here, not only in the stylesheet. A page reader that
   // skips stylesheets would otherwise get a box as tall as its contents: each
@@ -116,12 +119,12 @@ export function drawRouteMap(L, mapData, recent, {onSelect = null, linkFor = nul
   // Draw routes with the most trips last, so busy routes sit on top.
   for (const r of [...(mapData.routes ?? [])].sort((a, b) => a.trips - b.trips)) {
     const st = stats[r.route_id];
-    const b = band(st?.on_time_share_of_observed, st?.observed);
+    const b = plain ? NO_BAND : band(st?.on_time_share_of_observed, st?.observed);
     const latlngs = r.paths.map(p => p.map(([lon, lat]) => [lat, lon]));
     const under = L.polyline(latlngs, {className: "route-casing", weight: CASING, interactive: false});
     const line = L.polyline(latlngs, {className: `route-line band-${b.key}`, weight: LINE, interactive: false});
     const hit = L.polyline(latlngs, {className: "route-hit", weight: HIT, opacity: 0});
-    hit.bindTooltip(routeTip(r, st), {sticky: true, className: "map-tip"});
+    hit.bindTooltip(plain ? `<strong>${esc(routeTitle(r))}</strong>` : routeTip(r, st), {sticky: true, className: "map-tip"});
     hit.on("mouseover", () => { hovered = r.route_id; restyle(); });
     hit.on("mouseout", () => { hovered = null; restyle(); });
     hit.on("click", ev => {

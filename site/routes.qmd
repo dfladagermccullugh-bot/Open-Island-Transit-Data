@@ -13,7 +13,8 @@ Transit's timetables, called
 [timepoints]{.term tip="The stops whose times are printed in Island Transit's timetables. These are the times the agency publishes for riders."},
 because those are the times riders are promised. A bus is
 [on time]{.term tip="A bus is on time if it leaves from 1 minute early to 5 minutes late. At the last stop of a trip, its arrival counts instead."}
-if it leaves from 1 minute early to 5 minutes late.
+if it leaves from 1 minute early to 5 minutes late. To watch every bus
+move over a whole day, see [Replay a day](replay.qmd).
 
 ```{ojs}
 //| echo: false

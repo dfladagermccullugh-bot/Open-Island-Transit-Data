@@ -484,3 +484,24 @@ test.describe("stops and trips", () => {
     await expect(trip).toContainText("(timepoint)");
   });
 });
+
+test.describe("replay a day", () => {
+  test("moving the clock shows the buses out at that time, and Play moves it on", async ({page}) => {
+    await open(page, "replay", {hash: "#2026-11-20"});
+    await expect(page.locator("#day-pick")).toHaveValue("2026-11-20");
+    const clock = page.locator("#replay-clock");
+    await clock.evaluate(el => { el.value = 32400; el.dispatchEvent(new Event("input", {bubbles: true})); });
+    await expect(page.locator(".replay-time")).toHaveText("9:00 AM");
+    await expect(page.locator(".replay-summary")).toContainText(/At 9:00 AM on November 20, 2026, we saw \d+ buses: \d+ on time/);
+    await expect(page.locator(".bus-marker").first()).toBeAttached();
+    expect(await page.locator(".bus-marker").count()).toBeGreaterThan(3);
+    const table = page.locator("table", {has: page.locator("caption", {hasText: "Buses at 9:00 AM"})});
+    await expect(table).toBeVisible();
+    await expect(table.locator("tbody tr").first()).toContainText(/Route/);
+    await page.locator(".replay-play").click();
+    await expect(page.locator(".replay-play")).toHaveAttribute("aria-pressed", "true");
+    await expect(page.locator(".replay-time")).not.toHaveText("9:00 AM");
+    await page.locator(".replay-play").click();
+    await expect(page.locator(".replay-play")).toHaveText("Play");
+  });
+});

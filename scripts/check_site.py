@@ -38,6 +38,7 @@ PAGES = (
     "limits",
     "compare",
     "stops",
+    "replay",
     "404",
 )
 FILES = (

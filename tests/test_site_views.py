@@ -53,3 +53,42 @@ def test_views_match_the_day_files_and_refuse_a_changed_file(tmp_path, replay, s
     name.write_bytes(name.read_bytes() + b"x")
     with pytest.raises(SystemExit, match="SHA-256"):
         site_views.stop_event_files(data, releases)
+
+
+def test_replay_keeps_every_report_but_glitches_and_every_timed_stop(tmp_path, replay, site_views):  # noqa: F811
+    import io
+    from itertools import accumulate
+
+    import pyarrow.parquet as pq
+
+    from pipeline import glitch
+    from pipeline.events.ontime import classify
+
+    world = tmp_path / "world"
+    assert replay(world) == 0
+    data, releases = world / "data-branch", world / "releases"
+    views = site_views.replay_views(data, releases)
+    assert views, "no replay"
+    vehicles = site_views.release_files(data, releases, "vehicles", 0, set(views))
+    events = site_views.stop_event_files(data, releases)
+    for d, v in views.items():
+        rows = [
+            r for r in pq.read_table(io.BytesIO(vehicles[d])).to_pylist() if r["lat"] is not None
+        ]
+        removed = glitch.flag(rows).removed
+        kept = {(r["vehicle_key"], r["vehicle_ts"]) for r in rows} - removed
+        assert sum(len(b["t"]) for b in v["buses"]) == len(kept)
+        for b in v["buses"]:
+            t = list(accumulate(b["t"]))
+            assert t == sorted(t) and len(set(t)) == len(t)
+            lat = [x / v["scale"] for x in accumulate(b["lat"])]
+            assert all(47 < x < 49 for x in lat)
+            assert b["trips"][0][0] == 0
+        timed = sum(
+            1
+            for e in pq.read_table(io.BytesIO(events[d])).to_pylist()
+            if e["is_timepoint"]
+            and classify(e)[1] is not None
+            and any(tr["trip_id"] == e["trip_id"] for tr in v["trips"])
+        )
+        assert sum(len(tr["timed"]) for tr in v["trips"]) == timed

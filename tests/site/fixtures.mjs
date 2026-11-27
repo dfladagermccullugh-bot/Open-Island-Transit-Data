@@ -20,7 +20,7 @@ import {fileURLToPath} from "node:url";
 const here = path.dirname(fileURLToPath(import.meta.url));
 const modules = path.join(here, "node_modules");
 
-export const PAGES = ["index", "routes", "ontime", "quality", "data", "methods", "codebook", "glossary", "limits", "compare", "stops"];
+export const PAGES = ["index", "routes", "ontime", "quality", "data", "methods", "codebook", "glossary", "limits", "compare", "stops", "replay"];
 export const STATUS = [
   {feed: "vehiclePositions", last_ok_age_s: 7},
   {feed: "tripUpdates", last_ok_age_s: 7},
