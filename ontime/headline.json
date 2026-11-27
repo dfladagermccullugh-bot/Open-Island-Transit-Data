@@ -1,0 +1,64 @@
+{
+ "periods_version": "periods/0.1.0",
+ "window_service_days": 28,
+ "first_service_date": "2026-11-19",
+ "last_service_date": "2026-11-25",
+ "days_without_service": [],
+ "timetables": [
+  "2026-09-27"
+ ],
+ "current": {
+  "days": 7,
+  "scheduled": 14664,
+  "observed": 12602,
+  "on_time": 9306,
+  "early": 232,
+  "late": 3064,
+  "observed_share": 0.8594,
+  "on_time_share_of_observed": 0.7385,
+  "early_share_of_observed": 0.0184,
+  "late_share_of_observed": 0.2431,
+  "deviation_s_median": 154.0,
+  "deviations_counted": 12602
+ },
+ "previous": null,
+ "previous_needs_service_days": 14,
+ "change_points": null,
+ "spark": [
+  {
+   "service_date": "2026-11-19",
+   "on_time_share_of_observed": 0.6087,
+   "observed_share": 0.8405
+  },
+  {
+   "service_date": "2026-11-20",
+   "on_time_share_of_observed": 0.7104,
+   "observed_share": 0.8591
+  },
+  {
+   "service_date": "2026-11-21",
+   "on_time_share_of_observed": 0.8094,
+   "observed_share": 0.8799
+  },
+  {
+   "service_date": "2026-11-22",
+   "on_time_share_of_observed": 0.9034,
+   "observed_share": 0.8748
+  },
+  {
+   "service_date": "2026-11-23",
+   "on_time_share_of_observed": 0.7649,
+   "observed_share": 0.8602
+  },
+  {
+   "service_date": "2026-11-24",
+   "on_time_share_of_observed": 0.7242,
+   "observed_share": 0.8462
+  },
+  {
+   "service_date": "2026-11-25",
+   "on_time_share_of_observed": 0.6974,
+   "observed_share": 0.8635
+  }
+ ]
+}
