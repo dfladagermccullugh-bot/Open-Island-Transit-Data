@@ -1,0 +1,159 @@
+{
+ "note": "Written by scripts/check_versions.py --update. Each stage: its version constant, the sources that compute its numbers, and a hash of their syntax tree. See that script.",
+ "stages": {
+  "tables": {
+   "version": "tables/0.1.0",
+   "constant": "pipeline/tables/build.py::TABLES_VERSION",
+   "sources": [
+    "pipeline/tables/build.py",
+    "pipeline/parse/realtime.py"
+   ],
+   "hash": "509e1e45ae95ca01a659bf34cb0dece06f4924aa8e7f6ead0c1b3036f7515feb"
+  },
+  "timepoints": {
+   "version": "timepoints/0.1.0",
+   "constant": "pipeline/gtfs/timepoints.py::TIMEPOINTS_VERSION",
+   "sources": [
+    "pipeline/gtfs/timepoints.py",
+    "pipeline/gtfs/tables.py",
+    "pipeline/gtfs/zipread.py"
+   ],
+   "hash": "f03c2abbbfcfb0c1e319d910420e8620fff594c14414e22ac40bbeaefe208709"
+  },
+  "crosswalk": {
+   "version": "crosswalk/0.2.0",
+   "constant": "pipeline/gtfs/crosswalk.py::CROSSWALK_VERSION",
+   "sources": [
+    "pipeline/gtfs/crosswalk.py",
+    "pipeline/gtfs/schedule.py::DAYS"
+   ],
+   "hash": "634e154fcb03866bb1b3d4c313efb076a0de41c500ab4bcd7d8e8cc439790008"
+  },
+  "map": {
+   "version": "map/0.1.0",
+   "constant": "pipeline/gtfs/routemap.py::MAP_VERSION",
+   "sources": [
+    "pipeline/gtfs/routemap.py",
+    "pipeline/events/geometry.py::drop_retraced",
+    "pipeline/events/geometry.py::to_xy"
+   ],
+   "hash": "7745daf37b4e005c3bb2c95007eab6d70176ebefcf7e1818ee2dc6942e2e0aed"
+  },
+  "pin": {
+   "version": "pin/0.2.0",
+   "constant": "pipeline/gtfs/versions.py::PIN_VERSION",
+   "sources": [
+    "pipeline/gtfs/versions.py",
+    "pipeline/gtfs/__main__.py::live_match"
+   ],
+   "hash": "bc9e67031b19d343e47595b3abf766b3678a2aec26446d16d19233453c39bddb"
+  },
+  "events": {
+   "version": "events/0.3.1",
+   "constant": "pipeline/events/infer.py::EVENTS_VERSION",
+   "sources": [
+    "pipeline/events/infer.py",
+    "pipeline/events/geometry.py",
+    "pipeline/gtfs/schedule.py",
+    "pipeline/gtfs/tables.py",
+    "pipeline/geo.py",
+    "pipeline/stats.py",
+    "pipeline/gtfs/timepoints.py::timepoint_pairs"
+   ],
+   "hash": "c5fac4dd6a1da9c11f6fabfff55f278f8126c316ac490eb42734064ed6580fa8"
+  },
+  "ontime": {
+   "version": "ontime/0.3.0",
+   "constant": "pipeline/events/ontime.py::ONTIME_VERSION",
+   "sources": [
+    "pipeline/events/ontime.py",
+    "pipeline/stats.py",
+    "pipeline/columns.py::ONTIME_DAILY"
+   ],
+   "hash": "63eab8048764555d0c3f273970ea2c8b928e2e78ddda1e8abf68a528c1d8496a"
+  },
+  "validate": {
+   "version": "validate/0.2.0",
+   "constant": "pipeline/events/validate.py::VALIDATE_VERSION",
+   "sources": [
+    "pipeline/events/validate.py",
+    "pipeline/stats.py"
+   ],
+   "hash": "219024128e1642afaf015332461af6c5f7f88c7f89649c3ed78aee3cf2b1cfc1"
+  },
+  "routes": {
+   "version": "routes/0.2.0",
+   "constant": "pipeline/events/routes.py::ROUTES_VERSION",
+   "sources": [
+    "pipeline/events/routes.py",
+    "pipeline/stats.py",
+    "pipeline/gtfs/timepoints.py::reference_of"
+   ],
+   "hash": "f7c99fbd4de3b4bb41aed4a1b65d1b90229ada168314db976d5835a2d8c1e6b2"
+  },
+  "field": {
+   "version": "field/0.3.0",
+   "constant": "pipeline/events/field.py::FIELD_VERSION",
+   "sources": [
+    "pipeline/events/field.py",
+    "pipeline/stats.py"
+   ],
+   "hash": "4af857baec056d102e380cafe3f586197043adac3f1239a88fe9f6f73aa25a31"
+  },
+  "quality": {
+   "version": "quality/0.5.0",
+   "constant": "pipeline/quality/metrics.py::QUALITY_VERSION",
+   "sources": [
+    "pipeline/quality/metrics.py",
+    "pipeline/quality/stops.py",
+    "pipeline/quality/__main__.py::compute",
+    "pipeline/quality/__main__.py::event_metrics",
+    "pipeline/quality/__main__.py::terminals",
+    "pipeline/quality/__main__.py::previous_vehicles",
+    "pipeline/canceled.py",
+    "pipeline/archive/days.py",
+    "pipeline/gtfs/schedule.py",
+    "pipeline/geo.py",
+    "pipeline/stats.py",
+    "pipeline/events/ontime.py::classify",
+    "pipeline/columns.py::QUALITY_HEADLINE"
+   ],
+   "hash": "470c00244d74b7bd1a2fc10668808798e8328aa85025df03d8e515746d183f36"
+  },
+  "gaps": {
+   "version": "gaps/0.4.0",
+   "constant": "pipeline/quality/gaps.py::GAPS_VERSION",
+   "sources": [
+    "pipeline/quality/gaps.py",
+    "pipeline/stats.py"
+   ],
+   "hash": "20c439df3346199095203948dbbd9846315e874187b1c8e102b3d70528760775"
+  },
+  "monthly": {
+   "version": "monthly/0.2.0",
+   "constant": "pipeline/monthly.py::REPORT_VERSION",
+   "sources": [
+    "pipeline/monthly.py",
+    "pipeline/stats.py"
+   ],
+   "hash": "1ab0497c7b718bd03efd2cfcde6d9f573d4559ba2baf3176f4b8582671f077d6"
+  },
+  "format": {
+   "version": "format/0.2.0",
+   "constant": "pipeline/common.py::DATA_FORMAT_VERSION",
+   "sources": [
+    "pipeline/common.py::csv_cell",
+    "pipeline/common.py::write_csv"
+   ],
+   "hash": "88774869ecf393f53bd511fd3f6a9ca40d51b8f1e205383ac783a68baa529941"
+  },
+  "dictionary": {
+   "version": "dictionary/0.1.0",
+   "constant": "pipeline/datapackage.py::DICTIONARY_VERSION",
+   "sources": [
+    "pipeline/datapackage.py"
+   ],
+   "hash": "a074c85f9eab19ffd872b9abf8bfad7a4710924d540795299e8d858dfc1ec347"
+  }
+ }
+}

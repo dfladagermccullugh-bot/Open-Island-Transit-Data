@@ -34,6 +34,7 @@ import pyarrow as pa
 import pyarrow.parquet as pq
 
 from pipeline import release
+from pipeline.columns import ONTIME_DAILY as DAILY
 from pipeline.common import (
     DayFiles,
     code_sha,
@@ -112,20 +113,6 @@ VEHICLE_COLUMNS = [
     "bearing",
     "speed",
     "current_stop_sequence",
-]
-DAILY = [
-    "service_date",
-    "scheduled",
-    "observed",
-    "observed_share",
-    "on_time",
-    "early",
-    "late",
-    "on_time_share_of_observed",
-    "deviation_s_median",
-    "feed_agreement_share",
-    "service_expected",
-    "ontime_version",
 ]
 
 

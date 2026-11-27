@@ -30,6 +30,8 @@ jobs:
       - run: ruff check .
       - run: ruff format --check .
       - run: mypy
+      # A change to the code behind a stage's numbers needs a new version.
+      - run: python scripts/check_versions.py
       - run: pytest -q
       # The shell scripts and the workflow files are code too.
       - run: shellcheck scripts/*.sh

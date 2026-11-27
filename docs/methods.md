@@ -367,8 +367,26 @@ faster than 35 m/s. Every one of those fell within a single 16 to 40 second
 gap between reports on a fast road, where the projection can jump ahead as
 far as the 35 m/s search limit allows. The day file lists the fastest ones.
 
+Before the site is rebuilt each night, a script checks that the published
+numbers agree with each other. It adds up every day's counts by route, by
+hour and by stop and makes sure each set adds up to the day's total. It makes
+sure every percentage is the count it came from divided by its total, that
+the daily tables match the day files cell for cell, and that the 28-day
+figures on the home and routes pages are the sums of the days they cover. It
+looks for missing days, for days made by an older version of our code, and
+for a bus timed on two trips at once. For the last three days, it counts the
+on-time figures again from the stop times themselves. If any of these rules
+fails, the site keeps showing the previous night's figures until the problem
+is fixed. These rules check our arithmetic, not the buses: they catch a
+number that was added up or copied wrong, but not a stop time that was
+inferred wrong. Checks 1, 2 and 3 are there for that.
+
 (Code and files: check 1 is scored by `pipeline/events/field.py` from
 `reference/field-observations.csv` into `ontime/field-check.json`, and the
 observer's guide is `docs/field-check.md`. Checks 2 and 3 run in
 `pipeline/events/validate.py` and are written to `validation` in
-`ontime/days/<date>.json`.)
+`ontime/days/<date>.json`. The publishing rules are I1 to I12 in
+`pipeline/invariants.py`; the nightly job runs them before it redeploys the
+site, and the site job runs the first eight before it copies the data in.
+`scripts/check_versions.py` makes sure a change to the code behind a number
+comes with a new version, so every day is rebuilt with it.)

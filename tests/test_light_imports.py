@@ -41,3 +41,30 @@ def test_watchdog_scripts_load_without_the_heavy_libraries(script):
         [sys.executable, "-c", code], cwd=ROOT, capture_output=True, text=True, timeout=60
     )
     assert done.returncode == 0, done.stderr[-2000:]
+
+
+GATE = """
+import importlib.abc, sys
+
+HEAVY = {heavy!r}
+
+class Refuse(importlib.abc.MetaPathFinder):
+    def find_spec(self, name, path=None, target=None):
+        if any(name == h or name.startswith(h + ".") for h in HEAVY):
+            raise ImportError("the light gate must not need " + name)
+        return None
+
+sys.meta_path.insert(0, Refuse())
+from pipeline import invariants
+sys.exit(invariants.main(["--data", {data!r}, "--light"]))
+"""
+
+
+def test_the_light_publishing_gate_runs_without_the_heavy_libraries():
+    """The site job runs ``pipeline.invariants --light`` with only Python
+    installed, before it copies the data into the site."""
+    code = GATE.format(heavy=HEAVY, data=str(ROOT / "tests" / "golden" / "data-branch"))
+    done = subprocess.run(
+        [sys.executable, "-c", code], cwd=ROOT, capture_output=True, text=True, timeout=60
+    )
+    assert done.returncode == 0, done.stdout[-2000:] + done.stderr[-2000:]

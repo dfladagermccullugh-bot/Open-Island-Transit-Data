@@ -13,7 +13,7 @@ name: Nightly archive
 # only handles pending days, so extra attempts cost about a minute and change
 # nothing. The watchdog also dispatches this workflow if yesterday is still
 # unprocessed (scripts/catch_up.py). The site is redeployed only when the
-# data branch changed.
+# data branch changed and the publishing gate passed.
 on:
   schedule:
     - cron: "35 8 * * *"
@@ -170,18 +170,23 @@ jobs:
         if: always()
         run: scripts/publish_data.sh "After index:"
 
-      - name: Redeploy the site with the new data
-        if: always() && env.DATA_CHANGED == '1'
-        run: gh workflow run pages.yml --repo "$GITHUB_REPOSITORY" --ref main
-
-      - name: Check the data branch against Releases
-        id: check
+      # The publishing gate (pipeline/invariants.py): every rule the published
+      # figures must obey, the stop events of the last three days recounted,
+      # and the data branch checked against Releases (I12, pipeline/check.py).
+      # The site is redeployed only if it passes, so a broken figure stays
+      # off the site while the previous deploy stays up.
+      - name: Check the published figures (publishing gate)
+        id: gate
         if: always()
-        timeout-minutes: 5
+        timeout-minutes: 10
         run: |
           set +e
-          python -m pipeline.check --data data-branch
+          python -m pipeline.invariants --data data-branch --work work/events
           echo "code=$?" >> "$GITHUB_OUTPUT"
+
+      - name: Redeploy the site with the new data
+        if: always() && env.DATA_CHANGED == '1' && steps.gate.outputs.code == '0'
+        run: gh workflow run pages.yml --repo "$GITHUB_REPOSITORY" --ref main
 
       # A stage that timed out wrote no exit code, so anything but 0 fails.
       - name: Fail if any step above failed
@@ -191,5 +196,5 @@ jobs:
           steps.static.outputs.code != '0' || steps.events.outputs.code != '0' ||
           steps.field.outputs.code != '0' ||
           steps.quality.outputs.code != '0' || steps.monthly.outputs.code != '0' ||
-          steps.index.outputs.code != '0' || steps.check.outputs.code != '0')
+          steps.index.outputs.code != '0' || steps.gate.outputs.code != '0')
         run: exit 1

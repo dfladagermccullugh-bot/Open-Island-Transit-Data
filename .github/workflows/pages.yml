@@ -12,6 +12,7 @@ on:
       - "docs/codebook.md"
       - "scripts/site_data.py"
       - "scripts/check_site.py"
+      - "pipeline/invariants.py"
       - "scripts/test_site.sh"
       - "tests/site/**"
       - ".github/workflows/pages.yml"
@@ -43,6 +44,11 @@ jobs:
           python-version: "3.13"
           cache: pip
           cache-dependency-path: .github/workflows/pages.yml
+      # The light rules of the publishing gate (pipeline/invariants.py, I1 to
+      # I8), with only Python installed: a data branch that breaks them is
+      # not put on the site.
+      - name: Check the published figures before using them
+        run: python -m pipeline.invariants --data data-branch --light
       - name: Copy the published metrics into the site
         run: python scripts/site_data.py data-branch site/data
       - name: Install Quarto

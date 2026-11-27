@@ -4,8 +4,9 @@
     python scripts/rehearse_nightly.py --replay /path/to/folder [--from-raw]
 
 Publishes nothing. Pulls the day from the collector, then runs archive,
-tables, static GTFS, events, quality, monthly reports and the final check in
-the nightly order, writing the would-be data branch to <folder>/data-branch
+tables, static GTFS, events, quality, monthly reports, the final check and
+the publishing gate (``pipeline/invariants.py``, over every day) in the
+nightly order, writing the would-be data branch to <folder>/data-branch
 and the would-be release files to <folder>/releases/<tag>/. Works on the
 current, incomplete day too: the check that the collector's digest equals the
 archive's is skipped, because new fetches keep arriving while the day is read.
@@ -140,6 +141,8 @@ def main(argv: list[str] | None = None) -> int:
         ("pipeline.monthly", ["--data", str(data), "--release", "--work", f"{work}/monthly"]),
         ("pipeline.datapackage", ["--data", str(data)]),
         ("pipeline.check", ["--data", str(data)]),
+        ("pipeline.invariants", ["--data", str(data), "--releases", str(store),
+                                 "--days", "0"]),
     ]  # fmt: skip
     if args.replay:
         steps = steps[1:]
