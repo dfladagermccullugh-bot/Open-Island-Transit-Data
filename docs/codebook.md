@@ -524,6 +524,22 @@ its figure under our window: `low`, `high`, and how many of the
 `assumed_scales` could reproduce its figure); and `classes`, the ways it
 could be compared.
 
+## `validation/`
+
+Since `feedcheck/0.1.0` (November 27, 2026), written by
+`pipeline/feed_validation.py` (`docs/methods.md`, section 2, "What the
+official validators say"). `validation/static/<version>.json` holds what
+MobilityData's GTFS Schedule validator found in one Passio schedule version:
+the `validator` and `validator_version`, the `date_for_validation` (the
+version's first day), the `file` checked, the totals `errors`, `warnings`
+and `infos`, and `notices`, one entry per rule with its `code`, `severity`
+and `count`. `validation/realtime/<date>.json` holds what MobilityData's
+GTFS Realtime validator found in one hour of that day (`hour`, from and to),
+checked against `schedule_version`: for each feed in `feeds`, the number of
+`responses` read and `rules`, one entry per rule with its `code`,
+`severity`, `title`, `occurrences` and the number of `responses` it fired
+in. Both carry `checked_at`.
+
 ## `reports/`
 
 `pipeline/monthly.py` writes a report for each month once its last day has

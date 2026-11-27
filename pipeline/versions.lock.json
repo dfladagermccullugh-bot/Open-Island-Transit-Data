@@ -175,6 +175,14 @@
     "pipeline/stats.py"
    ],
    "hash": "6953ebbd9226cb2e7fed44e7203d67e3ce81fef8257d68e29ff53cbee8b270f9"
+  },
+  "feedcheck": {
+   "version": "feedcheck/0.1.0",
+   "constant": "pipeline/feed_validation.py::VALIDATION_VERSION",
+   "sources": [
+    "pipeline/feed_validation.py"
+   ],
+   "hash": "a5589e83ffd35455cfebf90989c64baf3c7634ef604d23f494927a3b32deb59d"
   }
  }
 }

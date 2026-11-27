@@ -1,0 +1,77 @@
+name: Validators
+
+# The industry's own validators on what we archived (pipeline/feed_validation.py):
+# MobilityData's GTFS Schedule validator on each new Passio schedule version,
+# and its GTFS Realtime validator on one archived hour a week. Only their
+# summaries are kept, under validation/ on the data branch; scripts/anomaly.py
+# reads them. Runs daily after the nightly job; the realtime check runs when
+# its last report is a week old.
+on:
+  schedule:
+    - cron: "53 16 * * *"
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+concurrency:
+  group: validators
+  cancel-in-progress: false
+
+env:
+  # A pinned release, checked by its SHA-256 before use.
+  STATIC_JAR_URL: https://github.com/MobilityData/gtfs-validator/releases/download/v8.0.1/gtfs-validator-8.0.1-cli.jar
+  STATIC_JAR_SHA256: 19293ddd9b6f954f216d4f12054bd8a3232921751c4484339e339764a91000e2
+  # The realtime validator publishes no releases, so it is built from a pinned commit.
+  RT_REPO: https://github.com/MobilityData/gtfs-realtime-validator
+  RT_COMMIT: 7041fa3fcaf674bf730e17325c179d329cdff6f2
+
+jobs:
+  validate:
+    runs-on: ubuntu-latest
+    timeout-minutes: 40
+    env:
+      GH_TOKEN: ${{ github.token }}
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+      - uses: actions/setup-python@6d4fd22b20465ccc0f7354476588e8df7c9ca0e0 # v7.1.0
+        with:
+          python-version: "3.13"
+          cache: pip
+          cache-dependency-path: |
+            pyproject.toml
+            constraints.txt
+      - run: pip install -e . -c constraints.txt
+      - name: Get the data branch
+        run: |
+          git init -q data-branch
+          cd data-branch
+          git remote add origin "https://x-access-token:${GH_TOKEN}@github.com/${GITHUB_REPOSITORY}.git"
+          git fetch -q --depth 1 origin data
+          git checkout -q -b data FETCH_HEAD
+      - id: due
+        name: Is a realtime check due?
+        run: python -m pipeline.feed_validation --data data-branch --due >> "$GITHUB_OUTPUT"
+      - name: Get the schedule validator
+        run: |
+          curl -fsSL -o gtfs-validator.jar "$STATIC_JAR_URL"
+          echo "$STATIC_JAR_SHA256  gtfs-validator.jar" | sha256sum -c -
+      - name: Build the realtime validator
+        if: steps.due.outputs.realtime == 'true'
+        run: |
+          git init -q rt-validator
+          cd rt-validator
+          git fetch -q --depth 1 "$RT_REPO" "$RT_COMMIT"
+          git checkout -q FETCH_HEAD
+          cd gtfs-realtime-validator-lib
+          mvn -B -q package -DskipTests
+          cp target/gtfs-realtime-validator-lib-1.0.0-SNAPSHOT.jar "$GITHUB_WORKSPACE/gtfs-rt-validator.jar"
+      - name: Validate
+        env:
+          DUE: ${{ steps.due.outputs.realtime }}
+        run: |
+          args=(--data data-branch --static-jar gtfs-validator.jar --work "$RUNNER_TEMP/validator-work")
+          if [ "$DUE" = "true" ]; then args+=(--rt-jar gtfs-rt-validator.jar); fi
+          python -m pipeline.feed_validation "${args[@]}"
+      - name: Publish
+        run: scripts/publish_data.sh "Validators:"

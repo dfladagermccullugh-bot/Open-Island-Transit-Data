@@ -152,3 +152,51 @@ def test_a_site_that_stopped_deploying_is_something_to_look_at():
     anomaly.check_site(f, date(2026, 12, 1), NOW)  # December 8: 7 days behind
     anomaly.check_site(f, date(2026, 12, 6), NOW)  # 2 days: ordinary
     assert len(f.looks) == 1
+
+
+def _validation(tmp_path, static=None, realtime=None):
+    import json
+
+    for name, codes in (static or {}).items():
+        p = tmp_path / "validation" / "static" / f"{name}.json"
+        p.parent.mkdir(parents=True, exist_ok=True)
+        p.write_text(json.dumps({"notices": [
+            {"code": c, "severity": "ERROR", "count": 3} for c in codes] + [
+            {"code": "a_warning", "severity": "WARNING", "count": 9}]}))  # fmt: skip
+    for day, (codes, checked) in (realtime or {}).items():
+        p = tmp_path / "validation" / "realtime" / f"{day}.json"
+        p.parent.mkdir(parents=True, exist_ok=True)
+        p.write_text(json.dumps({"service_date": day, "checked_at": checked.isoformat(), "feeds": {
+            "vehiclePositions": {"rules": [{"code": c, "severity": "ERROR", "occurrences": 5}
+                                           for c in codes]}}}))  # fmt: skip
+    return tmp_path
+
+
+def test_a_new_validator_error_in_a_new_schedule_is_something_to_look_at(tmp_path):
+    data = _validation(tmp_path, {"passio-a": ["e1"], "passio-b": ["e1", "e2"]})
+    f = anomaly.Findings()
+    anomaly.check_validation(f, data, quality_rows(passio_version="passio-b"), NOW)
+    assert len(f.looks) == 1 and "e2 (3)" in f.looks[0] and "e1" not in f.looks[0]
+    same = anomaly.Findings()
+    anomaly.check_validation(same, data, quality_rows(), NOW)  # no new version: nothing
+    assert same.looks == same.notes == []
+
+
+def test_the_schedule_validators_errors_are_a_note_when_nothing_is_new(tmp_path):
+    data = _validation(tmp_path, {"passio-a": ["e1"], "passio-b": ["e1"]})
+    f = anomaly.Findings()
+    anomaly.check_validation(f, data, quality_rows(passio_version="passio-b"), NOW)
+    assert f.looks == [] and len(f.notes) == 1 and "e1 (3)" in f.notes[0]
+
+
+def test_realtime_validator_findings_while_fresh(tmp_path):
+    old = NOW - timedelta(days=7)
+    data = _validation(
+        tmp_path, realtime={"2026-11-27": (["E001"], old), "2026-12-04": (["E001", "E004"], NOW)}
+    )
+    f = anomaly.Findings()
+    anomaly.check_validation(f, data, quality_rows(), NOW)
+    assert len(f.looks) == 1 and "E004 (5)" in f.looks[0]
+    stale = anomaly.Findings()
+    anomaly.check_validation(stale, data, quality_rows(), NOW + timedelta(days=3))
+    assert stale.looks == stale.notes == []

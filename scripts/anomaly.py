@@ -24,10 +24,12 @@ limits are used instead.
   from usual (|z| > 4); a route whose trips run a steady few minutes off the
   timetable; feed agreement (check 2) below 90%; fewer printed timepoint
   names tied to a stop than the day before; the token expiring within 21
-  days.
+  days; an error code from the official validators that the schedule
+  version or the week before did not have (``pipeline/feed_validation.py``).
 - Tier 3, information (exit 3; nothing fails): a new Passio schedule
-  version, schedule downloads that disagreed, canceled trips, the holiday
-  list running out.
+  version (and the validator's errors in it), schedule downloads that
+  disagreed, canceled trips, the holiday list running out, the first
+  realtime validator report.
 
 Exit 0: nothing to say; 2: the figures could not be read. ``--write-notes``
 writes every finding to ``quality/notes.json`` for the site. Standard
@@ -284,6 +286,62 @@ def check_holidays(
               "add next year's dates to reference/no-service-days.csv")  # fmt: skip
 
 
+VALIDATION_FRESH = timedelta(hours=36)
+
+
+def _errors(report: dict[str, Any] | None) -> dict[str, int]:
+    """Error codes of a validator summary (``pipeline/feed_validation.py``)."""
+    if not report:
+        return {}
+    if "notices" in report:
+        return {n["code"]: n["count"] for n in report["notices"] if n["severity"] == "ERROR"}
+    return {r["code"]: r["occurrences"] for feed in report.get("feeds", {}).values()
+            for r in feed.get("rules", []) if r["severity"] == "ERROR"}  # fmt: skip
+
+
+def _codes(errors: dict[str, int]) -> str:
+    return ", ".join(f"{c} ({n})" for c, n in sorted(errors.items()))
+
+
+def check_validation(f: Findings, data: Path, quality: list[dict[str, str]], now: datetime) -> None:
+    """What the industry's validators said. A schedule version is compared
+    with the one before it on the day it is first used; a weekly realtime
+    report with the report before it, while it is fresh."""
+    folder = data / "validation"
+    service = service_rows(quality)
+    if service and len(service) > 1:
+        new, old = service[-1].get("passio_version"), service[-2].get("passio_version")
+        path = folder / "static" / f"{new}.json"
+        if new != old and path.exists():
+            errors = _errors(json.loads(path.read_text()))
+            before_path = folder / "static" / f"{old}.json"
+            before = _errors(json.loads(before_path.read_text())) if before_path.exists() else None
+            added = {c: n for c, n in errors.items() if before is not None and c not in before}
+            day = service[-1]["service_date"]
+            if added:
+                f.add("look", f"{day}: the schedule validator finds errors in the new Passio "
+                      f"schedule that the one before did not have: {_codes(added)}")  # fmt: skip
+            elif errors:
+                f.add("note", f"{day}: the schedule validator's errors in "
+                      f"the new Passio schedule: {_codes(errors)}")  # fmt: skip
+    reports = sorted((folder / "realtime").glob("*.json")) if (folder / "realtime").exists() else []
+    if not reports:
+        return
+    latest = json.loads(reports[-1].read_text())
+    checked = datetime.fromisoformat(latest.get("checked_at", "1970-01-01T00:00:00+00:00"))
+    if now - checked > VALIDATION_FRESH:
+        return
+    errors = _errors(latest)
+    before = _errors(json.loads(reports[-2].read_text())) if len(reports) > 1 else None
+    added = {c: n for c, n in errors.items() if before is not None and c not in before}
+    day = latest.get("service_date", reports[-1].stem)
+    if added:
+        f.add("look", f"{day}: the realtime validator finds errors in the live feed that it "
+              f"did not find the week before: {_codes(added)}")  # fmt: skip
+    elif errors and before is None:
+        f.add("note", f"{day}: the realtime validator's errors in the live feed: {_codes(errors)}")
+
+
 def read_rows(path: Path) -> list[dict[str, str]]:
     with path.open(newline="", encoding="utf-8") as fh:
         return list(csv.DictReader(fh))
@@ -314,6 +372,7 @@ def evaluate(data: Path, now: datetime, last_holiday: date | None = None,
     check_site(f, site_through, now)
     check_workflows(f, workflows or {})
     check_holidays(f, last_holiday, now.astimezone(PACIFIC).date())
+    check_validation(f, data, quality, now)
     return f
 
 

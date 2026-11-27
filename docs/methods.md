@@ -191,11 +191,32 @@ Every median and percentile in these files is computed the same way, by
 straight-line interpolation between the two nearest values, so the median of
 an even number of values is the average of the middle two.
 
+### What the official validators say
+
+Besides our own measures, we run the two checkers that MobilityData, the
+nonprofit that looks after the GTFS standards, publishes for anyone to use.
+Its schedule validator reads each new version of Passio's schedule files
+once, the first time we use that version, and lists every rule of the
+standard the files break, from errors (a rule that must hold) to warnings
+and notes. Its realtime validator reads one hour of the live feed each week:
+every vehicle position and trip update we saved from 10 to 11 AM Pacific on
+the latest weekday, in order, against the schedule we used that day. We keep
+only what each found: the rule, how serious it is and how often it fired.
+On the schedule of November 19, 2026, the schedule validator found 22
+errors, all of one kind: a stop time whose arrival comes before the
+departure from the stop before it. Our automatic data check (tier 2) raises
+an error the validators find in a new schedule or a new week that they did
+not find in the one before.
+
 (Code: `pipeline/quality/metrics.py`; medians and shares in
 `pipeline/stats.py`; holidays in `pipeline/gtfs/holidays.py`. The measures built on our inferred stop
 times, which are stop-level coverage, off-route positions and prediction
 error, are in `pipeline/quality/stops.py` and appear under `events` in each
-day's file. Randomness of gaps is in `pipeline/quality/gaps.py`.)
+day's file. Randomness of gaps is in `pipeline/quality/gaps.py`. The official validators
+run in `pipeline/feed_validation.py`, started by
+`.github/workflows/validators.yml` with the schedule validator 8.0.1 and the
+realtime validator built from a pinned commit; the check that reads them is
+in `scripts/anomaly.py`.)
 
 ## 3. Arrival and departure times
 
