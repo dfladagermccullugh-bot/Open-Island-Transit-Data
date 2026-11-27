@@ -26,8 +26,10 @@ from pathlib import Path
 # its links; this list makes that fail the site check.
 METHOD_ANCHORS = ("collection", "feed-quality-metrics", "arrival-and-departure-times",
                   "on-time-performance", "validation")  # fmt: skip
-PAGES = ("index", "routes", "ontime", "quality", "data", "methods", "codebook", "glossary", "limits",
-         "404")
+PAGES = (
+    "index", "routes", "ontime", "quality", "data", "methods", "codebook", "glossary", "limits",
+    "404",
+)
 FILES = (
     "lib.js",
     "charts.js",
