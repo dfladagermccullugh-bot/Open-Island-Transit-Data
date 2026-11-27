@@ -455,3 +455,20 @@ test.describe("weight", () => {
     });
   }
 });
+
+test.describe("what this data can and can't tell you", () => {
+  test("fills every figure from the published files and lists the corrections", async ({page}) => {
+    await open(page, "limits");
+    const main = page.locator("main");
+    await expect(main).toContainText("we put a time on 85.3% of the departures");
+    await expect(main).toContainText("ran two or more routes");
+    // The visible text: the hidden source of each cell also holds the words.
+    expect(await main.innerText()).not.toContain("not yet known");
+    await expect(page.locator(".corrections table")).toContainText("events/0.5.0");
+  });
+
+  test("is linked from the home page headline", async ({page}) => {
+    await open(page, "index");
+    await expect(page.locator(".slot-headline a", {hasText: "What these figures can't tell you"})).toHaveAttribute("href", "limits.html");
+  });
+});

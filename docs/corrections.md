@@ -1,4 +1,4 @@
-# Corrections
+## Corrections
 
 Every change that moved a published figure, newest first. Each row says what
 was wrong, what the figures were before and after, and the version of the code

@@ -1,0 +1,120 @@
+---
+description: "Where these figures come from, how they are made, what they leave out, and every correction so far."
+title: "What this data can and can't tell you"
+subtitle: "Where the numbers come from, and where they fall short"
+toc: true
+toc-depth: 2
+toc-title: "On this page"
+toc-location: right
+---
+
+```{ojs}
+//| echo: false
+//| output: false
+import {csv, json, pct, num, count, unit, longDate, isoDate, plural, h} from "./lib.js"
+head = json("data/ontime/headline.json")
+fc = json("data/ontime/field-check.json")
+quality = csv(d3, "data/quality/daily.csv")
+ontime = csv(d3, "data/ontime/daily.csv")
+lastQ = quality.filter(d => String(d.service_expected).toLowerCase() !== "false").at(-1) ?? null
+lastO = ontime.filter(d => String(d.service_expected).toLowerCase() !== "false").at(-1) ?? null
+day = lastO && isoDate(lastO.service_date) ? json(`data/ontime/days/${isoDate(lastO.service_date)}.json`) : null
+hc = head?.current ?? null
+// A figure in a sentence, or a plain word when it is not there.
+say = (value, format) => value == null || Number.isNaN(value) ? "not yet known" : format(value)
+when = lastQ ? longDate(lastQ.service_date) : "the latest day"
+```
+
+These figures are careful estimates, not official numbers. This page says
+where they come from, what they can tell you, and where they fall short, so
+you can judge them for yourself. Each figure on this page is read from the
+same published files as the rest of the site.
+
+## Where the data comes from
+
+Every Island Transit bus sends its location to a live feed, and the feed
+also says which trip the bus is on and when it expects to reach each stop.
+Trip planning apps read this feed. Island Transit does not keep it, and each
+update replaces the one before. Our collector, a small program on a free
+database service, saves every update every 20 seconds, day and night, and
+has done so since November 19, 2026. The schedule comes from the same
+company that runs the feed, Passio, and is saved twice a day.
+
+```{ojs}
+//| echo: false
+html`<p>On ${when}, the collector got a good answer to ${say(lastQ?.vehicle_uptime, x => pct(x, 1))} of its requests for bus locations, and ${say(lastQ?.trip_coverage, x => pct(x, 1))} of the trips on the schedule showed up in the feed.</p>`
+```
+
+## How a departure is timed
+
+The feed never says when a bus left a stop. Our script works it out from
+where the bus was just before and just after it passed, about 20 seconds
+apart. We only score the stops Island Transit prints in its timetables, its
+timepoints, because those are the times the agency promises. A bus counts as
+on time if it leaves from 1 minute early to 5 minutes late. A departure we
+could not time is never counted as late; it is left out and counted apart.
+
+```{ojs}
+//| echo: false
+html`<p>Over the last ${say(hc?.days, count)} days with service, we put a time on ${say(hc?.observed_share, x => pct(x, 1))} of the departures at timepoints. The rest are the main gap in these figures: we can't say whether those buses were on time.</p>`
+```
+
+## What we can't see
+
+Some first and last stops are hard to time. Buses start the day at the
+depot between Greenbank and Coupeville and drive to their first stop. During
+the day one bus often runs several routes, and drivers sometimes change
+partway along a route. The feed's trip name changes at those moments, often
+a little early or late. Since November 27, 2026, our script follows each bus
+rather than each trip name, which cut the last stops we could not time by
+more than half, but some still slip through.
+
+```{ojs}
+//| echo: false
+day?.continuity == null ? html`` : html`<p>On ${lastO ? longDate(lastO.service_date) : "the latest day"}, ${say(day?.continuity?.trips_with_borrowed_reports, n => plural(n, "trip"))} used locations their bus sent under another trip's name, and ${say(day?.continuity?.vehicles_on_two_or_more_routes, n => plural(n, "bus", "buses"))} ran two or more routes.</p>`
+```
+
+GPS sometimes puts a bus somewhere it can't be. When a bus seems to jump
+faster than 130 km/h (about 80 mph) to a spot and straight back, our script
+leaves that location out. A jump with no jump back stays in and is counted,
+because we can't tell which side is wrong.
+
+```{ojs}
+//| echo: false
+html`<p>On ${when}, ${say(lastQ?.glitch_reports_removed, n => plural(n, "location"))} ${lastQ?.glitch_reports_removed === 1 ? "was" : "were"} left out this way, and ${say(lastQ?.unresolved_jumps, n => plural(n, "jump"))} stayed in.</p>`
+```
+
+The feed has never marked a trip as canceled, so a bus that did not run
+looks the same as a bus whose tracking failed. We would count a canceled
+trip apart the day the feed starts saying so.
+
+## How we check ourselves
+
+Our script compares every departure time it works out with the feed's own
+note of which stop the bus is heading for. We also time buses in person on
+route 60 and compare. Before the site is rebuilt each night, other checks
+make sure every number on it adds up from the day files, and the site keeps
+the previous night's figures if they don't.
+
+```{ojs}
+//| echo: false
+html`<p>On ${lastO ? longDate(lastO.service_date) : "the latest day"}, ${say(lastO?.feed_agreement_share, x => pct(x, 1))} of our departure times agreed with the feed within 30 seconds. Timed in person, our times were off by ${say(fc?.overall?.mae_s, x => unit(x, "second", 1))} on average, over ${say(fc?.overall?.n, count)} moments, all on route 60.</p>`
+```
+
+We also checked the schedule itself. On November 27, 2026, we compared
+3,015 times printed in Island Transit's September 27, 2026 guide with the
+schedule the feed follows: 96.7% matched exactly and 99.3% within a minute,
+and most of the rest look like typing errors in the guide.
+
+## What these figures can't tell you
+
+They can't tell you why a bus was late, how long anyone waited, or how
+crowded a bus was. They cover the stops Island Transit prints in its
+timetables, not every stop. They start on November 19, 2026, so they can't
+say how service compares with earlier years. And they rest on one feed: if
+it reports wrong locations in a way our checks don't catch, our figures are
+wrong too. The [Methods](methods.qmd) page has the full details.
+
+::: {.corrections}
+{{< include ../docs/corrections.md >}}
+:::

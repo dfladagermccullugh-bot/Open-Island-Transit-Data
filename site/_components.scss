@@ -286,3 +286,6 @@ svg text.row-on { font-weight: 700; fill: var(--text-primary); text-decoration: 
 // `.bi` class still names the icon font, which made every page download the
 // whole font (about 176 KB) for nothing.
 .quarto-color-scheme-toggle .bi::before, .quarto-color-scheme-toggle .bi { font-family: inherit !important; }
+// The corrections log wraps rather than scrolls sideways on a phone.
+.corrections table { display: table !important; width: 100%; table-layout: fixed; overflow: visible !important; }
+.corrections td, .corrections th { overflow-wrap: anywhere; vertical-align: top; }
