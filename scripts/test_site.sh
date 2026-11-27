@@ -28,7 +28,7 @@ cd "$(dirname "$0")/.."
 what="${1:-all}"
 
 if [ "$what" = "live" ]; then
-  export SITE_URL="${2:-https://dfladagermccullugh-bot.github.io/Open-Island-Transit-Data/}"
+  export SITE_URL="${2:-https://islandtransitdata.org/}"
   cd tests/site
   npm ci --no-audit --no-fund
   npx playwright test smoke.spec.mjs behavior.spec.mjs \

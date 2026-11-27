@@ -39,7 +39,7 @@ test("a missing page shows the 404 page with working styles and links", async ({
   // Styles and links must not depend on how deep the missing address was.
   await expect(page.locator(".navbar")).toHaveCSS("display", "flex");
   const home = await page.locator(".navbar a.navbar-brand").getAttribute("href");
-  expect(new URL(home, page.url()).pathname).toMatch(/^\/Open-Island-Transit-Data\/(index\.html)?$/);
+  expect(new URL(home, page.url()).pathname).toMatch(/^\/(index\.html)?$/);
   // The footer's date is read from the site's own folder, not from beside
   // the missing address: the only 404 is the page that was asked for.
   await expect(page.locator("#data-through")).toContainText("Data through");

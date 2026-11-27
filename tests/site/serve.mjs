@@ -5,7 +5,7 @@ import http from "node:http";
 import path from "node:path";
 import {fileURLToPath} from "node:url";
 
-export const BASE = "/Open-Island-Transit-Data/";
+export const BASE = "/";
 export const PORT = Number(process.env.SITE_PORT ?? 4173);
 const here = path.dirname(fileURLToPath(import.meta.url));
 const root = path.resolve(here, process.env.SITE_DIR ?? "../../site/_site");

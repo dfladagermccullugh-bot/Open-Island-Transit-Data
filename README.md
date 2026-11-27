@@ -2,7 +2,7 @@
 
 [![CI](https://github.com/dfladagermccullugh-bot/Open-Island-Transit-Data/actions/workflows/ci.yml/badge.svg)](https://github.com/dfladagermccullugh-bot/Open-Island-Transit-Data/actions/workflows/ci.yml)
 [![Nightly archive](https://github.com/dfladagermccullugh-bot/Open-Island-Transit-Data/actions/workflows/nightly.yml/badge.svg)](https://github.com/dfladagermccullugh-bot/Open-Island-Transit-Data/actions/workflows/nightly.yml)
-[![Site](https://github.com/dfladagermccullugh-bot/Open-Island-Transit-Data/actions/workflows/pages.yml/badge.svg)](https://dfladagermccullugh-bot.github.io/Open-Island-Transit-Data/)
+[![Site](https://github.com/dfladagermccullugh-bot/Open-Island-Transit-Data/actions/workflows/pages.yml/badge.svg)](https://islandtransitdata.org/)
 
 How on time are Island Transit's buses? Every few seconds, each bus on
 Whidbey and Camano Islands in Washington reports where it is, and each
@@ -11,17 +11,17 @@ one of them, figures out how often each bus left its stops on time, and checks
 how trustworthy the tracking data is. Everything is free to download.
 
 You can see the results at
-<https://dfladagermccullugh-bot.github.io/Open-Island-Transit-Data/>.
+<https://islandtransitdata.org/>.
 
-[![Open Island Transit Data: how on time are Island Transit's buses?](site/social-card.png)](https://dfladagermccullugh-bot.github.io/Open-Island-Transit-Data/)
+[![Open Island Transit Data: how on time are Island Transit's buses?](site/social-card.png)](https://islandtransitdata.org/)
 
-If you came for the data, the [Download](https://dfladagermccullugh-bot.github.io/Open-Island-Transit-Data/data.html)
+If you came for the data, the [Download](https://islandtransitdata.org/data.html)
 page links straight to every file, and [Use the data](#use-the-data) below
 shows how to read them.
 
 We have been collecting since November 19, 2026, every 20 seconds, around
-the clock. The site's [Methods](https://dfladagermccullugh-bot.github.io/Open-Island-Transit-Data/methods.html) page gives the exact
-definition behind every number, and its [Codebook](https://dfladagermccullugh-bot.github.io/Open-Island-Transit-Data/codebook.html)
+the clock. The site's [Methods](https://islandtransitdata.org/methods.html) page gives the exact
+definition behind every number, and its [Codebook](https://islandtransitdata.org/codebook.html)
 describes every file.
 
 ## What you can find here

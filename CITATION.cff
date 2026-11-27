@@ -10,7 +10,7 @@ authors:
   - family-names: "Fladager-McCullough"
     given-names: "Davin"
 repository-code: "https://github.com/dfladagermccullugh-bot/Open-Island-Transit-Data"
-url: "https://dfladagermccullugh-bot.github.io/Open-Island-Transit-Data/"
+url: "https://islandtransitdata.org/"
 license:
   - MIT
   - CC-BY-4.0

@@ -3,9 +3,9 @@
  "name": "open-island-transit-data",
  "title": "Open Island Transit Data",
  "description": "Island Transit's (Whidbey and Camano Islands, Washington) GTFS-Realtime feeds, saved every 20 seconds since November 19, 2026, with daily measures of the feed's quality and on-time figures inferred from vehicle positions.",
- "homepage": "https://dfladagermccullugh-bot.github.io/Open-Island-Transit-Data/",
+ "homepage": "https://islandtransitdata.org/",
  "repository": "https://github.com/dfladagermccullugh-bot/Open-Island-Transit-Data",
- "version": "dictionary/0.1.2",
+ "version": "dictionary/0.1.3",
  "dataFormat": "format/0.2.0",
  "licenses": [
   {
@@ -15,8 +15,8 @@
   }
  ],
  "documentation": {
-  "codebook": "https://dfladagermccullugh-bot.github.io/Open-Island-Transit-Data/codebook.html",
-  "methods": "https://dfladagermccullugh-bot.github.io/Open-Island-Transit-Data/methods.html"
+  "codebook": "https://islandtransitdata.org/codebook.html",
+  "methods": "https://islandtransitdata.org/methods.html"
  },
  "conventions": {
   "timestamps": "UTC",

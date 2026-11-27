@@ -16,7 +16,7 @@ project:
 website:
   title: "Open Island Transit Data"
   description: "How often Island Transit's buses on Whidbey and Camano Islands run on time, figured out from their live locations, with every number and file free to check."
-  site-url: "https://dfladagermccullugh-bot.github.io/Open-Island-Transit-Data/"
+  site-url: "https://islandtransitdata.org/"
   repo-url: "https://github.com/dfladagermccullugh-bot/Open-Island-Transit-Data"
   favicon: favicon.svg
   image: social-card.png

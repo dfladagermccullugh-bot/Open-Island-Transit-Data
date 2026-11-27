@@ -49,9 +49,9 @@ from pipeline.events.routes import ROUTE_COLUMNS
 from pipeline.quality.__main__ import HEADLINE
 from pipeline.tables.build import SPECS
 
-DICTIONARY_VERSION = "dictionary/0.1.2"  # 0.1.2: new columns of November 27, 2026
+DICTIONARY_VERSION = "dictionary/0.1.3"  # 0.1.3: site address islandtransitdata.org
 CODEBOOK = Path(__file__).resolve().parents[1] / "docs" / "codebook.md"
-SITE = "https://dfladagermccullugh-bot.github.io/Open-Island-Transit-Data/"
+SITE = "https://islandtransitdata.org/"
 
 FILES_COLUMNS = ["service_date", "table", "release_tag", "name", "bytes", "sha256", "url"]
 TIMEPOINT_COLUMNS = [
