@@ -240,6 +240,16 @@
       "description": "True when complete Passio downloads on that day differed, which marks a schedule change"
      },
      {
+      "name": "glitch_reports_removed",
+      "type": "number",
+      "description": "Position reports left out as GPS glitches: a bus jumping somewhere impossible and back (`measurement.glitches` in the day file). Since `quality/0.6.0`"
+     },
+     {
+      "name": "unresolved_jumps",
+      "type": "number",
+      "description": "Impossible jumps that were not left out, because there was no jump back or the bus could have made it by driving fast (often a timestamp a few seconds off). Since `quality/0.6.0`"
+     },
+     {
       "name": "quality_version",
       "type": "string",
       "description": "Version of the quality code"
@@ -1378,6 +1388,11 @@
       "name": "position_reports",
       "type": "integer",
       "description": "That vehicle's reports in the window"
+     },
+     {
+      "name": "glitch_reports",
+      "type": "integer",
+      "description": "That vehicle's reports in the window that were left out as GPS glitches (`pipeline/glitch.py`, `docs/methods.md` section 3). `position_reports` does not include them. Since `events/0.4.0`"
      },
      {
       "name": "reports_used",
