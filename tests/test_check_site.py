@@ -23,6 +23,8 @@ def site(tmp_path):
     """A rendered site with everything the check asks for."""
     for page in check_site.PAGES:
         extra = DATASET if page == "index" else ""
+        if page == "methods":
+            extra = "".join(f'<h2 id="{a}">x</h2>' for a in check_site.METHOD_ANCHORS)
         (tmp_path / f"{page}.html").write_text(PAGE.format(name=page, extra=extra))
     for name in check_site.FILES:
         path = tmp_path / name
@@ -132,3 +134,11 @@ def test_broken_structured_data_is_caught(site):
 def test_the_home_page_must_describe_the_dataset(site):
     (site / "index.html").write_text(PAGE.format(name="index", extra=""))
     assert "index.html: no structured data describing the dataset" in check_site.problems(site)
+
+
+def test_a_renamed_methods_heading_breaks_its_links(site):
+    page = site / "methods.html"
+    page.write_text(page.read_text().replace('id="validation"', 'id="checks"'))
+    assert check_site.problems(site) == [
+        "methods.html: no heading #validation, which the Methods links point to"
+    ]
