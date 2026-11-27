@@ -1,0 +1,134 @@
+name: Compare
+
+# Class A comparisons (pipeline/compare_sample.py): once a week per world
+# region, at a busy hour there, a two-hour sample of each peer's live feed
+# in reference/peers/feeds.csv is run through our own method. Only a small
+# summary of each sample is kept, on the data branch under compare/; no
+# other agency's raw data is stored. A missing sample is normal: feeds move
+# and go down. `mode: discover` lists the peers' open feeds in the Mobility
+# Database catalog instead (scripts/peer_feeds.py).
+on:
+  schedule:
+    - cron: "17 18 * * 2" # North America, about 10 AM Pacific
+    - cron: "41 15 * * 3" # Central and South America, about noon in Santiago
+    - cron: "23 10 * * 4" # Europe, about 11 AM in London
+    - cron: "37 3 * * 5" # Asia, about 11 AM in Singapore
+  workflow_dispatch:
+    inputs:
+      mode:
+        description: "sample or discover"
+        type: choice
+        options: [sample, discover]
+        default: sample
+      region:
+        description: "Region to sample (as in feeds.csv); empty: the region of today's schedule"
+        type: string
+        default: ""
+
+permissions:
+  contents: write
+
+concurrency:
+  group: compare
+  cancel-in-progress: false
+
+jobs:
+  discover:
+    if: github.event_name == 'workflow_dispatch' && inputs.mode == 'discover'
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+      - uses: actions/setup-python@6d4fd22b20465ccc0f7354476588e8df7c9ca0e0 # v7.1.0
+        with:
+          python-version: "3.13"
+      - run: python scripts/peer_feeds.py
+
+  plan:
+    if: github.event_name == 'schedule' || inputs.mode == 'sample'
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    outputs:
+      feeds: ${{ steps.pick.outputs.feeds }}
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+      - id: pick
+        env:
+          SCHEDULE: ${{ github.event.schedule }}
+          REGION: ${{ inputs.region }}
+        run: |
+          python - <<'EOF' >> "$GITHUB_OUTPUT"
+          import csv, json, os
+          by_cron = {"17 18 * * 2": "North America", "41 15 * * 3": "Central and South America",
+                     "23 10 * * 4": "Europe", "37 3 * * 5": "Asia"}
+          region = os.environ.get("REGION") or by_cron.get(os.environ.get("SCHEDULE", ""), "")
+          rows = [r for r in csv.DictReader(open("reference/peers/feeds.csv", encoding="utf-8"))
+                  if r["region"] == region and r["rt_url"] and r["static_url"]]
+          print("feeds=" + json.dumps(rows))
+          EOF
+
+  sample:
+    needs: plan
+    if: needs.plan.outputs.feeds != '[]' && needs.plan.outputs.feeds != ''
+    runs-on: ubuntu-latest
+    timeout-minutes: 150
+    continue-on-error: true
+    strategy:
+      fail-fast: false
+      matrix:
+        feed: ${{ fromJSON(needs.plan.outputs.feeds) }}
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+      - uses: actions/setup-python@6d4fd22b20465ccc0f7354476588e8df7c9ca0e0 # v7.1.0
+        with:
+          python-version: "3.13"
+          cache: pip
+          cache-dependency-path: |
+            pyproject.toml
+            constraints.txt
+      - run: pip install -e . -c constraints.txt
+      - name: Sample the feed for two hours
+        env:
+          AGENCY: ${{ matrix.feed.agency_id }}
+          RT: ${{ matrix.feed.rt_url }}
+          STATIC: ${{ matrix.feed.static_url }}
+        run: |
+          python -m pipeline.compare_sample --agency "$AGENCY" --rt "$RT" --static "$STATIC" \
+            --minutes 120 --out "samples/$AGENCY/$(date -u +%Y-%m-%d).json"
+      - uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 # v7.0.2
+        with:
+          name: sample-${{ matrix.feed.agency_id }}
+          path: samples
+          retention-days: 7
+
+  publish:
+    needs: sample
+    if: always() && needs.sample.result != 'skipped'
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    env:
+      GH_TOKEN: ${{ github.token }}
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+      - uses: actions/setup-python@6d4fd22b20465ccc0f7354476588e8df7c9ca0e0 # v7.1.0
+        with:
+          python-version: "3.13"
+      - uses: actions/download-artifact@9000827ccba6bdab643e8b6fd33ac0654aef8333 # v8.0.2
+        with:
+          pattern: sample-*
+          path: samples
+          merge-multiple: true
+      - name: Get the data branch
+        run: |
+          git init -q data-branch
+          cd data-branch
+          git remote add origin "https://x-access-token:${GH_TOKEN}@github.com/${GITHUB_REPOSITORY}.git"
+          git fetch -q --depth 1 origin data
+          git checkout -q -b data FETCH_HEAD
+      - name: Keep the summaries and redo the comparisons
+        run: |
+          mkdir -p data-branch/compare
+          if [ -d samples ]; then cp -r samples/. data-branch/compare/; fi
+          python -m pipeline.compare --data data-branch
+      - name: Publish
+        run: scripts/publish_data.sh "Comparison samples:"
