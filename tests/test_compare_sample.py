@@ -50,3 +50,20 @@ def test_the_bootstrap_resamples_whole_trips():
     by_trip = {f"T{k}": [30.0] * 5 if k % 2 else [900.0] * 5 for k in range(20)}
     lo, hi = cs.bootstrap(by_trip)
     assert lo is not None and 0.2 < lo < 0.5 < hi < 0.8
+
+
+def test_a_schedule_that_cannot_be_used_stops_the_sample_before_it_starts():
+    # A download that is not a GTFS zip (an error page, say) reads as empty.
+    assert "no trips" in cs.schedule_problem(read_zip(b"<html>not a zip</html>"))
+    assert "no time zone" in cs.schedule_problem(schedule_with_zone(""))
+    assert "unknown time zone" in cs.schedule_problem(schedule_with_zone("Mars/Olympus"))
+    assert cs.schedule_problem(schedule_with_zone("America/Halifax")) is None
+
+
+def test_a_sample_says_which_clock_it_used_and_how_many_trips_matched():
+    contents = schedule_with_zone("America/Los_Angeles")
+    start = datetime.fromtimestamp(T0 - 600, UTC)
+    out = cs.summarize(contents, run(-60), start, start + timedelta(hours=1), "made-up")
+    assert out["agency_timezone"] == "America/Los_Angeles"
+    assert out["trips_reported"] >= 1
+    assert out["trips_in_schedule"] == out["trips_reported"]

@@ -44,7 +44,7 @@ from pipeline.gtfs.timepoints import ANY_DIRECTION
 from pipeline.gtfs.zipread import ZipContents, read_zip
 from pipeline.stats import quantile, share
 
-SAMPLE_VERSION = "compare-sample/0.1.0"
+SAMPLE_VERSION = "compare-sample/0.2.0"
 RADII = (30.0, 40.0, 50.0)
 BOOTSTRAP = 1000
 USER_AGENT = "OpenIslandTransitData-compare/0.1 (+https://github.com/dfladagermccullugh-bot/Open-Island-Transit-Data)"
@@ -74,6 +74,22 @@ def vehicle_rows(feeds: list[bytes]) -> list[Row]:
                 "trip_schedule_relationship": v.get("trip_schedule_relationship"),
             })  # fmt: skip
     return list(seen.values())
+
+
+def schedule_problem(contents: ZipContents) -> str | None:
+    """Why a schedule cannot be used, or None. Checked before sampling, so a
+    download that is not a readable schedule ends the job at once instead of
+    giving a sample with no trips after two hours."""
+    if not gtfs_rows(contents, "trips.txt") or not gtfs_rows(contents, "stop_times.txt"):
+        return "the schedule download has no trips (not a readable GTFS zip?)"
+    zone = (gtfs_rows(contents, "agency.txt") or [{}])[0].get("agency_timezone")
+    if not zone:
+        return "the schedule names no time zone in agency.txt"
+    try:
+        ZoneInfo(zone)
+    except Exception:
+        return f"unknown time zone {zone!r} in agency.txt"
+    return None
 
 
 def timepoint_keys(contents: ZipContents) -> tuple[set[tuple[str, str, str]], bool]:
@@ -127,7 +143,7 @@ def bootstrap(by_trip: dict[str, list[float]], seed: int = 0) -> tuple[float | N
 
 def summarize(contents: ZipContents, vehicles: list[Row], start: datetime, end: datetime,
               agency: str) -> dict[str, Any]:  # fmt: skip
-    zone = ZoneInfo((gtfs_rows(contents, "agency.txt") or [{}])[0].get("agency_timezone") or "UTC")
+    zone = ZoneInfo(gtfs_rows(contents, "agency.txt")[0]["agency_timezone"])
     day = start.astimezone(zone).date()
     keys, marked = timepoint_keys(contents)
     saved_zone, saved_radius = schedule.PACIFIC, infer.STOP_RADIUS_M
@@ -141,6 +157,8 @@ def summarize(contents: ZipContents, vehicles: list[Row], start: datetime, end: 
     finally:
         schedule.PACIFIC, infer.STOP_RADIUS_M = saved_zone, saved_radius
     main = by_radius[40.0]
+    reported = {v["trip_id"] for v in vehicles if v.get("trip_id")}
+    scheduled = {t["trip_id"] for t in gtfs_rows(contents, "trips.txt")}
     devs = [d for ds in main.values() for d in ds]
     lo, hi = bootstrap(main)
     return {
@@ -152,7 +170,12 @@ def summarize(contents: ZipContents, vehicles: list[Row], start: datetime, end: 
         "timepoints": "marked in the schedule"
         if marked
         else "every stop (the schedule marks none)",
+        "agency_timezone": zone.key,
         "vehicles_seen": len({v["vehicle_key"] for v in vehicles}),
+        # How many trips the buses reported are in the schedule: a low share
+        # means the feed and the schedule do not use the same trip ids.
+        "trips_reported": len(reported),
+        "trips_in_schedule": len(reported & scheduled),
         "position_reports": len(vehicles),
         "trips_measured": len(main),
         "moments_measured": len(devs),
@@ -189,6 +212,9 @@ def main(argv: list[str] | None = None) -> int:
     ap.add_argument("--out", type=Path, required=True)
     args = ap.parse_args(argv)
     contents = read_zip(fetch(args.static))
+    problem = schedule_problem(contents)
+    if problem:
+        raise SystemExit(f"{args.agency}: {problem}; no sample taken")
     feeds, start = [], datetime.now(UTC)
     stop_at = time.monotonic() + 60 * args.minutes
     while time.monotonic() < stop_at:

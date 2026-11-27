@@ -538,7 +538,11 @@ through our method: `service_date`, `sample_start` and `sample_end`, the
 `timepoints` used, `trips_measured`, `moments_measured`, `on_time_share`,
 `on_time_interval_95` and the share `by_stop_radius_m`); and `classes`, the
 ways it could be compared. Each sample is also kept whole, as
-`compare/<agency_id>/<date>.json`.
+`compare/<agency_id>/<date>.json`; since `compare-sample/0.2.0` a sample
+also names the `agency_timezone` its schedule times were read in, and how
+many trip ids the buses reported (`trips_reported`) and how many of those
+the schedule holds (`trips_in_schedule`). A schedule download with no trips
+or no valid time zone ends the job before sampling, so no file is written.
 
 ## `validation/`
 
