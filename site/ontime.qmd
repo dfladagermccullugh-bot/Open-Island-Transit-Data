@@ -17,29 +17,103 @@ day, and we have also timed buses in person on route 60. The [Methods](methods.q
 ```{ojs}
 //| echo: false
 //| output: false
-import {csv, json, pct, num, count, unit, band, lateness, longDate, hourLabel, plural, serviceDays, recentDays, withDates, showAllToggle, bandLegend, emptyNote, guard, h, MIN_OBSERVED, REPO_URL, DATA_URL, DATA_RAW_URL, RELEASES_URL} from "./lib.js"
-import {makeCharts} from "./charts.js"
+import {csv, json, pct, num, count, unit, band, lateness, longDate, hourLabel, plural, serviceDays, recentDays, withDates, showAllToggle, bandLegend, emptyNote, guard, h, MIN_OBSERVED, REPO_URL, DATA_URL, DATA_RAW_URL, RELEASES_URL, periodInput, periodName} from "./lib.js"
+import {makeCharts, splitLegend} from "./charts.js"
 ch = makeCharts({Plot})
 daily = csv(d3, "data/ontime/daily.csv")
 // Days with scheduled service; a holiday is archived but not charted.
 days = withDates(serviceDays(daily))
 latestDate = days.length ? days.at(-1).day : null
 latest = latestDate ? json(`data/ontime/days/${latestDate}.json`) : null
+periods = json("data/ontime/periods.json")
 // The daily table lists the day but its detail file did not load.
 noDetail = () => days.length === 0 ? emptyNote("no-days") : emptyNote("unavailable", `The details for ${longDate(latestDate)}`)
 ```
 
-## Day by day
+## Over time
 
 ```{ojs}
 //| echo: false
-viewof showAll = showAllToggle(days.length)
+viewof period = periodInput()
+```
+
+```{ojs}
+//| echo: false
+// Off the Day view there is nothing to toggle; the empty element still
+// holds a value, so the chart below does not wait for one.
+viewof showAll = period === "day" ? showAllToggle(days.length) : Object.assign(h("span", {hidden: true}), {value: false})
+```
+
+```{ojs}
+//| echo: false
+//| output: false
+// Hour of the day: the last 28 service days pooled (ontime/periods.json),
+// or the latest day alone when that file is not there.
+pooledHours = periods?.grains?.hour?.pooled
+hourRows = pooledHours?.rows?.length ? pooledHours.rows : Object.entries(latest?.by_hour ?? {}).map(([hour, b]) => ({hour: +hour, ...b}))
+hourSpan = pooledHours?.rows?.length
+  ? (pooledHours.first_service_date === pooledHours.last_service_date ? `on ${longDate(pooledHours.last_service_date)}` : `from ${longDate(pooledHours.first_service_date)} to ${longDate(pooledHours.last_service_date)}, all service days together`)
+  : `on ${longDate(latestDate)}`
+hours = hourRows
+  .map(b => ({...b, band: band(b?.on_time_share_of_observed, b?.observed), label: hourLabel(b.hour)}))
+  .filter(d => d.observed >= MIN_OBSERVED && d.on_time_share_of_observed != null)
+  .sort((a, b) => a.hour - b.hour)
 ```
 
 ::: {.slot-chart}
 ```{ojs}
 //| echo: false
 guard(() => {
+  if (period === "hour") {
+    if (hours.length === 0) return noDetail();
+    return ch.figure({
+      note: `Departures ${hourSpan}, grouped by the hour each was scheduled, in Pacific time. We leave out any hour with fewer than ${MIN_OBSERVED} departures seen.`,
+      legend: bandLegend(),
+      chart: ch.bars(hours, {
+        category: "label", value: "on_time_share_of_observed", upright: true, fill: d => d.band.color,
+        axisLabel: "On time", references: [0.6, 0.8],
+        ariaLabel: `Share of departures on time by scheduled hour, ${hourSpan}`,
+        tip: d => `${d.label}\n${pct(d.on_time_share_of_observed)} on time\nTypically ${lateness(d.deviation_s_median)}\n${count(d.observed)} of ${count(d.scheduled)} departures seen`,
+      }),
+      tableLabel: "Show the hours as a table",
+      table: ch.table(hours, {
+        caption: `On-time figures by scheduled hour, ${hourSpan}`,
+        columns: [
+          {key: "label", label: "Hour", sortValue: d => d.hour},
+          {key: "on_time_share_of_observed", label: "On time", align: "right", format: v => pct(v)},
+          {key: "deviation_s_median", label: "Typical departure", align: "right", format: v => lateness(v)},
+          {key: "observed", label: "Seen", align: "right", format: count},
+          {key: "scheduled", label: "Scheduled", align: "right", format: count},
+        ],
+      }),
+      methods: "on-time-performance",
+    });
+  }
+  if (period === "week" || period === "month") {
+    const rows = (periods?.grains?.[period] ?? []).filter(r => r.observed > 0)
+      .map(r => ({...r, label: periodName(period, r.period) + (r.partial ? " (part)" : "")}));
+    if (rows.length === 0) return emptyNote("unavailable", `The figures by ${period}`);
+    const word = period === "week" ? "week (Monday to Sunday)" : "month";
+    return ch.figure({
+      note: `Every departure seen in each ${word}, early, on time and late. "Part" marks a ${period} the archive does not cover from start to end.`,
+      legend: splitLegend(),
+      chart: ch.stack(rows, {category: "label", ariaLabel: `Early, on time and late departures by ${period}`}),
+      tableLabel: `Show the ${period}s as a table`,
+      table: ch.table([...rows].reverse(), {
+        caption: `On-time figures by ${period}`,
+        columns: [
+          {key: "label", label: period === "week" ? "Week" : "Month", sortValue: d => d.period},
+          {key: "on_time_share_of_observed", label: "On time", align: "right", format: v => pct(v, 1)},
+          {key: "early_share_of_observed", label: "Early", align: "right", format: v => pct(v, 1)},
+          {key: "late_share_of_observed", label: "Late", align: "right", format: v => pct(v, 1)},
+          {key: "deviation_s_median", label: "Typical departure", align: "right", format: v => lateness(v)},
+          {key: "days", label: "Days", align: "right", format: count},
+          {key: "observed", label: "Departures seen", align: "right", format: count},
+        ],
+      }),
+      methods: "on-time-performance",
+    });
+  }
   if (days.length === 0) return emptyNote("no-days");
   if (days.length < 2) return html`<p class="empty">So far there is one day of data, ${longDate(latestDate)}, and ${pct(days[0].on_time_share_of_observed)} of the departures we saw that day were on time.
       A day-by-day trend line will appear once a second day comes in.</p>`;
@@ -62,46 +136,11 @@ guard(() => {
         {key: "scheduled", label: "Scheduled", align: "right", format: count},
       ],
     }),
+    methods: "on-time-performance",
   });
-}, "The day-by-day chart")
+}, "The chart over time")
 ```
 :::
-
-## Hour by hour
-
-```{ojs}
-//| echo: false
-//| output: false
-hours = Object.entries(latest?.by_hour ?? {})
-  .map(([hour, b]) => ({hour: +hour, ...b, band: band(b?.on_time_share_of_observed, b?.observed), label: hourLabel(hour)}))
-  .filter(d => d.observed >= MIN_OBSERVED && d.on_time_share_of_observed != null)
-  .sort((a, b) => a.hour - b.hour)
-```
-
-```{ojs}
-//| echo: false
-guard(() => hours.length === 0 ? noDetail() : ch.figure({
-  note: `This chart shows ${longDate(latestDate)}, grouped by the hour each departure was scheduled, in Pacific time. We leave out any hour in which we saw fewer than ${MIN_OBSERVED} departures.`,
-  legend: bandLegend(),
-  chart: ch.bars(hours, {
-    category: "label", value: "on_time_share_of_observed", upright: true, fill: d => d.band.color,
-    axisLabel: "On time", references: [0.6, 0.8],
-    ariaLabel: `Share of departures on time by scheduled hour, ${longDate(latestDate)}`,
-    tip: d => `${d.label}\n${pct(d.on_time_share_of_observed)} on time\nTypically ${lateness(d.deviation_s_median)}\n${count(d.observed)} of ${count(d.scheduled)} departures seen`,
-  }),
-  tableLabel: "Show the hours as a table",
-  table: ch.table(hours, {
-    caption: `On-time figures by scheduled hour, ${longDate(latestDate)}`,
-    columns: [
-      {key: "label", label: "Hour", sortValue: d => d.hour},
-      {key: "on_time_share_of_observed", label: "On time", align: "right", format: v => pct(v)},
-      {key: "deviation_s_median", label: "Typical departure", align: "right", format: v => lateness(v)},
-      {key: "observed", label: "Seen", align: "right", format: count},
-      {key: "scheduled", label: "Scheduled", align: "right", format: count},
-    ],
-  }),
-}), "The hour-by-hour chart")
-```
 
 ## How these numbers are checked
 

@@ -21,6 +21,11 @@ import re
 import sys
 from pathlib import Path
 
+# Headings of the Methods page that figures link to ("How we measured this").
+# Quarto makes each id from the heading's words, so renaming a heading breaks
+# its links; this list makes that fail the site check.
+METHOD_ANCHORS = ("collection", "feed-quality-metrics", "arrival-and-departure-times",
+                  "on-time-performance", "validation")  # fmt: skip
 PAGES = ("index", "routes", "ontime", "quality", "data", "methods", "codebook", "glossary", "404")
 FILES = (
     "lib.js",
@@ -119,6 +124,12 @@ def problems(site: Path) -> list[str]:
     home = site / "index.html"
     if home.exists() and "application/ld+json" not in home.read_text(encoding="utf-8"):
         out.append("index.html: no structured data describing the dataset")
+    methods = site / "methods.html"
+    if methods.exists():
+        text = methods.read_text(encoding="utf-8")
+        for a in METHOD_ANCHORS:
+            if f'id="{a}"' not in text and f'data-anchor-id="{a}"' not in text:
+                out.append(f"methods.html: no heading #{a}, which the Methods links point to")
     return out + data_problems(site)
 
 

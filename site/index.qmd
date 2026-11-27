@@ -22,30 +22,54 @@ and uses them to figure out how often the buses leave on time.]{.lede}
 ```{ojs}
 //| echo: false
 //| output: false
-import {json, pct, count, lateness, longDate, routeMap, routeSlug, routeOrder, routeTitle, band, bandIcon, bandLegend, emptyNote, guard, stats, h} from "./lib.js"
+import {json, pct, count, lateness, longDate, routeMap, routeSlug, routeOrder, routeTitle, band, bandIcon, bandLegend, emptyNote, guard, stats, h, sparkline, splitBar, fmtShare} from "./lib.js"
 import {drawRouteMap, routeSummary} from "./map.js"
 recent = json("data/ontime/recent.json")
-o = recent?.overall ?? null
-period = recent == null ? "" : recent.days === 1
-  ? `on ${longDate(recent.last_service_date)}`
-  : `over the ${recent.days} days to ${longDate(recent.last_service_date)}`
+head = json("data/ontime/headline.json")
+notes = json("data/quality/notes.json")
+// The headline pools the last 28 service days across timetable changes
+// (ontime/headline.json); a site built before that file existed falls back
+// to the route tables' window.
+useHead = head?.current?.observed > 0
+o = useHead ? head.current : (recent?.overall ?? null)
+lastDay = useHead ? head.last_service_date : recent?.last_service_date
+nDays = useHead ? head.current.days : recent?.days
+period = o == null ? "" : nDays === 1
+  ? `on ${longDate(lastDay)}`
+  : useHead ? `over the last ${nDays} days with service, to ${longDate(lastDay)}` : `over the ${nDays} days to ${longDate(lastDay)}`
 ```
 
 ::: {.slot-headline}
 ```{ojs}
 //| echo: false
-guard(() => o == null || !o.observed
-  ? emptyNote("unavailable", "The on-time figures")
-  : html`<div class="headline">
+guard(() => {
+  if (o == null || !o.observed) return emptyNote("unavailable", "The on-time figures");
+  const change = !useHead ? null
+    : head.change_points != null
+      ? `${Math.abs(head.change_points).toFixed(1)} points ${head.change_points >= 0 ? "higher" : "lower"} than the ${head.previous?.days ?? 28} service days before`
+      : `Not enough days yet to compare with the ${head.window_service_days ?? 28} days before.`;
+  const spark = useHead ? sparkline((head.spark ?? []).map(d => d.on_time_share_of_observed)) : null;
+  const status = notes?.status;
+  const trust = status == null ? null
+    : status === "ok" || status === "note"
+      ? html`<p class="trust">Our automatic checks found nothing wrong with the figures for ${longDate(notes.latest_service_date)}. <a href="quality.html">How good is the data?</a></p>`
+      : html`<p class="trust">Our automatic checks flagged ${status === "problem" ? "a problem" : "something to look at"} in the figures for ${longDate(notes.latest_service_date)}. <a href="quality.html">See the data quality page</a>.</p>`;
+  return html`<div class="headline">
       <div class="big">${pct(o.on_time_share_of_observed)}</div>
-      <p class="big-label">of departures left on time ${period}.
-        <span class="note">A bus counts as on time if it leaves from 1 minute early to 5 minutes late.${recent.schedule_change ? ` Island Transit changed its schedule on ${longDate(recent.schedule_change.effective)}, so this figure starts over from that day.` : ""}</span></p>
+      <div class="big-text"><p class="big-label">of departures left on time ${period}.
+        <span class="note">A bus counts as on time if it leaves from 1 minute early to 5 minutes late.${recent?.schedule_change ? ` Island Transit changed its schedule on ${longDate(recent.schedule_change.effective)}; the route tables below start over from that day.` : ""}</span></p>
+        ${change ? html`<p class="change">${spark}<span>${change}</span></p>` : ""}
+      </div>
     </div>
+    ${splitBar(o)}
     ${stats([
       {label: "Typical departure", value: lateness(o.deviation_s_median)},
-      {label: "More than 5 minutes late", value: pct(o.late_share_of_observed)},
+      {label: "More than 5 minutes late", value: fmtShare(o.late_share_of_observed)},
       {label: "Departures checked", value: count(o.observed)},
-    ])}`, "The on-time figures")
+    ])}
+    ${trust}
+    <p class="how-measured"><a href="methods.html#on-time-performance">How we measured this</a></p>`;
+}, "The on-time figures")
 ```
 :::
 

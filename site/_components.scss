@@ -247,3 +247,31 @@ details.as-table > summary:hover { color: var(--text-primary); }
   .route-links a::after, .leaflet-container a::after, .link-row a::after { content: none; }
   details.more { border: none; }
 }
+
+// --- period switch, split bar, sparkline, method links ----------------------------
+// One row of buttons working as a single choice (lib.js periodInput).
+.period-switch { display: inline-flex; flex-wrap: wrap; align-items: center; gap: var(--sp-1); margin: var(--sp-2) 0 var(--sp-4); }
+.period-switch .period-label { font-size: var(--fs-sm); color: var(--text-secondary); margin-right: var(--sp-2); }
+.period-switch button {
+  font: inherit; font-size: var(--fs-sm); min-height: 2.25rem; min-width: 3.5rem; padding: 0 var(--sp-3);
+  border: 1px solid var(--rule); border-radius: var(--radius-md); background: var(--surface); color: var(--text-primary); cursor: pointer;
+}
+.period-switch button[aria-checked="true"] { background: var(--text-primary); color: var(--surface); border-color: var(--text-primary); font-weight: 600; }
+.period-switch button:focus-visible { outline: 3px solid var(--focus); outline-offset: 2px; }
+
+.split { margin: var(--sp-3) 0 var(--sp-2); max-width: 32rem; }
+.split-bar { display: flex; height: .9rem; border-radius: var(--radius-md); overflow: hidden; background: var(--rule); }
+.split-bar .part.early, .split-legend .swatch.early { background: var(--status-warning); }
+.split-bar .part.on-time, .split-legend .swatch.on-time { background: var(--status-good); }
+.split-bar .part.late, .split-legend .swatch.late { background: var(--status-critical); }
+.split-words { margin: var(--sp-1) 0 0; font-size: var(--fs-sm); color: var(--text-secondary); font-variant-numeric: tabular-nums; }
+.split-legend { list-style: none; padding: 0; margin: var(--sp-2) 0 var(--sp-3); display: flex; flex-wrap: wrap; gap: var(--sp-1) var(--sp-5); font-size: var(--fs-sm); color: var(--text-secondary); }
+.split-legend .swatch { display: inline-block; width: .8rem; height: .8rem; border-radius: 2px; margin-right: var(--sp-1); vertical-align: -.05rem; }
+
+.spark { display: block; overflow: visible; }
+.spark polyline { fill: none; stroke: var(--series-1); stroke-width: 2; stroke-linejoin: round; stroke-linecap: round; }
+.headline .change { display: flex; align-items: center; gap: var(--sp-2); margin: var(--sp-1) 0 0; font-size: var(--fs-sm); color: var(--text-secondary); }
+.trust { font-size: var(--fs-sm); color: var(--text-secondary); margin: var(--sp-2) 0 0; }
+.how-measured { font-size: var(--fs-sm); margin: var(--sp-2) 0 0; }
+.headline .big-text { max-width: 26rem; padding-bottom: var(--sp-2); }
+.headline .big-text .big-label { padding-bottom: 0; }

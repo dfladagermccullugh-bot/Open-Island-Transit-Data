@@ -84,13 +84,24 @@ export function responsive(render, {height = 0, min = 280, max = 960} = {}) {
 
 // A chart with its title, an optional figure beside the title, a note, a key
 // and a table of the same numbers folded underneath.
-export function figure({title = null, value = null, note = null, legend = null, chart, table = null, tableLabel = "Show these figures as a table"}) {
+//
+// `methods` names a heading of the Methods page (its id there, such as
+// "on-time-performance"); the figure then ends with a link to it.
+export function figure({title = null, value = null, note = null, legend = null, chart, table = null, tableLabel = "Show these figures as a table", methods = null}) {
   return h("figure", {class: "chart"},
     title ? h("figcaption", {class: "chart-title"}, title, value != null ? h("span", {class: "chart-value"}, value) : null) : null,
     note ? h("p", {class: "note"}, note) : null,
     legend,
     chart,
-    table ? h("details", {class: "as-table"}, h("summary", {}, tableLabel), table) : null);
+    table ? h("details", {class: "as-table"}, h("summary", {}, tableLabel), table) : null,
+    methods ? h("p", {class: "how-measured"}, h("a", {href: `methods.html#${methods}`}, "How we measured this")) : null);
+}
+
+// The key of a split chart: early, on time and late, in the bars' order.
+export function splitLegend() {
+  return h("ul", {class: "split-legend", "aria-label": "Key"},
+    ...[["early", "Early (more than 1 minute)"], ["on-time", "On time"], ["late", "Late (more than 5 minutes)"]]
+      .map(([cls, text]) => h("li", {}, h("span", {class: `swatch ${cls}`, "aria-hidden": "true"}), text)));
 }
 
 // A real table: a caption, column headers that sort when pressed (by mouse or
@@ -281,5 +292,29 @@ export function makeCharts({Plot}) {
     }), {height: 34 * rows.length + 62});
   }
 
-  return {trend, bars, dotRange, table, figure, responsive};
+  // Early, on time and late for each row, as one bar adding up to 100%.
+  // Rows keep the order given (periods in time order).
+  function stack(rows, {category, ariaLabel, tip = null}) {
+    const parts = [["early_share_of_observed", "Early", "var(--status-warning)"],
+                   ["on_time_share_of_observed", "On time", "var(--status-good)"],
+                   ["late_share_of_observed", "Late", "var(--status-critical)"]];
+    const long = rows.flatMap((r, i) => parts.map(([k, part, color], j) => ({row: i, name: r[category], part, order: j, color, share: r[k] ?? 0, src: r})));
+    const describe = rows.map(r => `${r[category]}: ${parts.map(([k, p]) => `${pct(r[k])} ${p.toLowerCase()}`).join(", ")}`).join("; ");
+    const names = rows.map(r => r[category]);
+    return responsive((width, narrow) => Plot.plot({
+      ariaLabel, ariaDescription: describe, style: FRAME, width,
+      height: (narrow ? 46 : 30) * rows.length + 46,
+      marginLeft: narrow ? 4 : labelWidth(names), marginRight: 16, marginTop: narrow ? 22 : 6, marginBottom: 36,
+      x: {domain: [0, 1], grid: true, label: null, tickFormat: d => pct(d), ticks: narrow ? 3 : 5},
+      y: {domain: rows.map((_, i) => i), tickFormat: i => names[i], label: null, axis: narrow ? null : "left", tickSize: 0, padding: narrow ? 0.45 : 0.25},
+      marks: [
+        Plot.barX(long, Plot.stackX({y: "row", x: "share", fill: "color", order: "order", inset: 0.5})),
+        narrow ? Plot.text(rows.map((r, i) => ({i, name: r[category]})), {y: "i", x: 0, text: "name", textAnchor: "start", dy: -17, fill: "currentColor"}) : null,
+        Plot.tip(long, Plot.pointer(Plot.stackX({y: "row", x: "share", order: "order",
+          title: tip ?? (d => `${d.name}\n${pct(d.src.early_share_of_observed)} early\n${pct(d.src.on_time_share_of_observed)} on time\n${pct(d.src.late_share_of_observed)} late`)}))),
+      ],
+    }), {height: 30 * rows.length + 46});
+  }
+
+  return {trend, bars, dotRange, stack, table, figure, responsive};
 }

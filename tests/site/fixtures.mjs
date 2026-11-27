@@ -102,8 +102,8 @@ export const test = base.extend({
 export {expect};
 
 // Open a page and wait until every cell has run and the page has gone quiet.
-export async function open(page, name, {hash = ""} = {}) {
-  await page.goto(`${name}.html${hash}`);
+export async function open(page, name, {hash = "", query = ""} = {}) {
+  await page.goto(`${name}.html${query}${hash}`);
   await settle(page);
 }
 

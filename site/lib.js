@@ -409,3 +409,123 @@ export function watchLiveStatus(el, {every = 60_000, read = liveStatus} = {}) {
 }
 
 export const SERIES = "var(--series-1)";
+
+// --- period switch --------------------------------------------------------------
+
+// The periods the On time and Data quality pages can show, in order.
+export const PERIODS = [["hour", "Hour"], ["day", "Day"], ["week", "Week"], ["month", "Month"]];
+const PERIOD_KEY = "oitd-period";
+
+function storedPeriod() {
+  try {
+    const fromUrl = new URL(location.href).searchParams.get("period");
+    if (PERIODS.some(([k]) => k === fromUrl)) return fromUrl;
+    const saved = localStorage.getItem(PERIOD_KEY);
+    if (PERIODS.some(([k]) => k === saved)) return saved;
+  } catch (e) {
+    // A private window may refuse storage; the default does.
+  }
+  return null;
+}
+
+function keepPeriod(value) {
+  try {
+    const url = new URL(location.href);
+    url.searchParams.set("period", value);
+    history.replaceState(history.state, "", url);
+    localStorage.setItem(PERIOD_KEY, value);
+  } catch (e) {
+    // Nothing to keep it in: the switch still works on this page.
+  }
+}
+
+// One row of buttons that works as a single choice (a radio group): Hour,
+// Day, Week, Month. Arrow keys move between them, as in any radio group.
+// The choice is kept in the address (?period=week), so a link opens the same
+// view, and in this browser, so the other page opens on it too. Use as
+// `viewof period = periodInput()`.
+export function periodInput({value = null, label = "Show the figures by"} = {}) {
+  const group = h("div", {class: "period-switch", role: "radiogroup", "aria-label": label});
+  const buttons = PERIODS.map(([key, text]) => {
+    const b = h("button", {type: "button", role: "radio", "data-period": key}, text);
+    b.addEventListener("click", () => set(key, true));
+    return b;
+  });
+  group.append(h("span", {class: "period-label", "aria-hidden": "true"}, "Show by"), ...buttons);
+  function set(key, chosen) {
+    group.value = key;
+    for (const b of buttons) {
+      const on = b.dataset.period === key;
+      b.setAttribute("aria-checked", on ? "true" : "false");
+      b.tabIndex = on ? 0 : -1;
+    }
+    if (chosen) {
+      keepPeriod(key);
+      group.dispatchEvent(new Event("input", {bubbles: true}));
+    }
+  }
+  group.addEventListener("keydown", e => {
+    const i = PERIODS.findIndex(([k]) => k === group.value);
+    const step = {ArrowRight: 1, ArrowDown: 1, ArrowLeft: -1, ArrowUp: -1}[e.key];
+    let next = null;
+    if (step) next = (i + step + PERIODS.length) % PERIODS.length;
+    else if (e.key === "Home") next = 0;
+    else if (e.key === "End") next = PERIODS.length - 1;
+    if (next == null) return;
+    e.preventDefault();
+    set(PERIODS[next][0], true);
+    buttons[next].focus();
+  });
+  set(value ?? storedPeriod() ?? "day", false);
+  return group;
+}
+
+// The name of a period for a chart: "the week of November 16, 2026",
+// "November 2026", an hour, or a day.
+export function periodName(grain, key) {
+  if (key == null) return "–";
+  if (grain === "hour") return hourLabel(key);
+  if (grain === "week") return `Week of ${longDate(key)}`;
+  if (grain === "month") {
+    const d = new Date(`${key}-01T12:00:00Z`);
+    return d.toLocaleDateString("en-US", {month: "long", year: "numeric", timeZone: "UTC"});
+  }
+  return longDate(key);
+}
+
+// One rounding rule for shares, used by stats and chart titles alike: whole
+// percents, or one decimal when the share is within 1 point of 0% or 100%
+// (where whole percents would hide the difference that matters).
+export function fmtShare(x) {
+  if (x == null || Number.isNaN(x)) return "–";
+  return pct(x, x < 0.01 || x > 0.99 ? 1 : 0);
+}
+
+// A small line of daily values, for the home page: drawn without the chart
+// library, and hidden from screen readers (the figure beside it says the
+// same thing in words).
+export function sparkline(values, {width = 120, height = 28} = {}) {
+  const v = values.filter(x => x != null);
+  if (v.length < 2) return null;
+  const lo = Math.min(...v), hi = Math.max(...v), span = hi - lo || 1;
+  const step = width / (values.length - 1);
+  const pts = values.map((x, i) => (x == null ? null : `${(i * step).toFixed(1)},${(height - 3 - ((x - lo) / span) * (height - 6)).toFixed(1)}`)).filter(Boolean);
+  const NS = "http://www.w3.org/2000/svg";
+  const svg = document.createElementNS(NS, "svg");
+  for (const [k, val] of Object.entries({class: "spark", width, height, viewBox: `0 0 ${width} ${height}`, "aria-hidden": "true", focusable: "false"})) svg.setAttribute(k, val);
+  const line = document.createElementNS(NS, "polyline");
+  line.setAttribute("points", pts.join(" "));
+  svg.append(line);
+  return svg;
+}
+
+// Early, on time and late as one bar that adds up to 100%, with the three
+// shares written out beside it.
+export function splitBar(b) {
+  const parts = [["early", "early", b?.early_share_of_observed], ["on-time", "on time", b?.on_time_share_of_observed], ["late", "late", b?.late_share_of_observed]];
+  if (parts.some(([, , x]) => x == null)) return null;
+  const bar = h("div", {class: "split-bar", "aria-hidden": "true"},
+    ...parts.map(([cls, , x]) => { const s = h("span", {class: `part ${cls}`}); s.style.width = `${(x * 100).toFixed(2)}%`; return s; }));
+  const words = h("p", {class: "split-words"}, parts.map(([, word, x]) => `${fmtShare(x)} ${word}`).join(" · "));
+  return h("div", {class: "split"}, bar, words);
+}

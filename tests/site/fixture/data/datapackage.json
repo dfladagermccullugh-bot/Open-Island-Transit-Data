@@ -5,7 +5,7 @@
  "description": "Island Transit's (Whidbey and Camano Islands, Washington) GTFS-Realtime feeds, saved every 20 seconds since November 19, 2026, with daily measures of the feed's quality and on-time figures inferred from vehicle positions.",
  "homepage": "https://dfladagermccullugh-bot.github.io/Open-Island-Transit-Data/",
  "repository": "https://github.com/dfladagermccullugh-bot/Open-Island-Transit-Data",
- "version": "dictionary/0.1.0",
+ "version": "dictionary/0.1.2",
  "dataFormat": "format/0.2.0",
  "licenses": [
   {
@@ -112,7 +112,7 @@
      {
       "name": "impossible_jumps",
       "type": "integer",
-      "description": "Consecutive reports of one vehicle implying more than 130 km/h"
+      "description": "Consecutive reports of one vehicle implying more than 130 km/h (about 80 mph)"
      },
      {
       "name": "timepoint_coverage",
@@ -129,7 +129,7 @@
      {
       "name": "off_shape_share",
       "type": "number",
-      "description": "Position reports more than 100 m from the trip's shape, divided by the reports tracked along it",
+      "description": "Position reports more than 100 meters (about 330 feet) from the trip's shape, divided by the reports tracked along it",
       "unit": "fraction from 0 to 1"
      },
      {
@@ -238,6 +238,21 @@
       "name": "passio_changed_during_day",
       "type": "boolean",
       "description": "True when complete Passio downloads on that day differed, which marks a schedule change"
+     },
+     {
+      "name": "glitch_reports_removed",
+      "type": "number",
+      "description": "Position reports left out as GPS glitches: a bus jumping somewhere impossible and back (`measurement.glitches` in the day file). Since `quality/0.6.0`"
+     },
+     {
+      "name": "unresolved_jumps",
+      "type": "number",
+      "description": "Impossible jumps that were not left out, because there was no jump back or the bus could have made it by driving fast (often a timestamp a few seconds off). Since `quality/0.6.0`"
+     },
+     {
+      "name": "complete",
+      "type": "boolean",
+      "description": "False when the day's quality file was written before its stop events existed; the nightly catch-up and the watchdog then treat the day as not processed, and the next run rebuilds it. Since `quality/0.6.1`"
      },
      {
       "name": "quality_version",
@@ -1261,7 +1276,7 @@
      {
       "name": "is_timepoint",
       "type": "boolean",
-      "description": "A true timepoint (`timepoints/`)"
+      "description": "A true timepoint (`timepoints/`): the stop is printed in Island Transit's timetable for this route and, since `events/0.3.2`, for this trip's direction"
      },
      {
       "name": "stop_distance_m",
@@ -1290,7 +1305,7 @@
      {
       "name": "arrival_time",
       "type": "datetime",
-      "description": "When the bus first came within 40 m of the stop along the shape",
+      "description": "When the bus first came within 40 meters (about 130 feet) of the stop along the shape",
       "timezone": "UTC"
      },
      {
@@ -1307,7 +1322,7 @@
      {
       "name": "departure_time",
       "type": "datetime",
-      "description": "When it moved more than 40 m past the stop",
+      "description": "When it moved more than 40 meters past the stop",
       "timezone": "UTC"
      },
      {
@@ -1320,6 +1335,11 @@
       "name": "departure_status",
       "type": "string",
       "description": "`observed`; `gap` (reports more than 120 s apart, no time given); `not_reached` (tracking ended before the stop); `past_when_first_seen`; `skipped` (the bus left out the part of the shape the stop is on); `no_shape` (the trip has no shape); `unplaced` (the stop could not be placed on the shape in stop order within 150 m of it); `no_reports` (no vehicle carried the trip id); `not_applicable` (no arrival at the first stop, no departure at the last)"
+     },
+     {
+      "name": "report_source",
+      "type": "string",
+      "description": "Where the two position reports that timed this stop came from (the least direct of them if the arrival and departure differ): `own` (the trip's own id), `borrowed_before` (the same bus before its first report under this trip's id, often still showing the previous trip's id at the first stop), `borrowed_after` (the same bus after its last report under this trip's id, often already showing the next trip's id), `borrowed_within` (the same bus between them, with no trip id or another one). Empty when the stop was not observed. Since `events/0.5.0` (`docs/methods.md`, section 3)"
      }
     ],
     "missingValues": [
@@ -1378,6 +1398,26 @@
       "name": "position_reports",
       "type": "integer",
       "description": "That vehicle's reports in the window"
+     },
+     {
+      "name": "glitch_reports",
+      "type": "integer",
+      "description": "That vehicle's reports in the window that were left out as GPS glitches (`pipeline/glitch.py`, `docs/methods.md` section 3). `position_reports` does not include them. Since `events/0.4.0`"
+     },
+     {
+      "name": "reports_borrowed_before",
+      "type": "integer",
+      "description": "Reports of the same bus under another trip id or none that the trip also used: before its first own report (from 30 minutes before its start, or the end of the bus's previous trip if later), after its last own report (up to 30 minutes after its end, but not past the moment the bus left its next trip's first stop), and in between. `position_reports` counts only its own. Since `events/0.5.0`"
+     },
+     {
+      "name": "reports_borrowed_after",
+      "type": "integer",
+      "description": "Reports of the same bus under another trip id or none that the trip also used: before its first own report (from 30 minutes before its start, or the end of the bus's previous trip if later), after its last own report (up to 30 minutes after its end, but not past the moment the bus left its next trip's first stop), and in between. `position_reports` counts only its own. Since `events/0.5.0`"
+     },
+     {
+      "name": "reports_borrowed_within",
+      "type": "integer",
+      "description": "Reports of the same bus under another trip id or none that the trip also used: before its first own report (from 30 minutes before its start, or the end of the bus's previous trip if later), after its last own report (up to 30 minutes after its end, but not past the moment the bus left its next trip's first stop), and in between. `position_reports` counts only its own. Since `events/0.5.0`"
      },
      {
       "name": "reports_used",
@@ -1486,6 +1526,11 @@
       "name": "passio_route_id",
       "type": "string",
       "description": "The Passio route and stop the printed stop was matched to. The stop id and name are empty when the printed name is not a stop"
+     },
+     {
+      "name": "passio_direction_id",
+      "type": "string",
+      "description": "The Passio direction (`direction_id` in Passio's `trips.txt`) whose trips run the way the printed timetable reads. The stop counts as a timepoint only for trips going that direction. Since `timepoints/0.2.0`; lists made before have no such column"
      },
      {
       "name": "passio_stop_id",

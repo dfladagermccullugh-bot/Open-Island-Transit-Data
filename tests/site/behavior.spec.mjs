@@ -386,3 +386,39 @@ test.describe("the download page", () => {
     await expectClean(page, problems.filter(p => !/Failed to load resource.*404/.test(p)));
   });
 });
+
+test.describe("the period switch", () => {
+  test("arrow keys move the choice, the chart follows, and the address keeps it", async ({page}) => {
+    await open(page, "ontime");
+    const group = page.getByRole("radiogroup", {name: "Show the figures by"});
+    await expect(group.getByRole("radio", {name: "Day"})).toHaveAttribute("aria-checked", "true");
+    await group.getByRole("radio", {name: "Day"}).focus();
+    await page.keyboard.press("ArrowRight");
+    await settle(page);
+    await expect(group.getByRole("radio", {name: "Week"})).toHaveAttribute("aria-checked", "true");
+    await expect(group.getByRole("radio", {name: "Week"})).toBeFocused();
+    expect(new URL(page.url()).searchParams.get("period")).toBe("week");
+    await expect(page.locator("main")).toContainText("Week of November 16, 2026");
+    await page.keyboard.press("Home");
+    await settle(page);
+    await expect(page.locator("main")).toContainText("grouped by the hour");
+  });
+
+  test("a link with a period opens on it", async ({page}) => {
+    await open(page, "ontime", {query: "?period=month"});
+    await expect(page.getByRole("radio", {name: "Month"})).toHaveAttribute("aria-checked", "true");
+    await expect(page.locator("main")).toContainText("November 2026");
+  });
+});
+
+test.describe("the home page headline", () => {
+  test("pools the latest service days and says when it can first compare", async ({page}) => {
+    await open(page, "index");
+    const head = page.locator(".slot-headline");
+    await expect(head).toContainText("over the last 2 days with service, to November 20, 2026");
+    await expect(head).toContainText("Not enough days yet to compare");
+    await expect(head.locator(".split-words")).toContainText("on time");
+    await expect(head.locator(".trust")).toContainText("found nothing wrong");
+    await expect(head.locator("a", {hasText: "How we measured this"})).toHaveAttribute("href", "methods.html#on-time-performance");
+  });
+});

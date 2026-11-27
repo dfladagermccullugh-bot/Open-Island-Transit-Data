@@ -1,0 +1,708 @@
+{
+ "periods_version": "periods/0.1.0",
+ "metrics": {
+  "trip_coverage": {
+   "pooled_as": "ratio of sums",
+   "definition": "observed trips over scheduled trips"
+  },
+  "timepoint_coverage": {
+   "pooled_as": "ratio of sums",
+   "definition": "timepoint events with a time over scheduled timepoint events"
+  },
+  "vehicle_uptime": {
+   "pooled_as": "ratio of sums",
+   "definition": "20-second fetch slots that worked over slots due (time-weighted)"
+  },
+  "off_shape_share": {
+   "pooled_as": "ratio of sums",
+   "definition": "positions more than 100 m off the route over positions tracked"
+  },
+  "feed_agreement_share": {
+   "pooled_as": "ratio of sums",
+   "definition": "departures that agree with the feed's stop sequence over those compared"
+  },
+  "impossible_jumps": {
+   "pooled_as": "sum",
+   "definition": "consecutive positions implying more than 130 km/h"
+  },
+  "glitch_reports_removed": {
+   "pooled_as": "sum",
+   "definition": "positions left out as GPS glitches"
+  },
+  "position_age_s_p95": {
+   "pooled_as": "median of daily values",
+   "definition": "95th percentile of position age, seconds"
+  }
+ },
+ "grains": {
+  "hour": {
+   "pooled": {
+    "first_service_date": "2026-11-19",
+    "last_service_date": "2026-11-20",
+    "metrics": {
+     "timepoint_coverage": [
+      {
+       "hour": 3,
+       "value": 1.0,
+       "numerator": 6,
+       "denominator": 6
+      },
+      {
+       "hour": 4,
+       "value": 1.0,
+       "numerator": 43,
+       "denominator": 43
+      },
+      {
+       "hour": 5,
+       "value": 0.940678,
+       "numerator": 111,
+       "denominator": 118
+      },
+      {
+       "hour": 6,
+       "value": 0.900585,
+       "numerator": 154,
+       "denominator": 171
+      },
+      {
+       "hour": 7,
+       "value": 0.90625,
+       "numerator": 174,
+       "denominator": 192
+      },
+      {
+       "hour": 8,
+       "value": 0.902062,
+       "numerator": 175,
+       "denominator": 194
+      },
+      {
+       "hour": 9,
+       "value": 0.88,
+       "numerator": 154,
+       "denominator": 175
+      },
+      {
+       "hour": 10,
+       "value": 0.893855,
+       "numerator": 160,
+       "denominator": 179
+      },
+      {
+       "hour": 11,
+       "value": 0.912088,
+       "numerator": 166,
+       "denominator": 182
+      },
+      {
+       "hour": 12,
+       "value": 0.808743,
+       "numerator": 148,
+       "denominator": 183
+      },
+      {
+       "hour": 13,
+       "value": 0.857143,
+       "numerator": 252,
+       "denominator": 294
+      },
+      {
+       "hour": 14,
+       "value": 0.803191,
+       "numerator": 302,
+       "denominator": 376
+      },
+      {
+       "hour": 15,
+       "value": 0.851955,
+       "numerator": 305,
+       "denominator": 358
+      },
+      {
+       "hour": 16,
+       "value": 0.828205,
+       "numerator": 323,
+       "denominator": 390
+      },
+      {
+       "hour": 17,
+       "value": 0.89196,
+       "numerator": 355,
+       "denominator": 398
+      },
+      {
+       "hour": 18,
+       "value": 0.855721,
+       "numerator": 344,
+       "denominator": 402
+      },
+      {
+       "hour": 19,
+       "value": 0.754237,
+       "numerator": 178,
+       "denominator": 236
+      },
+      {
+       "hour": 20,
+       "value": 0.09375,
+       "numerator": 3,
+       "denominator": 32
+      }
+     ],
+     "trip_coverage": [
+      {
+       "hour": 3,
+       "value": 1.0,
+       "numerator": 3,
+       "denominator": 3
+      },
+      {
+       "hour": 4,
+       "value": 1.0,
+       "numerator": 7,
+       "denominator": 7
+      },
+      {
+       "hour": 5,
+       "value": 1.0,
+       "numerator": 18,
+       "denominator": 18
+      },
+      {
+       "hour": 6,
+       "value": 1.0,
+       "numerator": 22,
+       "denominator": 22
+      },
+      {
+       "hour": 7,
+       "value": 1.0,
+       "numerator": 24,
+       "denominator": 24
+      },
+      {
+       "hour": 8,
+       "value": 1.0,
+       "numerator": 22,
+       "denominator": 22
+      },
+      {
+       "hour": 9,
+       "value": 1.0,
+       "numerator": 21,
+       "denominator": 21
+      },
+      {
+       "hour": 10,
+       "value": 1.0,
+       "numerator": 21,
+       "denominator": 21
+      },
+      {
+       "hour": 11,
+       "value": 1.0,
+       "numerator": 23,
+       "denominator": 23
+      },
+      {
+       "hour": 12,
+       "value": 0.935484,
+       "numerator": 29,
+       "denominator": 31
+      },
+      {
+       "hour": 13,
+       "value": 0.977273,
+       "numerator": 43,
+       "denominator": 44
+      },
+      {
+       "hour": 14,
+       "value": 0.978261,
+       "numerator": 45,
+       "denominator": 46
+      },
+      {
+       "hour": 15,
+       "value": 0.977273,
+       "numerator": 43,
+       "denominator": 44
+      },
+      {
+       "hour": 16,
+       "value": 0.9375,
+       "numerator": 45,
+       "denominator": 48
+      },
+      {
+       "hour": 17,
+       "value": 0.96,
+       "numerator": 48,
+       "denominator": 50
+      },
+      {
+       "hour": 18,
+       "value": 0.9375,
+       "numerator": 45,
+       "denominator": 48
+      },
+      {
+       "hour": 19,
+       "value": 0.928571,
+       "numerator": 26,
+       "denominator": 28
+      },
+      {
+       "hour": 20,
+       "value": 1.0,
+       "numerator": 2,
+       "denominator": 2
+      }
+     ]
+    }
+   },
+   "latest_day": {
+    "service_date": "2026-11-20",
+    "metrics": {
+     "timepoint_coverage": [
+      {
+       "hour": 3,
+       "value": 1.0,
+       "numerator": 6,
+       "denominator": 6
+      },
+      {
+       "hour": 4,
+       "value": 1.0,
+       "numerator": 43,
+       "denominator": 43
+      },
+      {
+       "hour": 5,
+       "value": 0.940678,
+       "numerator": 111,
+       "denominator": 118
+      },
+      {
+       "hour": 6,
+       "value": 0.900585,
+       "numerator": 154,
+       "denominator": 171
+      },
+      {
+       "hour": 7,
+       "value": 0.90625,
+       "numerator": 174,
+       "denominator": 192
+      },
+      {
+       "hour": 8,
+       "value": 0.902062,
+       "numerator": 175,
+       "denominator": 194
+      },
+      {
+       "hour": 9,
+       "value": 0.88,
+       "numerator": 154,
+       "denominator": 175
+      },
+      {
+       "hour": 10,
+       "value": 0.893855,
+       "numerator": 160,
+       "denominator": 179
+      },
+      {
+       "hour": 11,
+       "value": 0.912088,
+       "numerator": 166,
+       "denominator": 182
+      },
+      {
+       "hour": 12,
+       "value": 0.808743,
+       "numerator": 148,
+       "denominator": 183
+      },
+      {
+       "hour": 13,
+       "value": 0.892473,
+       "numerator": 166,
+       "denominator": 186
+      },
+      {
+       "hour": 14,
+       "value": 0.824468,
+       "numerator": 155,
+       "denominator": 188
+      },
+      {
+       "hour": 15,
+       "value": 0.793296,
+       "numerator": 142,
+       "denominator": 179
+      },
+      {
+       "hour": 16,
+       "value": 0.820513,
+       "numerator": 160,
+       "denominator": 195
+      },
+      {
+       "hour": 17,
+       "value": 0.884422,
+       "numerator": 176,
+       "denominator": 199
+      },
+      {
+       "hour": 18,
+       "value": 0.810945,
+       "numerator": 163,
+       "denominator": 201
+      },
+      {
+       "hour": 19,
+       "value": 0.737288,
+       "numerator": 87,
+       "denominator": 118
+      },
+      {
+       "hour": 20,
+       "value": 0.0625,
+       "numerator": 1,
+       "denominator": 16
+      }
+     ],
+     "trip_coverage": [
+      {
+       "hour": 3,
+       "value": 1.0,
+       "numerator": 3,
+       "denominator": 3
+      },
+      {
+       "hour": 4,
+       "value": 1.0,
+       "numerator": 7,
+       "denominator": 7
+      },
+      {
+       "hour": 5,
+       "value": 1.0,
+       "numerator": 18,
+       "denominator": 18
+      },
+      {
+       "hour": 6,
+       "value": 1.0,
+       "numerator": 22,
+       "denominator": 22
+      },
+      {
+       "hour": 7,
+       "value": 1.0,
+       "numerator": 24,
+       "denominator": 24
+      },
+      {
+       "hour": 8,
+       "value": 1.0,
+       "numerator": 22,
+       "denominator": 22
+      },
+      {
+       "hour": 9,
+       "value": 1.0,
+       "numerator": 21,
+       "denominator": 21
+      },
+      {
+       "hour": 10,
+       "value": 1.0,
+       "numerator": 21,
+       "denominator": 21
+      },
+      {
+       "hour": 11,
+       "value": 1.0,
+       "numerator": 23,
+       "denominator": 23
+      },
+      {
+       "hour": 12,
+       "value": 0.96,
+       "numerator": 24,
+       "denominator": 25
+      },
+      {
+       "hour": 13,
+       "value": 1.0,
+       "numerator": 22,
+       "denominator": 22
+      },
+      {
+       "hour": 14,
+       "value": 1.0,
+       "numerator": 23,
+       "denominator": 23
+      },
+      {
+       "hour": 15,
+       "value": 0.954545,
+       "numerator": 21,
+       "denominator": 22
+      },
+      {
+       "hour": 16,
+       "value": 0.916667,
+       "numerator": 22,
+       "denominator": 24
+      },
+      {
+       "hour": 17,
+       "value": 0.96,
+       "numerator": 24,
+       "denominator": 25
+      },
+      {
+       "hour": 18,
+       "value": 0.875,
+       "numerator": 21,
+       "denominator": 24
+      },
+      {
+       "hour": 19,
+       "value": 0.857143,
+       "numerator": 12,
+       "denominator": 14
+      },
+      {
+       "hour": 20,
+       "value": 1.0,
+       "numerator": 1,
+       "denominator": 1
+      }
+     ]
+    }
+   },
+   "not_measured_by_hour": [
+    "feed_agreement_share",
+    "glitch_reports_removed",
+    "impossible_jumps",
+    "off_shape_share",
+    "position_age_s_p95",
+    "vehicle_uptime"
+   ]
+  },
+  "day": [
+   {
+    "period": "2026-11-19",
+    "service_expected": true,
+    "metrics": {
+     "trip_coverage": {
+      "value": 0.968944,
+      "numerator": 156,
+      "denominator": 161,
+      "days": 1
+     },
+     "timepoint_coverage": {
+      "value": 0.840532,
+      "numerator": 1012,
+      "denominator": 1204,
+      "days": 1
+     },
+     "vehicle_uptime": {
+      "value": 0.998951,
+      "numerator": 1904,
+      "denominator": 1906,
+      "days": 1
+     },
+     "off_shape_share": {
+      "value": 0.063541,
+      "numerator": 1041,
+      "denominator": 16383,
+      "days": 1
+     },
+     "feed_agreement_share": {
+      "value": 0.954738,
+      "numerator": 3607,
+      "denominator": 3778,
+      "days": 1
+     },
+     "impossible_jumps": {
+      "value": 2,
+      "days": 1
+     },
+     "glitch_reports_removed": {
+      "value": 0,
+      "days": 1
+     },
+     "position_age_s_p95": {
+      "value": 8.0,
+      "low": 8.0,
+      "high": 8.0,
+      "days": 1
+     }
+    }
+   },
+   {
+    "period": "2026-11-20",
+    "service_expected": true,
+    "metrics": {
+     "trip_coverage": {
+      "value": 0.970674,
+      "numerator": 331,
+      "denominator": 341,
+      "days": 1
+     },
+     "timepoint_coverage": {
+      "value": 0.859083,
+      "numerator": 2341,
+      "denominator": 2725,
+      "days": 1
+     },
+     "vehicle_uptime": {
+      "value": 0.99838,
+      "numerator": 4313,
+      "denominator": 4320,
+      "days": 1
+     },
+     "off_shape_share": {
+      "value": 0.043597,
+      "numerator": 1615,
+      "denominator": 37044,
+      "days": 1
+     },
+     "feed_agreement_share": {
+      "value": 0.94037,
+      "numerator": 8090,
+      "denominator": 8603,
+      "days": 1
+     },
+     "impossible_jumps": {
+      "value": 1,
+      "days": 1
+     },
+     "glitch_reports_removed": {
+      "value": 0,
+      "days": 1
+     },
+     "position_age_s_p95": {
+      "value": 8.1,
+      "low": 8.1,
+      "high": 8.1,
+      "days": 1
+     }
+    }
+   }
+  ],
+  "week": [
+   {
+    "period": "2026-11-16",
+    "partial": true,
+    "days": 2,
+    "metrics": {
+     "trip_coverage": {
+      "value": 0.97012,
+      "numerator": 487,
+      "denominator": 502,
+      "days": 2
+     },
+     "timepoint_coverage": {
+      "value": 0.853398,
+      "numerator": 3353,
+      "denominator": 3929,
+      "days": 2
+     },
+     "vehicle_uptime": {
+      "value": 0.998554,
+      "numerator": 6217,
+      "denominator": 6226,
+      "days": 2
+     },
+     "off_shape_share": {
+      "value": 0.049713,
+      "numerator": 2656,
+      "denominator": 53427,
+      "days": 2
+     },
+     "feed_agreement_share": {
+      "value": 0.944754,
+      "numerator": 11697,
+      "denominator": 12381,
+      "days": 2
+     },
+     "impossible_jumps": {
+      "value": 3,
+      "days": 2
+     },
+     "glitch_reports_removed": {
+      "value": 0,
+      "days": 2
+     },
+     "position_age_s_p95": {
+      "value": 8.1,
+      "low": 8.0,
+      "high": 8.1,
+      "days": 2
+     }
+    }
+   }
+  ],
+  "month": [
+   {
+    "period": "2026-11",
+    "partial": true,
+    "days": 2,
+    "metrics": {
+     "trip_coverage": {
+      "value": 0.97012,
+      "numerator": 487,
+      "denominator": 502,
+      "days": 2
+     },
+     "timepoint_coverage": {
+      "value": 0.853398,
+      "numerator": 3353,
+      "denominator": 3929,
+      "days": 2
+     },
+     "vehicle_uptime": {
+      "value": 0.998554,
+      "numerator": 6217,
+      "denominator": 6226,
+      "days": 2
+     },
+     "off_shape_share": {
+      "value": 0.049713,
+      "numerator": 2656,
+      "denominator": 53427,
+      "days": 2
+     },
+     "feed_agreement_share": {
+      "value": 0.944754,
+      "numerator": 11697,
+      "denominator": 12381,
+      "days": 2
+     },
+     "impossible_jumps": {
+      "value": 3,
+      "days": 2
+     },
+     "glitch_reports_removed": {
+      "value": 0,
+      "days": 2
+     },
+     "position_age_s_p95": {
+      "value": 8.1,
+      "low": 8.0,
+      "high": 8.1,
+      "days": 2
+     }
+    }
+   }
+  ]
+ }
+}
