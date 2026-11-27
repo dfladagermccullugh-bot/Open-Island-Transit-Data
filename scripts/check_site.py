@@ -27,7 +27,15 @@ from pathlib import Path
 METHOD_ANCHORS = ("collection", "feed-quality-metrics", "arrival-and-departure-times",
                   "on-time-performance", "validation")  # fmt: skip
 PAGES = (
-    "index", "routes", "ontime", "quality", "data", "methods", "codebook", "glossary", "limits",
+    "index",
+    "routes",
+    "ontime",
+    "quality",
+    "data",
+    "methods",
+    "codebook",
+    "glossary",
+    "limits",
     "404",
 )
 FILES = (
