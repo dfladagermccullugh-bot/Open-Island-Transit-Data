@@ -1,0 +1,24 @@
+{
+ "sample_version": "compare-sample/0.1.0",
+ "agency": "intercity",
+ "service_date": "2026-11-26",
+ "sample_start": "2026-11-27T07:48:06+00:00",
+ "sample_end": "2026-11-27T09:48:23+00:00",
+ "timepoints": "marked in the schedule",
+ "vehicles_seen": 0,
+ "position_reports": 0,
+ "trips_measured": 0,
+ "moments_measured": 0,
+ "on_time_share": null,
+ "on_time_interval_95": [
+  null,
+  null
+ ],
+ "deviation_s_median": null,
+ "by_stop_radius_m": {
+  "30": null,
+  "40": null,
+  "50": null
+ },
+ "fetches": 359
+}

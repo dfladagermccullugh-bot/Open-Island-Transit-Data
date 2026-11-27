@@ -1,0 +1,24 @@
+{
+ "sample_version": "compare-sample/0.1.0",
+ "agency": "bctransit-victoria",
+ "service_date": "2026-11-27",
+ "sample_start": "2026-11-27T07:48:38+00:00",
+ "sample_end": "2026-11-27T09:48:45+00:00",
+ "timepoints": "marked in the schedule",
+ "vehicles_seen": 22,
+ "position_reports": 1200,
+ "trips_measured": 0,
+ "moments_measured": 0,
+ "on_time_share": null,
+ "on_time_interval_95": [
+  null,
+  null
+ ],
+ "deviation_s_median": null,
+ "by_stop_radius_m": {
+  "30": null,
+  "40": null,
+  "50": null
+ },
+ "fetches": 354
+}

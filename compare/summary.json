@@ -163,7 +163,8 @@
    "confidence": "high",
    "classes": [
     "R",
-    "B"
+    "B",
+    "A"
    ],
    "island_under_their_rule": 0.499,
    "converted_to_our_window": {
@@ -171,6 +172,24 @@
     "high": 0.9218,
     "assumptions_used": 3,
     "assumptions_tried": 7
+   },
+   "our_method_on_their_feed": {
+    "service_date": "2026-11-27",
+    "sample_start": "2026-11-27T07:48:03+00:00",
+    "sample_end": "2026-11-27T09:48:08+00:00",
+    "timepoints": "marked in the schedule",
+    "trips_measured": 53,
+    "moments_measured": 117,
+    "on_time_share": 0.8718,
+    "on_time_interval_95": [
+     0.7948,
+     0.9464
+    ],
+    "by_stop_radius_m": {
+     "30": 0.8707,
+     "40": 0.8718,
+     "50": 0.8729
+    }
    }
   },
   {
