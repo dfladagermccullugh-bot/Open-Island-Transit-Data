@@ -177,6 +177,17 @@ Plan: `docs/plan-2026-11-27.md`. Work goes on the session's own `claude/...` bra
 - **Service change 2026-12-27**: the timepoint list is committed and the pipeline is ready (see "Change-over pass"). What remains is the check on 2026-12-28 listed there.
 8. **Monthly reports**: tooling done 2026-11-21 (`pipeline/monthly.py`, `REPORT_VERSION` `monthly/0.1.0`, nightly step after quality). When a month's last day is archived and processed (or 7 days after it ended), the nightly job writes `reports/YYYY-MM.json`, `.md` and `reports/index.json` on the `data` branch, uploads `SHA256SUMS-<tag>.txt` to `raw-YYYY-MM` and `parsed-YYYY-MM`, and sets the Markdown as their release notes; `pipeline.check` verifies the checksum files. Shown on the site's Data page. Preview any month: `python -m pipeline.monthly --data <data dir> --month 2026-11 --preview <dir>`. `release.set_notes` (`gh release edit --notes`) passed the `Release self-test` workflow on 2026-11-21 (it now also replaces and reads back notes); the full chain passed `scripts/rehearse_nightly.py`. **First real run: the nightly after 2026-11-30 is archived (2026-12-01 08:35 UTC); check the November report (12 days, 2026-11-19 partial) and both releases' notes and checksum files.**
 
+## After the plan (2026-11-27)
+
+Left over from the sessions: the printed-time check (Davin: hold off); relay of two vehicles on one trip and the deadhead split (session 4 row); Europe and Asia class A peers (need free keys such as UK BODS and new hosts; Kitsap has no active schedule, Missoula no live feed); pinning the "Weekly audit" issue (repository setting).
+
+Outside reviews (two AI reviews Davin passed on, 2026-11-27), checked against the repository and the live site:
+- Confirmed: the `data` branch is pushed after each stage, before the gate, and the README points readers to it; the headline interval covers chance only and the page does not give the counts (12,602 timed of 14,664 scheduled departures over 7 days, 14% untimed; bounds if every untimed one were late or on time: 63.5% to 77.5%); Compare shows 70.3% beside the home 74% and explains the difference (early arrival at a last stop) only in methods; "saves every update" overstates it (it saves the feed every 20 seconds); why departures went untimed is not published; Codebook is 703 px wide on a 390 px phone; Download shifts as it loads on desktop (layout shift 0.145, none on a phone); methods cite no sources (survey error, Firth, bootstrap); all commits are authored by Claude; the class A peer samples are one 2-hour morning, the day after Thanksgiving; no feedback or contact link; link previews carry no figures; eight navbar links.
+- Not checked yet: last stops timed about 14 points below middle stops.
+- Ideas, not defects: a route or stop jump box near the top of Home, a "running late" callout, ferry connections, a lighter hero on phones, a "tracking since" line.
+
+Domain: Davin bought `islandtransitdata.org` at Porkbun on 2026-11-27. Not yet pointed at the site. When it is, change `site-url` in `site/_quarto.yml`, the README and CITATION links, the URL in the Supabase `check-site-freshness` job (as a migration), the base URL in `scripts/test_site.sh live`, and the environment's allowed hosts.
+
 ## Waiting on Davin
 
 - **Repository settings** (cannot be set from a session): description, website URL and topics are empty; private vulnerability reporting is off though `SECURITY.md` points to it. The labels `data` and `correction` exist since 2026-11-22 (plain gray, no description).
@@ -187,7 +198,7 @@ Plan: `docs/plan-2026-11-27.md`. Work goes on the session's own `claude/...` bra
 - **Anonymous reads of raw bodies**: anyone with the publishable key can page through `raw_response` and `raw_export` and use up the 5 GB monthly egress. The nightly job reads through the same key, so closing it means giving the job its own key. Decided 2026-11-21: leave open.
 - The dispatch token (`github_dispatch_token`) expires on the date he chose; the watchdog now reports an unprocessed day, which is how an expired token would show.
 
-- Optional: Porkbun CNAME `transit` to `dfladagermccullugh-bot.github.io` (Pages source is set to GitHub Actions, done 2026-11-20).
+- Custom domain `islandtransitdata.org` (bought 2026-11-27): DNS records at Porkbun and the custom domain in the repository's Pages settings are his; see "After the plan".
 - Optional: more route 60 timings (any trip; stop name and time with seconds). The field check is a route 60 spot check (Davin, 2026-11-21).
 - Open question: move the repo from the `dfladagermccullugh-bot` account to his main account before announcing.
 
