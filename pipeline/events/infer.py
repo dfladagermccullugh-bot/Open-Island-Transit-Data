@@ -36,12 +36,13 @@ A stop that cannot be placed on the shape in stop order, within
 from __future__ import annotations
 
 from bisect import bisect_left
-from collections import defaultdict
+from collections import Counter, defaultdict
 from dataclasses import dataclass, field
 from datetime import UTC, date, datetime, timedelta
 
 from pipeline import glitch
 from pipeline.common import Row
+from pipeline.events import continuity
 from pipeline.events.geometry import Shape
 from pipeline.gtfs.schedule import Trip, day_origin, scheduled_trips
 from pipeline.gtfs.tables import rows as _rows
@@ -49,7 +50,7 @@ from pipeline.gtfs.tables import seconds as _seconds
 from pipeline.gtfs.timepoints import is_timepoint
 from pipeline.gtfs.zipread import ZipContents
 
-EVENTS_VERSION = "events/0.4.0"  # 0.4.0: GPS glitches removed (pipeline/glitch.py)
+EVENTS_VERSION = "events/0.5.0"  # 0.5.0: follows the physical bus (continuity.py)
 
 WINDOW_MIN = 30
 OFF_SHAPE_M = 100.0
@@ -199,31 +200,26 @@ def track(
 ) -> Track:
     """Follow one vehicle along a trip's shape.
 
-    ``reports``: (epoch seconds, lat, lon, bearing, speed), sorted by time,
-    one per timestamp. Tracking starts at the first report within
-    ``START_ZONE_M`` of the start of the shape (a bus waiting at the terminal
-    often already carries the next trip's id while finishing the previous
-    one). If there is none, it starts at the first report from
-    ``scheduled_start`` minus ``LATE_JOIN_S``, wherever it is. It ends when
-    the bus is within ``END_ZONE_M`` of the end of the shape, but never
-    before it has reached ``last_arrival_m``, the point where arrival at the
-    last stop is timed (otherwise a report just short of that point would end
-    tracking and lose the arrival).
+        ``reports``: (epoch seconds, lat, lon, bearing, speed), sorted by time,
+        one per timestamp. Tracking starts at the first report within
+        ``START_ZONE_M`` of the start of the shape (a bus waiting at the terminal
+        often already carries the next trip's id while finishing the previous
+        one), or rather at the report nearest the start during that first visit
+    to the start zone (``_nearest_start``, since ``events/0.5.0``). If there is
+    none, it starts at the first report from
+        ``scheduled_start`` minus ``LATE_JOIN_S``, wherever it is. It ends when
+        the bus is within ``END_ZONE_M`` of the end of the shape, but never
+        before it has reached ``last_arrival_m``, the point where arrival at the
+        last stop is timed (otherwise a report just short of that point would end
+        tracking and lose the arrival).
 
-    If the bus leaves out part of the shape (the published shape has a
-    branch this trip did not drive), reports stop matching the search
-    window. Tracking then moves forward to a later part of the shape when two
-    consecutive reports lie on it (see ``_forward_pass``), and records the
-    stretch left out in ``skips``; stops in it get no time."""
+        If the bus leaves out part of the shape (the published shape has a
+        branch this trip did not drive), reports stop matching the search
+        window. Tracking then moves forward to a later part of the shape when two
+        consecutive reports lie on it (see ``_forward_pass``), and records the
+        stretch left out in ``skips``; stops in it get no time."""
     tr = Track([], [], reports=len(reports))
-    start = next(
-        (
-            k
-            for k, r in enumerate(reports)
-            if (hit := shape.project(r[1], r[2], 0.0, START_ZONE_M)) and hit[1] <= OFF_SHAPE_M
-        ),
-        None,
-    )
+    start = _start_visit(shape, reports, scheduled_start)
     if start is None:
         late = scheduled_start - LATE_JOIN_S
         start = next((k for k, r in enumerate(reports) if r[0] >= late), len(reports))
@@ -277,6 +273,34 @@ def track(
     return tr
 
 
+def _start_visit(shape: Shape, reports: list[tuple], scheduled_start: float) -> int | None:
+    """Where tracking starts: the report nearest the start of the shape
+    during the bus's visit to the start zone (within ``START_ZONE_M``) that
+    ends nearest the scheduled departure; None if the bus was never there.
+
+    Since ``events/0.5.0``. Before, tracking started at the first report in
+    the zone. A bus arriving at a terminal often comes in along the road it
+    will leave by, so that report can lie well past the first stop, and the
+    departure was lost (``past_when_first_seen``). With reports borrowed
+    from before the trip (``pipeline/events/continuity.py``), the bus may
+    also have passed through the zone earlier, on its way from the depot."""
+    visits: list[tuple[int, int, float]] = []  # (nearest report, last report, its along)
+    for k, r in enumerate(reports):
+        hit = shape.project(r[1], r[2], 0.0, START_ZONE_M)
+        inside = bool(hit) and hit[1] <= OFF_SHAPE_M and hit[0] < START_ZONE_M
+        if not inside:
+            continue
+        if visits and visits[-1][1] == k - 1:
+            best, _, along = visits[-1]
+            visits[-1] = (k, k, hit[0]) if hit[0] < along else (best, k, along)
+        else:
+            visits.append((k, k, hit[0]))
+    if not visits:
+        return None
+    chosen = min(visits, key=lambda v: (abs(reports[v[1]][0] - scheduled_start), v[1]))
+    return chosen[0]
+
+
 def _against(shape: Shape, along: float, bearing: float | None, speed: float | None) -> bool:
     """Moving against the shape's direction at that distance along it."""
     return (
@@ -326,6 +350,22 @@ def crossing(tr: Track, boundary: float) -> tuple[float | None, float | None, st
     return t0 + (boundary - d0) / (d - d0) * gap, gap, "observed"
 
 
+def _source(tr: Track, boundary: float, sources: dict[float, str]) -> str:
+    """Where the two reports that timed a crossing came from: ``own`` if
+    both carried the trip's id, else how the other one was found."""
+    k = bisect_left(tr.dists, boundary)
+    pair = {sources.get(tr.times[k - 1], "own"), sources.get(tr.times[k], "own")}
+    return _pick(list(pair)) or "own"
+
+
+def _pick(found: list[str]) -> str | None:
+    """One source for a stop: the least direct of those that timed it."""
+    for name in ("borrowed_within", "borrowed_before", "borrowed_after", "own"):
+        if name in found:
+            return name
+    return None
+
+
 def _epoch(dt: datetime) -> float:
     return dt.timestamp()
 
@@ -370,10 +410,12 @@ def infer_day(
     for v in vehicles:
         if v["trip_id"] is not None and v["vehicle_ts"] is not None and v["lat"] is not None:
             by_trip[v["trip_id"]].append(v)
+    lines = continuity.timelines(vehicles, glitches.removed)
 
-    events: list[Row] = []
-    trips_out: list[Row] = []
-    for trip in trips if trips is not None else scheduled_trips(contents, day):
+    # Pass 1: each trip's own reports and the vehicle they came from.
+    todo = list(trips if trips is not None else scheduled_trips(contents, day))
+    picked: list[tuple[str | None, dict[float, Row], int, int]] = []
+    for trip in todo:
         lo, hi = trip.start - margin, trip.end + margin
         per_vehicle: dict[str, dict[float, Row]] = defaultdict(dict)
         dropped: dict[str, set[float]] = defaultdict(set)
@@ -384,51 +426,120 @@ def infer_day(
                     continue
                 per_vehicle[v["vehicle_key"]].setdefault(_epoch(v["vehicle_ts"]), v)
         vehicle_key = max(per_vehicle, key=lambda k: len(per_vehicle[k]), default=None)
-        reports = _reports(per_vehicle, vehicle_key)
-        summary: Row = {
-            "trip_id": trip.trip_id,
-            "route_id": trip.route_id,
-            "scheduled_start": trip.start,
-            "scheduled_end": trip.end,
-            "vehicles_with_trip_id": len(per_vehicle),
-            "vehicle_key": vehicle_key,
-            "position_reports": len(reports),
-            "glitch_reports": len(dropped.get(vehicle_key, ())) if vehicle_key else 0,
-            "problem": None,
-        }
-        try:
-            meta = static.trips[trip.trip_id]
-            shape = static.shapes.get(meta.get("shape_id", ""))
-            placed = static.place_stops(trip.trip_id)
-            stop_rows = static.stop_times.get(trip.trip_id, [])
-            direction = meta.get("direction_id") or ""
-            rows = _trip_events(
-                trip, direction, stop_rows, placed, shape, reports, timepoints, origin
-            )
-        except (KeyError, ValueError) as exc:
-            summary.update(dict.fromkeys(_TRACK_FIELDS), problem=f"{type(exc).__name__}: {exc}")
-            trips_out.append(summary)
-            continue
-        tr, stop_events = rows
-        for e in stop_events:
-            e["vehicle_key"] = vehicle_key
+        own = per_vehicle[vehicle_key] if vehicle_key else {}
+        n_dropped = len(dropped.get(vehicle_key, ())) if vehicle_key else 0
+        picked.append((vehicle_key, own, len(per_vehicle), n_dropped))
+
+    # Pass 2, in each vehicle's order of trips: add the reports the same bus
+    # sent under another trip id or none (pipeline/events/continuity.py).
+    order = continuity.vehicle_order(todo, [p[0] for p in picked], [p[1] for p in picked])
+    results: dict[int, tuple[list[Row], Row]] = {}
+    for vehicle_key, indexes in order.items():
+        prev_end: float | None = None
+        for pos, i in enumerate(indexes):
+            trip = todo[i]
+            _, own, n_vehicles, n_dropped = picked[i]
+            line = lines.get(vehicle_key, []) if vehicle_key else []
+            # Borrow no report from after the bus left its next trip's
+            # first stop.
+            next_leaves = None
+            if vehicle_key and pos + 1 < len(indexes):
+                j = indexes[pos + 1]
+                next_leaves = _leaves_first_stop(todo[j], static, picked[j][1])
+            window = continuity.trip_window(trip, margin, prev_end, next_leaves)
+            reports, sources = continuity.reports_for(own, line, window)
+            stop_events, summary, last = _one_trip(
+                trip, static, reports, sources, timepoints, origin, vehicle_key, n_vehicles,
+                n_dropped,
+            )  # fmt: skip
+            if last is not None:
+                prev_end = last
+            results[i] = (stop_events, summary)
+
+    events: list[Row] = []
+    trips_out: list[Row] = []
+    for i in range(len(todo)):
+        stop_events, summary = results[i]
         events += stop_events
-        summary.update(
-            {
-                "reports_used": len(tr.dists),
-                "reports_before_start": tr.before_start,
-                "reports_after_end": tr.after_end,
-                "off_shape_reports": tr.off_shape,
-                "wrong_direction_reports": tr.wrong_direction,
-                "shape_id": meta.get("shape_id"),
-                "shape_length_m": round(shape.length, 1) if shape is not None else None,
-                "max_distance_m": round(tr.dists[-1], 1) if tr.dists else None,
-                "shape_skips": len(tr.skips),
-                "skipped_m": round(sum(b - a for a, b in tr.skips), 1),
-            }
-        )
         trips_out.append(summary)
     return events, trips_out
+
+
+def _leaves_first_stop(trip: Trip, static: StaticData, own: dict[float, Row]) -> float | None:
+    """When a bus left a trip's first stop, from the trip's own reports
+    alone: the first report it tracked beyond the departure point, or None."""
+    if not own:
+        return None
+    try:
+        shape = static.shapes.get(static.trips[trip.trip_id].get("shape_id", ""))
+        placed = static.place_stops(trip.trip_id)
+    except (KeyError, ValueError):
+        return None
+    if shape is None or not placed or placed[0][0] is None:
+        return None
+    reports = sorted((t, v["lat"], v["lon"], v["bearing"], v["speed"]) for t, v in own.items())
+    tr = track(shape, reports, _epoch(trip.start), None)
+    k = bisect_left(tr.dists, placed[0][0] + STOP_RADIUS_M)
+    return tr.times[k] if k < len(tr.dists) else None
+
+
+def _one_trip(
+    trip: Trip,
+    static: StaticData,
+    reports: list[tuple],
+    sources: dict[float, str],
+    timepoints: set[tuple[str, str, str]],
+    origin: datetime,
+    vehicle_key: str | None,
+    n_vehicles: int,
+    n_dropped: int,
+) -> tuple[list[Row], Row, float | None]:
+    """Stop events and the trip summary of one trip, and the time of the last
+    report its track used (None if it used none)."""
+    counts = Counter(sources[r[0]] for r in reports)
+    summary: Row = {
+        "trip_id": trip.trip_id,
+        "route_id": trip.route_id,
+        "scheduled_start": trip.start,
+        "scheduled_end": trip.end,
+        "vehicles_with_trip_id": n_vehicles,
+        "vehicle_key": vehicle_key,
+        "position_reports": counts["own"],
+        "glitch_reports": n_dropped,
+        "reports_borrowed_before": counts["borrowed_before"],
+        "reports_borrowed_after": counts["borrowed_after"],
+        "reports_borrowed_within": counts["borrowed_within"],
+        "problem": None,
+    }
+    try:
+        meta = static.trips[trip.trip_id]
+        shape = static.shapes.get(meta.get("shape_id", ""))
+        placed = static.place_stops(trip.trip_id)
+        stop_rows = static.stop_times.get(trip.trip_id, [])
+        direction = meta.get("direction_id") or ""
+        tr, stop_events = _trip_events(
+            trip, direction, stop_rows, placed, shape, reports, timepoints, origin, sources
+        )
+    except (KeyError, ValueError) as exc:
+        summary.update(dict.fromkeys(_TRACK_FIELDS), problem=f"{type(exc).__name__}: {exc}")
+        return [], summary, None
+    for e in stop_events:
+        e["vehicle_key"] = vehicle_key
+    summary.update(
+        {
+            "reports_used": len(tr.dists),
+            "reports_before_start": tr.before_start,
+            "reports_after_end": tr.after_end,
+            "off_shape_reports": tr.off_shape,
+            "wrong_direction_reports": tr.wrong_direction,
+            "shape_id": meta.get("shape_id"),
+            "shape_length_m": round(shape.length, 1) if shape is not None else None,
+            "max_distance_m": round(tr.dists[-1], 1) if tr.dists else None,
+            "shape_skips": len(tr.skips),
+            "skipped_m": round(sum(b - a for a, b in tr.skips), 1),
+        }
+    )
+    return stop_events, summary, (tr.times[-1] if tr.times else None)
 
 
 _TRACK_FIELDS = (
@@ -454,6 +565,7 @@ def _trip_events(
     reports: list[tuple],
     timepoints: set[tuple[str, str, str]],
     origin: datetime,
+    sources: dict[float, str] | None = None,
 ) -> tuple[Track, list[Row]]:
     """Track one trip and time its stops."""
     n = len(stop_rows)
@@ -485,6 +597,7 @@ def _trip_events(
             "scheduled_arrival": _at(origin, arr_s),
             "scheduled_departure": _at(origin, dep_s),
         }
+        found: list[str] = []
         for kind, sign, skip in (("arrival", -1, i == 0), ("departure", 1, i == n - 1)):
             if skip:
                 t, gap, status = None, None, "not_applicable"
@@ -497,5 +610,8 @@ def _trip_events(
             row[f"{kind}_time"] = _dt(t)
             row[f"{kind}_gap_s"] = round(gap, 1) if gap is not None else None
             row[f"{kind}_status"] = status
+            if status == "observed" and sources is not None and sd is not None:
+                found.append(_source(tr, sd + sign * STOP_RADIUS_M, sources))
+        row["report_source"] = _pick(found)
         out.append(row)
     return tr, out

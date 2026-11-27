@@ -49,7 +49,7 @@
    "hash": "bc9e67031b19d343e47595b3abf766b3678a2aec26446d16d19233453c39bddb"
   },
   "events": {
-   "version": "events/0.4.0",
+   "version": "events/0.5.0",
    "constant": "pipeline/events/infer.py::EVENTS_VERSION",
    "sources": [
     "pipeline/events/infer.py",
@@ -59,28 +59,29 @@
     "pipeline/geo.py",
     "pipeline/stats.py",
     "pipeline/gtfs/timepoints.py::timepoint_pairs",
-    "pipeline/glitch.py"
+    "pipeline/glitch.py",
+    "pipeline/events/continuity.py"
    ],
-   "hash": "798865df9a90c234da476082b4a3ac73fa70ee8850a142401c63b3ca1a3b4972"
+   "hash": "f14f2b4ccd98d50284d430f883e340b069eff5bd44f865a18d4f76fc41e496db"
   },
   "ontime": {
-   "version": "ontime/0.3.0",
+   "version": "ontime/0.4.0",
    "constant": "pipeline/events/ontime.py::ONTIME_VERSION",
    "sources": [
     "pipeline/events/ontime.py",
     "pipeline/stats.py",
     "pipeline/columns.py::ONTIME_DAILY"
    ],
-   "hash": "63eab8048764555d0c3f273970ea2c8b928e2e78ddda1e8abf68a528c1d8496a"
+   "hash": "5db31778a3d3c1e2852bf359739df1dd0ebf799a2cdb04b15c6f13003fb13ce4"
   },
   "validate": {
-   "version": "validate/0.2.0",
+   "version": "validate/0.3.0",
    "constant": "pipeline/events/validate.py::VALIDATE_VERSION",
    "sources": [
     "pipeline/events/validate.py",
     "pipeline/stats.py"
    ],
-   "hash": "219024128e1642afaf015332461af6c5f7f88c7f89649c3ed78aee3cf2b1cfc1"
+   "hash": "fefdd8c50140dbe9338e6007f23a56295ed24dd71b4e09ffa875cb502780baa3"
   },
   "routes": {
    "version": "routes/0.2.0",
@@ -102,7 +103,7 @@
    "hash": "1c9ae40195076e09f9246adaf9ceb131a8e5ff0a544cec8d5b8e7ab71b3fbdb0"
   },
   "quality": {
-   "version": "quality/0.6.0",
+   "version": "quality/0.6.1",
    "constant": "pipeline/quality/metrics.py::QUALITY_VERSION",
    "sources": [
     "pipeline/quality/metrics.py",
@@ -120,7 +121,7 @@
     "pipeline/columns.py::QUALITY_HEADLINE",
     "pipeline/glitch.py"
    ],
-   "hash": "6128b73316c1f905a83d11530bf6765809c97b24c91677b240e5d26b5afd5e91"
+   "hash": "29513bae9c0592f03e138cec92846665177752ff6e404b7eb5a2082b81083090"
   },
   "gaps": {
    "version": "gaps/0.4.0",
@@ -150,12 +151,12 @@
    "hash": "88774869ecf393f53bd511fd3f6a9ca40d51b8f1e205383ac783a68baa529941"
   },
   "dictionary": {
-   "version": "dictionary/0.1.1",
+   "version": "dictionary/0.1.2",
    "constant": "pipeline/datapackage.py::DICTIONARY_VERSION",
    "sources": [
     "pipeline/datapackage.py"
    ],
-   "hash": "daeec93de58497a649042a308a8da0b56a3219240b5ec8f35a2446e2efaa4dbe"
+   "hash": "c09578d770e15f53f1a414a1119ea777853b728eb3f9143b6af3a6f1381bd007"
   }
  }
 }

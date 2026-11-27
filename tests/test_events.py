@@ -364,3 +364,22 @@ def test_the_binary_search_finds_the_same_crossing_as_a_scan():
         boundaries = [*dists, *(x + 0.5 for x in dists), *(x - 0.5 for x in dists), -1.0, 1e9]
         for boundary in boundaries:
             assert infer.crossing(tr, boundary) == _crossing_by_scan(tr, boundary)
+
+
+def test_a_canceled_trip_is_left_out_of_the_on_time_counts_and_counted():
+    from pipeline.events.ontime import summarize
+
+    def ev(trip, late_s):
+        sched = datetime.fromtimestamp(T0, UTC)
+        return {"trip_id": trip, "route_id": "R1", "stop_id": "S1", "stop_sequence": 2,
+                "is_timepoint": True, "is_last_stop": False, "scheduled_arrival": sched,
+                "scheduled_departure": sched, "arrival_time": None,
+                "departure_time": None if late_s is None else sched + timedelta(seconds=late_s),
+                }  # fmt: skip
+
+    events = [ev("T1", 30), ev("T2", None), ev("T3", 30)]
+    before = summarize(events, ORIGIN)
+    after = summarize(events, ORIGIN, canceled={"T2"})
+    assert (before["scheduled"], before["observed"]) == (3, 2)
+    assert (after["scheduled"], after["observed"], after["on_time"]) == (2, 2, 2)
+    assert after["canceled"] == {"trip_ids": ["T2"], "timepoint_events_left_out": 1}

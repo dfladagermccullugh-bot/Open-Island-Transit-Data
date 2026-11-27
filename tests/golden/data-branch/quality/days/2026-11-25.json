@@ -1,6 +1,6 @@
 {
  "service_date": "2026-11-25",
- "quality_version": "quality/0.6.0",
+ "quality_version": "quality/0.6.1",
  "computed_at": "2026-12-08T09:00:00+00:00",
  "scheduled_service": {
   "trips": 4,
@@ -306,7 +306,7 @@
   }
  },
  "events": {
-  "events_version": "events/0.4.0",
+  "events_version": "events/0.5.0",
   "stop_coverage": {
    "timepoints": {
     "scheduled": 12,
@@ -337,7 +337,7 @@
   },
   "shape_fit": {
    "position_reports": 171,
-   "tracked_reports": 160,
+   "tracked_reports": 140,
    "off_shape": 0,
    "off_shape_share": 0.0,
    "wrong_direction": 0,
@@ -350,7 +350,7 @@
    "by_route": {
     "R1": {
      "position_reports": 171,
-     "tracked_reports": 160,
+     "tracked_reports": 140,
      "off_shape": 0,
      "off_shape_share": 0.0,
      "wrong_direction": 0,
@@ -467,6 +467,7 @@
    "new_today": []
   }
  },
+ "complete": true,
  "routes": {
   "R1": {
    "short_name": "1",

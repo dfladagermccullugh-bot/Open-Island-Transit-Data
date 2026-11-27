@@ -27,7 +27,7 @@ from pipeline.geo import meters_between
 from pipeline.gtfs.schedule import ServiceWindows, Trip
 from pipeline.stats import mean, quantile, rounded, share
 
-QUALITY_VERSION = "quality/0.6.0"
+QUALITY_VERSION = "quality/0.6.1"  # 0.6.1: complete
 
 
 SLOT_SECONDS = {"vehiclePositions": 20, "tripUpdates": 20, "serviceAlerts": 300}

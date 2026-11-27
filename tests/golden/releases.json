@@ -82,9 +82,10 @@
    "arrival_status": "string",
    "departure_time": "timestamp[us, tz=UTC]",
    "departure_gap_s": "double",
-   "departure_status": "string"
+   "departure_status": "string",
+   "report_source": "string"
   },
-  "content": "60a8737877c0af0bd23018c8f3159f192265562afa2da06adc9c982a3eae2e9d"
+  "content": "5c4ed938150baf563071e9112d11e6a08d11b1852d72810ae6d9142fbe72722d"
  },
  "parsed-2026-11/stop-events-2026-11-25.parquet": {
   "rows": 16,
@@ -106,9 +107,10 @@
    "arrival_status": "string",
    "departure_time": "timestamp[us, tz=UTC]",
    "departure_gap_s": "double",
-   "departure_status": "string"
+   "departure_status": "string",
+   "report_source": "string"
   },
-  "content": "c36a362608e9b0a1f197134151e743bc62ea521b135a5191c00c6e7321bb2e80"
+  "content": "97aa0dc64ceaeba43affffeeb4d1ec787a266bedc4f6b3076f5c008a093650af"
  },
  "parsed-2026-11/stop-events-2026-11-26.parquet": {
   "rows": 16,
@@ -130,9 +132,10 @@
    "arrival_status": "string",
    "departure_time": "timestamp[us, tz=UTC]",
    "departure_gap_s": "double",
-   "departure_status": "string"
+   "departure_status": "string",
+   "report_source": "string"
   },
-  "content": "2258a66a4e66b26a03757367efc6033e60f62aef3d00bb0e6de26421ad7a801a"
+  "content": "8daf7feb15ccd6c8e5367ebf07555f11f768e874ee0090198a14f947c7c0d705"
  },
  "parsed-2026-11/trip-tracks-2026-11-24.parquet": {
   "rows": 4,
@@ -145,6 +148,9 @@
    "vehicle_key": "string",
    "position_reports": "int32",
    "glitch_reports": "int32",
+   "reports_borrowed_before": "int32",
+   "reports_borrowed_after": "int32",
+   "reports_borrowed_within": "int32",
    "reports_used": "int32",
    "reports_before_start": "int32",
    "reports_after_end": "int32",
@@ -157,7 +163,7 @@
    "skipped_m": "double",
    "problem": "string"
   },
-  "content": "9ff3a32fbfc82ded6d515ec2a61232493071fec077af3bf4cab2a3a97005bc4c"
+  "content": "8690a119929e3b6206753887ba6b3d44c42cd9d4df72ae4514790ec44209b625"
  },
  "parsed-2026-11/trip-tracks-2026-11-25.parquet": {
   "rows": 4,
@@ -170,6 +176,9 @@
    "vehicle_key": "string",
    "position_reports": "int32",
    "glitch_reports": "int32",
+   "reports_borrowed_before": "int32",
+   "reports_borrowed_after": "int32",
+   "reports_borrowed_within": "int32",
    "reports_used": "int32",
    "reports_before_start": "int32",
    "reports_after_end": "int32",
@@ -182,7 +191,7 @@
    "skipped_m": "double",
    "problem": "string"
   },
-  "content": "b0bd8c834c04f035ec013b081804c610f7fdd0beba393323d715d2bd244508ea"
+  "content": "d474b335fa0435ddad0b461f6247f550ff822e6769bfe441572873252463688a"
  },
  "parsed-2026-11/trip-tracks-2026-11-26.parquet": {
   "rows": 4,
@@ -195,6 +204,9 @@
    "vehicle_key": "string",
    "position_reports": "int32",
    "glitch_reports": "int32",
+   "reports_borrowed_before": "int32",
+   "reports_borrowed_after": "int32",
+   "reports_borrowed_within": "int32",
    "reports_used": "int32",
    "reports_before_start": "int32",
    "reports_after_end": "int32",
@@ -207,7 +219,7 @@
    "skipped_m": "double",
    "problem": "string"
   },
-  "content": "d29317b3bac756d2eac396ca08ad562874c56b1f87245058a2b8c4323d577c37"
+  "content": "b10478b0c8a0a879197ebc9c7ea1cf2c8eb439cdada5fcba71a0e7f29fe3106a"
  },
  "parsed-2026-11/trip-update-stops-2026-11-24.parquet": {
   "rows": 512,

@@ -12,7 +12,9 @@ true timepoints):
   arrival at the last stop counts as on time;
 - not observed: no inferred time. Never counted as late.
 
-Events scheduled before collection began are left out.
+Events scheduled before collection began are left out, and so, since
+``ontime/0.4.0``, are the events of trips the feed said were canceled
+(``pipeline/canceled.py``); those are counted under ``canceled``.
 
 ``by_route_stop`` breaks the counts down by route and timepoint stop and
 keeps every deviation (whole seconds) so that medians over several days can
@@ -29,7 +31,7 @@ from pipeline.common import Row
 from pipeline.config import PACIFIC
 from pipeline.stats import median
 
-ONTIME_VERSION = "ontime/0.3.0"
+ONTIME_VERSION = "ontime/0.4.0"  # 0.4.0: canceled trips left out and counted
 EARLY_S = -60
 LATE_S = 300
 
@@ -66,9 +68,16 @@ def _block(counts: Counter, devs: list[float]) -> dict[str, Any]:
 
 
 def summarize(
-    events: list[Row], collection_start: datetime, stop_names: dict[str, str] | None = None
+    events: list[Row],
+    collection_start: datetime,
+    stop_names: dict[str, str] | None = None,
+    canceled: set[str] | frozenset[str] = frozenset(),
 ) -> dict[str, Any]:
+    """``canceled``: trips the feed said were canceled (``pipeline/canceled.py``).
+    Since ``ontime/0.4.0`` their timepoint events are left out of every count,
+    as a bus that did not run cannot be on time or late, and counted apart."""
     total: Counter = Counter()
+    left_out = 0
     devs: list[float] = []
     by_route: dict[str, Counter] = defaultdict(Counter)
     route_devs: dict[str, list[float]] = defaultdict(list)
@@ -82,6 +91,9 @@ def summarize(
             continue
         cat, dev, scheduled = classify(e)
         if scheduled is None or scheduled < collection_start:
+            continue
+        if canceled and e["trip_id"] in canceled:
+            left_out += 1
             continue
         hour = scheduled.astimezone(PACIFIC).hour
         key = (e["route_id"], e["stop_id"])
@@ -110,6 +122,10 @@ def summarize(
             "timepoints": "stops printed in Island Transit's timetables",
         },
         **_block(total, devs),
+        "canceled": {
+            "trip_ids": sorted(canceled),
+            "timepoint_events_left_out": left_out,
+        },
         "by_route": {r: _block(c, route_devs[r]) for r, c in sorted(by_route.items())},
         "by_hour": {str(h): _block(c, hour_devs[h]) for h, c in sorted(by_hour.items())},
         "by_route_stop": dict(route_stop),

@@ -551,7 +551,8 @@ def recount(res: Result, day: dict[str, Any], events: list[dict[str, Any]]) -> N
 
     if day.get("ontime_version") != ONTIME_VERSION:
         return
-    again = summarize(events, COLLECTION_START)
+    canceled = set((day.get("canceled") or {}).get("trip_ids") or [])
+    again = summarize(events, COLLECTION_START, canceled=canceled)
     d = day["service_date"]
     if _counts(again) != _counts(day):
         res.problem("I11", f"{d}: recount {_counts(again)} != day file {_counts(day)}")

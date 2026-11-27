@@ -184,3 +184,12 @@ def test_the_holiday_list_running_out_is_reported():
         "add next year's dates to reference/no-service-days.csv"
     ]
     assert watchdog.data_problems([], TODAY, last_holiday=None) == []
+
+
+def test_a_day_whose_quality_file_is_not_complete_is_not_processed():
+    rows = [
+        {"service_date": "2026-11-20"},  # before the column existed
+        {"service_date": "2026-11-21", "complete": "true"},
+        {"service_date": "2026-11-22", "complete": "false"},
+    ]
+    assert watchdog.complete_days(rows) == {"2026-11-20", "2026-11-21"}

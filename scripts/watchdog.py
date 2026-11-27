@@ -181,8 +181,15 @@ def daily_rows() -> list[dict[str, str]] | None:
 
 
 def processed_days() -> set[str] | None:
+    """Days in quality/daily.csv whose quality file is complete (a day
+    computed before its stop events existed is not processed yet; rows from
+    before the ``complete`` column count as complete)."""
     rows = daily_rows()
-    return None if rows is None else {r["service_date"] for r in rows}
+    return None if rows is None else complete_days(rows)
+
+
+def complete_days(rows: list[dict[str, str]]) -> set[str]:
+    return {r["service_date"] for r in rows if (r.get("complete") or "true").lower() != "false"}
 
 
 def _yes(value: str | None) -> bool:

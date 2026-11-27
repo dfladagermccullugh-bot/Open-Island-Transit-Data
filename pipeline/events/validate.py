@@ -15,6 +15,9 @@ from one stop, arrival at the next) must not go backwards, and the speed
 between them must not exceed ``MAX_SEGMENT_MS``. Segments across a stop
 whose part of the shape the bus left out (status ``skipped``) are not
 measured for speed: that distance was not driven.
+
+Trip offsets (``trip_offsets``): a route whose trips mostly run a steady few
+minutes off the schedule, which is what a wrong schedule looks like.
 """
 
 from __future__ import annotations
@@ -28,9 +31,13 @@ from typing import Any
 from pipeline.common import Row
 from pipeline.stats import quantile, share
 
-VALIDATE_VERSION = "validate/0.2.0"  # 0.2.0: "meters", not "metres", in the fastest segments
+VALIDATE_VERSION = "validate/0.3.0"  # 0.3.0: trip offsets
 TOLERANCE_S = 30.0
 MAX_SEGMENT_MS = 35.0  # 126 km/h
+OFFSET_MIN_STOPS = 4
+OFFSET_IQR_S = 60.0
+OFFSET_MEDIAN_S = 240.0
+OFFSET_ROUTE_SHARE = 0.5
 
 
 def _q(values: list[float], q: float) -> float | None:
@@ -154,9 +161,67 @@ def travel_times(events: list[Row]) -> dict[str, Any]:
     }
 
 
+def trip_offsets(events: list[Row]) -> dict[str, Any]:
+    """Whole trips running a steady few minutes off the schedule.
+
+    For each trip with at least ``OFFSET_MIN_STOPS`` observed moments (the
+    departure, or the arrival at the last stop), the median and the spread
+    (interquartile range) of measured minus scheduled time. A trip is
+    shifted when its spread is under ``OFFSET_IQR_S`` and its median beyond
+    ``OFFSET_MEDIAN_S`` either way: the bus kept to the timetable's pace but
+    at another clock time, which is what a wrong schedule looks like (say,
+    a day pinned to the wrong Passio version). A route is flagged when at
+    least ``OFFSET_ROUTE_SHARE`` of its measured trips are shifted. Since
+    ``validate/0.3.0``."""
+    devs: dict[str, list[float]] = defaultdict(list)
+    route_of: dict[str, str] = {}
+    for e in events:
+        last = e["is_last_stop"]
+        measured = e["arrival_time"] if last else e["departure_time"]
+        scheduled = e["scheduled_arrival"] if last else e["scheduled_departure"]
+        if measured is None or scheduled is None:
+            continue
+        devs[e["trip_id"]].append((measured - scheduled).total_seconds())
+        route_of[e["trip_id"]] = e["route_id"]
+    routes: dict[str, Counter] = defaultdict(Counter)
+    shifted_trips: list[dict[str, Any]] = []
+    for trip, d in devs.items():
+        if len(d) < OFFSET_MIN_STOPS:
+            continue
+        mid, q1, q3 = quantile(d, 0.5), quantile(d, 0.25), quantile(d, 0.75)
+        assert mid is not None and q1 is not None and q3 is not None
+        shifted = q3 - q1 < OFFSET_IQR_S and abs(mid) > OFFSET_MEDIAN_S
+        routes[route_of[trip]]["trips"] += 1
+        routes[route_of[trip]]["shifted"] += shifted
+        if shifted:
+            shifted_trips.append(
+                {"trip_id": trip, "route_id": route_of[trip], "median_s": round(mid, 1),
+                 "iqr_s": round(q3 - q1, 1)}
+            )  # fmt: skip
+    flagged = sorted(
+        r
+        for r, c in routes.items()
+        if c["trips"] and c["shifted"] / c["trips"] >= OFFSET_ROUTE_SHARE
+    )
+    return {
+        "trips_measured": sum(c["trips"] for c in routes.values()),
+        "shifted_trips": len(shifted_trips),
+        "flagged_routes": flagged,
+        "rule": {
+            "min_stops": OFFSET_MIN_STOPS,
+            "iqr_under_s": OFFSET_IQR_S,
+            "median_beyond_s": OFFSET_MEDIAN_S,
+            "route_share": OFFSET_ROUTE_SHARE,
+        },
+        "by_route": {r: dict(c) for r, c in sorted(routes.items())},
+        "shifted": sorted(shifted_trips, key=lambda x: -abs(x["median_s"]))[:20],
+    }
+
+
 def validate(events: list[Row], vehicles: list[Row]) -> dict[str, Any]:
     return {
         "validate_version": VALIDATE_VERSION,
         "feed_agreement": feed_agreement(events, vehicles),
         "travel_times": travel_times(events),
+        "trip_offsets": trip_offsets(events),
     }

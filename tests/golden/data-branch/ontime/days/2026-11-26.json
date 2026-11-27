@@ -1,5 +1,5 @@
 {
- "ontime_version": "ontime/0.3.0",
+ "ontime_version": "ontime/0.4.0",
  "definition": {
   "window_s": [-60,300],
   "measured": "departure at timepoints; arrival at the last stop",
@@ -13,6 +13,10 @@
  "late": 0,
  "on_time_share_of_observed": null,
  "deviation_s_median": null,
+ "canceled": {
+  "trip_ids": [],
+  "timepoint_events_left_out": 0
+ },
  "by_route": {
   "R1": {
    "scheduled": 12,
@@ -99,7 +103,7 @@
  },
  "passio_version": "passio-20af7aa7267e",
  "timepoints": "passio-20af7aa7267e__timetable-2026-09-27-a09fbb25",
- "events_version": "events/0.4.0",
+ "events_version": "events/0.5.0",
  "routes": {
   "R1": {
    "short_name": "1",
@@ -107,7 +111,7 @@
   }
  },
  "validation": {
-  "validate_version": "validate/0.2.0",
+  "validate_version": "validate/0.3.0",
   "feed_agreement": {
    "compared": 0,
    "inside_change_interval_share": null,
@@ -129,7 +133,27 @@
    "max_speed_ms": null,
    "max_allowed_ms": 35.0,
    "fastest": []
+  },
+  "trip_offsets": {
+   "trips_measured": 0,
+   "shifted_trips": 0,
+   "flagged_routes": [],
+   "rule": {
+    "min_stops": 4,
+    "iqr_under_s": 60.0,
+    "median_beyond_s": 240.0,
+    "route_share": 0.5
+   },
+   "by_route": {},
+   "shifted": []
   }
+ },
+ "continuity": {
+  "vehicles": 0,
+  "vehicles_on_two_or_more_routes": 0,
+  "consecutive_trip_pairs": 0,
+  "block_disagreements": 0,
+  "trips_with_borrowed_reports": 0
  },
  "feed_agreement_share": null
 }

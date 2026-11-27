@@ -232,6 +232,7 @@ Passio schedule, whether or not we observed it.
 | `departure_time` | When it moved more than 40 meters past the stop |
 | `arrival_gap_s`, `departure_gap_s` | Seconds between the two position reports the time was interpolated from |
 | `arrival_status`, `departure_status` | `observed`; `gap` (reports more than 120 s apart, no time given); `not_reached` (tracking ended before the stop); `past_when_first_seen`; `skipped` (the bus left out the part of the shape the stop is on); `no_shape` (the trip has no shape); `unplaced` (the stop could not be placed on the shape in stop order within 150 m of it); `no_reports` (no vehicle carried the trip id); `not_applicable` (no arrival at the first stop, no departure at the last) |
+| `report_source` | Where the two position reports that timed this stop came from (the least direct of them if the arrival and departure differ): `own` (the trip's own id), `borrowed_before` (the same bus before its first report under this trip's id, often still showing the previous trip's id at the first stop), `borrowed_after` (the same bus after its last report under this trip's id, often already showing the next trip's id), `borrowed_within` (the same bus between them, with no trip id or another one). Empty when the stop was not observed. Since `events/0.5.0` (`docs/methods.md`, section 3) |
 
 ### `trip-tracks-YYYY-MM-DD.parquet`
 
@@ -253,6 +254,7 @@ retraced segments (`docs/methods.md`, section 3).
 | `vehicle_key` | The one whose reports were used (the one with the most) |
 | `position_reports` | That vehicle's reports in the window |
 | `glitch_reports` | That vehicle's reports in the window that were left out as GPS glitches (`pipeline/glitch.py`, `docs/methods.md` section 3). `position_reports` does not include them. Since `events/0.4.0` |
+| `reports_borrowed_before`, `reports_borrowed_after`, `reports_borrowed_within` | Reports of the same bus under another trip id or none that the trip also used: before its first own report (from 30 minutes before its start, or the end of the bus's previous trip if later), after its last own report (up to 30 minutes after its end, but not past the moment the bus left its next trip's first stop), and in between. `position_reports` counts only its own. Since `events/0.5.0` |
 | `reports_used` | Reports placed on the shape |
 | `reports_before_start`, `reports_after_end` | Reports from before tracking began or after the bus reached the end; never compared with the shape |
 | `off_shape_reports`, `wrong_direction_reports` | Reports set aside while tracking. Since `events/0.3.1`, a report equally near two segments of the shape is measured on the earlier one, and one nearest a corner has its direction checked against the segment leaving the corner, so the counts are the same on any computer (`docs/methods.md`, section 3) |
@@ -280,7 +282,19 @@ the feed's `current_stop_sequence`, overall and by route, and how many
 travel times between stops run backwards or go faster than 35 m/s (about 78
 mph), with the fastest listed. Each of those gives the distance in `meters`
 (named `metres` in files written before `validate/0.2.0`, November 22,
-2026). `daily.csv` carries the agreement share as `feed_agreement_share`.
+2026). `daily.csv` carries the agreement share as `feed_agreement_share`. Since `validate/0.3.0` it also has
+`trip_offsets`: for each route, how many measured trips ran a steady few
+minutes off the schedule (spread under 60 seconds, median beyond 4 minutes),
+and `flagged_routes`, the routes where half or more did, which is what a
+wrong schedule would look like. Since `ontime/0.4.0` the day file has
+`canceled`, the trips the feed said were canceled (`trip_ids`) and how many
+of their timepoint events were left out of every count
+(`timepoint_events_left_out`), and `continuity` (since `events/0.5.0`):
+how many buses ran trips, how many ran two or more routes, how many pairs of
+trips one bus ran one after the other, how many of those pairs Passio's
+schedule puts in different blocks (`block_disagreements`; the feed shows
+what the bus did, so these are reported, not corrected), and how many trips
+used reports their bus sent under another trip id or none.
 
 | `daily.csv` column | Meaning |
 |---|---|
@@ -451,6 +465,7 @@ is named `hour_band: <band>`, `route: <route id>`, `day_type: <type>` or
 | `passio_changed_during_day` | True when complete Passio downloads on that day differed, which marks a schedule change |
 | `glitch_reports_removed` | Position reports left out as GPS glitches: a bus jumping somewhere impossible and back (`measurement.glitches` in the day file). Since `quality/0.6.0` |
 | `unresolved_jumps` | Impossible jumps that were not left out, because there was no jump back or the bus could have made it by driving fast (often a timestamp a few seconds off). Since `quality/0.6.0` |
+| `complete` | False when the day's quality file was written before its stop events existed; the nightly catch-up and the watchdog then treat the day as not processed, and the next run rebuilds it. Since `quality/0.6.1` |
 | `quality_version` | Version of the quality code |
 
 Counts of positions (`over_coverage_share`, `trip_id_match_rate`, the share

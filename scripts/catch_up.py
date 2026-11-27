@@ -10,7 +10,8 @@ any scheduled workflow that does start can make up for a missed nightly run.
 Dispatches ``nightly.yml`` when all hold:
 - it is at least 00:30 Pacific (yesterday's service day is complete);
 - ``quality/days/<yesterday>.json`` is not on the data branch (the last
-  output of the nightly chain);
+  output of the nightly chain), or says it is not complete (it was written
+  before the day's stop events existed);
 - no nightly run was created in the last ``QUIET_HOURS`` hours (a run that
   keeps failing should not be restarted every half hour).
 """
@@ -45,6 +46,17 @@ def decide(now: datetime, processed: bool, last_run: datetime | None) -> tuple[b
     return True, f"{day} not processed and no recent nightly run: dispatching"
 
 
+def is_complete(day_file: str) -> bool:
+    """Whether a quality day file counts as processed: it must say it is
+    complete. A file written before its stop events existed says
+    ``"complete": false`` (since ``quality/0.6.1``); files from before that
+    have no such field and count as complete."""
+    try:
+        return bool(json.loads(day_file).get("complete", True))
+    except (ValueError, AttributeError):
+        return False
+
+
 def service_day(now: datetime) -> date:
     return now.astimezone(PACIFIC).date() - timedelta(days=1)
 
@@ -61,8 +73,9 @@ def main() -> int:
 
     now = datetime.now(UTC)
     day = service_day(now)
-    have = gh("api", f"repos/{args.repo}/contents/quality/days/{day}.json?ref=data", "--silent")
-    processed = have.returncode == 0
+    have = gh("api", f"repos/{args.repo}/contents/quality/days/{day}.json?ref=data",
+              "-H", "Accept: application/vnd.github.raw")  # fmt: skip
+    processed = have.returncode == 0 and is_complete(have.stdout)
     runs = gh("run", "list", "--repo", args.repo, "--workflow", "nightly.yml", "--limit", "1",
               "--json", "createdAt")  # fmt: skip
     last = json.loads(runs.stdout or "[]") if runs.returncode == 0 else []

@@ -49,7 +49,7 @@ from pipeline.events.routes import ROUTE_COLUMNS
 from pipeline.quality.__main__ import HEADLINE
 from pipeline.tables.build import SPECS
 
-DICTIONARY_VERSION = "dictionary/0.1.1"  # 0.1.1: passio_direction_id in timepoints.csv
+DICTIONARY_VERSION = "dictionary/0.1.2"  # 0.1.2: new columns of November 27, 2026
 CODEBOOK = Path(__file__).resolve().parents[1] / "docs" / "codebook.md"
 SITE = "https://dfladagermccullugh-bot.github.io/Open-Island-Transit-Data/"
 
@@ -81,7 +81,7 @@ CROSSWALK_COLUMNS = {
 
 # Types of the columns of the CSV files. A column not named here is a number.
 DATES = {"service_date", "timetable_reference"}
-BOOLEANS = {"service_expected", "passio_changed_during_day", "trillium_timepoint"}
+BOOLEANS = {"service_expected", "passio_changed_during_day", "trillium_timepoint", "complete"}
 INTEGERS = {
     "scheduled_trips", "impossible_jumps", "unassignable_trip_ids", "vehicles_missing_vs_30d",
     "vehicles_seen", "canceled_trips", "scheduled", "observed", "on_time", "early", "late",

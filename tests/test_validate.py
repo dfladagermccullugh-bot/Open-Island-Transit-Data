@@ -57,3 +57,33 @@ def test_travel_times_flags_fast_segments_and_ignores_skipped_stretches():
     assert out["fastest"][0]["from"] == "departure 4" and out["fastest"][0]["to"] == "arrival 5"
     # American spelling in what is published, and the distance is still there.
     assert out["fastest"][0]["meters"] == 420 and "metres" not in out["fastest"][0]
+
+
+def _trip(trip, route, shift_s, spread_s=0.0, stops=8):
+    from datetime import UTC, datetime, timedelta
+
+    base = datetime(2026, 11, 24, 15, 0, tzinfo=UTC)
+    out = []
+    for i in range(stops):
+        sched = base + timedelta(minutes=3 * i)
+        meas = sched + timedelta(seconds=shift_s + (spread_s if i % 2 else -spread_s))
+        last = i == stops - 1
+        out.append({"trip_id": trip, "route_id": route, "stop_sequence": i + 1,
+                    "is_last_stop": last, "scheduled_arrival": sched, "scheduled_departure": sched,
+                    "arrival_time": meas if last else None,
+                    "departure_time": None if last else meas})  # fmt: skip
+    return out
+
+
+def test_a_route_running_six_minutes_off_its_schedule_is_flagged():
+    from pipeline.events.validate import trip_offsets
+
+    events = []
+    for k in range(4):  # route A: every trip a steady 6 minutes late
+        events += _trip(f"A{k}", "A", 360)
+    for k in range(4):  # route B: late too, but unevenly, as traffic makes buses
+        events += _trip(f"B{k}", "B", 360, spread_s=200)
+    events += _trip("C0", "C", 30)  # route C: on time
+    out = trip_offsets(events)
+    assert out["flagged_routes"] == ["A"]
+    assert out["shifted_trips"] == 4 and out["trips_measured"] == 9

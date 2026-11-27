@@ -29,3 +29,10 @@ def test_leaves_processed_days_and_recent_runs_alone():
     recent = utc(9, 7) - timedelta(hours=1)
     go, why = catch_up.decide(utc(9, 7), processed=False, last_run=recent)
     assert not go and "started at 08:07" in why
+
+
+def test_a_day_file_without_its_stop_events_is_not_processed():
+    assert catch_up.is_complete('{"complete": true}')
+    assert catch_up.is_complete('{"service_date": "2026-11-20"}')  # before quality/0.6.1
+    assert not catch_up.is_complete('{"complete": false}')
+    assert not catch_up.is_complete("Not Found")

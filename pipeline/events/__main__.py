@@ -34,6 +34,7 @@ import pyarrow as pa
 import pyarrow.parquet as pq
 
 from pipeline import release
+from pipeline.canceled import canceled_trips
 from pipeline.columns import ONTIME_DAILY as DAILY
 from pipeline.common import (
     DayFiles,
@@ -48,12 +49,13 @@ from pipeline.common import (
 from pipeline.common import file_entry as _file_entry
 from pipeline.common import sha_of as _sha
 from pipeline.config import COLLECTION_START, REPO
+from pipeline.events import continuity
 from pipeline.events.infer import EVENTS_VERSION, infer_day
 from pipeline.events.ontime import ONTIME_VERSION, summarize
 from pipeline.events.routes import write_routes
 from pipeline.events.validate import VALIDATE_VERSION, validate
 from pipeline.gtfs.holidays import no_service, service_expected
-from pipeline.gtfs.schedule import route_names
+from pipeline.gtfs.schedule import route_names, scheduled_trips
 from pipeline.gtfs.tables import rows as gtfs_rows
 from pipeline.gtfs.timepoints import timepoint_keys
 from pipeline.gtfs.zipread import load_zip
@@ -79,6 +81,7 @@ EVENT_SCHEMA = pa.schema(
         ("departure_time", TS),
         ("departure_gap_s", pa.float64()),
         ("departure_status", pa.string()),
+        ("report_source", pa.string()),
     ]
 )
 TRACK_SCHEMA = pa.schema(
@@ -91,6 +94,9 @@ TRACK_SCHEMA = pa.schema(
         ("vehicle_key", pa.string()),
         ("position_reports", pa.int32()),
         ("glitch_reports", pa.int32()),
+        ("reports_borrowed_before", pa.int32()),
+        ("reports_borrowed_after", pa.int32()),
+        ("reports_borrowed_within", pa.int32()),
         ("reports_used", pa.int32()),
         ("reports_before_start", pa.int32()),
         ("reports_after_end", pa.int32()),
@@ -114,6 +120,7 @@ VEHICLE_COLUMNS = [
     "bearing",
     "speed",
     "current_stop_sequence",
+    "trip_schedule_relationship",
 ]
 
 
@@ -178,8 +185,19 @@ def build(day: date, data: Path, raw_dir: Path, tables_dir: Path, out: Path, rep
         pq.write_table(table, path, compression="zstd", compression_level=9)
         files.append(_file_entry(path))
 
+    def parsed_table(name: str, columns: list[str] | None = None) -> list[dict]:
+        f = f"{name}-{d}.parquet"
+        path = release.fetch(parsed["release_tag"], repo, f, tables_dir, _sha(parsed, f))
+        return pq.read_table(path, columns=columns).to_pylist()
+
+    canceled = canceled_trips(
+        parsed_table("trip-updates", ["trip_id", "trip_schedule_relationship"]),
+        parsed_table("alerts"),
+        scheduled_trips(passio, day),
+        vehicles,
+    )
     names = {s["stop_id"]: s.get("stop_name", "") for s in gtfs_rows(passio, "stops.txt")}
-    summary = summarize(events, COLLECTION_START, names)
+    summary = summarize(events, COLLECTION_START, names, set(canceled))
     summary.update(
         {
             "service_date": d,
@@ -190,6 +208,10 @@ def build(day: date, data: Path, raw_dir: Path, tables_dir: Path, out: Path, rep
             "events_version": EVENTS_VERSION,
             "routes": route_names(passio),
             "validation": validate(events, vehicles),
+            "continuity": continuity.summary(
+                tracks,
+                {t["trip_id"]: t.get("block_id") or "" for t in gtfs_rows(passio, "trips.txt")},
+            ),
         }
     )
     summary["feed_agreement_share"] = summary["validation"]["feed_agreement"][

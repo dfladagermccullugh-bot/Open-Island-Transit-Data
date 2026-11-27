@@ -299,6 +299,10 @@ def compute(
         day, data, events_dir or tables_dir, repo, stop_updates, vehicles, passio,
         ids["trips"], {t.trip_id for t in trips}, files,
     )  # fmt: skip
+    # A day file written before the day's stop events existed is not
+    # complete: the nightly catch-up and the watchdog treat it as
+    # unprocessed, and the next run rebuilds it (since quality/0.6.1).
+    m["complete"] = m["events"] is not None
     m["routes"] = route_names(passio)
     m["schedule"] = {
         "passio_version": pins["passio"]["version"],

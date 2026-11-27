@@ -239,6 +239,27 @@ departure. It stops when the bus is within 50 meters (about 160 feet) of the
 end of the shape, but never before the bus has reached the point where its
 arrival at the last stop is timed.
 
+The feed names the trip each bus is on, but the name often changes at the
+wrong moment. A bus may show its next trip's id before it reaches the last
+stop of the trip it is on, or keep the last trip's id while it waits at the
+first stop of the next one, or send no trip id for a while after a driver
+logs off. Buses also start the day at the depot between Greenbank and
+Coupeville and drive to their first stop, change routes during the day, and
+sometimes get a new driver partway along a route. So since November 27,
+2026, our script follows each bus, not just each trip id. Each trip also
+uses the positions its bus sent under any other trip id, or none, from 30
+minutes before the trip's start (or from the end of the bus's previous
+trip, if that is later) to 30 minutes after its scheduled end, but never
+past the moment the bus left the first stop of its next trip. Tracking still
+starts only near the start of the route and stops at its end, so the drive
+from the depot and the next trip are not mistaken for this one. When a bus
+arrives along the road it will leave by, tracking starts at its position
+nearest the first stop, on the visit to the start of the route that ends
+closest to the scheduled departure. Each stop time records whether it came
+from the trip's own positions or borrowed ones. On November 25, 2026, this
+took the last stops our script could not time from 170 of 339 to 43, and
+the first stops it saw only after the bus had left from 92 of 341 to 24.
+
 Sometimes two pieces of the shape are exactly as close to a position as each
 other. This happens when the nearest point is a corner where two pieces meet,
 and when the shape draws the same stretch of road out and back. Computers
@@ -303,7 +324,8 @@ one.
 | Schedule changes daily | Each service day is pinned to the static version in effect that day, and keeps it. If two complete downloads on one day differ, the day gets the version whose scheduled trips the live feed reported |
 | A trip the schedule files describe badly | If a trip names a stop that is missing from the schedule, that trip gets no stop times and is counted (`problem` in `trip-tracks`); the rest of the day is unaffected |
 
-(Code: `pipeline/events/infer.py`; GPS glitches: `pipeline/glitch.py`;
+(Code: `pipeline/events/infer.py`; following the bus across trip ids:
+`pipeline/events/continuity.py`; GPS glitches: `pipeline/glitch.py`;
 shapes, projection and the rule for equal distances:
 `pipeline/events/geometry.py`; timepoints: `pipeline/gtfs/timepoints.py`.)
 
@@ -322,7 +344,10 @@ When we could not figure out a time for a scheduled timepoint, we call it not
 observed. We report those separately and never count them as late. The feed
 cannot tell a canceled trip apart from one that ran without reporting,
 unless an alert or a `CANCELED` flag says so. We look for both every day and
-publish the count of canceled trips with the data quality figures. Through
+publish the count of canceled trips with the data quality figures. Since
+November 27, 2026, a trip the feed says was canceled is left out of the
+on-time counts altogether, because a bus that did not run cannot be on time
+or late, and the number of its timepoints left out is published. Through
 November 20, 2026 the feed had sent no such flag and no alert at all, so a
 bus that did not run still looks the same as a bus that did not report.
 That is why we always show the on-time figures next to the share of
@@ -388,6 +413,16 @@ left out. On November 19, 2026, none ran backwards, and 29 of 5,919 went
 faster than 35 m/s. Every one of those fell within a single 16 to 40 second
 gap between reports on a fast road, where the projection can jump ahead as
 far as the 35 m/s search limit allows. The day file lists the fastest ones.
+
+Each night our script also looks for a route whose buses run a steady few
+minutes off the timetable all along their trips. For each trip with at
+least four timed stops, it takes the middle value of how late or early the
+bus was and how widely that varied. A bus held up by traffic gets later as
+it goes, so its lateness varies. A bus that keeps the timetable's pace but
+four or more minutes from its clock times, varying by less than a minute,
+looks instead like a schedule that is wrong for that day. If half or more
+of a route's trips look like that, the day file flags the route. From
+November 19 to 25, 2026, no route was flagged.
 
 Before the site is rebuilt each night, a script checks that the published
 numbers agree with each other. It adds up every day's counts by route, by

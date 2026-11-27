@@ -416,13 +416,13 @@
    "tables/0.1.0"
   ],
   "events": [
-   "events/0.4.0"
+   "events/0.5.0"
   ],
   "quality": [
-   "quality/0.6.0"
+   "quality/0.6.1"
   ],
   "ontime": [
-   "ontime/0.3.0"
+   "ontime/0.4.0"
   ]
  }
 }

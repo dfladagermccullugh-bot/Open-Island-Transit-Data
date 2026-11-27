@@ -1,7 +1,7 @@
 service_date,table,release_tag,name,bytes,sha256,url
 2026-11-24,alerts,parsed-2026-11,alerts-2026-11-24.parquet,3621,<sha256>,https://github.com/dfladagermccullugh-bot/Open-Island-Transit-Data/releases/download/parsed-2026-11/alerts-2026-11-24.parquet
-2026-11-24,stop-events,parsed-2026-11,stop-events-2026-11-24.parquet,6162,<sha256>,https://github.com/dfladagermccullugh-bot/Open-Island-Transit-Data/releases/download/parsed-2026-11/stop-events-2026-11-24.parquet
-2026-11-24,trip-tracks,parsed-2026-11,trip-tracks-2026-11-24.parquet,6179,<sha256>,https://github.com/dfladagermccullugh-bot/Open-Island-Transit-Data/releases/download/parsed-2026-11/trip-tracks-2026-11-24.parquet
+2026-11-24,stop-events,parsed-2026-11,stop-events-2026-11-24.parquet,6432,<sha256>,https://github.com/dfladagermccullugh-bot/Open-Island-Transit-Data/releases/download/parsed-2026-11/stop-events-2026-11-24.parquet
+2026-11-24,trip-tracks,parsed-2026-11,trip-tracks-2026-11-24.parquet,7148,<sha256>,https://github.com/dfladagermccullugh-bot/Open-Island-Transit-Data/releases/download/parsed-2026-11/trip-tracks-2026-11-24.parquet
 2026-11-24,trip-update-stops,parsed-2026-11,trip-update-stops-2026-11-24.parquet,10329,<sha256>,https://github.com/dfladagermccullugh-bot/Open-Island-Transit-Data/releases/download/parsed-2026-11/trip-update-stops-2026-11-24.parquet
 2026-11-24,trip-updates,parsed-2026-11,trip-updates-2026-11-24.parquet,6920,<sha256>,https://github.com/dfladagermccullugh-bot/Open-Island-Transit-Data/releases/download/parsed-2026-11/trip-updates-2026-11-24.parquet
 2026-11-24,vehicles,parsed-2026-11,vehicles-2026-11-24.parquet,10444,<sha256>,https://github.com/dfladagermccullugh-bot/Open-Island-Transit-Data/releases/download/parsed-2026-11/vehicles-2026-11-24.parquet
@@ -10,8 +10,8 @@ service_date,table,release_tag,name,bytes,sha256,url
 2026-11-24,static-passio,raw-2026-11,static-2026-11-24-passio-1.zip,1945,<sha256>,https://github.com/dfladagermccullugh-bot/Open-Island-Transit-Data/releases/download/raw-2026-11/static-2026-11-24-passio-1.zip
 2026-11-24,static-trillium,raw-2026-11,static-2026-11-24-trillium-2.zip,1612,<sha256>,https://github.com/dfladagermccullugh-bot/Open-Island-Transit-Data/releases/download/raw-2026-11/static-2026-11-24-trillium-2.zip
 2026-11-25,alerts,parsed-2026-11,alerts-2026-11-25.parquet,3621,<sha256>,https://github.com/dfladagermccullugh-bot/Open-Island-Transit-Data/releases/download/parsed-2026-11/alerts-2026-11-25.parquet
-2026-11-25,stop-events,parsed-2026-11,stop-events-2026-11-25.parquet,6172,<sha256>,https://github.com/dfladagermccullugh-bot/Open-Island-Transit-Data/releases/download/parsed-2026-11/stop-events-2026-11-25.parquet
-2026-11-25,trip-tracks,parsed-2026-11,trip-tracks-2026-11-25.parquet,6178,<sha256>,https://github.com/dfladagermccullugh-bot/Open-Island-Transit-Data/releases/download/parsed-2026-11/trip-tracks-2026-11-25.parquet
+2026-11-25,stop-events,parsed-2026-11,stop-events-2026-11-25.parquet,6439,<sha256>,https://github.com/dfladagermccullugh-bot/Open-Island-Transit-Data/releases/download/parsed-2026-11/stop-events-2026-11-25.parquet
+2026-11-25,trip-tracks,parsed-2026-11,trip-tracks-2026-11-25.parquet,7165,<sha256>,https://github.com/dfladagermccullugh-bot/Open-Island-Transit-Data/releases/download/parsed-2026-11/trip-tracks-2026-11-25.parquet
 2026-11-25,trip-update-stops,parsed-2026-11,trip-update-stops-2026-11-25.parquet,10369,<sha256>,https://github.com/dfladagermccullugh-bot/Open-Island-Transit-Data/releases/download/parsed-2026-11/trip-update-stops-2026-11-25.parquet
 2026-11-25,trip-updates,parsed-2026-11,trip-updates-2026-11-25.parquet,6932,<sha256>,https://github.com/dfladagermccullugh-bot/Open-Island-Transit-Data/releases/download/parsed-2026-11/trip-updates-2026-11-25.parquet
 2026-11-25,vehicles,parsed-2026-11,vehicles-2026-11-25.parquet,11098,<sha256>,https://github.com/dfladagermccullugh-bot/Open-Island-Transit-Data/releases/download/parsed-2026-11/vehicles-2026-11-25.parquet
@@ -19,8 +19,8 @@ service_date,table,release_tag,name,bytes,sha256,url
 2026-11-25,raw,raw-2026-11,raw-2026-11-25.parquet,44171,<sha256>,https://github.com/dfladagermccullugh-bot/Open-Island-Transit-Data/releases/download/raw-2026-11/raw-2026-11-25.parquet
 2026-11-25,static-passio,raw-2026-11,static-2026-11-25-passio-3.zip,1945,<sha256>,https://github.com/dfladagermccullugh-bot/Open-Island-Transit-Data/releases/download/raw-2026-11/static-2026-11-25-passio-3.zip
 2026-11-26,alerts,parsed-2026-11,alerts-2026-11-26.parquet,3621,<sha256>,https://github.com/dfladagermccullugh-bot/Open-Island-Transit-Data/releases/download/parsed-2026-11/alerts-2026-11-26.parquet
-2026-11-26,stop-events,parsed-2026-11,stop-events-2026-11-26.parquet,5604,<sha256>,https://github.com/dfladagermccullugh-bot/Open-Island-Transit-Data/releases/download/parsed-2026-11/stop-events-2026-11-26.parquet
-2026-11-26,trip-tracks,parsed-2026-11,trip-tracks-2026-11-26.parquet,6016,<sha256>,https://github.com/dfladagermccullugh-bot/Open-Island-Transit-Data/releases/download/parsed-2026-11/trip-tracks-2026-11-26.parquet
+2026-11-26,stop-events,parsed-2026-11,stop-events-2026-11-26.parquet,5837,<sha256>,https://github.com/dfladagermccullugh-bot/Open-Island-Transit-Data/releases/download/parsed-2026-11/stop-events-2026-11-26.parquet
+2026-11-26,trip-tracks,parsed-2026-11,trip-tracks-2026-11-26.parquet,6977,<sha256>,https://github.com/dfladagermccullugh-bot/Open-Island-Transit-Data/releases/download/parsed-2026-11/trip-tracks-2026-11-26.parquet
 2026-11-26,trip-update-stops,parsed-2026-11,trip-update-stops-2026-11-26.parquet,4748,<sha256>,https://github.com/dfladagermccullugh-bot/Open-Island-Transit-Data/releases/download/parsed-2026-11/trip-update-stops-2026-11-26.parquet
 2026-11-26,trip-updates,parsed-2026-11,trip-updates-2026-11-26.parquet,3286,<sha256>,https://github.com/dfladagermccullugh-bot/Open-Island-Transit-Data/releases/download/parsed-2026-11/trip-updates-2026-11-26.parquet
 2026-11-26,vehicles,parsed-2026-11,vehicles-2026-11-26.parquet,4886,<sha256>,https://github.com/dfladagermccullugh-bot/Open-Island-Transit-Data/releases/download/parsed-2026-11/vehicles-2026-11-26.parquet

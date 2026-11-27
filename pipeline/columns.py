@@ -75,5 +75,6 @@ QUALITY_HEADLINE: list[tuple[str, tuple[str, ...]]] = [
     ("passio_changed_during_day", ("schedule", "passio_changed_during_day")),
     ("glitch_reports_removed", ("measurement", "glitches", "removed_reports")),
     ("unresolved_jumps", ("measurement", "glitches", "unresolved_jumps")),
+    ("complete", ("complete",)),
     ("quality_version", ("quality_version",)),
 ]
