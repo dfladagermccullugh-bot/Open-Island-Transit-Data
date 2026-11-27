@@ -1,0 +1,374 @@
+{
+ "periods_version": "periods/0.1.0",
+ "metrics": {
+  "trip_coverage": {
+   "pooled_as": "ratio of sums",
+   "definition": "observed trips over scheduled trips"
+  },
+  "timepoint_coverage": {
+   "pooled_as": "ratio of sums",
+   "definition": "timepoint events with a time over scheduled timepoint events"
+  },
+  "vehicle_uptime": {
+   "pooled_as": "ratio of sums",
+   "definition": "20-second fetch slots that worked over slots due (time-weighted)"
+  },
+  "off_shape_share": {
+   "pooled_as": "ratio of sums",
+   "definition": "positions more than 100 m off the route over positions tracked"
+  },
+  "feed_agreement_share": {
+   "pooled_as": "ratio of sums",
+   "definition": "departures that agree with the feed's stop sequence over those compared"
+  },
+  "impossible_jumps": {
+   "pooled_as": "sum",
+   "definition": "consecutive positions implying more than 130 km/h"
+  },
+  "glitch_reports_removed": {
+   "pooled_as": "sum",
+   "definition": "positions left out as GPS glitches"
+  },
+  "position_age_s_p95": {
+   "pooled_as": "median of daily values",
+   "definition": "95th percentile of position age, seconds"
+  }
+ },
+ "grains": {
+  "hour": {
+   "pooled": {
+    "first_service_date": "2026-11-24",
+    "last_service_date": "2026-11-25",
+    "metrics": {
+     "timepoint_coverage": [
+      {
+       "hour": 6,
+       "value": 1.0,
+       "numerator": 18,
+       "denominator": 18
+      },
+      {
+       "hour": 7,
+       "value": 0.5,
+       "numerator": 3,
+       "denominator": 6
+      }
+     ],
+     "trip_coverage": [
+      {
+       "hour": 6,
+       "value": 1.0,
+       "numerator": 6,
+       "denominator": 6
+      },
+      {
+       "hour": 7,
+       "value": 0.5,
+       "numerator": 1,
+       "denominator": 2
+      }
+     ]
+    }
+   },
+   "latest_day": {
+    "service_date": "2026-11-25",
+    "metrics": {
+     "timepoint_coverage": [
+      {
+       "hour": 6,
+       "value": 1.0,
+       "numerator": 9,
+       "denominator": 9
+      },
+      {
+       "hour": 7,
+       "value": 1.0,
+       "numerator": 3,
+       "denominator": 3
+      }
+     ],
+     "trip_coverage": [
+      {
+       "hour": 6,
+       "value": 1.0,
+       "numerator": 3,
+       "denominator": 3
+      },
+      {
+       "hour": 7,
+       "value": 1.0,
+       "numerator": 1,
+       "denominator": 1
+      }
+     ]
+    }
+   },
+   "not_measured_by_hour": [
+    "feed_agreement_share",
+    "glitch_reports_removed",
+    "impossible_jumps",
+    "off_shape_share",
+    "position_age_s_p95",
+    "vehicle_uptime"
+   ]
+  },
+  "day": [
+   {
+    "period": "2026-11-24",
+    "service_expected": true,
+    "metrics": {
+     "trip_coverage": {
+      "value": 0.75,
+      "numerator": 3,
+      "denominator": 4,
+      "days": 1
+     },
+     "timepoint_coverage": {
+      "value": 0.75,
+      "numerator": 9,
+      "denominator": 12,
+      "days": 1
+     },
+     "vehicle_uptime": {
+      "value": 0.076157,
+      "numerator": 329,
+      "denominator": 4320,
+      "days": 1
+     },
+     "off_shape_share": {
+      "value": 0.0,
+      "numerator": 0,
+      "denominator": 124,
+      "days": 1
+     },
+     "feed_agreement_share": {
+      "value": 1.0,
+      "numerator": 6,
+      "denominator": 6,
+      "days": 1
+     },
+     "impossible_jumps": {
+      "value": 0,
+      "days": 1
+     },
+     "glitch_reports_removed": {
+      "value": 0,
+      "days": 1
+     },
+     "position_age_s_p95": {
+      "value": 3.0,
+      "low": 3.0,
+      "high": 3.0,
+      "days": 1
+     }
+    }
+   },
+   {
+    "period": "2026-11-25",
+    "service_expected": true,
+    "metrics": {
+     "trip_coverage": {
+      "value": 1.0,
+      "numerator": 4,
+      "denominator": 4,
+      "days": 1
+     },
+     "timepoint_coverage": {
+      "value": 1.0,
+      "numerator": 12,
+      "denominator": 12,
+      "days": 1
+     },
+     "vehicle_uptime": {
+      "value": 0.076389,
+      "numerator": 330,
+      "denominator": 4320,
+      "days": 1
+     },
+     "off_shape_share": {
+      "value": 0.0,
+      "numerator": 0,
+      "denominator": 140,
+      "days": 1
+     },
+     "feed_agreement_share": {
+      "value": 1.0,
+      "numerator": 8,
+      "denominator": 8,
+      "days": 1
+     },
+     "impossible_jumps": {
+      "value": 2,
+      "days": 1
+     },
+     "glitch_reports_removed": {
+      "value": 3,
+      "days": 1
+     },
+     "position_age_s_p95": {
+      "value": 3.0,
+      "low": 3.0,
+      "high": 3.0,
+      "days": 1
+     }
+    }
+   },
+   {
+    "period": "2026-11-26",
+    "service_expected": false,
+    "metrics": {
+     "trip_coverage": {
+      "value": 0.0,
+      "numerator": 0,
+      "denominator": 4,
+      "days": 1
+     },
+     "timepoint_coverage": {
+      "value": 0.0,
+      "numerator": 0,
+      "denominator": 12,
+      "days": 1
+     },
+     "vehicle_uptime": {
+      "value": 0.076389,
+      "numerator": 330,
+      "denominator": 4320,
+      "days": 1
+     },
+     "off_shape_share": {
+      "value": null,
+      "numerator": 0,
+      "denominator": 0,
+      "days": 1
+     },
+     "feed_agreement_share": {
+      "value": null,
+      "numerator": 0,
+      "denominator": 0,
+      "days": 0
+     },
+     "impossible_jumps": {
+      "value": 0,
+      "days": 1
+     },
+     "glitch_reports_removed": {
+      "value": 0,
+      "days": 1
+     },
+     "position_age_s_p95": {
+      "value": null,
+      "low": null,
+      "high": null,
+      "days": 0
+     }
+    }
+   }
+  ],
+  "week": [
+   {
+    "period": "2026-11-23",
+    "partial": true,
+    "days": 2,
+    "metrics": {
+     "trip_coverage": {
+      "value": 0.875,
+      "numerator": 7,
+      "denominator": 8,
+      "days": 2
+     },
+     "timepoint_coverage": {
+      "value": 0.875,
+      "numerator": 21,
+      "denominator": 24,
+      "days": 2
+     },
+     "vehicle_uptime": {
+      "value": 0.076273,
+      "numerator": 659,
+      "denominator": 8640,
+      "days": 2
+     },
+     "off_shape_share": {
+      "value": 0.0,
+      "numerator": 0,
+      "denominator": 264,
+      "days": 2
+     },
+     "feed_agreement_share": {
+      "value": 1.0,
+      "numerator": 14,
+      "denominator": 14,
+      "days": 2
+     },
+     "impossible_jumps": {
+      "value": 2,
+      "days": 2
+     },
+     "glitch_reports_removed": {
+      "value": 3,
+      "days": 2
+     },
+     "position_age_s_p95": {
+      "value": 3.0,
+      "low": 3.0,
+      "high": 3.0,
+      "days": 2
+     }
+    }
+   }
+  ],
+  "month": [
+   {
+    "period": "2026-11",
+    "partial": true,
+    "days": 2,
+    "metrics": {
+     "trip_coverage": {
+      "value": 0.875,
+      "numerator": 7,
+      "denominator": 8,
+      "days": 2
+     },
+     "timepoint_coverage": {
+      "value": 0.875,
+      "numerator": 21,
+      "denominator": 24,
+      "days": 2
+     },
+     "vehicle_uptime": {
+      "value": 0.076273,
+      "numerator": 659,
+      "denominator": 8640,
+      "days": 2
+     },
+     "off_shape_share": {
+      "value": 0.0,
+      "numerator": 0,
+      "denominator": 264,
+      "days": 2
+     },
+     "feed_agreement_share": {
+      "value": 1.0,
+      "numerator": 14,
+      "denominator": 14,
+      "days": 2
+     },
+     "impossible_jumps": {
+      "value": 2,
+      "days": 2
+     },
+     "glitch_reports_removed": {
+      "value": 3,
+      "days": 2
+     },
+     "position_age_s_p95": {
+      "value": 3.0,
+      "low": 3.0,
+      "high": 3.0,
+      "days": 2
+     }
+    }
+   }
+  ]
+ }
+}

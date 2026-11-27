@@ -138,6 +138,7 @@ def main(argv: list[str] | None = None) -> int:
         ("pipeline.quality", ["--pending", "--data", str(data), "--raw-dir", f"{work}/files",
                               "--tables-dir", f"{work}/tables", "--events-dir",
                               f"{work}/events"]),
+        ("pipeline.periods", ["--data", str(data)]),
         ("pipeline.monthly", ["--data", str(data), "--release", "--work", f"{work}/monthly"]),
         ("pipeline.datapackage", ["--data", str(data)]),
         ("pipeline.check", ["--data", str(data)]),

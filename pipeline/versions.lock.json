@@ -65,14 +65,14 @@
    "hash": "f14f2b4ccd98d50284d430f883e340b069eff5bd44f865a18d4f76fc41e496db"
   },
   "ontime": {
-   "version": "ontime/0.4.0",
+   "version": "ontime/0.4.1",
    "constant": "pipeline/events/ontime.py::ONTIME_VERSION",
    "sources": [
     "pipeline/events/ontime.py",
     "pipeline/stats.py",
     "pipeline/columns.py::ONTIME_DAILY"
    ],
-   "hash": "5db31778a3d3c1e2852bf359739df1dd0ebf799a2cdb04b15c6f13003fb13ce4"
+   "hash": "8f9068d15061c5b43886147118cc90239232ad490af4b0db75437d93b4e811e9"
   },
   "validate": {
    "version": "validate/0.3.0",
@@ -157,6 +157,15 @@
     "pipeline/datapackage.py"
    ],
    "hash": "c09578d770e15f53f1a414a1119ea777853b728eb3f9143b6af3a6f1381bd007"
+  },
+  "periods": {
+   "version": "periods/0.1.0",
+   "constant": "pipeline/periods.py::PERIODS_VERSION",
+   "sources": [
+    "pipeline/periods.py",
+    "pipeline/stats.py"
+   ],
+   "hash": "fdeb2a35cc6a5fdc699ac23122e8a004febbe3fb9bfb745f0d0dac636180767b"
   }
  }
 }

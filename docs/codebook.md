@@ -355,6 +355,25 @@ is empty. One limit remains: if Passio gave its stops new ids without a new
 printed timetable, a route's stop list could show the old and the new id
 for up to 28 days. The site's route pages read from this file.
 
+### `ontime/headline.json` and `ontime/periods.json`
+
+Since `periods/0.1.0` (November 27, 2026), written by `pipeline/periods.py`
+from the day files each night. `headline.json` pools the last 28 days on
+which Island Transit ran service (`current`). Unlike `recent.json`, it does
+not start over at a new printed timetable (`timetables` lists those it
+spans). Once 14 or more service days come before that window, `previous`
+pools up to 28 of them, and `change_points` is the change in the on-time
+share in percentage points; until then both are empty. `spark` has one
+point per day of the window. `periods.json` has the same figures by
+`hour` of the day (pooled over the 28 service days, and for the latest day
+alone), by `day`, by `week` (Monday to Sunday, Pacific time) and by `month`.
+A week or month the archive does not cover from start to end is marked
+`partial`; days without service are left out of the weeks and months and
+listed. Counts are sums; shares are recomputed from them; the median
+deviation comes from every pooled deviation (`deviations_s`, kept by hour
+in the day files since `ontime/0.4.1`). The publishing rule I8 checks that
+each of these equals the sum of its days.
+
 ## `maps/<passio version>__timetable-<date>-<hash>.json`
 
 `pipeline/gtfs/routemap.py` writes one of these for each timepoints folder.
@@ -472,6 +491,22 @@ Counts of positions (`over_coverage_share`, `trip_id_match_rate`, the share
 of positions missing each field) count each position once, by vehicle and
 vehicle timestamp. The parsed tables can hold the same position in two rows
 when a failed fetch falls between two fetches that returned it.
+
+### `quality/periods.json` and `quality/notes.json`
+
+`periods.json` (since `periods/0.1.0`) has the data quality figures by the
+periods of `ontime/periods.json`. `metrics` says how each figure pools
+several days: a `ratio of sums` (for example observed trips over scheduled
+trips, so a day with more trips counts for more; the `numerator` and
+`denominator` are given), a `sum`, or the `median of daily values` with
+their range (`low`, `high`). Trip coverage and timepoint coverage are also
+given by hour of the day; the other figures are listed under
+`not_measured_by_hour`, because the day files have no hourly detail for them.
+
+`notes.json` (since `notes/0.1.0`) holds what the tiered data checks
+(`scripts/anomaly.py`) found for the latest service day: `status` (`ok`,
+`note`, `look` or `problem`) and the findings under `problems`, `looks` and
+`notes`. It has no time stamp, so it changes only when a finding does.
 
 ## `reports/`
 

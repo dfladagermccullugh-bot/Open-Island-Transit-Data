@@ -152,6 +152,20 @@ jobs:
         if: always()
         run: scripts/publish_data.sh "After quality:"
 
+      # The home page headline and the hour, day, week and month views
+      # (pipeline/periods.py), rebuilt from all day files.
+      - name: Write the period files
+        id: periods
+        if: always()
+        timeout-minutes: 3
+        run: |
+          set +e
+          python -m pipeline.periods --data data-branch
+          echo "code=$?" >> "$GITHUB_OUTPUT"
+      - name: Publish after periods
+        if: always()
+        run: scripts/publish_data.sh "After periods:"
+
       # The tiered data checks (scripts/anomaly.py), written for the site
       # as quality/notes.json. A finding here does not fail the nightly
       # job; the watchdog reports it.
@@ -242,7 +256,7 @@ jobs:
           always() && (
           steps.archive.outputs.code != '0' || steps.tables.outputs.code != '0' ||
           steps.static.outputs.code != '0' || steps.events.outputs.code != '0' ||
-          steps.field.outputs.code != '0' ||
+          steps.field.outputs.code != '0' || steps.periods.outputs.code != '0' ||
           steps.quality.outputs.code != '0' || steps.monthly.outputs.code != '0' ||
           steps.index.outputs.code != '0' || steps.gate.outputs.code != '0' ||
           steps.frictionless.outputs.code != '0')

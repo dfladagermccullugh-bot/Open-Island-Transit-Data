@@ -1,0 +1,170 @@
+{
+ "periods_version": "periods/0.1.0",
+ "grains": {
+  "hour": {
+   "pooled": {
+    "first_service_date": "2026-11-24",
+    "last_service_date": "2026-11-25",
+    "rows": [
+     {
+      "hour": 6,
+      "days": 2,
+      "scheduled": 18,
+      "observed": 18,
+      "on_time": 13,
+      "early": 2,
+      "late": 3,
+      "observed_share": 1.0,
+      "on_time_share_of_observed": 0.7222,
+      "early_share_of_observed": 0.1111,
+      "late_share_of_observed": 0.1667,
+      "deviation_s_median": 7.0,
+      "deviations_counted": 18
+     },
+     {
+      "hour": 7,
+      "days": 2,
+      "scheduled": 6,
+      "observed": 3,
+      "on_time": 3,
+      "early": 0,
+      "late": 0,
+      "observed_share": 0.5,
+      "on_time_share_of_observed": 1.0,
+      "early_share_of_observed": 0.0,
+      "late_share_of_observed": 0.0,
+      "deviation_s_median": 1.0,
+      "deviations_counted": 3
+     }
+    ]
+   },
+   "latest_day": {
+    "service_date": "2026-11-25",
+    "rows": [
+     {
+      "hour": 6,
+      "days": 1,
+      "scheduled": 9,
+      "observed": 9,
+      "on_time": 9,
+      "early": 0,
+      "late": 0,
+      "observed_share": 1.0,
+      "on_time_share_of_observed": 1.0,
+      "early_share_of_observed": 0.0,
+      "late_share_of_observed": 0.0,
+      "deviation_s_median": 21.0,
+      "deviations_counted": 9
+     },
+     {
+      "hour": 7,
+      "days": 1,
+      "scheduled": 3,
+      "observed": 3,
+      "on_time": 3,
+      "early": 0,
+      "late": 0,
+      "observed_share": 1.0,
+      "on_time_share_of_observed": 1.0,
+      "early_share_of_observed": 0.0,
+      "late_share_of_observed": 0.0,
+      "deviation_s_median": 1.0,
+      "deviations_counted": 3
+     }
+    ]
+   }
+  },
+  "day": [
+   {
+    "period": "2026-11-24",
+    "service_expected": true,
+    "days": 1,
+    "scheduled": 12,
+    "observed": 9,
+    "on_time": 4,
+    "early": 2,
+    "late": 3,
+    "observed_share": 0.75,
+    "on_time_share_of_observed": 0.4444,
+    "early_share_of_observed": 0.2222,
+    "late_share_of_observed": 0.3333,
+    "deviation_s_median": -7.0,
+    "deviations_counted": 9
+   },
+   {
+    "period": "2026-11-25",
+    "service_expected": true,
+    "days": 1,
+    "scheduled": 12,
+    "observed": 12,
+    "on_time": 12,
+    "early": 0,
+    "late": 0,
+    "observed_share": 1.0,
+    "on_time_share_of_observed": 1.0,
+    "early_share_of_observed": 0.0,
+    "late_share_of_observed": 0.0,
+    "deviation_s_median": 7.0,
+    "deviations_counted": 12
+   },
+   {
+    "period": "2026-11-26",
+    "service_expected": false,
+    "days": 1,
+    "scheduled": 12,
+    "observed": 0,
+    "on_time": 0,
+    "early": 0,
+    "late": 0,
+    "observed_share": 0.0,
+    "on_time_share_of_observed": null,
+    "early_share_of_observed": null,
+    "late_share_of_observed": null,
+    "deviation_s_median": null,
+    "deviations_counted": 0
+   }
+  ],
+  "week": [
+   {
+    "period": "2026-11-23",
+    "partial": true,
+    "days_without_service": [
+     "2026-11-26"
+    ],
+    "days": 2,
+    "scheduled": 24,
+    "observed": 21,
+    "on_time": 16,
+    "early": 2,
+    "late": 3,
+    "observed_share": 0.875,
+    "on_time_share_of_observed": 0.7619,
+    "early_share_of_observed": 0.0952,
+    "late_share_of_observed": 0.1429,
+    "deviation_s_median": 1.0,
+    "deviations_counted": 21
+   }
+  ],
+  "month": [
+   {
+    "period": "2026-11",
+    "partial": true,
+    "days_without_service": [
+     "2026-11-26"
+    ],
+    "days": 2,
+    "scheduled": 24,
+    "observed": 21,
+    "on_time": 16,
+    "early": 2,
+    "late": 3,
+    "observed_share": 0.875,
+    "on_time_share_of_observed": 0.7619,
+    "early_share_of_observed": 0.0952,
+    "late_share_of_observed": 0.1429,
+    "deviation_s_median": 1.0,
+    "deviations_counted": 21
+   }
+  ]
+ }
+}

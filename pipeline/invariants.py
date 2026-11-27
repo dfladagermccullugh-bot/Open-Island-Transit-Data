@@ -33,7 +33,8 @@ Each rule has a number, used in the messages and in ``docs/methods.md``:
   files, parsed tables, a schedule pin, stop events, an on-time day file and
   a quality day file, and a quality day file of a service day has its
   stop-event metrics.
-- I8: the period files, once they exist, reconcile with the day files.
+- I8: the period files (``ontime/headline.json``, ``ontime/periods.json``,
+  ``quality/periods.json``) reconcile with the day files.
 - I9: every scheduled stop of every tracked trip has one stop event, in stop
   order, with statuses from the known set.
 - I10: one bus cannot be in two places at once: on each vehicle, a trip's
@@ -56,7 +57,7 @@ import itertools
 import os
 import sys
 from collections import Counter, defaultdict
-from collections.abc import Callable
+from collections.abc import Callable, Iterable
 from dataclasses import dataclass, field
 from datetime import date, timedelta
 from pathlib import Path
@@ -399,11 +400,73 @@ def check_complete(res: Result, data: Path, ontime_dir: Path, quality_dir: Path)
         day += timedelta(days=1)
 
 
-def check_periods(res: Result, data: Path) -> None:
-    """I8: nothing to check until the period files exist (docs/plan-2026-11-27.md)."""
-    for name in ("ontime/periods.json", "quality/periods.json", "ontime/headline.json"):
-        if (data / name).exists():
-            res.note("I8", f"{name} exists but its rules are not written yet")
+def _sums(blocks: Iterable[dict[str, Any] | None]) -> dict[str, int]:
+    total: Counter = Counter()
+    for b in blocks:
+        if b:
+            _add(total, b)
+    return {k: total[k] for k in COUNTS}
+
+
+def check_periods(
+    res: Result, data: Path, ontime: list[dict[str, Any]], quality: list[dict[str, Any]]
+) -> None:
+    """I8: the period files (``pipeline/periods.py``) reconcile with the day
+    files: the headline window, each day, each week and month, and each hour
+    pooled over the window are the sums of the days they cover, with shares
+    that follow their counts."""
+    head = load_json(data / "ontime" / "headline.json")
+    periods = load_json(data / "ontime" / "periods.json")
+    qperiods = load_json(data / "quality" / "periods.json")
+    by_date = {d["service_date"]: d for d in ontime}
+    service = [d for d in ontime if d.get("service_expected", True)]
+    if head is not None:
+        want = service[-head["window_service_days"] :]
+        if [d["service_date"] for d in want][:1] != [head["first_service_date"]] or (
+            want and want[-1]["service_date"] != head["last_service_date"]
+        ):
+            res.problem("I8", "headline.json: its window is not the last service days")
+        if _counts(head["current"]) != _sums(want):
+            res.problem("I8", "headline.json: counts are not the sum of its days")
+        check_block(res, "headline.json current", head["current"], extra_shares=True)
+    if periods is not None:
+        grains = periods["grains"]
+        for row in grains.get("day", []):
+            d = by_date.get(row["period"])
+            if d is None or _counts(row) != _counts(d):
+                res.problem("I8", f"ontime periods day {row['period']}: not its day file")
+        for grain in ("week", "month"):
+            for row in grains.get(grain, []):
+                days = [d for d in service if _period_of(d["service_date"], grain) == row["period"]]
+                if _counts(row) != _sums(days):
+                    res.problem(
+                        "I8", f"ontime periods {grain} {row['period']}: not the sum of its days"
+                    )
+                check_block(res, f"ontime periods {grain} {row['period']}", row, extra_shares=True)
+        pooled = grains.get("hour", {}).get("pooled", {})
+        first, last = pooled.get("first_service_date"), pooled.get("last_service_date")
+        window = [d for d in service if first and last and first <= d["service_date"] <= last]
+        for row in pooled.get("rows", []):
+            if _counts(row) != _sums(d.get("by_hour", {}).get(str(row["hour"])) for d in window):
+                res.problem("I8", f"ontime periods hour {row['hour']}: not the sum of its days")
+    if qperiods is not None:
+        for row in qperiods["grains"].get("day", []):
+            q = next((x for x in quality if x["service_date"] == row["period"]), None)
+            cov = (q or {}).get("coverage") or {}
+            m = row["metrics"].get("trip_coverage", {})
+            if q is None or (cov and m.get("numerator") != cov.get("observed_scheduled_trips")):
+                res.problem("I8", f"quality periods day {row['period']}: not its day file")
+        for grain in ("week", "month"):
+            for row in qperiods["grains"].get(grain, []):
+                for name, m in row["metrics"].items():
+                    if "numerator" in m and m["value"] != share(m["numerator"], m["denominator"]):
+                        res.problem("I8", f"quality periods {grain} {row['period']} {name}: "
+                                    "value does not follow its counts")  # fmt: skip
+
+
+def _period_of(day: str, grain: str) -> str:
+    d = date.fromisoformat(day)
+    return (d - timedelta(days=d.weekday())).isoformat() if grain == "week" else f"{d:%Y-%m}"
 
 
 def light(res: Result, data: Path, versions: dict[str, str], allow_old: bool = False) -> None:
@@ -434,7 +497,7 @@ def light(res: Result, data: Path, versions: dict[str, str], allow_old: bool = F
     )
     check_versions(res, data, versions, ontime, quality, allow_old)
     check_complete(res, data, ontime_dir, quality_dir)
-    check_periods(res, data)
+    check_periods(res, data, ontime, quality)
     res.ran += ["I1", "I2", "I3", "I4", "I5", "I6", "I7", "I8"]
 
 

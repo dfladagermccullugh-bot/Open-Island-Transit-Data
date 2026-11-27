@@ -1,5 +1,5 @@
 {
- "ontime_version": "ontime/0.4.0",
+ "ontime_version": "ontime/0.4.1",
  "definition": {
   "window_s": [-60,300],
   "measured": "departure at timepoints; arrival at the last stop",
@@ -38,7 +38,8 @@
    "early": 2,
    "late": 3,
    "on_time_share_of_observed": 0.4444,
-   "deviation_s_median": -7.3
+   "deviation_s_median": -7.3,
+   "deviations_s": [-94,-92,-89,-14,-7,1,353,361,361]
   },
   "7": {
    "scheduled": 3,
@@ -48,7 +49,8 @@
    "early": 0,
    "late": 0,
    "on_time_share_of_observed": null,
-   "deviation_s_median": null
+   "deviation_s_median": null,
+   "deviations_s": []
   }
  },
  "by_route_stop": {

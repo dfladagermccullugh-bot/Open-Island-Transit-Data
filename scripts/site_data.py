@@ -25,6 +25,10 @@ OPTIONAL = (
     "reports/index.json",
     "files.csv",
     "datapackage.json",
+    "ontime/headline.json",
+    "ontime/periods.json",
+    "quality/periods.json",
+    "quality/notes.json",
 )
 
 

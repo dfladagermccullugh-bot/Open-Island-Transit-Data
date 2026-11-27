@@ -1,0 +1,39 @@
+{
+ "periods_version": "periods/0.1.0",
+ "window_service_days": 28,
+ "first_service_date": "2026-11-24",
+ "last_service_date": "2026-11-25",
+ "days_without_service": [],
+ "timetables": [
+  "2026-09-27"
+ ],
+ "current": {
+  "days": 2,
+  "scheduled": 24,
+  "observed": 21,
+  "on_time": 16,
+  "early": 2,
+  "late": 3,
+  "observed_share": 0.875,
+  "on_time_share_of_observed": 0.7619,
+  "early_share_of_observed": 0.0952,
+  "late_share_of_observed": 0.1429,
+  "deviation_s_median": 1.0,
+  "deviations_counted": 21
+ },
+ "previous": null,
+ "previous_needs_service_days": 14,
+ "change_points": null,
+ "spark": [
+  {
+   "service_date": "2026-11-24",
+   "on_time_share_of_observed": 0.4444,
+   "observed_share": 0.75
+  },
+  {
+   "service_date": "2026-11-25",
+   "on_time_share_of_observed": 1.0,
+   "observed_share": 1.0
+  }
+ ]
+}

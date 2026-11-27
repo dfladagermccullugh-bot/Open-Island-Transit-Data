@@ -18,7 +18,9 @@ Events scheduled before collection began are left out, and so, since
 
 ``by_route_stop`` breaks the counts down by route and timepoint stop and
 keeps every deviation (whole seconds) so that medians over several days can
-be computed exactly (``pipeline/events/routes.py``).
+be computed exactly (``pipeline/events/routes.py``). Since ``ontime/0.4.1``
+``by_hour`` keeps them too, for the hour-by-hour period figures
+(``pipeline/periods.py``).
 """
 
 from __future__ import annotations
@@ -31,7 +33,7 @@ from pipeline.common import Row
 from pipeline.config import PACIFIC
 from pipeline.stats import median
 
-ONTIME_VERSION = "ontime/0.4.0"  # 0.4.0: canceled trips left out and counted
+ONTIME_VERSION = "ontime/0.4.1"  # 0.4.1: deviations by hour, for the period files
 EARLY_S = -60
 LATE_S = 300
 
@@ -127,6 +129,12 @@ def summarize(
             "timepoint_events_left_out": left_out,
         },
         "by_route": {r: _block(c, route_devs[r]) for r, c in sorted(by_route.items())},
-        "by_hour": {str(h): _block(c, hour_devs[h]) for h, c in sorted(by_hour.items())},
+        "by_hour": {
+            str(h): {
+                **_block(c, hour_devs[h]),
+                "deviations_s": sorted(round(d) for d in hour_devs[h]),
+            }
+            for h, c in sorted(by_hour.items())
+        },
         "by_route_stop": dict(route_stop),
     }
