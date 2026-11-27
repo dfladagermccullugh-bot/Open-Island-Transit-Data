@@ -1,9 +1,10 @@
 {
  "passio_version": "passio-20af7aa7267e",
- "timepoints_version": "timepoints/0.1.0",
+ "timepoints_version": "timepoints/0.2.0",
  "reference": "2026-09-27",
  "printed_names": 3,
  "resolved_names": 3,
  "unresolved": [],
- "timepoint_route_stops": 3
+ "timepoint_route_stops": 3,
+ "timepoint_route_direction_stops": 3
 }

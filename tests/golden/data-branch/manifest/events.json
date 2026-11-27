@@ -4,12 +4,12 @@
  "days": {
   "2026-11-24": {
    "service_date": "2026-11-24",
-   "events_version": "events/0.3.1",
+   "events_version": "events/0.3.2",
    "ontime_version": "ontime/0.3.0",
    "validate_version": "validate/0.2.0",
    "service_expected": true,
    "passio_version": "passio-20af7aa7267e",
-   "timepoints": "passio-20af7aa7267e__timetable-2026-09-27-3390f308",
+   "timepoints": "passio-20af7aa7267e__timetable-2026-09-27-a09fbb25",
    "vehicles_sha256": "<sha256>",
    "rows": {
     "stop-events": 16,
@@ -33,12 +33,12 @@
   },
   "2026-11-25": {
    "service_date": "2026-11-25",
-   "events_version": "events/0.3.1",
+   "events_version": "events/0.3.2",
    "ontime_version": "ontime/0.3.0",
    "validate_version": "validate/0.2.0",
    "service_expected": true,
    "passio_version": "passio-20af7aa7267e",
-   "timepoints": "passio-20af7aa7267e__timetable-2026-09-27-3390f308",
+   "timepoints": "passio-20af7aa7267e__timetable-2026-09-27-a09fbb25",
    "vehicles_sha256": "<sha256>",
    "rows": {
     "stop-events": 16,
@@ -62,12 +62,12 @@
   },
   "2026-11-26": {
    "service_date": "2026-11-26",
-   "events_version": "events/0.3.1",
+   "events_version": "events/0.3.2",
    "ontime_version": "ontime/0.3.0",
    "validate_version": "validate/0.2.0",
    "service_expected": false,
    "passio_version": "passio-20af7aa7267e",
-   "timepoints": "passio-20af7aa7267e__timetable-2026-09-27-3390f308",
+   "timepoints": "passio-20af7aa7267e__timetable-2026-09-27-a09fbb25",
    "vehicles_sha256": "<sha256>",
    "rows": {
     "stop-events": 16,

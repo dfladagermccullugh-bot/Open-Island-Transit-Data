@@ -43,9 +43,10 @@ from pipeline.events.geometry import Shape
 from pipeline.gtfs.schedule import Trip, day_origin, scheduled_trips
 from pipeline.gtfs.tables import rows as _rows
 from pipeline.gtfs.tables import seconds as _seconds
+from pipeline.gtfs.timepoints import is_timepoint
 from pipeline.gtfs.zipread import ZipContents
 
-EVENTS_VERSION = "events/0.3.1"
+EVENTS_VERSION = "events/0.3.2"  # 0.3.2: a timepoint is a route, direction and stop
 
 WINDOW_MIN = 30
 OFF_SHAPE_M = 100.0
@@ -346,7 +347,7 @@ def infer_day(
     day: date,
     contents: ZipContents,
     vehicles: list[Row],
-    timepoints: set[tuple[str, str]] | None = None,
+    timepoints: set[tuple[str, str, str]] | None = None,
     static: StaticData | None = None,
     trips: list[Trip] | None = None,
 ) -> tuple[list[Row], list[Row]]:
@@ -391,7 +392,10 @@ def infer_day(
             shape = static.shapes.get(meta.get("shape_id", ""))
             placed = static.place_stops(trip.trip_id)
             stop_rows = static.stop_times.get(trip.trip_id, [])
-            rows = _trip_events(trip, stop_rows, placed, shape, reports, timepoints, origin)
+            direction = meta.get("direction_id") or ""
+            rows = _trip_events(
+                trip, direction, stop_rows, placed, shape, reports, timepoints, origin
+            )
         except (KeyError, ValueError) as exc:
             summary.update(dict.fromkeys(_TRACK_FIELDS), problem=f"{type(exc).__name__}: {exc}")
             trips_out.append(summary)
@@ -434,11 +438,12 @@ _TRACK_FIELDS = (
 
 def _trip_events(
     trip: Trip,
+    direction: str,
     stop_rows: list[Row],
     placed: list[Placement] | None,
     shape: Shape | None,
     reports: list[tuple],
-    timepoints: set[tuple[str, str]],
+    timepoints: set[tuple[str, str, str]],
     origin: datetime,
 ) -> tuple[Track, list[Row]]:
     """Track one trip and time its stops."""
@@ -465,7 +470,7 @@ def _trip_events(
             "stop_id": st["stop_id"],
             "is_first_stop": i == 0,
             "is_last_stop": i == n - 1,
-            "is_timepoint": (trip.route_id, st["stop_id"]) in timepoints,
+            "is_timepoint": is_timepoint(timepoints, trip.route_id, direction, st["stop_id"]),
             "stop_distance_m": round(sd, 1) if sd is not None else None,
             "stop_offset_m": round(offset, 1) if offset is not None else None,
             "scheduled_arrival": _at(origin, arr_s),

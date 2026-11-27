@@ -11,14 +11,14 @@
    "hash": "509e1e45ae95ca01a659bf34cb0dece06f4924aa8e7f6ead0c1b3036f7515feb"
   },
   "timepoints": {
-   "version": "timepoints/0.1.0",
+   "version": "timepoints/0.2.0",
    "constant": "pipeline/gtfs/timepoints.py::TIMEPOINTS_VERSION",
    "sources": [
     "pipeline/gtfs/timepoints.py",
     "pipeline/gtfs/tables.py",
     "pipeline/gtfs/zipread.py"
    ],
-   "hash": "f03c2abbbfcfb0c1e319d910420e8620fff594c14414e22ac40bbeaefe208709"
+   "hash": "780759bd55cb21e8980edf235cfabc25eeb7741362bd767bc5fd975bb5ac8b9e"
   },
   "crosswalk": {
    "version": "crosswalk/0.2.0",
@@ -49,7 +49,7 @@
    "hash": "bc9e67031b19d343e47595b3abf766b3678a2aec26446d16d19233453c39bddb"
   },
   "events": {
-   "version": "events/0.3.1",
+   "version": "events/0.3.2",
    "constant": "pipeline/events/infer.py::EVENTS_VERSION",
    "sources": [
     "pipeline/events/infer.py",
@@ -60,7 +60,7 @@
     "pipeline/stats.py",
     "pipeline/gtfs/timepoints.py::timepoint_pairs"
    ],
-   "hash": "c5fac4dd6a1da9c11f6fabfff55f278f8126c316ac490eb42734064ed6580fa8"
+   "hash": "4f6870485e513b7b85e6bceefe6f59c634311a67efb36cac69efb0262edf6358"
   },
   "ontime": {
    "version": "ontime/0.3.0",
@@ -98,7 +98,7 @@
     "pipeline/events/field.py",
     "pipeline/stats.py"
    ],
-   "hash": "4af857baec056d102e380cafe3f586197043adac3f1239a88fe9f6f73aa25a31"
+   "hash": "1c9ae40195076e09f9246adaf9ceb131a8e5ff0a544cec8d5b8e7ab71b3fbdb0"
   },
   "quality": {
    "version": "quality/0.5.0",
@@ -148,12 +148,12 @@
    "hash": "88774869ecf393f53bd511fd3f6a9ca40d51b8f1e205383ac783a68baa529941"
   },
   "dictionary": {
-   "version": "dictionary/0.1.0",
+   "version": "dictionary/0.1.1",
    "constant": "pipeline/datapackage.py::DICTIONARY_VERSION",
    "sources": [
     "pipeline/datapackage.py"
    ],
-   "hash": "a074c85f9eab19ffd872b9abf8bfad7a4710924d540795299e8d858dfc1ec347"
+   "hash": "daeec93de58497a649042a308a8da0b56a3219240b5ec8f35a2446e2efaa4dbe"
   }
  }
 }

@@ -114,7 +114,7 @@ def test_infer_day_end_to_end():
     pts += [(60 + k * 20, 160 * k) for k in range(1, 19)]  # up to 2880 m at 06:07
     pts += [(720, 5000), (740, 5160), (760, 5320), (780, 5480), (800, 5640), (820, 5800),
             (840, 5960), (860, 6000)]  # fmt: skip
-    events, trips = infer_day(DAY, read_zip(gtfs_zip()), vehicle_rows(pts), {("R1", "S1")})
+    events, trips = infer_day(DAY, read_zip(gtfs_zip()), vehicle_rows(pts), {("R1", "", "S1")})
     by = {e["stop_id"]: e for e in events}
     assert len(events) == 4 and trips[0]["reports_used"] > 20
 

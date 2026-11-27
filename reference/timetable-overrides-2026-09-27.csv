@@ -34,3 +34,5 @@ route_short_name,printed_stop,passio_stop_ids,note
 9,NW Heller at NW 5th Ave (Hillcrest Elem),178148,Heller St at Hillcrest Elementary School
 9,SW Erie St at Walmart,178196;178323,Walmart at Erie St (both directions)
 9,SW Erie St at Walmart (northbound),178196;178323,Walmart at Erie St (both directions)
+60,Clinton Park & Ride,178406;197274,"The two sides of the Clinton Park & Ride: SR 525 at Clinton Park & Ride (southbound) and Clinton Park & Ride at Deer Lake Rd (northbound); each direction keeps the stop its trips serve (Claude 2026-11-27, timepoints/0.2.0). The name score preferred Bayview P&R"
+1,Clinton P&R,178406;197242,"The two sides of the Clinton Park & Ride: SR 525 at Clinton Park & Ride (southbound) and Clinton Park & Ride at Deer Lake Rd (northbound); each direction keeps the stop its trips serve (Claude 2026-11-27, timepoints/0.2.0). The name score preferred Freeland P&R"

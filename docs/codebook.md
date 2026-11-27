@@ -189,8 +189,8 @@ unresolved instead of guessing.
 
 | File | Contents |
 |---|---|
-| `timepoints.csv` | One row per printed stop and matched Passio stop: route, day type, direction, printed order and name, `passio_route_id`, `passio_stop_id`, `passio_stop_name`, and `match` (`name <score>`, `override`, or the reason it is unresolved) |
-| `summary.json` | Reference date, printed names, resolved names, the unresolved names with reasons, and the number of timepoint route-stop pairs |
+| `timepoints.csv` | One row per printed stop and matched Passio stop: route, day type, direction, printed order and name, `passio_route_id`, `passio_direction_id`, `passio_stop_id`, `passio_stop_name`, and `match` (`name <score>`, `override`, or the reason it is unresolved) |
+| `summary.json` | Reference date, printed names, resolved names, the unresolved names with reasons, the number of timepoint route-stop pairs, and (since `timepoints/0.2.0`) the number of route, direction and stop triples |
 
 | `timepoints.csv` column | Meaning |
 |---|---|
@@ -200,6 +200,7 @@ unresolved instead of guessing.
 | `order` | Position of the stop in the printed timetable, counting from 1 |
 | `printed_stop` | The stop's name as printed |
 | `passio_route_id`, `passio_stop_id`, `passio_stop_name` | The Passio route and stop the printed stop was matched to. The stop id and name are empty when the printed name is not a stop |
+| `passio_direction_id` | The Passio direction (`direction_id` in Passio's `trips.txt`) whose trips run the way the printed timetable reads. The stop counts as a timepoint only for trips going that direction. Since `timepoints/0.2.0`; lists made before have no such column |
 | `match` | How the match was made: `name` and a similarity score from 0 to 1, `override` for a match a person reviewed, or the reason there is none |
 
 Where a route prints separate timetables for different kinds of day (the
@@ -223,7 +224,7 @@ Passio schedule, whether or not we observed it.
 | `trip_id`, `route_id`, `stop_sequence`, `stop_id` | Passio ids |
 | `vehicle_key` | The vehicle whose reports were used; empty if none carried the trip id |
 | `is_first_stop`, `is_last_stop` | Position in the trip |
-| `is_timepoint` | A true timepoint (`timepoints/`) |
+| `is_timepoint` | A true timepoint (`timepoints/`): the stop is printed in Island Transit's timetable for this route and, since `events/0.3.2`, for this trip's direction |
 | `stop_distance_m` | The stop's distance along the trip's shape; empty if the stop is `unplaced`. Where two points on one stretch of the shape are equally near the stop, the earlier one (since `events/0.3.1`) |
 | `stop_offset_m` | How far the stop sits from the shape at that point, in meters (since `events/0.3.0`) |
 | `scheduled_arrival`, `scheduled_departure` | Passio schedule, as UTC timestamps |

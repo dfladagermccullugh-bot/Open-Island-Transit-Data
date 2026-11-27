@@ -76,7 +76,8 @@ def sheet(
     effective = tp.reference_for(day)
     if effective is None:
         raise ValueError(f"no timetable reference covers {day}")
-    pairs = tp.timepoint_pairs(tp.build(passio, effective)["matched"])
+    keys = tp.timepoint_keys(tp.build(passio, effective)["matched"])
+    direction = {t["trip_id"]: t.get("direction_id") or "" for t in gtfs_rows(passio, "trips.txt")}
     stops = {s["stop_id"]: s["stop_name"] for s in gtfs_rows(passio, "stops.txt")}
     wanted = {i for i, name in stops.items() if any(q.lower() in name.lower() for q in queries)}
     routes = {r["route_id"]: r.get("route_short_name") or r.get("route_long_name") or r["route_id"]
@@ -92,7 +93,9 @@ def sheet(
     out = []
     for st in stop_times:
         t = trips[st["trip_id"]]
-        if st["stop_id"] not in wanted or (t.route_id, st["stop_id"]) not in pairs:
+        if st["stop_id"] not in wanted or not tp.is_timepoint(
+            keys, t.route_id, direction.get(t.trip_id, ""), st["stop_id"]
+        ):
             continue
         q, (first, last) = int(st["stop_sequence"]), ends[t.trip_id]
         role = "departure" if q == first else "arrival" if q == last else "both"

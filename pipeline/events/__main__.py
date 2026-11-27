@@ -55,7 +55,7 @@ from pipeline.events.validate import VALIDATE_VERSION, validate
 from pipeline.gtfs.holidays import no_service, service_expected
 from pipeline.gtfs.schedule import route_names
 from pipeline.gtfs.tables import rows as gtfs_rows
-from pipeline.gtfs.timepoints import timepoint_pairs
+from pipeline.gtfs.timepoints import timepoint_keys
 from pipeline.gtfs.zipread import load_zip
 
 TS = pa.timestamp("us", tz="UTC")
@@ -162,7 +162,7 @@ def build(day: date, data: Path, raw_dir: Path, tables_dir: Path, out: Path, rep
 
     tp_file = data / "timepoints" / pins["timepoints"] / "timepoints.csv"
     with tp_file.open(encoding="utf-8", newline="") as fh:
-        pairs = timepoint_pairs(list(csv.DictReader(fh)), day)
+        pairs = timepoint_keys(list(csv.DictReader(fh)), day)
 
     events, tracks = infer_day(day, passio, vehicles, pairs)
     out.mkdir(parents=True, exist_ok=True)

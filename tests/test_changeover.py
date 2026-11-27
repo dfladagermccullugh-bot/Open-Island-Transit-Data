@@ -271,8 +271,9 @@ def test_reference_id_follows_its_own_files_only(world):
 
 def test_the_published_september_folder_name_is_unchanged():
     # Days already published point at this folder; a different hash would
-    # rebuild every one of them.
-    assert static._reference_id(date(2026, 9, 27)) == "timetable-2026-09-27-970aa207"
+    # rebuild every one of them. It changed on purpose with timepoints/0.2.0
+    # (November 27, 2026: matched per direction, two overrides added).
+    assert static._reference_id(date(2026, 9, 27)) == "timetable-2026-09-27-d7e09c5d"
 
 
 def test_the_daily_table_is_rewritten_even_when_no_day_is_rebuilt(tmp_path, monkeypatch):

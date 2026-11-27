@@ -1,0 +1,4 @@
+route_short_name,day_type,direction,order,printed_stop,passio_route_id,passio_direction_id,passio_stop_id,passio_stop_name,match
+1,weekday,eastbound,1,Harbor Station,R1,,S0,Harbor Station,name 1.00
+1,weekday,eastbound,2,Midway Mall,R1,,S2,Midway Mall,name 1.00
+1,weekday,eastbound,3,Ferry Terminal,R1,,S3,Ferry Terminal,name 1.00

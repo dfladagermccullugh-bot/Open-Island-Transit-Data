@@ -261,7 +261,14 @@ feet) from the shape or moving against the route's direction faster than
 3 m/s (about 7 mph).
 
 For the on-time figures we use only the timepoints printed in Island
-Transit's timetables. Each inferred stop time remembers how far apart in
+Transit's timetables. Each printed timetable reads in one direction, such as
+northbound, and our script first works out which of Passio's two directions
+runs in that order. It then looks for each printed stop name only among the
+stops that buses going that way actually serve. This matters because many
+stops come in pairs, one on each side of the road, often with the same name.
+Until November 27, 2026, our script could pick the stop across the road, and
+then the buses that really stop there were never scored. On route 60, four
+northbound timepoints had this problem, among them Bayview P&R. Each inferred stop time remembers how far apart in
 time its two positions were. If they were more than 120 seconds apart, we
 don't trust a straight line across the gap, and we record the stop as not
 observed.
@@ -277,7 +284,7 @@ one.
 | Detours | Positions more than 100 meters (about 330 feet) off the shape are set aside and counted. A stop the bus passed while off the shape gets no time and counts as not observed |
 | Parts of the shape not driven | Tracking moves past them once two positions agree; their stops are `skipped`, counted as not observed |
 | Gaps in positions | No interpolation across more than 120 s |
-| Interpolated schedule times | On-time figures use true timepoints only: the stops printed in Island Transit's public timetables for the service period, matched to Passio stops on the same route. Where a route prints separate timetables for weekdays and Saturdays, each day uses the stops of its own timetable. Printed names that cannot be tied to one stop are left out and counted. Scheduled times are Passio's, the schedule the real-time feed follows (`pipeline/gtfs/timepoints.py`, `reference/`, `timepoints/`) |
+| Interpolated schedule times | On-time figures use true timepoints only: the stops printed in Island Transit's public timetables for the service period, matched to Passio stops on the same route and in the same direction. Where a route prints separate timetables for weekdays and Saturdays, each day uses the stops of its own timetable. Printed names that cannot be tied to one stop are left out and counted. Scheduled times are Passio's, the schedule the real-time feed follows (`pipeline/gtfs/timepoints.py`, `reference/`, `timepoints/`) |
 | Schedule changes daily | Each service day is pinned to the static version in effect that day, and keeps it. If two complete downloads on one day differ, the day gets the version whose scheduled trips the live feed reported |
 | A trip the schedule files describe badly | If a trip names a stop that is missing from the schedule, that trip gets no stop times and is counted (`problem` in `trip-tracks`); the rest of the day is unaffected |
 

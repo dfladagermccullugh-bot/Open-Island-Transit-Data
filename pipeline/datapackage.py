@@ -49,14 +49,14 @@ from pipeline.events.routes import ROUTE_COLUMNS
 from pipeline.quality.__main__ import HEADLINE
 from pipeline.tables.build import SPECS
 
-DICTIONARY_VERSION = "dictionary/0.1.0"
+DICTIONARY_VERSION = "dictionary/0.1.1"  # 0.1.1: passio_direction_id in timepoints.csv
 CODEBOOK = Path(__file__).resolve().parents[1] / "docs" / "codebook.md"
 SITE = "https://dfladagermccullugh-bot.github.io/Open-Island-Transit-Data/"
 
 FILES_COLUMNS = ["service_date", "table", "release_tag", "name", "bytes", "sha256", "url"]
 TIMEPOINT_COLUMNS = [
     "route_short_name", "day_type", "direction", "order", "printed_stop", "passio_route_id",
-    "passio_stop_id", "passio_stop_name", "match",
+    "passio_direction_id", "passio_stop_id", "passio_stop_name", "match",
 ]  # fmt: skip
 CROSSWALK_COLUMNS = {
     "stops": [

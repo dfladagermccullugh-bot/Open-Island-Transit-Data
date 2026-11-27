@@ -17,7 +17,7 @@
   "measured": "departure at timepoints; arrival at the last stop",
   "timepoints": "stops printed in Island Transit's timetables"
  },
- "timepoints": "passio-20af7aa7267e__timetable-2026-09-27-3390f308",
+ "timepoints": "passio-20af7aa7267e__timetable-2026-09-27-a09fbb25",
  "passio_version": "passio-20af7aa7267e",
  "ontime_versions": [
   "ontime/0.3.0"

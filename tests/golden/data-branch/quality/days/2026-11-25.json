@@ -287,7 +287,7 @@
    }
   ],
   "timepoints": {
-   "folder": "passio-20af7aa7267e__timetable-2026-09-27-3390f308",
+   "folder": "passio-20af7aa7267e__timetable-2026-09-27-a09fbb25",
    "reference": "2026-09-27",
    "printed_names": 3,
    "resolved_names": 3,
@@ -296,7 +296,7 @@
   }
  },
  "events": {
-  "events_version": "events/0.3.1",
+  "events_version": "events/0.3.2",
   "stop_coverage": {
    "timepoints": {
     "scheduled": 12,

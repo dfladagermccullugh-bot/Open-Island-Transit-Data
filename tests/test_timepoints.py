@@ -141,3 +141,79 @@ def test_reference_of_reads_the_timetable_date_from_a_folder_name():
     assert timepoints.reference_of(key) == "2026-09-27"
     assert timepoints.reference_of(None) is None
     assert timepoints.reference_of("something else") is None
+
+
+def two_way_zip() -> bytes:
+    """Route 60 in miniature: each direction stops on its own side of the
+    road, and the southbound stops carry the names closest to the printed
+    ones, as at Bayview P&R and the high school in the real schedule."""
+    files = {
+        "routes.txt": "route_id,route_short_name\nR60,60\n",
+        "stops.txt": (
+            "stop_id,stop_name\n"
+            "F,Freeland at Main St\n"
+            "BS,Bayview P&R\nBN,Bayview P&R\n"
+            "MS,Maxwelton Rd at SW High School\nMN,South Whidbey High School\n"
+            "K,Clinton Ferry Terminal\n"
+        ),
+        "trips.txt": "route_id,service_id,trip_id,direction_id\nR60,S,sb,1\nR60,S,nb,0\n",
+        "stop_times.txt": (
+            "trip_id,stop_id,stop_sequence\n"
+            "sb,F,1\nsb,BS,2\nsb,MS,3\nsb,K,4\n"
+            "nb,K,1\nnb,MN,2\nnb,BN,3\nnb,F,4\n"
+        ),
+    }
+    buf = io.BytesIO()
+    with zipfile.ZipFile(buf, "w") as z:
+        for name, text in files.items():
+            z.writestr(name, text)
+    return buf.getvalue()
+
+
+NORTHBOUND = ("Clinton Ferry Terminal", "Maxwelton Rd at South Whidbey HS", "Bayview P&R",
+              "Freeland at Main Street")  # fmt: skip
+
+
+def test_each_direction_gets_the_stops_its_own_buses_use():
+    """Before timepoints/0.2.0 the northbound timetable was matched to the
+    southbound stops across the road (route 60 at Bayview P&R), where
+    northbound buses never stop, so they were never scored there."""
+    rows = timepoints.match(
+        read_zip(two_way_zip()),
+        printed("60", "southbound", *reversed(NORTHBOUND))
+        + printed("60", "northbound", *NORTHBOUND),
+        {},
+    )
+    north = [r for r in rows if r["direction"] == "northbound"]
+    south = [r for r in rows if r["direction"] == "southbound"]
+    assert ids(north, "Bayview P&R") == ["BN"]
+    assert ids(north, "Maxwelton Rd at South Whidbey HS") == ["MN"]
+    assert ids(south, "Bayview P&R") == ["BS"]
+    assert {r["passio_direction_id"] for r in north} == {"0"}
+    assert {r["passio_direction_id"] for r in south} == {"1"}
+    keys = timepoints.timepoint_keys(rows)
+    assert ("R60", "0", "BN") in keys and ("R60", "0", "BS") not in keys
+    assert timepoints.is_timepoint(keys, "R60", "1", "BS")
+    assert not timepoints.is_timepoint(keys, "R60", "1", "BN")
+    assert timepoints.is_timepoint(keys, "R60", "0", "K")  # a terminal both directions use
+
+
+def test_an_override_naming_both_sides_keeps_each_directions_own():
+    overrides = {("60", "Bayview P&R"): {"passio_stop_ids": "BS;BN", "note": "both sides"}}
+    rows = timepoints.match(
+        read_zip(two_way_zip()),
+        printed("60", "southbound", *reversed(NORTHBOUND))
+        + printed("60", "northbound", *NORTHBOUND),
+        overrides,
+    )
+    by_dir = {
+        r["direction"]: r["passio_stop_id"] for r in rows if r["printed_stop"] == "Bayview P&R"
+    }
+    assert by_dir == {"northbound": "BN", "southbound": "BS"}
+
+
+def test_a_list_without_directions_counts_in_either_direction():
+    old = [{"passio_route_id": "R60", "passio_stop_id": "BS", "day_type": "weekday"}]
+    keys = timepoints.timepoint_keys(old)
+    assert timepoints.is_timepoint(keys, "R60", "0", "BS")
+    assert timepoints.is_timepoint(keys, "R60", "1", "BS")
