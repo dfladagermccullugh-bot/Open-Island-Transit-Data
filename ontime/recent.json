@@ -15,25 +15,25 @@
   "measured": "departure at timepoints; arrival at the last stop",
   "timepoints": "stops printed in Island Transit's timetables"
  },
- "timepoints": "passio-9b1efa882037__timetable-2026-09-27-970aa207",
+ "timepoints": "passio-9b1efa882037__timetable-2026-09-27-d7e09c5d",
  "passio_version": "passio-9b1efa882037",
  "ontime_versions": [
   "ontime/0.3.0"
  ],
  "overall": {
-  "scheduled": 13776,
-  "observed": 10806,
-  "on_time": 7932,
-  "early": 171,
-  "late": 2703,
-  "observed_share": 0.7844,
-  "on_time_share_of_observed": 0.734,
+  "scheduled": 14664,
+  "observed": 11653,
+  "on_time": 8602,
+  "early": 184,
+  "late": 2867,
+  "observed_share": 0.7947,
+  "on_time_share_of_observed": 0.7382,
   "early_share_of_observed": 0.0158,
-  "late_share_of_observed": 0.2501,
-  "deviation_s_median": 164.0,
-  "deviation_s_p25": 62.2,
-  "deviation_s_p75": 300.0,
-  "deviations_counted": 10806
+  "late_share_of_observed": 0.246,
+  "deviation_s_median": 160.0,
+  "deviation_s_p25": 63.0,
+  "deviation_s_p75": 297.0,
+  "deviations_counted": 11653
  },
  "routes": {
   "6737": {
@@ -778,82 +778,64 @@
    "name": "3C",
    "short_name": "3C",
    "long_name": "Stanwood/ Camano Island",
-   "scheduled": 609,
-   "observed": 447,
-   "on_time": 393,
+   "scheduled": 533,
+   "observed": 417,
+   "on_time": 365,
    "early": 4,
-   "late": 50,
-   "observed_share": 0.734,
-   "on_time_share_of_observed": 0.8792,
-   "early_share_of_observed": 0.0089,
-   "late_share_of_observed": 0.1119,
-   "deviation_s_median": 126.0,
-   "deviation_s_p25": 47.0,
-   "deviation_s_p75": 225.0,
-   "deviations_counted": 447,
+   "late": 48,
+   "observed_share": 0.7824,
+   "on_time_share_of_observed": 0.8753,
+   "early_share_of_observed": 0.0096,
+   "late_share_of_observed": 0.1151,
+   "deviation_s_median": 133.0,
+   "deviation_s_p25": 49.0,
+   "deviation_s_p75": 226.0,
+   "deviations_counted": 417,
    "daily": [
     {
      "service_date": "2026-11-19",
-     "observed_share": 0.7347,
-     "on_time_share_of_observed": 0.7778,
-     "deviation_s_median": 189.2
+     "observed_share": 0.814,
+     "on_time_share_of_observed": 0.7714,
+     "deviation_s_median": 195.1
     },
     {
      "service_date": "2026-11-20",
-     "observed_share": 0.7583,
-     "on_time_share_of_observed": 0.8791,
-     "deviation_s_median": 109.7
+     "observed_share": 0.8095,
+     "on_time_share_of_observed": 0.8824,
+     "deviation_s_median": 108.4
     },
     {
      "service_date": "2026-11-21",
-     "observed_share": 0.775,
-     "on_time_share_of_observed": 0.8387,
-     "deviation_s_median": 152.6
+     "observed_share": 0.8286,
+     "on_time_share_of_observed": 0.8276,
+     "deviation_s_median": 158.1
     },
     {
      "service_date": "2026-11-22",
-     "observed_share": 0.675,
-     "on_time_share_of_observed": 0.963,
-     "deviation_s_median": 38.0
+     "observed_share": 0.6857,
+     "on_time_share_of_observed": 0.9583,
+     "deviation_s_median": 43.3
     },
     {
      "service_date": "2026-11-23",
-     "observed_share": 0.7583,
-     "on_time_share_of_observed": 0.8681,
-     "deviation_s_median": 149.9
+     "observed_share": 0.819,
+     "on_time_share_of_observed": 0.8605,
+     "deviation_s_median": 153.5
     },
     {
      "service_date": "2026-11-24",
-     "observed_share": 0.6667,
-     "on_time_share_of_observed": 0.95,
-     "deviation_s_median": 109.2
+     "observed_share": 0.6952,
+     "on_time_share_of_observed": 0.9452,
+     "deviation_s_median": 110.3
     },
     {
      "service_date": "2026-11-25",
-     "observed_share": 0.7583,
-     "on_time_share_of_observed": 0.8571,
-     "deviation_s_median": 125.3
+     "observed_share": 0.8095,
+     "on_time_share_of_observed": 0.8588,
+     "deviation_s_median": 131.4
     }
    ],
    "stops": [
-    {
-     "stop_id": "178270",
-     "name": "Church Creek",
-     "order": 1,
-     "scheduled": 76,
-     "observed": 30,
-     "on_time": 28,
-     "early": 0,
-     "late": 2,
-     "observed_share": 0.3947,
-     "on_time_share_of_observed": 0.9333,
-     "early_share_of_observed": 0.0,
-     "late_share_of_observed": 0.0667,
-     "deviation_s_median": 72.5,
-     "deviation_s_p25": 18.8,
-     "deviation_s_p75": 177.8,
-     "deviations_counted": 30
-    },
     {
      "stop_id": "178283",
      "name": "Rite-Aid Stanwood",
@@ -1158,61 +1140,61 @@
    "name": "411C",
    "short_name": "411C",
    "long_name": "Mount Vernon/ Camano Island",
-   "scheduled": 480,
-   "observed": 392,
-   "on_time": 348,
+   "scheduled": 442,
+   "observed": 356,
+   "on_time": 316,
    "early": 11,
-   "late": 33,
-   "observed_share": 0.8167,
-   "on_time_share_of_observed": 0.8878,
-   "early_share_of_observed": 0.0281,
-   "late_share_of_observed": 0.0842,
-   "deviation_s_median": 68.0,
-   "deviation_s_p25": 17.8,
-   "deviation_s_p75": 160.2,
-   "deviations_counted": 392,
+   "late": 29,
+   "observed_share": 0.8054,
+   "on_time_share_of_observed": 0.8876,
+   "early_share_of_observed": 0.0309,
+   "late_share_of_observed": 0.0815,
+   "deviation_s_median": 57.0,
+   "deviation_s_p25": 13.0,
+   "deviation_s_p75": 153.0,
+   "deviations_counted": 356,
    "daily": [
     {
      "service_date": "2026-11-19",
-     "observed_share": 0.8333,
-     "on_time_share_of_observed": 0.525,
-     "deviation_s_median": 165.1
+     "observed_share": 0.8182,
+     "on_time_share_of_observed": 0.5278,
+     "deviation_s_median": 149.9
     },
     {
      "service_date": "2026-11-20",
-     "observed_share": 0.7738,
-     "on_time_share_of_observed": 0.8923,
-     "deviation_s_median": 37.7
+     "observed_share": 0.7532,
+     "on_time_share_of_observed": 0.8793,
+     "deviation_s_median": 33.2
     },
     {
      "service_date": "2026-11-21",
-     "observed_share": 0.8889,
-     "on_time_share_of_observed": 0.925,
-     "deviation_s_median": 118.5
+     "observed_share": 0.881,
+     "on_time_share_of_observed": 0.9189,
+     "deviation_s_median": 104.4
     },
     {
      "service_date": "2026-11-22",
-     "observed_share": 0.9608,
-     "on_time_share_of_observed": 0.898,
-     "deviation_s_median": 128.2
+     "observed_share": 0.9583,
+     "on_time_share_of_observed": 0.913,
+     "deviation_s_median": 127.9
     },
     {
      "service_date": "2026-11-23",
-     "observed_share": 0.869,
-     "on_time_share_of_observed": 0.9041,
-     "deviation_s_median": 73.8
+     "observed_share": 0.8571,
+     "on_time_share_of_observed": 0.9091,
+     "deviation_s_median": 70.3
     },
     {
      "service_date": "2026-11-24",
-     "observed_share": 0.7143,
-     "on_time_share_of_observed": 0.9833,
-     "deviation_s_median": 67.0
+     "observed_share": 0.7013,
+     "on_time_share_of_observed": 0.9815,
+     "deviation_s_median": 60.2
     },
     {
      "service_date": "2026-11-25",
-     "observed_share": 0.7738,
-     "on_time_share_of_observed": 0.9692,
-     "deviation_s_median": 48.0
+     "observed_share": 0.7662,
+     "on_time_share_of_observed": 0.9661,
+     "deviation_s_median": 45.7
     }
    ],
    "stops": [
@@ -1292,19 +1274,19 @@
      "stop_id": "178160",
      "name": "Stanwood P&R II",
      "order": 7,
-     "scheduled": 64,
-     "observed": 59,
-     "on_time": 53,
+     "scheduled": 32,
+     "observed": 29,
+     "on_time": 26,
      "early": 0,
-     "late": 6,
-     "observed_share": 0.9219,
-     "on_time_share_of_observed": 0.8983,
+     "late": 3,
+     "observed_share": 0.9062,
+     "on_time_share_of_observed": 0.8966,
      "early_share_of_observed": 0.0,
-     "late_share_of_observed": 0.1017,
-     "deviation_s_median": 102.0,
-     "deviation_s_p25": 54.5,
-     "deviation_s_p75": 165.5,
-     "deviations_counted": 59
+     "late_share_of_observed": 0.1034,
+     "deviation_s_median": 74.0,
+     "deviation_s_p25": 40.0,
+     "deviation_s_p75": 152.0,
+     "deviations_counted": 29
     },
     {
      "stop_id": "178307",
@@ -1418,19 +1400,19 @@
      "stop_id": "178268",
      "name": "Bayview Garden on 272nd St at 78th",
      "order": 15,
-     "scheduled": 12,
-     "observed": 12,
-     "on_time": 11,
+     "scheduled": 6,
+     "observed": 6,
+     "on_time": 6,
      "early": 0,
-     "late": 1,
+     "late": 0,
      "observed_share": 1.0,
-     "on_time_share_of_observed": 0.9167,
+     "on_time_share_of_observed": 1.0,
      "early_share_of_observed": 0.0,
-     "late_share_of_observed": 0.0833,
-     "deviation_s_median": 174.0,
-     "deviation_s_p25": 108.0,
-     "deviation_s_p75": 260.8,
-     "deviations_counted": 12
+     "late_share_of_observed": 0.0,
+     "deviation_s_median": 98.0,
+     "deviation_s_p25": 59.2,
+     "deviation_s_p75": 152.5,
+     "deviations_counted": 6
     },
     {
      "stop_id": "178136",
@@ -1670,61 +1652,61 @@
    "name": "6",
    "short_name": "6",
    "long_name": "Oak Harbor/ Coupeville Ferry",
-   "scheduled": 977,
-   "observed": 780,
-   "on_time": 631,
-   "early": 6,
-   "late": 143,
-   "observed_share": 0.7984,
-   "on_time_share_of_observed": 0.809,
-   "early_share_of_observed": 0.0077,
-   "late_share_of_observed": 0.1833,
-   "deviation_s_median": 150.5,
-   "deviation_s_p25": 58.8,
-   "deviation_s_p75": 263.0,
-   "deviations_counted": 780,
+   "scheduled": 1033,
+   "observed": 836,
+   "on_time": 674,
+   "early": 9,
+   "late": 153,
+   "observed_share": 0.8093,
+   "on_time_share_of_observed": 0.8062,
+   "early_share_of_observed": 0.0108,
+   "late_share_of_observed": 0.183,
+   "deviation_s_median": 149.0,
+   "deviation_s_p25": 56.5,
+   "deviation_s_p75": 261.2,
+   "deviations_counted": 836,
    "daily": [
     {
      "service_date": "2026-11-19",
-     "observed_share": 0.7952,
-     "on_time_share_of_observed": 0.5909,
+     "observed_share": 0.8046,
+     "on_time_share_of_observed": 0.5857,
      "deviation_s_median": 230.2
     },
     {
      "service_date": "2026-11-20",
-     "observed_share": 0.816,
-     "on_time_share_of_observed": 0.8571,
-     "deviation_s_median": 135.4
+     "observed_share": 0.8256,
+     "on_time_share_of_observed": 0.8662,
+     "deviation_s_median": 131.2
     },
     {
      "service_date": "2026-11-21",
-     "observed_share": 0.8017,
-     "on_time_share_of_observed": 0.8144,
-     "deviation_s_median": 138.0
+     "observed_share": 0.814,
+     "on_time_share_of_observed": 0.7905,
+     "deviation_s_median": 133.0
     },
     {
      "service_date": "2026-11-22",
-     "observed_share": 0.7686,
-     "on_time_share_of_observed": 0.8817,
-     "deviation_s_median": 131.6
+     "observed_share": 0.7829,
+     "on_time_share_of_observed": 0.8812,
+     "deviation_s_median": 111.5
     },
     {
      "service_date": "2026-11-23",
-     "observed_share": 0.7607,
-     "on_time_share_of_observed": 0.9677,
-     "deviation_s_median": 100.7
+     "observed_share": 0.7733,
+     "on_time_share_of_observed": 0.9624,
+     "deviation_s_median": 98.0
     },
     {
      "service_date": "2026-11-24",
-     "observed_share": 0.816,
-     "on_time_share_of_observed": 0.7368,
-     "deviation_s_median": 174.9
+     "observed_share": 0.8256,
+     "on_time_share_of_observed": 0.7394,
+     "deviation_s_median": 174.2
     },
     {
      "service_date": "2026-11-25",
-     "observed_share": 0.8221,
-     "on_time_share_of_observed": 0.7388,
-     "deviation_s_median": 200.4
+     "observed_share": 0.8314,
+     "on_time_share_of_observed": 0.7343,
+     "deviation_s_median": 207.7
     }
    ],
    "stops": [
@@ -1907,6 +1889,24 @@
      "deviation_s_p25": 206.0,
      "deviation_s_p75": 338.8,
      "deviations_counted": 64
+    },
+    {
+     "stop_id": "178140",
+     "name": "Libbey Rd at SR 20",
+     "order": 23,
+     "scheduled": 56,
+     "observed": 56,
+     "on_time": 43,
+     "early": 3,
+     "late": 10,
+     "observed_share": 1.0,
+     "on_time_share_of_observed": 0.7679,
+     "early_share_of_observed": 0.0536,
+     "late_share_of_observed": 0.1786,
+     "deviation_s_median": 89.5,
+     "deviation_s_p25": 27.8,
+     "deviation_s_p75": 206.5,
+     "deviations_counted": 56
     },
     {
      "stop_id": "178399",
@@ -2468,61 +2468,61 @@
    "name": "60",
    "short_name": "60",
    "long_name": "Freeland - Langley - Clinton",
-   "scheduled": 1738,
-   "observed": 1355,
-   "on_time": 729,
-   "early": 11,
-   "late": 615,
-   "observed_share": 0.7796,
-   "on_time_share_of_observed": 0.538,
+   "scheduled": 2333,
+   "observed": 1860,
+   "on_time": 1113,
+   "early": 15,
+   "late": 732,
+   "observed_share": 0.7973,
+   "on_time_share_of_observed": 0.5984,
    "early_share_of_observed": 0.0081,
-   "late_share_of_observed": 0.4539,
-   "deviation_s_median": 274.0,
-   "deviation_s_p25": 137.0,
-   "deviation_s_p75": 457.5,
-   "deviations_counted": 1355,
+   "late_share_of_observed": 0.3935,
+   "deviation_s_median": 240.5,
+   "deviation_s_p25": 96.0,
+   "deviation_s_p75": 420.0,
+   "deviations_counted": 1860,
    "daily": [
     {
      "service_date": "2026-11-19",
-     "observed_share": 0.8116,
-     "on_time_share_of_observed": 0.2589,
-     "deviation_s_median": 445.6
+     "observed_share": 0.836,
+     "on_time_share_of_observed": 0.3608,
+     "deviation_s_median": 409.9
     },
     {
      "service_date": "2026-11-20",
-     "observed_share": 0.7412,
-     "on_time_share_of_observed": 0.369,
-     "deviation_s_median": 369.4
+     "observed_share": 0.7741,
+     "on_time_share_of_observed": 0.4476,
+     "deviation_s_median": 318.4
     },
     {
      "service_date": "2026-11-21",
-     "observed_share": 0.8417,
-     "on_time_share_of_observed": 0.7426,
-     "deviation_s_median": 185.1
+     "observed_share": 0.85,
+     "on_time_share_of_observed": 0.75,
+     "deviation_s_median": 184.7
     },
     {
      "service_date": "2026-11-22",
-     "observed_share": 0.8083,
-     "on_time_share_of_observed": 0.7938,
-     "deviation_s_median": 191.8
+     "observed_share": 0.7937,
+     "on_time_share_of_observed": 0.7953,
+     "deviation_s_median": 188.2
     },
     {
      "service_date": "2026-11-23",
-     "observed_share": 0.7912,
-     "on_time_share_of_observed": 0.6059,
-     "deviation_s_median": 261.8
+     "observed_share": 0.8136,
+     "on_time_share_of_observed": 0.6739,
+     "deviation_s_median": 190.0
     },
     {
      "service_date": "2026-11-24",
-     "observed_share": 0.7647,
-     "on_time_share_of_observed": 0.5231,
-     "deviation_s_median": 283.5
+     "observed_share": 0.7895,
+     "on_time_share_of_observed": 0.5833,
+     "deviation_s_median": 243.7
     },
     {
      "service_date": "2026-11-25",
-     "observed_share": 0.7765,
-     "on_time_share_of_observed": 0.5909,
-     "deviation_s_median": 259.9
+     "observed_share": 0.7785,
+     "on_time_share_of_observed": 0.662,
+     "deviation_s_median": 207.9
     }
    ],
    "stops": [
@@ -2545,6 +2545,24 @@
      "deviations_counted": 96
     },
     {
+     "stop_id": "197274",
+     "name": "Clinton Park & Ride at Deer Lake Rd",
+     "order": 2,
+     "scheduled": 148,
+     "observed": 138,
+     "on_time": 103,
+     "early": 2,
+     "late": 33,
+     "observed_share": 0.9324,
+     "on_time_share_of_observed": 0.7464,
+     "early_share_of_observed": 0.0145,
+     "late_share_of_observed": 0.2391,
+     "deviation_s_median": 110.5,
+     "deviation_s_p25": 69.2,
+     "deviation_s_p75": 293.2,
+     "deviations_counted": 138
+    },
+    {
      "stop_id": "178194",
      "name": "Bayview P&R",
      "order": 5,
@@ -2561,6 +2579,24 @@
      "deviation_s_p25": 233.0,
      "deviation_s_p75": 504.5,
      "deviations_counted": 139
+    },
+    {
+     "stop_id": "197275",
+     "name": "Langley Rd at Ken's Korner",
+     "order": 9,
+     "scheduled": 149,
+     "observed": 143,
+     "on_time": 114,
+     "early": 0,
+     "late": 29,
+     "observed_share": 0.9597,
+     "on_time_share_of_observed": 0.7972,
+     "early_share_of_observed": 0.0,
+     "late_share_of_observed": 0.2028,
+     "deviation_s_median": 106.0,
+     "deviation_s_p25": 30.5,
+     "deviation_s_p75": 267.5,
+     "deviations_counted": 143
     },
     {
      "stop_id": "178203",
@@ -2617,6 +2653,24 @@
      "deviations_counted": 282
     },
     {
+     "stop_id": "178385",
+     "name": "South Whidbey High School",
+     "order": 22,
+     "scheduled": 149,
+     "observed": 80,
+     "on_time": 59,
+     "early": 0,
+     "late": 21,
+     "observed_share": 0.5369,
+     "on_time_share_of_observed": 0.7375,
+     "early_share_of_observed": 0.0,
+     "late_share_of_observed": 0.2625,
+     "deviation_s_median": 156.5,
+     "deviation_s_p25": 66.5,
+     "deviation_s_p75": 300.2,
+     "deviations_counted": 80
+    },
+    {
      "stop_id": "197273",
      "name": "Langley Rd at Ken's Korner",
      "order": 23,
@@ -2651,6 +2705,24 @@
      "deviation_s_p25": 229.2,
      "deviation_s_p75": 585.0,
      "deviations_counted": 138
+    },
+    {
+     "stop_id": "178413",
+     "name": "Bayview P&R",
+     "order": 27,
+     "scheduled": 149,
+     "observed": 144,
+     "on_time": 108,
+     "early": 2,
+     "late": 34,
+     "observed_share": 0.9664,
+     "on_time_share_of_observed": 0.75,
+     "early_share_of_observed": 0.0139,
+     "late_share_of_observed": 0.2361,
+     "deviation_s_median": 154.0,
+     "deviation_s_p25": 68.2,
+     "deviation_s_p75": 283.8,
+     "deviations_counted": 144
     },
     {
      "stop_id": "178249",
@@ -3116,61 +3188,61 @@
    "name": "1",
    "short_name": "1",
    "long_name": "Clinton / Oak Harbor",
-   "scheduled": 2765,
-   "observed": 2462,
-   "on_time": 1944,
-   "early": 40,
-   "late": 478,
-   "observed_share": 0.8904,
-   "on_time_share_of_observed": 0.7896,
-   "early_share_of_observed": 0.0162,
-   "late_share_of_observed": 0.1942,
-   "deviation_s_median": 148.0,
-   "deviation_s_p25": 59.0,
-   "deviation_s_p75": 258.0,
-   "deviations_counted": 2462,
+   "scheduled": 3136,
+   "observed": 2831,
+   "on_time": 2263,
+   "early": 47,
+   "late": 521,
+   "observed_share": 0.9027,
+   "on_time_share_of_observed": 0.7994,
+   "early_share_of_observed": 0.0166,
+   "late_share_of_observed": 0.184,
+   "deviation_s_median": 139.0,
+   "deviation_s_p25": 61.0,
+   "deviation_s_p75": 250.0,
+   "deviations_counted": 2831,
    "daily": [
     {
      "service_date": "2026-11-19",
-     "observed_share": 0.9406,
-     "on_time_share_of_observed": 0.6893,
-     "deviation_s_median": 157.9
+     "observed_share": 0.9476,
+     "on_time_share_of_observed": 0.7021,
+     "deviation_s_median": 140.1
     },
     {
      "service_date": "2026-11-20",
-     "observed_share": 0.8935,
-     "on_time_share_of_observed": 0.8277,
-     "deviation_s_median": 140.6
+     "observed_share": 0.9062,
+     "on_time_share_of_observed": 0.8447,
+     "deviation_s_median": 130.7
     },
     {
      "service_date": "2026-11-21",
-     "observed_share": 0.8778,
-     "on_time_share_of_observed": 0.6649,
-     "deviation_s_median": 196.8
+     "observed_share": 0.892,
+     "on_time_share_of_observed": 0.6637,
+     "deviation_s_median": 196.0
     },
     {
      "service_date": "2026-11-22",
-     "observed_share": 0.8869,
-     "on_time_share_of_observed": 0.9082,
-     "deviation_s_median": 103.9
+     "observed_share": 0.9,
+     "on_time_share_of_observed": 0.9156,
+     "deviation_s_median": 104.1
     },
     {
      "service_date": "2026-11-23",
-     "observed_share": 0.8916,
-     "on_time_share_of_observed": 0.8337,
-     "deviation_s_median": 139.4
+     "observed_share": 0.9045,
+     "on_time_share_of_observed": 0.8444,
+     "deviation_s_median": 134.2
     },
     {
      "service_date": "2026-11-24",
-     "observed_share": 0.8688,
-     "on_time_share_of_observed": 0.7987,
-     "deviation_s_median": 156.3
+     "observed_share": 0.8827,
+     "on_time_share_of_observed": 0.8046,
+     "deviation_s_median": 147.0
     },
     {
      "service_date": "2026-11-25",
-     "observed_share": 0.8935,
-     "on_time_share_of_observed": 0.7447,
-     "deviation_s_median": 154.5
+     "observed_share": 0.9045,
+     "on_time_share_of_observed": 0.7537,
+     "deviation_s_median": 146.7
     }
    ],
    "stops": [
@@ -3191,6 +3263,24 @@
      "deviation_s_p25": 15.0,
      "deviation_s_p75": 128.0,
      "deviations_counted": 190
+    },
+    {
+     "stop_id": "197242",
+     "name": "Clinton Park & Ride at Deer Lake Rd",
+     "order": 2,
+     "scheduled": 157,
+     "observed": 156,
+     "on_time": 150,
+     "early": 3,
+     "late": 3,
+     "observed_share": 0.9936,
+     "on_time_share_of_observed": 0.9615,
+     "early_share_of_observed": 0.0192,
+     "late_share_of_observed": 0.0192,
+     "deviation_s_median": 97.5,
+     "deviation_s_p25": 72.0,
+     "deviation_s_p75": 125.5,
+     "deviations_counted": 156
     },
     {
      "stop_id": "197232",
@@ -3301,6 +3391,24 @@
      "deviations_counted": 104
     },
     {
+     "stop_id": "178422",
+     "name": "S Smugglers Cove Rd at S.W. State Park",
+     "order": 31,
+     "scheduled": 54,
+     "observed": 53,
+     "on_time": 40,
+     "early": 1,
+     "late": 12,
+     "observed_share": 0.9815,
+     "on_time_share_of_observed": 0.7547,
+     "early_share_of_observed": 0.0189,
+     "late_share_of_observed": 0.2264,
+     "deviation_s_median": 193.0,
+     "deviation_s_p25": 114.0,
+     "deviation_s_p75": 276.0,
+     "deviations_counted": 53
+    },
+    {
      "stop_id": "178384",
      "name": "SR 525 at Greenbank",
      "order": 36,
@@ -3371,6 +3479,24 @@
      "deviation_s_p25": -56.0,
      "deviation_s_p75": 76.0,
      "deviations_counted": 169
+    },
+    {
+     "stop_id": "197237",
+     "name": "Main St at Freeland",
+     "order": 42,
+     "scheduled": 160,
+     "observed": 160,
+     "on_time": 129,
+     "early": 3,
+     "late": 28,
+     "observed_share": 1.0,
+     "on_time_share_of_observed": 0.8063,
+     "early_share_of_observed": 0.0187,
+     "late_share_of_observed": 0.175,
+     "deviation_s_median": 117.0,
+     "deviation_s_p25": 53.5,
+     "deviation_s_p75": 221.0,
+     "deviations_counted": 160
     },
     {
      "stop_id": "178316",
@@ -3486,31 +3612,31 @@
    "name": "Naswi Wkend",
    "short_name": "",
    "long_name": "Naswi Wkend",
-   "scheduled": 160,
-   "observed": 109,
-   "on_time": 88,
-   "early": 11,
+   "scheduled": 140,
+   "observed": 92,
+   "on_time": 72,
+   "early": 10,
    "late": 10,
-   "observed_share": 0.6813,
-   "on_time_share_of_observed": 0.8073,
-   "early_share_of_observed": 0.1009,
-   "late_share_of_observed": 0.0917,
-   "deviation_s_median": 50.0,
-   "deviation_s_p25": 10.0,
-   "deviation_s_p75": 167.0,
-   "deviations_counted": 109,
+   "observed_share": 0.6571,
+   "on_time_share_of_observed": 0.7826,
+   "early_share_of_observed": 0.1087,
+   "late_share_of_observed": 0.1087,
+   "deviation_s_median": 65.0,
+   "deviation_s_p25": 5.0,
+   "deviation_s_p75": 180.0,
+   "deviations_counted": 92,
    "daily": [
     {
      "service_date": "2026-11-21",
-     "observed_share": 0.675,
-     "on_time_share_of_observed": 0.7963,
-     "deviation_s_median": 23.8
+     "observed_share": 0.6286,
+     "on_time_share_of_observed": 0.7727,
+     "deviation_s_median": 43.3
     },
     {
      "service_date": "2026-11-22",
-     "observed_share": 0.6875,
-     "on_time_share_of_observed": 0.8182,
-     "deviation_s_median": 65.2
+     "observed_share": 0.6857,
+     "on_time_share_of_observed": 0.7917,
+     "deviation_s_median": 74.1
     }
    ],
    "stops": [
@@ -3572,19 +3698,19 @@
      "stop_id": "218444",
      "name": "Seaplane Base NEX/ Commisary",
      "order": 8,
-     "scheduled": 40,
-     "observed": 17,
-     "on_time": 16,
-     "early": 1,
+     "scheduled": 20,
+     "observed": 0,
+     "on_time": 0,
+     "early": 0,
      "late": 0,
-     "observed_share": 0.425,
-     "on_time_share_of_observed": 0.9412,
-     "early_share_of_observed": 0.0588,
-     "late_share_of_observed": 0.0,
-     "deviation_s_median": 27.0,
-     "deviation_s_p25": 17.0,
-     "deviation_s_p75": 40.0,
-     "deviations_counted": 17
+     "observed_share": 0.0,
+     "on_time_share_of_observed": null,
+     "early_share_of_observed": null,
+     "late_share_of_observed": null,
+     "deviation_s_median": null,
+     "deviation_s_p25": null,
+     "deviation_s_p75": null,
+     "deviations_counted": 0
     },
     {
      "stop_id": "178398",

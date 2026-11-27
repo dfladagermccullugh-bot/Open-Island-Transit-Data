@@ -5,14 +5,14 @@
   "measured": "departure at timepoints; arrival at the last stop",
   "timepoints": "stops printed in Island Transit's timetables"
  },
- "scheduled": 2551,
- "observed": 2017,
- "observed_share": 0.7907,
- "on_time": 1381,
+ "scheduled": 2725,
+ "observed": 2175,
+ "observed_share": 0.7982,
+ "on_time": 1512,
  "early": 33,
- "late": 603,
- "on_time_share_of_observed": 0.6847,
- "deviation_s_median": 181.4,
+ "late": 630,
+ "on_time_share_of_observed": 0.6952,
+ "deviation_s_median": 175.0,
  "by_route": {
   "6737": {
    "scheduled": 144,
@@ -45,14 +45,14 @@
    "deviation_s_median": 132.0
   },
   "7913": {
-   "scheduled": 120,
-   "observed": 91,
-   "observed_share": 0.7583,
-   "on_time": 78,
+   "scheduled": 105,
+   "observed": 85,
+   "observed_share": 0.8095,
+   "on_time": 73,
    "early": 0,
-   "late": 13,
-   "on_time_share_of_observed": 0.8571,
-   "deviation_s_median": 125.3
+   "late": 12,
+   "on_time_share_of_observed": 0.8588,
+   "deviation_s_median": 131.4
   },
   "7914": {
    "scheduled": 160,
@@ -65,14 +65,14 @@
    "deviation_s_median": 204.1
   },
   "7915": {
-   "scheduled": 84,
-   "observed": 65,
-   "observed_share": 0.7738,
-   "on_time": 63,
+   "scheduled": 77,
+   "observed": 59,
+   "observed_share": 0.7662,
+   "on_time": 57,
    "early": 2,
    "late": 0,
-   "on_time_share_of_observed": 0.9692,
-   "deviation_s_median": 48.0
+   "on_time_share_of_observed": 0.9661,
+   "deviation_s_median": 45.7
   },
   "7916": {
    "scheduled": 60,
@@ -85,14 +85,14 @@
    "deviation_s_median": 312.4
   },
   "7918": {
-   "scheduled": 163,
-   "observed": 134,
-   "observed_share": 0.8221,
-   "on_time": 99,
+   "scheduled": 172,
+   "observed": 143,
+   "observed_share": 0.8314,
+   "on_time": 105,
    "early": 2,
-   "late": 33,
-   "on_time_share_of_observed": 0.7388,
-   "deviation_s_median": 200.4
+   "late": 36,
+   "on_time_share_of_observed": 0.7343,
+   "deviation_s_median": 207.7
   },
   "7919": {
    "scheduled": 169,
@@ -115,14 +115,14 @@
    "deviation_s_median": 214.3
   },
   "7922": {
-   "scheduled": 340,
-   "observed": 264,
-   "observed_share": 0.7765,
-   "on_time": 156,
+   "scheduled": 456,
+   "observed": 355,
+   "observed_share": 0.7785,
+   "on_time": 235,
    "early": 1,
-   "late": 107,
-   "on_time_share_of_observed": 0.5909,
-   "deviation_s_median": 259.9
+   "late": 119,
+   "on_time_share_of_observed": 0.662,
+   "deviation_s_median": 207.9
   },
   "7923": {
    "scheduled": 120,
@@ -135,14 +135,14 @@
    "deviation_s_median": 227.5
   },
   "9404": {
-   "scheduled": 526,
-   "observed": 470,
-   "observed_share": 0.8935,
-   "on_time": 350,
+   "scheduled": 597,
+   "observed": 540,
+   "observed_share": 0.9045,
+   "on_time": 407,
    "early": 5,
-   "late": 115,
-   "on_time_share_of_observed": 0.7447,
-   "deviation_s_median": 154.5
+   "late": 128,
+   "on_time_share_of_observed": 0.7537,
+   "deviation_s_median": 146.7
   },
   "9431": {
    "scheduled": 50,
@@ -177,164 +177,164 @@
    "deviation_s_median": 43.9
   },
   "4": {
-   "scheduled": 39,
-   "observed": 33,
-   "observed_share": 0.8462,
-   "on_time": 33,
+   "scheduled": 43,
+   "observed": 37,
+   "observed_share": 0.8605,
+   "on_time": 37,
    "early": 0,
    "late": 0,
    "on_time_share_of_observed": 1.0,
-   "deviation_s_median": 93.6
+   "deviation_s_median": 97.2
   },
   "5": {
-   "scheduled": 110,
-   "observed": 85,
-   "observed_share": 0.7727,
-   "on_time": 79,
+   "scheduled": 118,
+   "observed": 93,
+   "observed_share": 0.7881,
+   "on_time": 87,
    "early": 2,
    "late": 4,
-   "on_time_share_of_observed": 0.9294,
+   "on_time_share_of_observed": 0.9355,
    "deviation_s_median": 89.1
   },
   "6": {
-   "scheduled": 159,
-   "observed": 132,
-   "observed_share": 0.8302,
-   "on_time": 125,
+   "scheduled": 171,
+   "observed": 142,
+   "observed_share": 0.8304,
+   "on_time": 135,
    "early": 3,
    "late": 4,
-   "on_time_share_of_observed": 0.947,
-   "deviation_s_median": 57.9
+   "on_time_share_of_observed": 0.9507,
+   "deviation_s_median": 57.3
   },
   "7": {
-   "scheduled": 180,
-   "observed": 135,
-   "observed_share": 0.75,
-   "on_time": 117,
+   "scheduled": 192,
+   "observed": 146,
+   "observed_share": 0.7604,
+   "on_time": 128,
    "early": 3,
    "late": 15,
-   "on_time_share_of_observed": 0.8667,
-   "deviation_s_median": 101.7
+   "on_time_share_of_observed": 0.8767,
+   "deviation_s_median": 99.1
   },
   "8": {
-   "scheduled": 182,
-   "observed": 152,
-   "observed_share": 0.8352,
-   "on_time": 137,
+   "scheduled": 194,
+   "observed": 161,
+   "observed_share": 0.8299,
+   "on_time": 146,
    "early": 1,
    "late": 14,
-   "on_time_share_of_observed": 0.9013,
-   "deviation_s_median": 136.4
+   "on_time_share_of_observed": 0.9068,
+   "deviation_s_median": 133.9
   },
   "9": {
-   "scheduled": 162,
-   "observed": 121,
-   "observed_share": 0.7469,
-   "on_time": 105,
+   "scheduled": 175,
+   "observed": 132,
+   "observed_share": 0.7543,
+   "on_time": 114,
    "early": 1,
-   "late": 15,
-   "on_time_share_of_observed": 0.8678,
-   "deviation_s_median": 153.2
+   "late": 17,
+   "on_time_share_of_observed": 0.8636,
+   "deviation_s_median": 153.3
   },
   "10": {
-   "scheduled": 168,
-   "observed": 135,
-   "observed_share": 0.8036,
-   "on_time": 88,
+   "scheduled": 179,
+   "observed": 146,
+   "observed_share": 0.8156,
+   "on_time": 99,
    "early": 2,
    "late": 45,
-   "on_time_share_of_observed": 0.6519,
-   "deviation_s_median": 214.8
+   "on_time_share_of_observed": 0.6781,
+   "deviation_s_median": 205.7
   },
   "11": {
-   "scheduled": 170,
-   "observed": 140,
-   "observed_share": 0.8235,
-   "on_time": 89,
+   "scheduled": 182,
+   "observed": 151,
+   "observed_share": 0.8297,
+   "on_time": 99,
    "early": 4,
-   "late": 47,
-   "on_time_share_of_observed": 0.6357,
-   "deviation_s_median": 229.7
+   "late": 48,
+   "on_time_share_of_observed": 0.6556,
+   "deviation_s_median": 223.5
   },
   "12": {
-   "scheduled": 171,
-   "observed": 138,
-   "observed_share": 0.807,
-   "on_time": 83,
+   "scheduled": 183,
+   "observed": 150,
+   "observed_share": 0.8197,
+   "on_time": 94,
    "early": 1,
-   "late": 54,
-   "on_time_share_of_observed": 0.6014,
-   "deviation_s_median": 248.0
+   "late": 55,
+   "on_time_share_of_observed": 0.6267,
+   "deviation_s_median": 244.1
   },
   "13": {
-   "scheduled": 173,
-   "observed": 148,
-   "observed_share": 0.8555,
-   "on_time": 74,
+   "scheduled": 186,
+   "observed": 160,
+   "observed_share": 0.8602,
+   "on_time": 84,
    "early": 2,
-   "late": 72,
-   "on_time_share_of_observed": 0.5,
-   "deviation_s_median": 287.1
+   "late": 74,
+   "on_time_share_of_observed": 0.525,
+   "deviation_s_median": 262.0
   },
   "14": {
-   "scheduled": 178,
-   "observed": 146,
-   "observed_share": 0.8202,
-   "on_time": 87,
+   "scheduled": 188,
+   "observed": 155,
+   "observed_share": 0.8245,
+   "on_time": 91,
    "early": 4,
-   "late": 55,
-   "on_time_share_of_observed": 0.5959,
-   "deviation_s_median": 238.2
+   "late": 60,
+   "on_time_share_of_observed": 0.5871,
+   "deviation_s_median": 240.3
   },
   "15": {
-   "scheduled": 167,
-   "observed": 125,
-   "observed_share": 0.7485,
-   "on_time": 70,
+   "scheduled": 179,
+   "observed": 135,
+   "observed_share": 0.7542,
+   "on_time": 79,
    "early": 1,
-   "late": 54,
-   "on_time_share_of_observed": 0.56,
-   "deviation_s_median": 245.5
+   "late": 55,
+   "on_time_share_of_observed": 0.5852,
+   "deviation_s_median": 216.7
   },
   "16": {
-   "scheduled": 183,
-   "observed": 147,
-   "observed_share": 0.8033,
-   "on_time": 74,
+   "scheduled": 195,
+   "observed": 158,
+   "observed_share": 0.8103,
+   "on_time": 83,
    "early": 1,
-   "late": 72,
-   "on_time_share_of_observed": 0.5034,
-   "deviation_s_median": 290.3
+   "late": 74,
+   "on_time_share_of_observed": 0.5253,
+   "deviation_s_median": 275.4
   },
   "17": {
-   "scheduled": 187,
-   "observed": 145,
-   "observed_share": 0.7754,
-   "on_time": 67,
+   "scheduled": 199,
+   "observed": 156,
+   "observed_share": 0.7839,
+   "on_time": 74,
    "early": 3,
-   "late": 75,
-   "on_time_share_of_observed": 0.4621,
-   "deviation_s_median": 320.1
+   "late": 79,
+   "on_time_share_of_observed": 0.4744,
+   "deviation_s_median": 311.9
   },
   "18": {
-   "scheduled": 189,
-   "observed": 151,
-   "observed_share": 0.7989,
-   "on_time": 85,
+   "scheduled": 201,
+   "observed": 163,
+   "observed_share": 0.8109,
+   "on_time": 90,
    "early": 2,
-   "late": 64,
-   "on_time_share_of_observed": 0.5629,
-   "deviation_s_median": 278.7
+   "late": 71,
+   "on_time_share_of_observed": 0.5521,
+   "deviation_s_median": 286.4
   },
   "19": {
-   "scheduled": 111,
-   "observed": 78,
-   "observed_share": 0.7027,
-   "on_time": 62,
+   "scheduled": 118,
+   "observed": 84,
+   "observed_share": 0.7119,
+   "on_time": 66,
    "early": 3,
-   "late": 13,
-   "on_time_share_of_observed": 0.7949,
-   "deviation_s_median": 111.4
+   "late": 15,
+   "on_time_share_of_observed": 0.7857,
+   "deviation_s_median": 116.9
   },
   "20": {
    "scheduled": 16,
@@ -771,19 +771,6 @@
     "deviation_s_median": 215.9,
     "deviations_s": [18,29,57,85,99,120,141,291,302,305,327,386,389,560]
    },
-   "178270": {
-    "name": "Church Creek",
-    "stop_sequence_median": 1,
-    "scheduled": 15,
-    "observed": 6,
-    "observed_share": 0.4,
-    "on_time": 5,
-    "early": 0,
-    "late": 1,
-    "on_time_share_of_observed": 0.8333,
-    "deviation_s_median": 105.3,
-    "deviations_s": [42,53,94,117,202,342]
-   },
    "178271": {
     "name": "Haggen Grocery",
     "stop_sequence_median": 12,
@@ -947,15 +934,15 @@
    "178160": {
     "name": "Stanwood P&R II",
     "stop_sequence_median": 7,
-    "scheduled": 14,
-    "observed": 12,
+    "scheduled": 7,
+    "observed": 6,
     "observed_share": 0.8571,
-    "on_time": 12,
+    "on_time": 6,
     "early": 0,
     "late": 0,
     "on_time_share_of_observed": 1.0,
-    "deviation_s_median": 83.3,
-    "deviations_s": [19,30,54,55,67,75,91,93,106,110,146,191]
+    "deviation_s_median": 73.0,
+    "deviations_s": [19,54,55,91,93,110]
    },
    "178267": {
     "name": "Pioneer Hwy at North Star Cold Storage",
@@ -1168,6 +1155,19 @@
     "on_time_share_of_observed": null,
     "deviation_s_median": null,
     "deviations_s": []
+   },
+   "178140": {
+    "name": "Libbey Rd at SR 20",
+    "stop_sequence_median": 23,
+    "scheduled": 9,
+    "observed": 9,
+    "observed_share": 1.0,
+    "on_time": 6,
+    "early": 0,
+    "late": 3,
+    "on_time_share_of_observed": 0.6667,
+    "deviation_s_median": 244.3,
+    "deviations_s": [49,87,123,214,244,258,372,463,655]
    },
    "178311": {
     "name": "Fort Nugent/West Beach",
@@ -1656,6 +1656,19 @@
     "deviation_s_median": 150.6,
     "deviations_s": [-53,-17,5,21,24,31,66,67,71,111,122,131,140,161,162,179,201,212,232,245,260,263,264,272,402,762]
    },
+   "178385": {
+    "name": "South Whidbey High School",
+    "stop_sequence_median": 22,
+    "scheduled": 29,
+    "observed": 11,
+    "observed_share": 0.3793,
+    "on_time": 9,
+    "early": 0,
+    "late": 2,
+    "on_time_share_of_observed": 0.8182,
+    "deviation_s_median": 150.1,
+    "deviations_s": [50,52,67,89,96,150,157,195,208,300,352]
+   },
    "178388": {
     "name": "Anthes Ave at Third St",
     "stop_sequence_median": 16,
@@ -1695,6 +1708,19 @@
     "deviation_s_median": 49.8,
     "deviations_s": [-1197,-47,-27,-14,-12,9,14,17,31,36,50,53,120,157,184,190,274,279,479,649,951]
    },
+   "178413": {
+    "name": "Bayview P&R",
+    "stop_sequence_median": 27,
+    "scheduled": 29,
+    "observed": 29,
+    "observed_share": 1.0,
+    "on_time": 25,
+    "early": 0,
+    "late": 4,
+    "on_time_share_of_observed": 0.8621,
+    "deviation_s_median": 125.8,
+    "deviations_s": [-49,-11,35,39,45,53,57,60,63,100,101,110,116,125,126,135,139,151,171,193,195,199,225,244,283,315,351,414,680]
+   },
    "197273": {
     "name": "Langley Rd at Ken's Korner",
     "stop_sequence_median": 23,
@@ -1707,6 +1733,32 @@
     "on_time_share_of_observed": 0.5185,
     "deviation_s_median": 295.7,
     "deviations_s": [5,19,48,141,154,191,221,237,243,259,259,282,296,296,306,307,342,369,401,401,441,478,542,558,616,667,1094]
+   },
+   "197274": {
+    "name": "Clinton Park & Ride at Deer Lake Rd",
+    "stop_sequence_median": 2,
+    "scheduled": 29,
+    "observed": 25,
+    "observed_share": 0.8621,
+    "on_time": 21,
+    "early": 0,
+    "late": 4,
+    "on_time_share_of_observed": 0.84,
+    "deviation_s_median": 82.1,
+    "deviations_s": [20,40,45,47,49,53,64,65,65,67,68,71,82,83,90,96,98,134,199,246,256,345,358,397,698]
+   },
+   "197275": {
+    "name": "Langley Rd at Ken's Korner",
+    "stop_sequence_median": 9,
+    "scheduled": 29,
+    "observed": 26,
+    "observed_share": 0.8966,
+    "on_time": 24,
+    "early": 0,
+    "late": 2,
+    "on_time_share_of_observed": 0.9231,
+    "deviation_s_median": 101.7,
+    "deviations_s": [-13,0,4,7,9,9,25,30,33,34,35,48,95,108,109,122,123,131,145,173,182,200,290,295,329,668]
    }
   },
   "7923": {
@@ -2011,6 +2063,19 @@
     "deviation_s_median": 218.4,
     "deviations_s": [41,63,65,83,84,97,98,110,149,161,174,181,199,206,216,220,223,225,232,244,244,260,264,310,325,340,402,469,482,534]
    },
+   "178422": {
+    "name": "S Smugglers Cove Rd at S.W. State Park",
+    "stop_sequence_median": 31,
+    "scheduled": 10,
+    "observed": 10,
+    "observed_share": 1.0,
+    "on_time": 5,
+    "early": 0,
+    "late": 5,
+    "on_time_share_of_observed": 0.5,
+    "deviation_s_median": 261.7,
+    "deviations_s": [45,59,116,158,177,346,381,400,482,510]
+   },
    "178434": {
     "name": "Smugglers Cove Rd at SW State Park",
     "stop_sequence_median": 38,
@@ -2050,6 +2115,19 @@
     "deviation_s_median": 124.7,
     "deviations_s": [18,41,43,44,57,60,67,79,81,89,93,99,102,114,114,125,127,129,145,154,156,168,171,179,181,205,215,276,280,300,332]
    },
+   "197237": {
+    "name": "Main St at Freeland",
+    "stop_sequence_median": 42,
+    "scheduled": 31,
+    "observed": 31,
+    "observed_share": 1.0,
+    "on_time": 25,
+    "early": 0,
+    "late": 6,
+    "on_time_share_of_observed": 0.8065,
+    "deviation_s_median": 108.9,
+    "deviations_s": [-1,1,13,25,40,40,52,55,66,91,91,92,100,107,108,109,112,119,124,146,146,165,221,243,297,323,328,336,338,375,402]
+   },
    "197239": {
     "name": "SR 525 at Cultus Bay Rd",
     "stop_sequence_median": 55,
@@ -2062,6 +2140,19 @@
     "on_time_share_of_observed": 0.5806,
     "deviation_s_median": 250.0,
     "deviations_s": [18,74,74,108,117,133,135,139,148,153,165,165,165,198,204,250,282,283,312,321,323,340,385,409,455,472,513,535,543,598,626]
+   },
+   "197242": {
+    "name": "Clinton Park & Ride at Deer Lake Rd",
+    "stop_sequence_median": 2,
+    "scheduled": 30,
+    "observed": 29,
+    "observed_share": 0.9667,
+    "on_time": 27,
+    "early": 0,
+    "late": 2,
+    "on_time_share_of_observed": 0.931,
+    "deviation_s_median": 116.5,
+    "deviations_s": [16,36,52,58,61,86,87,88,97,111,113,114,115,115,117,119,131,132,137,139,148,152,178,213,219,230,268,366,436]
    },
    "197245": {
     "name": "SR 525 at Langley Rd",
@@ -2320,8 +2411,8 @@
  "service_expected": true,
  "no_service_day": null,
  "passio_version": "passio-9b1efa882037",
- "timepoints": "passio-9b1efa882037__timetable-2026-09-27-970aa207",
- "events_version": "events/0.3.1",
+ "timepoints": "passio-9b1efa882037__timetable-2026-09-27-d7e09c5d",
+ "events_version": "events/0.3.2",
  "routes": {
   "7920": {
    "short_name": "2",

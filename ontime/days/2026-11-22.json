@@ -5,14 +5,14 @@
   "measured": "departure at timepoints; arrival at the last stop",
   "timepoints": "stops printed in Island Transit's timetables"
  },
- "scheduled": 1219,
- "observed": 986,
- "observed_share": 0.8089,
- "on_time": 897,
+ "scheduled": 1278,
+ "observed": 1040,
+ "observed_share": 0.8138,
+ "on_time": 944,
  "early": 10,
- "late": 79,
- "on_time_share_of_observed": 0.9097,
- "deviation_s_median": 85.4,
+ "late": 86,
+ "on_time_share_of_observed": 0.9077,
+ "deviation_s_median": 87.9,
  "by_route": {
   "6737": {
    "scheduled": 81,
@@ -35,14 +35,14 @@
    "deviation_s_median": 54.6
   },
   "7913": {
-   "scheduled": 40,
-   "observed": 27,
-   "observed_share": 0.675,
-   "on_time": 26,
+   "scheduled": 35,
+   "observed": 24,
+   "observed_share": 0.6857,
+   "on_time": 23,
    "early": 1,
    "late": 0,
-   "on_time_share_of_observed": 0.963,
-   "deviation_s_median": 38.0
+   "on_time_share_of_observed": 0.9583,
+   "deviation_s_median": 43.3
   },
   "7914": {
    "scheduled": 70,
@@ -55,24 +55,24 @@
    "deviation_s_median": 183.7
   },
   "7915": {
-   "scheduled": 51,
-   "observed": 49,
-   "observed_share": 0.9608,
-   "on_time": 44,
+   "scheduled": 48,
+   "observed": 46,
+   "observed_share": 0.9583,
+   "on_time": 42,
    "early": 1,
-   "late": 4,
-   "on_time_share_of_observed": 0.898,
-   "deviation_s_median": 128.2
+   "late": 3,
+   "on_time_share_of_observed": 0.913,
+   "deviation_s_median": 127.9
   },
   "7918": {
-   "scheduled": 121,
-   "observed": 93,
-   "observed_share": 0.7686,
-   "on_time": 82,
+   "scheduled": 129,
+   "observed": 101,
+   "observed_share": 0.7829,
+   "on_time": 89,
    "early": 1,
-   "late": 10,
-   "on_time_share_of_observed": 0.8817,
-   "deviation_s_median": 131.6
+   "late": 11,
+   "on_time_share_of_observed": 0.8812,
+   "deviation_s_median": 111.5
   },
   "7920": {
    "scheduled": 130,
@@ -85,14 +85,14 @@
    "deviation_s_median": 66.5
   },
   "7922": {
-   "scheduled": 120,
-   "observed": 97,
-   "observed_share": 0.8083,
-   "on_time": 77,
+   "scheduled": 160,
+   "observed": 127,
+   "observed_share": 0.7937,
+   "on_time": 101,
    "early": 0,
-   "late": 20,
-   "on_time_share_of_observed": 0.7938,
-   "deviation_s_median": 191.8
+   "late": 26,
+   "on_time_share_of_observed": 0.7953,
+   "deviation_s_median": 188.2
   },
   "7924": {
    "scheduled": 55,
@@ -105,156 +105,156 @@
    "deviation_s_median": 141.4
   },
   "9404": {
-   "scheduled": 221,
-   "observed": 196,
-   "observed_share": 0.8869,
-   "on_time": 178,
+   "scheduled": 250,
+   "observed": 225,
+   "observed_share": 0.9,
+   "on_time": 206,
    "early": 1,
-   "late": 17,
-   "on_time_share_of_observed": 0.9082,
-   "deviation_s_median": 103.9
+   "late": 18,
+   "on_time_share_of_observed": 0.9156,
+   "deviation_s_median": 104.1
   },
   "9430": {
-   "scheduled": 80,
-   "observed": 55,
-   "observed_share": 0.6875,
-   "on_time": 45,
+   "scheduled": 70,
+   "observed": 48,
+   "observed_share": 0.6857,
+   "on_time": 38,
    "early": 4,
    "late": 6,
-   "on_time_share_of_observed": 0.8182,
-   "deviation_s_median": 65.2
+   "on_time_share_of_observed": 0.7917,
+   "deviation_s_median": 74.1
   }
  },
  "by_hour": {
   "6": {
-   "scheduled": 48,
-   "observed": 43,
-   "observed_share": 0.8958,
-   "on_time": 43,
+   "scheduled": 50,
+   "observed": 45,
+   "observed_share": 0.9,
+   "on_time": 45,
    "early": 0,
    "late": 0,
    "on_time_share_of_observed": 1.0,
    "deviation_s_median": 52.3
   },
   "7": {
-   "scheduled": 62,
-   "observed": 50,
-   "observed_share": 0.8065,
-   "on_time": 49,
+   "scheduled": 68,
+   "observed": 55,
+   "observed_share": 0.8088,
+   "on_time": 54,
    "early": 0,
    "late": 1,
-   "on_time_share_of_observed": 0.98,
-   "deviation_s_median": 39.2
+   "on_time_share_of_observed": 0.9818,
+   "deviation_s_median": 43.5
   },
   "8": {
-   "scheduled": 100,
-   "observed": 77,
-   "observed_share": 0.77,
-   "on_time": 75,
+   "scheduled": 106,
+   "observed": 82,
+   "observed_share": 0.7736,
+   "on_time": 80,
    "early": 0,
    "late": 2,
-   "on_time_share_of_observed": 0.974,
-   "deviation_s_median": 71.0
+   "on_time_share_of_observed": 0.9756,
+   "deviation_s_median": 69.4
   },
   "9": {
-   "scheduled": 112,
-   "observed": 90,
-   "observed_share": 0.8036,
-   "on_time": 88,
+   "scheduled": 117,
+   "observed": 94,
+   "observed_share": 0.8034,
+   "on_time": 92,
    "early": 1,
    "late": 1,
-   "on_time_share_of_observed": 0.9778,
+   "on_time_share_of_observed": 0.9787,
    "deviation_s_median": 75.4
   },
   "10": {
-   "scheduled": 91,
-   "observed": 76,
-   "observed_share": 0.8352,
-   "on_time": 73,
+   "scheduled": 95,
+   "observed": 79,
+   "observed_share": 0.8316,
+   "on_time": 76,
    "early": 0,
    "late": 3,
-   "on_time_share_of_observed": 0.9605,
-   "deviation_s_median": 77.9
+   "on_time_share_of_observed": 0.962,
+   "deviation_s_median": 78.2
   },
   "11": {
-   "scheduled": 113,
-   "observed": 85,
-   "observed_share": 0.7522,
-   "on_time": 83,
+   "scheduled": 115,
+   "observed": 88,
+   "observed_share": 0.7652,
+   "on_time": 86,
    "early": 1,
    "late": 1,
-   "on_time_share_of_observed": 0.9765,
-   "deviation_s_median": 93.0
+   "on_time_share_of_observed": 0.9773,
+   "deviation_s_median": 93.8
   },
   "12": {
-   "scheduled": 104,
-   "observed": 85,
-   "observed_share": 0.8173,
-   "on_time": 67,
+   "scheduled": 108,
+   "observed": 90,
+   "observed_share": 0.8333,
+   "on_time": 72,
    "early": 0,
    "late": 18,
-   "on_time_share_of_observed": 0.7882,
-   "deviation_s_median": 134.3
+   "on_time_share_of_observed": 0.8,
+   "deviation_s_median": 137.7
   },
   "13": {
-   "scheduled": 101,
-   "observed": 80,
-   "observed_share": 0.7921,
-   "on_time": 62,
+   "scheduled": 107,
+   "observed": 85,
+   "observed_share": 0.7944,
+   "on_time": 63,
    "early": 3,
-   "late": 15,
-   "on_time_share_of_observed": 0.775,
-   "deviation_s_median": 104.2
+   "late": 19,
+   "on_time_share_of_observed": 0.7412,
+   "deviation_s_median": 107.6
   },
   "14": {
-   "scheduled": 111,
-   "observed": 95,
-   "observed_share": 0.8559,
-   "on_time": 83,
+   "scheduled": 116,
+   "observed": 100,
+   "observed_share": 0.8621,
+   "on_time": 88,
    "early": 2,
    "late": 10,
-   "on_time_share_of_observed": 0.8737,
-   "deviation_s_median": 128.0
+   "on_time_share_of_observed": 0.88,
+   "deviation_s_median": 146.4
   },
   "15": {
-   "scheduled": 102,
-   "observed": 83,
-   "observed_share": 0.8137,
-   "on_time": 78,
+   "scheduled": 106,
+   "observed": 87,
+   "observed_share": 0.8208,
+   "on_time": 82,
    "early": 2,
    "late": 3,
-   "on_time_share_of_observed": 0.9398,
-   "deviation_s_median": 121.5
+   "on_time_share_of_observed": 0.9425,
+   "deviation_s_median": 121.6
   },
   "16": {
-   "scheduled": 115,
-   "observed": 93,
-   "observed_share": 0.8087,
-   "on_time": 82,
+   "scheduled": 122,
+   "observed": 99,
+   "observed_share": 0.8115,
+   "on_time": 88,
    "early": 0,
    "late": 11,
-   "on_time_share_of_observed": 0.8817,
+   "on_time_share_of_observed": 0.8889,
    "deviation_s_median": 122.3
   },
   "17": {
-   "scheduled": 88,
-   "observed": 68,
-   "observed_share": 0.7727,
-   "on_time": 59,
+   "scheduled": 89,
+   "observed": 69,
+   "observed_share": 0.7753,
+   "on_time": 60,
    "early": 1,
    "late": 8,
-   "on_time_share_of_observed": 0.8676,
-   "deviation_s_median": 70.7
+   "on_time_share_of_observed": 0.8696,
+   "deviation_s_median": 71.5
   },
   "18": {
-   "scheduled": 67,
-   "observed": 60,
-   "observed_share": 0.8955,
-   "on_time": 54,
+   "scheduled": 74,
+   "observed": 66,
+   "observed_share": 0.8919,
+   "on_time": 57,
    "early": 0,
-   "late": 6,
-   "on_time_share_of_observed": 0.9,
-   "deviation_s_median": 79.5
+   "late": 9,
+   "on_time_share_of_observed": 0.8636,
+   "deviation_s_median": 81.3
   },
   "19": {
    "scheduled": 5,
@@ -507,19 +507,6 @@
     "deviation_s_median": -18.2,
     "deviations_s": [-87,-45,9,52]
    },
-   "178270": {
-    "name": "Church Creek",
-    "stop_sequence_median": 1,
-    "scheduled": 5,
-    "observed": 3,
-    "observed_share": 0.6,
-    "on_time": 3,
-    "early": 0,
-    "late": 0,
-    "on_time_share_of_observed": 1.0,
-    "deviation_s_median": -7.9,
-    "deviations_s": [-56,-8,6]
-   },
    "178271": {
     "name": "Haggen Grocery",
     "stop_sequence_median": 12,
@@ -722,15 +709,15 @@
    "178268": {
     "name": "Bayview Garden on 272nd St at 78th",
     "stop_sequence_median": 15,
-    "scheduled": 6,
-    "observed": 6,
+    "scheduled": 3,
+    "observed": 3,
     "observed_share": 1.0,
-    "on_time": 5,
+    "on_time": 3,
     "early": 0,
-    "late": 1,
-    "on_time_share_of_observed": 0.8333,
-    "deviation_s_median": 213.7,
-    "deviations_s": [53,126,164,263,282,547]
+    "late": 0,
+    "on_time_share_of_observed": 1.0,
+    "deviation_s_median": 164.4,
+    "deviations_s": [53,164,263]
    },
    "178271": {
     "name": "Haggen Grocery",
@@ -863,6 +850,19 @@
     "on_time_share_of_observed": 0.0,
     "deviation_s_median": -115.1,
     "deviations_s": [-115]
+   },
+   "178140": {
+    "name": "Libbey Rd at SR 20",
+    "stop_sequence_median": 23,
+    "scheduled": 8,
+    "observed": 8,
+    "observed_share": 1.0,
+    "on_time": 7,
+    "early": 0,
+    "late": 1,
+    "on_time_share_of_observed": 0.875,
+    "deviation_s_median": 43.4,
+    "deviations_s": [-10,5,37,43,44,160,200,459]
    },
    "178311": {
     "name": "Fort Nugent/West Beach",
@@ -1206,6 +1206,19 @@
     "deviation_s_median": 125.2,
     "deviations_s": [-79,-11,-2,15,24,125,139,179,241,284,497]
    },
+   "178385": {
+    "name": "South Whidbey High School",
+    "stop_sequence_median": 22,
+    "scheduled": 10,
+    "observed": 2,
+    "observed_share": 0.2,
+    "on_time": 2,
+    "early": 0,
+    "late": 0,
+    "on_time_share_of_observed": 1.0,
+    "deviation_s_median": 146.5,
+    "deviations_s": [144,149]
+   },
    "178388": {
     "name": "Anthes Ave at Third St",
     "stop_sequence_median": 18,
@@ -1245,6 +1258,19 @@
     "deviation_s_median": 228.4,
     "deviations_s": [-54,19,209,248,252,296]
    },
+   "178413": {
+    "name": "Bayview P&R",
+    "stop_sequence_median": 27,
+    "scheduled": 10,
+    "observed": 10,
+    "observed_share": 1.0,
+    "on_time": 8,
+    "early": 0,
+    "late": 2,
+    "on_time_share_of_observed": 0.8,
+    "deviation_s_median": 126.1,
+    "deviations_s": [-41,-25,-23,118,123,129,156,249,348,494]
+   },
    "197273": {
     "name": "Langley Rd at Ken's Korner",
     "stop_sequence_median": 23,
@@ -1257,6 +1283,32 @@
     "on_time_share_of_observed": 0.8,
     "deviation_s_median": 164.0,
     "deviations_s": [7,44,47,71,124,204,250,268,314,322]
+   },
+   "197274": {
+    "name": "Clinton Park & Ride at Deer Lake Rd",
+    "stop_sequence_median": 2,
+    "scheduled": 10,
+    "observed": 8,
+    "observed_share": 0.8,
+    "on_time": 6,
+    "early": 0,
+    "late": 2,
+    "on_time_share_of_observed": 0.75,
+    "deviation_s_median": 274.5,
+    "deviations_s": [96,115,259,262,287,294,503,537]
+   },
+   "197275": {
+    "name": "Langley Rd at Ken's Korner",
+    "stop_sequence_median": 9,
+    "scheduled": 10,
+    "observed": 10,
+    "observed_share": 1.0,
+    "on_time": 8,
+    "early": 0,
+    "late": 2,
+    "on_time_share_of_observed": 0.8,
+    "deviation_s_median": 191.4,
+    "deviations_s": [20,28,44,156,188,195,220,238,466,505]
    }
   },
   "7924": {
@@ -1535,6 +1587,19 @@
     "deviation_s_median": 151.1,
     "deviations_s": [65,113,132,135,139,146,156,167,184,195,234,254]
    },
+   "178422": {
+    "name": "S Smugglers Cove Rd at S.W. State Park",
+    "stop_sequence_median": 31,
+    "scheduled": 5,
+    "observed": 5,
+    "observed_share": 1.0,
+    "on_time": 5,
+    "early": 0,
+    "late": 0,
+    "on_time_share_of_observed": 1.0,
+    "deviation_s_median": 220.0,
+    "deviations_s": [125,189,220,240,248]
+   },
    "178434": {
     "name": "Smugglers Cove Rd at SW State Park",
     "stop_sequence_median": 38,
@@ -1574,6 +1639,19 @@
     "deviation_s_median": 81.8,
     "deviations_s": [11,28,43,55,68,77,82,87,93,104,153,174,263]
    },
+   "197237": {
+    "name": "Main St at Freeland",
+    "stop_sequence_median": 42,
+    "scheduled": 12,
+    "observed": 12,
+    "observed_share": 1.0,
+    "on_time": 11,
+    "early": 0,
+    "late": 1,
+    "on_time_share_of_observed": 0.9167,
+    "deviation_s_median": 99.9,
+    "deviations_s": [-3,9,25,27,33,92,108,125,165,171,215,336]
+   },
    "197239": {
     "name": "SR 525 at Cultus Bay Rd",
     "stop_sequence_median": 55,
@@ -1586,6 +1664,19 @@
     "on_time_share_of_observed": 0.8333,
     "deviation_s_median": 194.4,
     "deviations_s": [23,70,89,150,165,190,199,242,269,271,306,445]
+   },
+   "197242": {
+    "name": "Clinton Park & Ride at Deer Lake Rd",
+    "stop_sequence_median": 2,
+    "scheduled": 12,
+    "observed": 12,
+    "observed_share": 1.0,
+    "on_time": 12,
+    "early": 0,
+    "late": 0,
+    "on_time_share_of_observed": 1.0,
+    "deviation_s_median": 81.8,
+    "deviations_s": [55,58,61,71,72,80,84,101,111,112,137,139]
    },
    "197245": {
     "name": "SR 525 at Langley Rd",
@@ -1657,15 +1748,15 @@
    "218444": {
     "name": "Seaplane Base NEX/ Commisary",
     "stop_sequence_median": 8,
-    "scheduled": 20,
-    "observed": 7,
-    "observed_share": 0.35,
-    "on_time": 7,
+    "scheduled": 10,
+    "observed": 0,
+    "observed_share": 0.0,
+    "on_time": 0,
     "early": 0,
     "late": 0,
-    "on_time_share_of_observed": 1.0,
-    "deviation_s_median": 44.6,
-    "deviations_s": [24,29,40,45,50,119,137]
+    "on_time_share_of_observed": null,
+    "deviation_s_median": null,
+    "deviations_s": []
    }
   }
  },
@@ -1673,8 +1764,8 @@
  "service_expected": true,
  "no_service_day": null,
  "passio_version": "passio-9b1efa882037",
- "timepoints": "passio-9b1efa882037__timetable-2026-09-27-970aa207",
- "events_version": "events/0.3.1",
+ "timepoints": "passio-9b1efa882037__timetable-2026-09-27-d7e09c5d",
+ "events_version": "events/0.3.2",
  "routes": {
   "7920": {
    "short_name": "2",
