@@ -65,7 +65,7 @@ jobs:
           git checkout -q FETCH_HEAD
           cd gtfs-realtime-validator-lib
           mvn -B -q package -DskipTests
-          cp target/gtfs-realtime-validator-lib-1.0.0-SNAPSHOT.jar "$GITHUB_WORKSPACE/gtfs-rt-validator.jar"
+          cp target/gtfs-realtime-validator-lib-1.0.0-SNAPSHOT-withAllDependencies.jar "$GITHUB_WORKSPACE/gtfs-rt-validator.jar"
       - name: Validate
         env:
           DUE: ${{ steps.due.outputs.realtime }}
@@ -73,5 +73,8 @@ jobs:
           args=(--data data-branch --static-jar gtfs-validator.jar --work "$RUNNER_TEMP/validator-work")
           if [ "$DUE" = "true" ]; then args+=(--rt-jar gtfs-rt-validator.jar); fi
           python -m pipeline.feed_validation "${args[@]}"
+      # A summary is written whole once its validator has finished, so what
+      # one validator found is kept even if the other fails.
       - name: Publish
+        if: ${{ !cancelled() }}
         run: scripts/publish_data.sh "Validators:"
