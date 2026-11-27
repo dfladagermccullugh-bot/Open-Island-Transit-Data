@@ -532,8 +532,13 @@ it treats canceled trips, its `published_share` and `published_period`,
 `sources` and `confidence`; `island_under_their_rule` (class R, our
 departures recounted under its window); `converted_to_our_window` (class B,
 its figure under our window: `low`, `high`, and how many of the
-`assumed_scales` could reproduce its figure); and `classes`, the ways it
-could be compared.
+`assumed_scales` could reproduce its figure); since `compare/0.2.0`,
+`our_method_on_their_feed` (class A, the latest sample of its live feed run
+through our method: `service_date`, `sample_start` and `sample_end`, the
+`timepoints` used, `trips_measured`, `moments_measured`, `on_time_share`,
+`on_time_interval_95` and the share `by_stop_radius_m`); and `classes`, the
+ways it could be compared. Each sample is also kept whole, as
+`compare/<agency_id>/<date>.json`.
 
 ## `validation/`
 

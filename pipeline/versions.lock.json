@@ -168,13 +168,13 @@
    "hash": "98dd9385232cf2080cea6654fedefc0a5f4e0785899bc1e939caf1d5507d4bde"
   },
   "compare": {
-   "version": "compare/0.1.0",
+   "version": "compare/0.2.0",
    "constant": "pipeline/compare.py::COMPARE_VERSION",
    "sources": [
     "pipeline/compare.py",
     "pipeline/stats.py"
    ],
-   "hash": "6953ebbd9226cb2e7fed44e7203d67e3ce81fef8257d68e29ff53cbee8b270f9"
+   "hash": "4c605863247249e53f436e0b7d0b7a8501cfb537e95fb4a42258420908df0c6e"
   },
   "feedcheck": {
    "version": "feedcheck/0.1.0",

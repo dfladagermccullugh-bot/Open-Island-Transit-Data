@@ -515,8 +515,23 @@ this way, and its figure is listed as published only.
 
 Neither way adjusts for what each agency times (a departure or an
 arrival), at which stops, how it treats a trip that never ran, or the
-period its figure covers. A third way, running our own method on a sample
-of each agency's live feed, is planned.
+period its figure covers.
+
+A third way does (marked A). Some agencies publish their buses' live
+locations openly, as Island Transit does. Once a week, at a busy hour in
+that part of the world, we read two hours of each such feed every 20
+seconds and run it through the same method we use here: the same stop
+radius of 40 meters (about 130 feet), the agency's own timepoints (or every
+stop if its schedule marks none) and our on-time rule. We report the share
+on time with a 95% range from resampling whole trips, and the same share
+with a stop radius of 30 and 50 meters (about 100 and 160 feet), to show
+how much the radius matters. We keep only that summary, not the agency's
+data. Two hours on one day is a small slice of a week of service, so it is
+a spot check. On November 27, 2026, four agencies had open feeds: Skagit
+Transit, Intercity Transit, BC Transit in Victoria and Halifax Transit.
 
 (Code and files: `pipeline/compare.py` writes `compare/summary.json`; the
-rules and figures, with sources, are in `reference/peers/definitions.csv`.)
+rules and figures, with sources, are in `reference/peers/definitions.csv`;
+the samples are taken by `pipeline/compare_sample.py`, run by
+`.github/workflows/compare.yml` from `reference/peers/feeds.csv`, and kept
+as `compare/<agency>/<date>.json`.)

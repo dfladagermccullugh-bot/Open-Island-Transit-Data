@@ -46,3 +46,30 @@ def test_the_summary_labels_each_peer_with_its_classes(tmp_path):
     classes = {p["agency"]: p["classes"] for p in out["peers"]}
     assert classes == {"Rule only": ["R"], "Rule and figure": ["R", "B"], "Headways": []}
     assert out["island_transit"]["departures"] > 0
+
+
+def test_a_peers_latest_live_sample_is_class_a(tmp_path):
+    data = tmp_path / "data-branch"
+    shutil.copytree(GOLDEN, data)
+    peers = tmp_path / "peers.csv"
+    peers.write_text(
+        "agency,region,country,window_early_min,window_late_min,measured_moment,measured_where,"
+        "cancellations,published_share,published_period,metric_note,source_urls,source_date,confidence\n"
+        "Sampled,Washington,US,,,,,,,,,https://example.org,2026,low\n"
+        "Not sampled,Washington,US,,,,,,,,,https://example.org,2026,low\n"
+    )
+    feeds = tmp_path / "feeds.csv"
+    feeds.write_text(
+        "agency_id,agency,region,rt_url,static_url,note\nsam,Sampled,North America,x,y,\n"
+    )
+    (data / "compare" / "sam").mkdir(parents=True)
+    for day, share in (("2026-11-17", 0.5), ("2026-11-24", 0.8), ("2026-12-01", None)):
+        (data / "compare" / "sam" / f"{day}.json").write_text(json.dumps(
+            {"service_date": day, "on_time_share": share, "on_time_interval_95": [0.7, 0.9],
+             "trips_measured": 30}))  # fmt: skip
+    out = compare.write(data, peers, feeds)
+    rows = {p["agency"]: p for p in out["peers"]}
+    assert rows["Sampled"]["classes"] == ["A"] and rows["Not sampled"]["classes"] == []
+    # The latest sample with a measured share; an empty one is passed over.
+    assert rows["Sampled"]["our_method_on_their_feed"]["service_date"] == "2026-11-24"
+    assert rows["Sampled"]["our_method_on_their_feed"]["on_time_share"] == 0.8

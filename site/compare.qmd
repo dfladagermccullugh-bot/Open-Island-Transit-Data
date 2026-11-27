@@ -35,6 +35,12 @@ run early and late in a pattern like ours, only wider or narrower, and try
 several such patterns. The result is a range, not a single number, and a
 wide range means the answer depends a lot on that assumption.
 
+A few agencies publish their own live bus locations, as Island Transit
+does. For those, we also run our own method on two hours of their buses
+once a week (marked A) and report the share on time under our rule, with a
+range that allows for chance. Two hours on one day is a small slice of
+their service, so treat it as a spot check.
+
 ::: {.slot-chart}
 ```{ojs}
 //| echo: false
@@ -82,6 +88,7 @@ guard(() => {
     ourUnderTheirs: p.island_under_their_rule ?? null,
     range: p.converted_to_our_window?.low == null ? null : `${pct(p.converted_to_our_window.low)} to ${pct(p.converted_to_our_window.high)}`,
     how: p.classes?.length ? p.classes.join(", ") : "published only",
+    sampled: p.our_method_on_their_feed ?? null,
   }));
   return html`${ch.table(rows, {
     caption: "Other bus systems' on-time rules and figures, and how they compare",
@@ -93,6 +100,8 @@ guard(() => {
       {key: "theirs", label: "Their figure", align: "right", format: (v, r) => v == null ? "–" : `${pct(v, 1)}${r.published_period ? ` (${r.published_period})` : ""}`},
       {key: "ourUnderTheirs", label: "Island Transit under their rule (R)", align: "right", format: v => v == null ? "–" : pct(v, 1)},
       {key: "range", label: "Theirs under our rule (B)", align: "right", sortValue: r => r.converted_to_our_window?.low ?? null},
+      {key: "sampled", label: "Their buses, our method (A)", align: "right", sortValue: r => r.sampled?.on_time_share ?? null,
+       format: v => v?.on_time_share == null ? "–" : `${pct(v.on_time_share)}${Array.isArray(v.on_time_interval_95) && v.on_time_interval_95.every(Number.isFinite) ? ` (${pct(v.on_time_interval_95[0])} to ${pct(v.on_time_interval_95[1])})` : ""}${v.service_date ? `, ${longDate(v.service_date)}` : ""}`},
       {key: "how", label: "Compared by"},
       {key: "confidence", label: "Source"},
     ],

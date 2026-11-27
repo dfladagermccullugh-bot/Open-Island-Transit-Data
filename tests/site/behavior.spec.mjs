@@ -518,3 +518,10 @@ test.describe("statistics", () => {
     expect(await fig.locator("svg circle").count()).toBe(20);
   });
 });
+
+test("a peer sampled with our own method shows its share and range (class A)", async ({page}) => {
+  await open(page, "compare");
+  const row = page.locator("tr", {hasText: "Halifax Transit"});
+  await expect(row).toContainText("77% (74% to 80%), November 24, 2026");
+  await expect(row).toContainText("R, B, A");
+});

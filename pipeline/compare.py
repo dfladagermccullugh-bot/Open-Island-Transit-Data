@@ -19,8 +19,12 @@ ways, each labeled:
   under its own rule; each assumption gives one converted share, and we
   report the lowest and highest. It is a range, never a single number.
 
-A third class, A (our own method on a sample of the peer's live feed), is
-planned (docs/plan-2026-11-27.md, Phase 4) and not built yet.
+- A, our method on their buses: since ``compare/0.2.0``, the latest
+  two-hour sample of the peer's live feed that ``pipeline/compare_sample.py``
+  ran through our own method (``compare/<agency_id>/<date>.json``, written
+  by the Compare workflow from ``reference/peers/feeds.csv``): the share on
+  time under our rule with its 95% interval. One sample of two hours is a
+  small slice of a week of service, and is labeled so.
 
 Writes ``compare/summary.json`` on the data branch. Standard library only.
 """
@@ -38,11 +42,23 @@ from typing import Any
 from pipeline.common import DayFiles
 from pipeline.stats import median, quantile, share
 
-COMPARE_VERSION = "compare/0.1.0"
+COMPARE_VERSION = "compare/0.2.0"  # 0.2.0: class A samples
 OUR_WINDOW = (1.0, 5.0)  # minutes early, minutes late
 WINDOW_DAYS = 28  # service days pooled for our deviations
 SCALES = (0.4, 0.5, 0.6, 0.8, 1.0, 1.25, 1.6)
 PEERS = Path(__file__).resolve().parents[1] / "reference" / "peers" / "definitions.csv"
+FEEDS = PEERS.with_name("feeds.csv")
+SAMPLE_KEYS = (
+    "service_date",
+    "sample_start",
+    "sample_end",
+    "timepoints",
+    "trips_measured",
+    "moments_measured",
+    "on_time_share",
+    "on_time_interval_95",
+    "by_stop_radius_m",
+)
 
 
 def our_deviations(data: Path) -> tuple[list[int], dict[str, Any]]:
@@ -132,8 +148,24 @@ def read_peers(path: Path) -> list[dict[str, str]]:
         return list(csv.DictReader(fh))
 
 
+def latest_samples(data: Path, feeds: list[dict[str, str]]) -> dict[str, dict[str, Any]]:
+    """Agency name -> its latest class A sample with a measured share."""
+    out = {}
+    for f in feeds:
+        folder = data / "compare" / f["agency_id"]
+        for path in sorted(folder.glob("*.json"), reverse=True) if folder.is_dir() else []:
+            s = json.loads(path.read_text(encoding="utf-8"))
+            if s.get("on_time_share") is not None:
+                out[f["agency"]] = {k: s.get(k) for k in SAMPLE_KEYS}
+                break
+    return out
+
+
 def summarize(
-    devs: list[int], about: dict[str, Any], peers: list[dict[str, str]]
+    devs: list[int],
+    about: dict[str, Any],
+    peers: list[dict[str, str]],
+    samples: dict[str, dict[str, Any]] | None = None,
 ) -> dict[str, Any]:
     ours = share_within(devs, *OUR_WINDOW)
     rows = []
@@ -163,6 +195,10 @@ def summarize(
                 row["converted_to_our_window"] = converted_range(devs, (early, late), published)
                 if row["converted_to_our_window"]["low"] is not None:
                     row["classes"].append("B")
+        sample = (samples or {}).get(p["agency"])
+        if sample is not None:
+            row["our_method_on_their_feed"] = sample
+            row["classes"].append("A")
         rows.append(row)
     return {
         "compare_version": COMPARE_VERSION,
@@ -182,11 +218,12 @@ def summarize(
     }
 
 
-def write(data: Path, peers_path: Path = PEERS) -> dict[str, Any] | None:
+def write(data: Path, peers_path: Path = PEERS, feeds_path: Path = FEEDS) -> dict[str, Any] | None:
     devs, about = our_deviations(data)
     if not devs:
         return None
-    out = summarize(devs, about, read_peers(peers_path))
+    samples = latest_samples(data, read_peers(feeds_path))
+    out = summarize(devs, about, read_peers(peers_path), samples)
     (data / "compare").mkdir(parents=True, exist_ok=True)
     (data / "compare" / "summary.json").write_text(
         json.dumps(out, indent=1) + "\n", encoding="utf-8"
