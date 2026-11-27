@@ -1,0 +1,34 @@
+{
+ "checked_at": "2026-11-27T07:16:29+00:00",
+ "date_for_validation": "2026-11-19",
+ "errors": 22,
+ "file": "static-2026-11-19-passio-1.zip",
+ "infos": 3,
+ "notices": [
+  {
+   "code": "stop_time_with_arrival_before_previous_departure_time",
+   "count": 22,
+   "severity": "ERROR"
+  },
+  {
+   "code": "stop_too_far_from_shape_using_user_distance",
+   "count": 14,
+   "severity": "WARNING"
+  },
+  {
+   "code": "stops_match_shape_out_of_order",
+   "count": 1,
+   "severity": "WARNING"
+  },
+  {
+   "code": "service_window_outside_feed_period",
+   "count": 3,
+   "severity": "INFO"
+  }
+ ],
+ "schedule_version": "passio-9b1efa882037",
+ "validation_version": "feedcheck/0.1.0",
+ "validator": "MobilityData gtfs-validator 8.0.1",
+ "validator_version": "8.0.1",
+ "warnings": 15
+}

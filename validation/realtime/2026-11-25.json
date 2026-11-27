@@ -1,0 +1,51 @@
+{
+ "checked_at": "2026-11-27T07:16:34+00:00",
+ "feeds": {
+  "tripUpdates": {
+   "responses": 180,
+   "rules": [
+    {
+     "code": "W009",
+     "occurrences": 10592,
+     "responses": 180,
+     "severity": "WARNING",
+     "title": "schedule_relationship not populated"
+    }
+   ]
+  },
+  "vehiclePositions": {
+   "responses": 180,
+   "rules": [
+    {
+     "code": "E029",
+     "occurrences": 169,
+     "responses": 118,
+     "severity": "ERROR",
+     "title": "Vehicle position far from trip shape"
+    },
+    {
+     "code": "W004",
+     "occurrences": 31,
+     "responses": 29,
+     "severity": "WARNING",
+     "title": "vehicle speed is unrealistic"
+    },
+    {
+     "code": "W009",
+     "occurrences": 3189,
+     "responses": 180,
+     "severity": "WARNING",
+     "title": "schedule_relationship not populated"
+    }
+   ]
+  }
+ },
+ "hour": {
+  "from": "2026-11-25T10:00:00-08:00",
+  "to": "2026-11-25T11:00:00-08:00"
+ },
+ "schedule_version": "passio-9b1efa882037",
+ "service_date": "2026-11-25",
+ "validation_version": "feedcheck/0.1.0",
+ "validator": "MobilityData gtfs-realtime-validator, commit 7041fa3f"
+}
