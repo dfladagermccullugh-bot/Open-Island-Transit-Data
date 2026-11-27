@@ -1,8 +1,10 @@
 {
  "notes_version": "notes/0.1.0",
  "latest_service_date": "2026-11-25",
- "status": "ok",
+ "status": "note",
  "problems": [],
  "looks": [],
- "notes": []
+ "notes": [
+  "2026-11-25: the realtime validator's errors in the live feed: E029 (169)"
+ ]
 }
