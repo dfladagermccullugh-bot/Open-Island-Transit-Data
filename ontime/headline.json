@@ -1,5 +1,5 @@
 {
- "periods_version": "periods/0.1.0",
+ "periods_version": "periods/0.2.0",
  "window_service_days": 28,
  "first_service_date": "2026-11-19",
  "last_service_date": "2026-11-25",
@@ -19,7 +19,14 @@
   "early_share_of_observed": 0.0184,
   "late_share_of_observed": 0.2431,
   "deviation_s_median": 154.0,
-  "deviations_counted": 12602
+  "deviations_counted": 12602,
+  "on_time_share_interval95": {
+   "low": 0.7223,
+   "high": 0.7544,
+   "trips": 1777,
+   "resamples": 2000,
+   "method": "bootstrap over trips"
+  }
  },
  "previous": null,
  "previous_needs_service_days": 14,
