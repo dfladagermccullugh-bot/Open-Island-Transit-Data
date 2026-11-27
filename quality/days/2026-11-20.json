@@ -1,7 +1,7 @@
 {
  "service_date": "2026-11-20",
- "quality_version": "quality/0.5.0",
- "computed_at": "2026-11-27T03:42:51+00:00",
+ "quality_version": "quality/0.6.0",
+ "computed_at": "2026-11-27T04:08:58+00:00",
  "scheduled_service": {
   "trips": 341,
   "trips_ended_before_collection": 0,
@@ -3135,7 +3135,17 @@
   "timestamps_in_future": 190,
   "timestamps_going_backwards": 0,
   "consecutive_report_pairs": 47865,
-  "impossible_jumps_over_130_kmh": 1
+  "impossible_jumps_over_130_kmh": 1,
+  "glitches": {
+   "glitch_version": "glitch/0.1.0",
+   "removed_reports": 0,
+   "spikes": 0,
+   "plateaus": 0,
+   "plateau_reports": 0,
+   "unresolved_jumps": 1,
+   "removed_near_another_bus": 0,
+   "vehicles_with_removed_reports": 0
+  }
  },
  "processing": {
   "id_match": {
@@ -3210,7 +3220,7 @@
   }
  },
  "events": {
-  "events_version": "events/0.3.2",
+  "events_version": "events/0.4.0",
   "stop_coverage": {
    "timepoints": {
     "scheduled": 2725,
@@ -3756,7 +3766,7 @@
   "raw_sha256": "fc0784b1fefbec2decb6c2e94f77c6c015abe0ab8de0a401549e625ed75616db",
   "vehicles_sha256": "abdd4c5dd24c02c8073961ece8eac5de33bb60abdc612abf3d1f453d884308f9",
   "tables_version": "tables/0.1.0",
-  "stop_events_sha256": "a06a9e4980bb5326bf093447bc99611cc021b691bbdf3dbbba84a52bd5c00028",
-  "code_sha": "cc3b3a4de18ad80a4f7fc9247c419aac7d1e13de"
+  "stop_events_sha256": "30822cf2badd788a500e4e6e5e65756e298198a610625373a2fe82fd1900d64b",
+  "code_sha": "1bdcc6c5da8c906787260f3ffb0992a1b1c71dee"
  }
 }

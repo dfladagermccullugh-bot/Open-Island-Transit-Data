@@ -1,7 +1,7 @@
 {
  "service_date": "2026-11-24",
- "quality_version": "quality/0.5.0",
- "computed_at": "2026-11-27T03:42:32+00:00",
+ "quality_version": "quality/0.6.0",
+ "computed_at": "2026-11-27T04:08:24+00:00",
  "scheduled_service": {
   "trips": 341,
   "trips_ended_before_collection": 0,
@@ -3129,7 +3129,17 @@
   "timestamps_in_future": 133,
   "timestamps_going_backwards": 18,
   "consecutive_report_pairs": 46177,
-  "impossible_jumps_over_130_kmh": 67
+  "impossible_jumps_over_130_kmh": 67,
+  "glitches": {
+   "glitch_version": "glitch/0.1.0",
+   "removed_reports": 22,
+   "spikes": 18,
+   "plateaus": 1,
+   "plateau_reports": 4,
+   "unresolved_jumps": 42,
+   "removed_near_another_bus": 0,
+   "vehicles_with_removed_reports": 12
+  }
  },
  "processing": {
   "id_match": {
@@ -3204,7 +3214,7 @@
   }
  },
  "events": {
-  "events_version": "events/0.3.2",
+  "events_version": "events/0.4.0",
   "stop_coverage": {
    "timepoints": {
     "scheduled": 2725,
@@ -3387,12 +3397,12 @@
    }
   },
   "shape_fit": {
-   "position_reports": 43738,
-   "tracked_reports": 42349,
-   "off_shape": 2132,
-   "off_shape_share": 0.050344,
+   "position_reports": 43716,
+   "tracked_reports": 42328,
+   "off_shape": 2116,
+   "off_shape_share": 0.049991,
    "wrong_direction": 174,
-   "wrong_direction_share": 0.004109,
+   "wrong_direction_share": 0.004111,
    "threshold_m": 100,
    "trips_skipping_part_of_shape": 66,
    "skipped_km": 634.1,
@@ -3442,12 +3452,12 @@
      "wrong_direction_share": 0.006691
     },
     "7914": {
-     "position_reports": 2272,
-     "tracked_reports": 2145,
-     "off_shape": 146,
-     "off_shape_share": 0.068065,
+     "position_reports": 2270,
+     "tracked_reports": 2143,
+     "off_shape": 144,
+     "off_shape_share": 0.067196,
      "wrong_direction": 10,
-     "wrong_direction_share": 0.004662
+     "wrong_direction_share": 0.004666
     },
     "7915": {
      "position_reports": 1438,
@@ -3458,28 +3468,28 @@
      "wrong_direction_share": 0.002089
     },
     "7916": {
-     "position_reports": 1781,
-     "tracked_reports": 1558,
-     "off_shape": 253,
-     "off_shape_share": 0.162388,
+     "position_reports": 1777,
+     "tracked_reports": 1554,
+     "off_shape": 252,
+     "off_shape_share": 0.162162,
      "wrong_direction": 9,
-     "wrong_direction_share": 0.005777
+     "wrong_direction_share": 0.005792
     },
     "7918": {
-     "position_reports": 2697,
-     "tracked_reports": 2697,
-     "off_shape": 26,
-     "off_shape_share": 0.00964,
+     "position_reports": 2696,
+     "tracked_reports": 2696,
+     "off_shape": 25,
+     "off_shape_share": 0.009273,
      "wrong_direction": 12,
-     "wrong_direction_share": 0.004449
+     "wrong_direction_share": 0.004451
     },
     "7919": {
-     "position_reports": 2634,
-     "tracked_reports": 2627,
-     "off_shape": 35,
-     "off_shape_share": 0.013323,
+     "position_reports": 2630,
+     "tracked_reports": 2624,
+     "off_shape": 32,
+     "off_shape_share": 0.012195,
      "wrong_direction": 3,
-     "wrong_direction_share": 0.001142
+     "wrong_direction_share": 0.001143
     },
     "7920": {
      "position_reports": 1190,
@@ -3490,12 +3500,12 @@
      "wrong_direction_share": 0.014395
     },
     "7922": {
-     "position_reports": 6125,
-     "tracked_reports": 6049,
+     "position_reports": 6124,
+     "tracked_reports": 6048,
      "off_shape": 360,
-     "off_shape_share": 0.059514,
+     "off_shape_share": 0.059524,
      "wrong_direction": 28,
-     "wrong_direction_share": 0.004629
+     "wrong_direction_share": 0.00463
     },
     "7923": {
      "position_reports": 988,
@@ -3506,12 +3516,12 @@
      "wrong_direction_share": 0.01
     },
     "9404": {
-     "position_reports": 14905,
-     "tracked_reports": 14745,
-     "off_shape": 575,
-     "off_shape_share": 0.038996,
+     "position_reports": 14895,
+     "tracked_reports": 14735,
+     "off_shape": 566,
+     "off_shape_share": 0.038412,
      "wrong_direction": 50,
-     "wrong_direction_share": 0.003391
+     "wrong_direction_share": 0.003393
     },
     "9431": {
      "position_reports": 965,
@@ -3558,10 +3568,10 @@
      "other_day": 111,
      "other_day_share": 0.019639,
      "bias_s": 412.6,
-     "median_s": -5.9,
+     "median_s": -5.8,
      "mae_s": 473.6,
      "median_abs_s": 75.3,
-     "within_60s_share": 0.414185,
+     "within_60s_share": 0.414366,
      "over_30min": 86,
      "over_30min_share": 0.015521
     },
@@ -3751,7 +3761,7 @@
   "raw_sha256": "bb0b7db85e3b39b36ec4f8b7e9e84c14d0406889b8b29d3e4d3de3ea6e4cf383",
   "vehicles_sha256": "a3f54ab6eb39ed871142082b15d235e14309dea07c71b3eb587d7772646064d9",
   "tables_version": "tables/0.1.0",
-  "stop_events_sha256": "a14fbc58615529084151b5f229ed12553412498c4d14f6b5e822e1d321f52003",
-  "code_sha": "cc3b3a4de18ad80a4f7fc9247c419aac7d1e13de"
+  "stop_events_sha256": "7ae85dd58af29e81eba78224c840f02a571f1f4974865cf761e9b7c5cbbd5755",
+  "code_sha": "1bdcc6c5da8c906787260f3ffb0992a1b1c71dee"
  }
 }
