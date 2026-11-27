@@ -33,6 +33,14 @@ jobs:
       # A change to the code behind a stage's numbers needs a new version.
       - run: python scripts/check_versions.py
       - run: pytest -q
+      # The published tables against the data dictionary, with Frictionless
+      # (the Open Knowledge Foundation's validator), on the made-up archive.
+      - name: Validate the tables against datapackage.json
+        run: |
+          pip install frictionless==5.21.0
+          cp -r tests/golden/data-branch "$RUNNER_TEMP/dp"
+          cp datapackage.json "$RUNNER_TEMP/dp/"
+          cd "$RUNNER_TEMP/dp" && frictionless validate datapackage.json
       # The shell scripts and the workflow files are code too.
       - run: shellcheck scripts/*.sh
       - name: Check the workflow files

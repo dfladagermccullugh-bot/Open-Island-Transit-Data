@@ -29,6 +29,17 @@ jobs:
           python-version: "3.13"
       # The watchdog only needs requests; the full install took most of each run.
       - run: pip install requests -c constraints.txt
+      - name: Tell the outside monitor the run started
+        run: scripts/ping.sh start
+        env:
+          HC_PING_URL: ${{ secrets.HC_PING_URL }}
+      # The published figures, read from the data branch itself, for the
+      # tiered data checks (scripts/anomaly.py).
+      - name: Get the data branch
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          ref: data
+          path: data-branch
       - name: Start the nightly job if yesterday is still unprocessed
         continue-on-error: true
         run: python scripts/catch_up.py
@@ -60,19 +71,20 @@ jobs:
           if [ -n "$number" ]; then
             gh issue close "$number" --comment "Collector is healthy again. $(cat report.txt)"
           fi
-      # The published figures, in an issue of their own: a finding there
-      # lasts until the next service day is processed, and must neither fail
-      # every run in between nor hold back "Collector is healthy again".
-      # Exit code 2 (figures unreadable) leaves the issue as it is.
+      # The published figures, in an issue of their own (scripts/anomaly.py):
+      # exit 4 is a problem and fails the run; 1 is something to look at
+      # (a comment, no failure); 3 is notes only and 0 nothing (the issue is
+      # closed); 2 means the figures could not be read and leaves the issue
+      # as it is.
       - name: Check the published figures
         id: data
         if: always()
         run: |
           set +e
-          python scripts/watchdog.py --data | tee data-report.txt
+          python scripts/watchdog.py --data --data-dir data-branch | tee data-report.txt
           echo "code=${PIPESTATUS[0]}" >> "$GITHUB_OUTPUT"
       - name: Open or update the data issue while there is something to look at
-        if: always() && steps.data.outputs.code == '1'
+        if: always() && (steps.data.outputs.code == '1' || steps.data.outputs.code == '4')
         continue-on-error: true
         run: |
           number=$(gh issue list --state open --search "in:title \"$DATA_TITLE\"" --json number --jq '.[0].number')
@@ -85,13 +97,23 @@ jobs:
             fi
           fi
       - name: Close the data issue once the figures raise nothing
-        if: always() && steps.data.outputs.code == '0'
+        if: always() && (steps.data.outputs.code == '0' || steps.data.outputs.code == '3')
         continue-on-error: true
         run: |
           number=$(gh issue list --state open --search "in:title \"$DATA_TITLE\"" --json number --jq '.[0].number')
           if [ -n "$number" ]; then
             gh issue close "$number" --comment "Nothing to report any more. $(cat data-report.txt)"
           fi
+      - name: Tell the outside monitor how the run ended
+        if: always()
+        run: |
+          if [ "${{ steps.check.outputs.code }}" = "0" ] && [ "${{ steps.data.outputs.code }}" != "4" ]; then
+            scripts/ping.sh success
+          else
+            scripts/ping.sh fail
+          fi
+        env:
+          HC_PING_URL: ${{ secrets.HC_PING_URL }}
       - name: Fail the run so GitHub sends a notification
-        if: steps.check.outputs.code != '0'
+        if: always() && (steps.check.outputs.code != '0' || steps.data.outputs.code == '4')
         run: exit 1

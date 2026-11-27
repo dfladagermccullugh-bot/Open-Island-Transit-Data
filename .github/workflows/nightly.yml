@@ -27,6 +27,10 @@ on:
 permissions:
   contents: write
   actions: write
+  # Signed provenance for the files uploaded to Releases (free for public
+  # repositories): anyone can check a file was built by this workflow.
+  id-token: write
+  attestations: write
 
 concurrency:
   group: nightly-archive
@@ -48,6 +52,10 @@ jobs:
             pyproject.toml
             constraints.txt
       - run: pip install -e . -c constraints.txt
+      - name: Tell the outside monitor the run started
+        run: scripts/ping.sh start
+        env:
+          HC_PING_URL: ${{ secrets.HC_PING_URL }}
 
       - name: Get the data branch (create it on the first run)
         run: |
@@ -144,6 +152,20 @@ jobs:
         if: always()
         run: scripts/publish_data.sh "After quality:"
 
+      # The tiered data checks (scripts/anomaly.py), written for the site
+      # as quality/notes.json. A finding here does not fail the nightly
+      # job; the watchdog reports it.
+      - name: Note what the latest day's figures need
+        if: always()
+        timeout-minutes: 3
+        run: |
+          set +e
+          python scripts/anomaly.py --data data-branch --write-notes
+          echo "exit $?"
+      - name: Publish after notes
+        if: always()
+        run: scripts/publish_data.sh "After notes:"
+
       - name: Monthly reports and release checksums for closed months
         id: monthly
         if: always()
@@ -184,9 +206,35 @@ jobs:
           python -m pipeline.invariants --data data-branch --work work/events
           echo "code=$?" >> "$GITHUB_OUTPUT"
 
+      - name: Validate the published tables against datapackage.json
+        id: frictionless
+        if: always()
+        timeout-minutes: 5
+        run: |
+          set +e
+          pip install -q frictionless==5.21.0 && (cd data-branch && frictionless validate datapackage.json)
+          echo "code=$?" >> "$GITHUB_OUTPUT"
+
+      - name: Attest the Release files this run built or read
+        if: always() && hashFiles('work/files/*', 'work/tables/*', 'work/events/*') != ''
+        continue-on-error: true
+        uses: actions/attest-build-provenance@4d101475d8b20a2381f78447822ac1eab6504dd8 # v4.2.2
+        with:
+          subject-path: |
+            work/files/*
+            work/tables/*
+            work/events/*
+
       - name: Redeploy the site with the new data
-        if: always() && env.DATA_CHANGED == '1' && steps.gate.outputs.code == '0'
+        if: always() && env.DATA_CHANGED == '1' && steps.gate.outputs.code == '0' && steps.frictionless.outputs.code == '0'
         run: gh workflow run pages.yml --repo "$GITHUB_REPOSITORY" --ref main
+
+      - name: Tell the outside monitor how the run ended
+        if: always()
+        run: |
+          if [ "${{ steps.gate.outputs.code }}" = "0" ]; then scripts/ping.sh success; else scripts/ping.sh fail; fi
+        env:
+          HC_PING_URL: ${{ secrets.HC_PING_URL }}
 
       # A stage that timed out wrote no exit code, so anything but 0 fails.
       - name: Fail if any step above failed
@@ -196,5 +244,6 @@ jobs:
           steps.static.outputs.code != '0' || steps.events.outputs.code != '0' ||
           steps.field.outputs.code != '0' ||
           steps.quality.outputs.code != '0' || steps.monthly.outputs.code != '0' ||
-          steps.index.outputs.code != '0' || steps.gate.outputs.code != '0')
+          steps.index.outputs.code != '0' || steps.gate.outputs.code != '0' ||
+          steps.frictionless.outputs.code != '0')
         run: exit 1

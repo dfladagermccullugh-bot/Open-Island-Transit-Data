@@ -26,6 +26,12 @@ cannot be trusted or that something needs a person's attention:
     holidays about to run out
 It exits 1 with the list, 0 if there is nothing to say, and 2 if the figures
 could not be read (then the workflow leaves its issue as it is).
+
+With ``--data --data-dir <data branch checkout>`` (how the workflow runs it
+since November 27, 2026) it runs the tiered checks of ``scripts/anomaly.py``
+instead, adding the dispatch token's expiry and the state of the scheduled
+workflows: exit 4 for a problem (the run fails), 1 for something to look
+at, 3 for notes only, 0 for nothing, 2 if the figures could not be read.
 """
 
 from __future__ import annotations
@@ -38,6 +44,7 @@ from pathlib import Path
 from typing import Any
 
 sys.path.insert(0, str(Path(__file__).resolve().parent.parent))
+sys.path.insert(0, str(Path(__file__).resolve().parent))
 
 import requests
 
@@ -279,6 +286,50 @@ def problems(collector: Collector, now: datetime, processed: set[str] | None = N
     return out
 
 
+def token_expiry(collector: Collector | None = None) -> datetime | None:
+    """When the dispatch token expires, as the collector last saw it
+    (``status_now.dispatch_token_expires_at``, migration 0007), or None."""
+    try:
+        for row in (collector or Collector()).status():
+            value = row.get("dispatch_token_expires_at")
+            if value:
+                return _when(value)
+    except Exception:  # unreadable status is reported by the collector check
+        return None
+    return None
+
+
+def workflow_states(repo: str = REPO) -> dict[str, str]:
+    """Workflow file -> state on GitHub, or nothing if gh cannot say."""
+    import json
+    import subprocess
+
+    try:
+        done = subprocess.run(
+            ["gh", "api", f"repos/{repo}/actions/workflows", "--jq", ".workflows"],
+            capture_output=True, text=True, timeout=60,
+        )  # fmt: skip
+        if done.returncode != 0:
+            return {}
+        return {w["path"].rsplit("/", 1)[-1]: w["state"] for w in json.loads(done.stdout)}
+    except (OSError, ValueError, subprocess.SubprocessError):
+        return {}
+
+
+def data_dir_main(now: datetime, data: Path) -> int:
+    """The tiered checks of ``scripts/anomaly.py`` on a data branch checkout.
+    Exit 4: a problem; 1: something to look at; 3: notes only; 0: nothing;
+    2: the figures could not be read."""
+    import anomaly
+
+    if not (data / "quality" / "daily.csv").exists():
+        print("data check: quality/daily.csv could not be read at " + now.isoformat())
+        return 2
+    found = anomaly.evaluate(data, now, last_listed(), token_expiry(), workflow_states())
+    print(anomaly.report(found, now))
+    return found.exit_code()
+
+
 def data_main(now: datetime) -> int:
     rows = daily_rows()
     stamp = now.isoformat(timespec="seconds")
@@ -298,6 +349,8 @@ def data_main(now: datetime) -> int:
 def main() -> int:
     now = datetime.now(UTC)
     if "--data" in sys.argv[1:]:
+        if "--data-dir" in sys.argv[1:]:
+            return data_dir_main(now, Path(sys.argv[sys.argv.index("--data-dir") + 1]))
         return data_main(now)
     try:
         found = problems(Collector(), now, processed_days())

@@ -46,9 +46,11 @@ jobs:
           cache-dependency-path: .github/workflows/pages.yml
       # The light rules of the publishing gate (pipeline/invariants.py, I1 to
       # I8), with only Python installed: a data branch that breaks them is
-      # not put on the site.
+      # not put on the site. Days made by an older version are allowed here:
+      # a push that changes a version runs this before the nightly job has
+      # rebuilt the days, and those figures still agree with each other.
       - name: Check the published figures before using them
-        run: python -m pipeline.invariants --data data-branch --light
+        run: python -m pipeline.invariants --data data-branch --light --allow-old-versions
       - name: Copy the published metrics into the site
         run: python scripts/site_data.py data-branch site/data
       - name: Install Quarto

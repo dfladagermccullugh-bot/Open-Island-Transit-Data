@@ -263,3 +263,12 @@ def test_command_exits_1_on_a_problem(copy, capsys):
     edit_json(data / "ontime" / "recent.json", lambda r: r["overall"].update(scheduled=1))
     assert inv.main(["--data", str(data), "--light"]) == 1
     assert "PROBLEM I1" in capsys.readouterr().out
+
+
+def test_i6_old_versions_may_be_allowed_for_the_site_job(copy):
+    edit_json(
+        copy / "data-branch" / "quality" / "days" / "2026-11-26.json",
+        lambda q: q.update(quality_version="quality/0.0.1"),
+    )
+    res = inv.run(copy / "data-branch", light_only=True, allow_old=True)
+    assert "I6" not in rules(res) and any(n.startswith("I6") for n in res.notes)

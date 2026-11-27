@@ -14,7 +14,7 @@ import pytest
 
 ROOT = Path(__file__).resolve().parents[1]
 HEAVY = ("numpy", "pyarrow", "google.protobuf", "pandas")
-SCRIPTS = ("watchdog.py", "catch_up.py")
+SCRIPTS = ("watchdog.py", "catch_up.py", "anomaly.py")
 
 PROBE = """
 import importlib.abc, importlib.util, sys
@@ -30,6 +30,7 @@ class Refuse(importlib.abc.MetaPathFinder):
 sys.meta_path.insert(0, Refuse())
 spec = importlib.util.spec_from_file_location("probe", {script!r})
 module = importlib.util.module_from_spec(spec)
+sys.modules["probe"] = module
 spec.loader.exec_module(module)
 """
 

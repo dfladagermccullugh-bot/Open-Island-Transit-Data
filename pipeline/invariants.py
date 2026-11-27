@@ -333,8 +333,11 @@ def check_versions(
     versions: dict[str, str],
     ontime: list[dict[str, Any]],
     quality: list[dict[str, Any]],
+    allow_old: bool = False,
 ) -> None:
-    """I6."""
+    """I6. ``allow_old``: a newest day on an older version is only a note
+    (the site job, which can run after a version change is pushed and
+    before the nightly job has rebuilt the days)."""
     found: dict[str, dict[str, str | None]] = defaultdict(dict)
     for day, e in _manifest(data, "parsed")["days"].items():
         found["tables"][day] = e.get("tables_version")
@@ -353,8 +356,11 @@ def check_versions(
         if not stale:
             continue
         newest = max(by_day)
-        if newest in stale:
+        if newest in stale and not allow_old:
             res.problem("I6", f"{stage}: newest day {newest} is {by_day[newest]}, the code {want}")
+        elif newest in stale:
+            res.note("I6", f"{stage}: every day is still on {by_day[newest]}; the code is {want} "
+                     "and the next nightly run rebuilds them")  # fmt: skip
         else:
             res.note("I6", f"{stage}: {len(stale)} older days still on an older version "
                      f"(first {stale[0]}); the nightly job rebuilds them")  # fmt: skip
@@ -400,7 +406,7 @@ def check_periods(res: Result, data: Path) -> None:
             res.note("I8", f"{name} exists but its rules are not written yet")
 
 
-def light(res: Result, data: Path, versions: dict[str, str]) -> None:
+def light(res: Result, data: Path, versions: dict[str, str], allow_old: bool = False) -> None:
     """I1 to I8."""
     ontime_dir, quality_dir = data / "ontime", data / "quality"
     ontime = DayFiles(ontime_dir / "days").all()
@@ -426,7 +432,7 @@ def light(res: Result, data: Path, versions: dict[str, str]) -> None:
         quality,
         [(name, _path(p)) for name, p in QUALITY_HEADLINE],
     )
-    check_versions(res, data, versions, ontime, quality)
+    check_versions(res, data, versions, ontime, quality, allow_old)
     check_complete(res, data, ontime_dir, quality_dir)
     check_periods(res, data)
     res.ran += ["I1", "I2", "I3", "I4", "I5", "I6", "I7", "I8"]
@@ -626,9 +632,10 @@ def run(
     repo: str = REPO,
     days: int = 3,
     versions: dict[str, str] | None = None,
+    allow_old: bool = False,
 ) -> Result:
     res = Result()
-    light(res, data, current_versions() if versions is None else versions)
+    light(res, data, current_versions() if versions is None else versions, allow_old)
     if not light_only:
         fetch = (
             local_fetch(releases) if releases else github_fetch(repo, work or Path("work/check"))
@@ -655,6 +662,11 @@ def main(argv: list[str] | None = None) -> int:
     ap.add_argument("--work", type=Path, help="where Release files are downloaded or found")
     ap.add_argument("--days", type=int, default=3, help="days for I9 to I11 (0: all)")
     ap.add_argument("--repo", default=os.environ.get("GITHUB_REPOSITORY", REPO))
+    ap.add_argument(
+        "--allow-old-versions",
+        action="store_true",
+        help="I6: a newest day on an older version is a note, not a problem",
+    )
     args = ap.parse_args(argv)
     res = run(
         args.data,
@@ -663,6 +675,7 @@ def main(argv: list[str] | None = None) -> int:
         work=args.work,
         repo=args.repo,
         days=args.days,
+        allow_old=args.allow_old_versions,
     )
     return report(res)
 
