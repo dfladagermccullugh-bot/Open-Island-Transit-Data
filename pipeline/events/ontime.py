@@ -33,7 +33,7 @@ from pipeline.common import Row
 from pipeline.config import PACIFIC
 from pipeline.stats import median
 
-ONTIME_VERSION = "ontime/0.4.1"  # 0.4.1: deviations by hour, for the period files
+ONTIME_VERSION = "ontime/0.5.0"  # 0.5.0: counts per trip, for the headline's interval
 EARLY_S = -60
 LATE_S = 300
 
@@ -88,6 +88,7 @@ def summarize(
     by_stop: dict[tuple[str, str], Counter] = defaultdict(Counter)
     stop_devs: dict[tuple[str, str], list[float]] = defaultdict(list)
     stop_seq: dict[tuple[str, str], list[int]] = defaultdict(list)
+    by_trip: dict[str, list[int]] = defaultdict(lambda: [0, 0])
     for e in events:
         if not e["is_timepoint"]:
             continue
@@ -102,6 +103,9 @@ def summarize(
         for c in (total, by_route[e["route_id"]], by_hour[hour], by_stop[key]):
             c[cat] += 1
         stop_seq[key].append(e["stop_sequence"])
+        if cat != "not_observed" and e.get("trip_id") is not None:
+            by_trip[e["trip_id"]][0] += 1
+            by_trip[e["trip_id"]][1] += cat == "on_time"
         if dev is not None:
             devs.append(dev)
             route_devs[e["route_id"]].append(dev)
@@ -137,4 +141,7 @@ def summarize(
             for h, c in sorted(by_hour.items())
         },
         "by_route_stop": dict(route_stop),
+        # [observed, on time] timepoint departures of each trip with any
+        # observed, so that an interval can resample whole trips.
+        "by_trip": dict(sorted(by_trip.items())),
     }

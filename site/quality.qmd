@@ -235,6 +235,48 @@ off by hours, which pulls the mean far from the typical miss, so the table
 gives both the mean and the median and counts the predictions that were off
 by more than 30 minutes.
 
+::: {.slot-chart}
+```{ojs}
+//| echo: false
+// A quantile dot chart: the 20 dots are the 2.5th, 7.5th, ... 97.5th
+// percentiles of the miss, so each dot stands for 1 in 20 predictions.
+guard(() => {
+  const q = ev?.prediction_error?.by_horizon_min?.["5"]?.quantiles_20_s;
+  if (!Array.isArray(q) || q.length !== 20 || !q.every(Number.isFinite)) return html``;
+  const LO = -15, HI = 10;
+  const later = q.map(s => -s / 60);  // minutes the bus came after the prediction
+  const height = {};
+  const dots = later.map(m => {
+    const shown = Math.max(LO, Math.min(HI, m));
+    const bin = Math.round(shown);
+    height[bin] = (height[bin] ?? 0) + 1;
+    return {m, bin, y: height[bin], clipped: m !== shown};
+  });
+  const near = later.filter(m => Math.abs(m) <= 1).length;
+  const late = later.filter(m => m > 2).length, early = later.filter(m => m < -2).length;
+  const say = `Of 20 buses the feed said would arrive in 5 minutes, about ${near} came within a minute of that, ${late} came more than 2 minutes later and ${early} more than 2 minutes sooner.`;
+  return ch.figure({
+    title: `Arrival predictions made 5 minutes ahead, ${longDate(latestDate)}`,
+    note: `${say} Each dot stands for 1 in 20 predictions; a hollow dot at an edge stands for a miss of more than ${-LO} minutes sooner or ${HI} minutes later.`,
+    chart: ch.responsive((width) => Plot.plot({
+      ariaLabel: "Twenty dots, each 1 in 20 arrival predictions made 5 minutes ahead, by how many minutes later than predicted the bus came",
+      ariaDescription: say,
+      style: {background: "transparent", fontSize: "12px", overflow: "visible"},
+      width, height: 30 + 16 * Math.max(4, ...Object.values(height)), marginBottom: 36, marginLeft: 12, marginRight: 12,
+      x: {domain: [LO - 0.5, HI + 0.5], label: "Minutes later than predicted (negative: sooner)", ticks: [-15, -10, -5, 0, 5, 10], grid: true},
+      y: {axis: null, domain: [0, Math.max(4, ...Object.values(height)) + 0.5]},
+      marks: [
+        Plot.ruleX([0], {stroke: "var(--rule)"}),
+        Plot.dot(dots, {x: "bin", y: "y", r: 6, fill: d => d.clipped ? "var(--surface)" : "var(--series-1)", stroke: "var(--series-1)", strokeWidth: 1.5}),
+        Plot.tip(dots, Plot.pointer({x: "bin", y: "y", title: d => `${Math.abs(d.m).toFixed(1)} minutes ${d.m >= 0 ? "later" : "sooner"} than predicted`})),
+      ],
+    }), {height: 120}),
+    methods: "feed-quality-metrics",
+  });
+}, "The prediction dot chart")
+```
+:::
+
 ```{ojs}
 //| echo: false
 guard(() => {

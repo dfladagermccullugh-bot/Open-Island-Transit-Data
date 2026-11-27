@@ -151,7 +151,11 @@ by more than 30 minutes, and a few by 15 hours. They stay in the figures and
 we count them. A handful of values that large pulls the mean far away from
 what a rider would usually see: that day the mean miss was 9.2 minutes and
 the typical miss, the median, was 2.4 minutes. So we report both, and the
-site shows the typical miss.
+site shows the typical miss. Since November 27, 2026, we also keep 20
+points that split each day's predictions into twenty equal groups (the
+2.5th, 7.5th and so on up to the 97.5th percentile of the miss). The site
+draws them as 20 dots, so a reader can see what happened to 20 buses the
+feed said were 5 minutes away.
 
 Jitter tells us how much a parked bus's GPS position wanders. We look for a
 dwell, which is 3 or more reports in a row from one vehicle, each moving
@@ -380,8 +384,19 @@ which Island Transit runs no service. When Island Transit brings in a new
 timetable, the pooled figures start over on the day it takes effect, so
 that stops and times from the old timetable are not mixed with the new one.
 
+The headline share on the home page pools the last 28 days with service,
+and since November 27, 2026 it comes with a range. Departures of one trip
+are not independent of each other, because a bus that falls behind tends to
+stay behind, so we draw whole trips. We make 2,000 new sets of trips, each
+as large as the real set and drawn from it at random with repeats allowed,
+compute the on-time share of each, and report the middle 95% of those
+shares. This is called a bootstrap. The range says how much the share could
+move by chance in which trips happened to run late; it does not cover the
+departures we could not time.
+
 (Code: `pipeline/events/ontime.py`; the 28-day route tables are built by
-`pipeline/events/routes.py`.)
+`pipeline/events/routes.py`; the headline and its range by
+`pipeline/periods.py`, `trip_interval`.)
 
 ## 5. Validation
 

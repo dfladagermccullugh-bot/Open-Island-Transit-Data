@@ -42,11 +42,13 @@ from typing import Any
 from pipeline.common import DayFiles
 from pipeline.stats import median, share
 
-PERIODS_VERSION = "periods/0.1.0"
+PERIODS_VERSION = "periods/0.2.0"  # 0.2.0: interval on the headline share
 WINDOW = 28  # service days
 MIN_PREVIOUS = 14  # service days before a "previous window" is shown
 COUNTS = ("scheduled", "observed", "on_time", "early", "late")
 GRAINS = ("hour", "day", "week", "month")
+RESAMPLES = 2000
+SEED = 20261127  # fixed, so the interval is the same each time it is computed
 
 _share = partial(share, digits=4)
 
@@ -83,6 +85,40 @@ def ontime_block(days: Iterable[dict[str, Any]], part: Callable[[dict[str, Any]]
         "late_share_of_observed": _share(counts["late"], counts["observed"]),
         "deviation_s_median": _rounded(median(devs)),
         "deviations_counted": len(devs),
+    }
+
+
+def trip_interval(days: list[dict[str, Any]]) -> dict[str, Any] | None:
+    """A 95% interval for the on-time share of observed departures, by
+    resampling whole trips (a bootstrap): departures of one trip are not
+    independent, since a bus that falls behind stays behind. Each resample
+    draws as many (day, trip) pairs as there are, with replacement; the
+    interval runs from the 2.5th to the 97.5th percentile of the shares.
+    None when a day has no counts per trip (made before ``ontime/0.5.0``)."""
+    import numpy as np
+
+    pairs = []
+    for d in days:
+        if "by_trip" not in d:
+            return None
+        pairs += list(d["by_trip"].values())
+    pairs = [p for p in pairs if p[0] > 0]
+    if len(pairs) < 2:
+        return None
+    counts = np.array(pairs, dtype=np.int64)
+    rng = np.random.default_rng(SEED)
+    shares = np.empty(RESAMPLES)
+    for start in range(0, RESAMPLES, 200):
+        pick = rng.integers(0, len(counts), size=(min(200, RESAMPLES - start), len(counts)))
+        drawn = counts[pick].sum(axis=1)
+        shares[start : start + len(drawn)] = drawn[:, 1] / drawn[:, 0]
+    low, high = np.quantile(shares, [0.025, 0.975])
+    return {
+        "low": round(float(low), 4),
+        "high": round(float(high), 4),
+        "trips": len(pairs),
+        "resamples": RESAMPLES,
+        "method": "bootstrap over trips",
     }
 
 
@@ -129,6 +165,7 @@ def headline(days: list[dict[str, Any]]) -> dict[str, Any] | None:
         return None
     window, before = service[-WINDOW:], service[:-WINDOW][-WINDOW:]
     now = ontime_block(window, _day_devs)
+    now["on_time_share_interval95"] = trip_interval(window)
     prev = ontime_block(before, _day_devs) if len(before) >= MIN_PREVIOUS else None
     change = None
     if prev and now["on_time_share_of_observed"] is not None and prev["on_time_share_of_observed"]:

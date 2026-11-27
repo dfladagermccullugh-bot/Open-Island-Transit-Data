@@ -1,6 +1,6 @@
 {
  "service_date": "2026-11-26",
- "quality_version": "quality/0.6.1",
+ "quality_version": "quality/0.7.0",
  "computed_at": "2026-12-08T09:00:00+00:00",
  "scheduled_service": {
   "trips": 4,
@@ -392,7 +392,8 @@
      "median_abs_s": null,
      "within_60s_share": null,
      "over_30min": 0,
-     "over_30min_share": null
+     "over_30min_share": null,
+     "quantiles_20_s": null
     },
     "2": {
      "n": 0,
@@ -404,7 +405,8 @@
      "median_abs_s": null,
      "within_60s_share": null,
      "over_30min": 0,
-     "over_30min_share": null
+     "over_30min_share": null,
+     "quantiles_20_s": null
     },
     "5": {
      "n": 0,
@@ -416,7 +418,8 @@
      "median_abs_s": null,
      "within_60s_share": null,
      "over_30min": 0,
-     "over_30min_share": null
+     "over_30min_share": null,
+     "quantiles_20_s": null
     },
     "10": {
      "n": 0,
@@ -428,7 +431,8 @@
      "median_abs_s": null,
      "within_60s_share": null,
      "over_30min": 0,
-     "over_30min_share": null
+     "over_30min_share": null,
+     "quantiles_20_s": null
     },
     "15": {
      "n": 0,
@@ -440,7 +444,8 @@
      "median_abs_s": null,
      "within_60s_share": null,
      "over_30min": 0,
-     "over_30min_share": null
+     "over_30min_share": null,
+     "quantiles_20_s": null
     },
     "30": {
      "n": 0,
@@ -452,7 +457,8 @@
      "median_abs_s": null,
      "within_60s_share": null,
      "over_30min": 0,
-     "over_30min_share": null
+     "over_30min_share": null,
+     "quantiles_20_s": null
     }
    }
   },

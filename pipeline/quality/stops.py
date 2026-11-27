@@ -244,6 +244,11 @@ def prediction_error(predictions: list[Row], events: list[Row]) -> dict[str, Any
             "within_60s_share": share(sum(abs(x) <= WITHIN_S for x in xs), len(xs)),
             "over_30min": sum(abs(x) > FAR_OFF_S for x in xs),
             "over_30min_share": share(sum(abs(x) > FAR_OFF_S for x in xs), len(xs)),
+            # Twenty evenly spaced quantiles (the 2.5th, 7.5th, ... 97.5th
+            # percentiles), for a chart of 20 dots, one per 5% of predictions.
+            "quantiles_20_s": [rounded(quantile(xs, (i + 0.5) / 20)) for i in range(20)]
+            if xs
+            else None,
         }
 
     return {

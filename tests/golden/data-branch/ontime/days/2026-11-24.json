@@ -1,5 +1,5 @@
 {
- "ontime_version": "ontime/0.4.1",
+ "ontime_version": "ontime/0.5.0",
  "definition": {
   "window_s": [-60,300],
   "measured": "departure at timepoints; arrival at the last stop",
@@ -95,6 +95,11 @@
     "deviations_s": [-92,-7,353]
    }
   }
+ },
+ "by_trip": {
+  "T1": [3,3],
+  "T2": [3,1],
+  "T3": [3,0]
  },
  "service_date": "2026-11-24",
  "service_expected": true,

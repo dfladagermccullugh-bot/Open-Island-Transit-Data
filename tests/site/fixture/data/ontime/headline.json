@@ -19,7 +19,14 @@
   "early_share_of_observed": 0.023,
   "late_share_of_observed": 0.2973,
   "deviation_s_median": 183.0,
-  "deviations_counted": 3353
+  "deviations_counted": 3353,
+  "on_time_share_interval95": {
+   "low": 0.6459,
+   "high": 0.7134,
+   "trips": 476,
+   "resamples": 2000,
+   "method": "bootstrap over trips"
+  }
  },
  "previous": null,
  "previous_needs_service_days": 14,

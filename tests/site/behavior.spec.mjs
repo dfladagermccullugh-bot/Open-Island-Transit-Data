@@ -505,3 +505,16 @@ test.describe("replay a day", () => {
     await expect(page.locator(".replay-play")).toHaveText("Play");
   });
 });
+
+test.describe("statistics", () => {
+  test("the headline gives its range, and predictions are drawn as 20 dots", async ({page}) => {
+    await open(page, "index");
+    await expect(page.locator(".headline")).toContainText("very likely between 65% and 71%");
+    await open(page, "quality");
+    await page.locator("summary", {hasText: "Arrival predictions"}).click();
+    const fig = page.locator("figure", {hasText: "Arrival predictions made 5 minutes ahead"});
+    await expect(fig).toBeVisible();
+    await expect(fig).toContainText(/Of 20 buses the feed said would arrive in 5 minutes, about \d+ came within a minute/);
+    expect(await fig.locator("svg circle").count()).toBe(20);
+  });
+});

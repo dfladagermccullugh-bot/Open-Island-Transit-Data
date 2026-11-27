@@ -215,3 +215,14 @@ def test_retraced_shapes():
     out = retraced_shapes(rows, {"BAD", "OK"})
     assert out["shapes_used"] == 2 and out["shapes_retraced"] == 1
     assert 1400 < out["retraced_m_by_shape"]["BAD"] < 1600
+
+
+def test_prediction_error_keeps_twenty_quantiles_for_a_dot_chart():
+    events = [event(k, 30, arr_min=30) for k in range(2, 42)]
+    # Forty stops, predicted 1, 2, ... 40 seconds early (error -1 to -40 s).
+    preds = [prediction(k, 30 - (k - 1) / 60, 20, 40) for k in range(2, 42)]
+    out = prediction_error(preds, events)["by_horizon_min"]["5"]
+    q = out["quantiles_20_s"]
+    assert len(q) == 20 and q == sorted(q)
+    assert q[0] == -39.0 and q[-1] == -2.0  # the 2.5th and 97.5th percentiles
+    assert prediction_error([], events)["by_horizon_min"]["5"]["quantiles_20_s"] is None

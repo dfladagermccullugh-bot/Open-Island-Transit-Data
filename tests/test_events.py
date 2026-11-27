@@ -383,3 +383,12 @@ def test_a_canceled_trip_is_left_out_of_the_on_time_counts_and_counted():
     assert (before["scheduled"], before["observed"]) == (3, 2)
     assert (after["scheduled"], after["observed"], after["on_time"]) == (2, 2, 2)
     assert after["canceled"] == {"trip_ids": ["T2"], "timepoint_events_left_out": 1}
+
+
+def test_summarize_counts_each_trips_observed_and_on_time_departures():
+    events = [{**event(10, 11), "trip_id": "T1"}, {**event(20, 30), "trip_id": "T1"},
+              {**event(30, None), "trip_id": "T2"}, {**event(40, 40), "trip_id": "T3"}]  # fmt: skip
+    s = summarize(events, collection_start=ORIGIN)
+    # T2 was never timed, so it has nothing to resample.
+    assert s["by_trip"] == {"T1": [2, 1], "T3": [1, 1]}
+    assert sum(c[0] for c in s["by_trip"].values()) == s["observed"]

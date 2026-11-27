@@ -65,14 +65,14 @@
    "hash": "f14f2b4ccd98d50284d430f883e340b069eff5bd44f865a18d4f76fc41e496db"
   },
   "ontime": {
-   "version": "ontime/0.4.1",
+   "version": "ontime/0.5.0",
    "constant": "pipeline/events/ontime.py::ONTIME_VERSION",
    "sources": [
     "pipeline/events/ontime.py",
     "pipeline/stats.py",
     "pipeline/columns.py::ONTIME_DAILY"
    ],
-   "hash": "8f9068d15061c5b43886147118cc90239232ad490af4b0db75437d93b4e811e9"
+   "hash": "e99220b4b325eea885580f0ce49c605a44806e446857fc361af956ab81ec029a"
   },
   "validate": {
    "version": "validate/0.3.0",
@@ -103,7 +103,7 @@
    "hash": "1c9ae40195076e09f9246adaf9ceb131a8e5ff0a544cec8d5b8e7ab71b3fbdb0"
   },
   "quality": {
-   "version": "quality/0.6.1",
+   "version": "quality/0.7.0",
    "constant": "pipeline/quality/metrics.py::QUALITY_VERSION",
    "sources": [
     "pipeline/quality/metrics.py",
@@ -121,7 +121,7 @@
     "pipeline/columns.py::QUALITY_HEADLINE",
     "pipeline/glitch.py"
    ],
-   "hash": "29513bae9c0592f03e138cec92846665177752ff6e404b7eb5a2082b81083090"
+   "hash": "a7fe5616d8e3da3ae172e8738680c75b532d9ff7dd841fcb16e94bcb369a432c"
   },
   "gaps": {
    "version": "gaps/0.4.0",
@@ -159,13 +159,13 @@
    "hash": "c09578d770e15f53f1a414a1119ea777853b728eb3f9143b6af3a6f1381bd007"
   },
   "periods": {
-   "version": "periods/0.1.0",
+   "version": "periods/0.2.0",
    "constant": "pipeline/periods.py::PERIODS_VERSION",
    "sources": [
     "pipeline/periods.py",
     "pipeline/stats.py"
    ],
-   "hash": "fdeb2a35cc6a5fdc699ac23122e8a004febbe3fb9bfb745f0d0dac636180767b"
+   "hash": "98dd9385232cf2080cea6654fedefc0a5f4e0785899bc1e939caf1d5507d4bde"
   },
   "compare": {
    "version": "compare/0.1.0",

@@ -49,6 +49,10 @@ guard(() => {
       ? `${Math.abs(head.change_points).toFixed(1)} points ${head.change_points >= 0 ? "higher" : "lower"} than the ${head.previous?.days ?? 28} service days before`
       : `Not enough days yet to compare with the ${head.window_service_days ?? 28} days before.`;
   const spark = useHead ? sparkline((head.spark ?? []).map(d => d.on_time_share_of_observed)) : null;
+  // A 95% interval from resampling whole trips (pipeline/periods.py).
+  const iv = useHead ? head.current?.on_time_share_interval95 : null;
+  const range = iv?.low != null && iv?.high != null && nDays > 1
+    ? ` Allowing for chance, the share for these days is very likely between ${pct(iv.low)} and ${pct(iv.high)}.` : "";
   const status = notes?.status;
   const trust = status == null ? null
     : status === "ok" || status === "note"
@@ -57,7 +61,7 @@ guard(() => {
   return html`<div class="headline">
       <div class="big">${pct(o.on_time_share_of_observed)}</div>
       <div class="big-text"><p class="big-label">of departures left on time ${period}.
-        <span class="note">A bus counts as on time if it leaves from 1 minute early to 5 minutes late.${recent?.schedule_change ? ` Island Transit changed its schedule on ${longDate(recent.schedule_change.effective)}; the route tables below start over from that day.` : ""}</span></p>
+        <span class="note">A bus counts as on time if it leaves from 1 minute early to 5 minutes late.${range}${recent?.schedule_change ? ` Island Transit changed its schedule on ${longDate(recent.schedule_change.effective)}; the route tables below start over from that day.` : ""}</span></p>
         ${change ? html`<p class="change">${spark}<span>${change}</span></p>` : ""}
       </div>
     </div>

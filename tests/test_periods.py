@@ -72,3 +72,26 @@ def test_the_golden_period_files_pass_and_a_changed_headline_fails(tmp_path):
     h["current"]["on_time"] += 1
     path.write_text(json.dumps(h))
     assert any(p.startswith("I8") for p in inv.run(data, light_only=True).problems)
+
+
+def _with_trips(d, trips):
+    return {**d, "by_trip": {f"T{k}": list(c) for k, c in enumerate(trips)}}
+
+
+def test_the_headline_interval_resamples_whole_trips_and_repeats_exactly():
+    days = [_with_trips(x, [(4, 4), (4, 0), (2, 1)] * 10) for x in run_of(10)]
+    a, b = periods.trip_interval(days), periods.trip_interval(days)
+    assert a == b and a["method"] == "bootstrap over trips" and a["trips"] == 300
+    share = sum(c[1] for d in days for c in d["by_trip"].values()) / sum(
+        c[0] for d in days for c in d["by_trip"].values())  # fmt: skip
+    assert a["low"] < share < a["high"]
+    # Fewer trips, a wider interval.
+    few = periods.trip_interval(days[:1])
+    assert few["high"] - few["low"] > a["high"] - a["low"]
+
+
+def test_no_interval_when_a_day_has_no_counts_per_trip():
+    days = [_with_trips(x, [(4, 4), (4, 0)]) for x in run_of(3)]
+    days[1].pop("by_trip")
+    assert periods.trip_interval(days) is None
+    assert periods.headline(days)["current"]["on_time_share_interval95"] is None

@@ -275,7 +275,10 @@ it. Events scheduled before collection began are left out.
 Each day file breaks the counts down by route and by hour in Pacific time.
 Since `ontime/0.2.0` it also breaks them down by route and timepoint stop
 (`by_route_stop`), with the stop's name, its median stop sequence and every
-deviation in whole seconds (`deviations_s`). The `validation` section holds
+deviation in whole seconds (`deviations_s`). Since `ontime/0.5.0`,
+`by_trip` gives, for each trip with any timed timepoint, the number of its
+timepoint departures we timed and the number on time, as a pair
+`[observed, on_time]`; the headline's range resamples these. The `validation` section holds
 the automatic checks of the method (`pipeline/events/validate.py`,
 `docs/methods.md`, section 5). It shows how often our departures agree with
 the feed's `current_stop_sequence`, overall and by route, and how many
@@ -363,7 +366,11 @@ which Island Transit ran service (`current`). Unlike `recent.json`, it does
 not start over at a new printed timetable (`timetables` lists those it
 spans). Once 14 or more service days come before that window, `previous`
 pools up to 28 of them, and `change_points` is the change in the on-time
-share in percentage points; until then both are empty. `spark` has one
+share in percentage points; until then both are empty. Since
+`periods/0.2.0`, `current.on_time_share_interval95` gives a 95% range for
+the on-time share (`low`, `high`) from 2,000 resamples of whole trips
+(`trips`, `resamples`, `method`; `docs/methods.md`, section 4), or nothing
+when a day in the window was made before `ontime/0.5.0`. `spark` has one
 point per day of the window. `periods.json` has the same figures by
 `hour` of the day (pooled over the 28 service days, and for the latest day
 alone), by `day`, by `week` (Monday to Sunday, Pacific time) and by `month`.
@@ -396,7 +403,11 @@ are in `docs/methods.md`, section 2.
 `quality/days/YYYY-MM-DD.json` holds every measure for the day, grouped
 under `paradata`, `nonresponse`, `coverage`, `measurement`, `processing` and
 `events`. The `events` group holds the measures built on our inferred stop
-times, and it is empty when a day has none. The file also records which
+times, and it is empty when a day has none. Since `quality/0.7.0`, each
+minutes-ahead block of `events.prediction_error.by_horizon_min` also has
+`quantiles_20_s`: the 2.5th, 7.5th and so on up to the 97.5th percentile of
+the prediction error in seconds (predicted minus our time), for a chart of
+20 dots. The file also records which
 schedule we used (`schedule`) and the SHA-256 fingerprints of the input
 files (`inputs`). We recompute a day when `QUALITY_VERSION` changes or when
 its parsed tables or stop events are rebuilt, or when its schedule version or
