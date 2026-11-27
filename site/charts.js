@@ -265,14 +265,25 @@ export function makeCharts({Plot}) {
   // One row for each place: a bar from `lo` to `hi`, a mark at `mid` in the
   // shape and color of the row's band, and a figure printed at the right.
   // `window` shades the range that counts as good.
-  function dotRange(rows, {label, mid, lo, hi, band, text, window: good = null, axisLabel, ariaLabel, describe, tip}) {
+  //
+  // `onPoint(row)` is called with the row being pointed at (null when none);
+  // the returned chart has `highlight(name)`, which marks one row's label, so
+  // a map can point at the same stop.
+  function dotRange(rows, {label, mid, lo, hi, band, text, window: good = null, axisLabel, ariaLabel, describe, tip, onPoint = null}) {
     const min = Math.min(good ? good[0] - 1 : 0, ...rows.map(d => d[lo])) - 0.5;
     const max = Math.max(good ? good[1] + 3 : 0, ...rows.map(d => d[hi])) + 0.5;
     const ids = rows.map((_, i) => i);
     const keyed = rows.map((d, i) => ({...d, row: i}));
     const filled = keyed.filter(d => d[band].shape !== "ring");
     const rings = keyed.filter(d => d[band].shape === "ring");
-    return responsive((width, narrow) => Plot.plot({
+    let picked = null;
+    const mark = svg => {
+      for (const t of svg?.querySelectorAll?.("text") ?? []) {
+        t.classList.toggle("row-on", picked != null && t.textContent === picked);
+      }
+    };
+    const slot = responsive((width, narrow) => {
+      const plot = Plot.plot({
       ariaLabel, ariaDescription: describe, style: FRAME, width,
       height: (narrow ? 48 : 34) * rows.length + 62,
       marginLeft: narrow ? 6 : labelWidth(rows.map(d => d[label]), 300), marginRight: 56,
@@ -289,7 +300,16 @@ export function makeCharts({Plot}) {
         narrow ? Plot.text(keyed, {y: "row", x: min, text: label, textAnchor: "start", dy: -16, fill: "currentColor"}) : null,
         Plot.tip(keyed, Plot.pointerY({y: "row", x: mid, title: tip})),
       ],
-    }), {height: 34 * rows.length + 62});
+      });
+      if (onPoint) plot.addEventListener("input", () => onPoint(plot.value ?? null));
+      mark(plot);
+      return plot;
+    }, {height: 34 * rows.length + 62});
+    slot.highlight = name => {
+      picked = name;
+      mark(slot.querySelector("svg"));
+    };
+    return slot;
   }
 
   // Early, on time and late for each row, as one bar adding up to 100%.

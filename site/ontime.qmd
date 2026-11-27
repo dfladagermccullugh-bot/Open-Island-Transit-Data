@@ -1,17 +1,13 @@
 ---
 description: "How often Island Transit's buses left on time, day by day and hour by hour, and how the figures are checked."
 title: "On time"
-subtitle: "The whole system, day by day and hour by hour"
+subtitle: "The whole system, by hour, day, week or month"
 ---
 
 ::: {.method-note}
-We calculate these figures ourselves from Island Transit's bus locations and
-schedule, so they aren't official numbers. The feed has no "minutes late"
-field, which means our script has to figure out the moment each bus left a
-stop from where the bus was just before and just after. Automated checks
-compare those times with the feed's own stop reports on every route every
-day, and we have also timed buses in person on route 60. The [Methods](methods.qmd) page explains it all, and
-[Routes](routes.qmd) shows one route at a time.
+We work out these figures ourselves from the buses' live locations, so they
+aren't Island Transit's official numbers. [Methods](methods.qmd) explains
+how, and [Routes](routes.qmd) shows one route at a time.
 :::
 
 ```{ojs}

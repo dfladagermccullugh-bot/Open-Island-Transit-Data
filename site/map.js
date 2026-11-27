@@ -43,14 +43,16 @@ function routeTip(r, stats) {
   return `<strong>${esc(routeTitle(r))}</strong>${sub ? `<br>${esc(sub)}` : ""}<br>${esc(routeSummary(stats))}`;
 }
 
-// drawRouteMap(L, mapData, recent, {onSelect, linkFor})
+// drawRouteMap(L, mapData, recent, {onSelect, linkFor, onStop})
+//   onStop(stopId)     called when a stop marker of the picked route is pointed
+//                      at or focused, and with null when it no longer is
 //   onSelect(routeId)  called when a route line is clicked or tapped
 //   linkFor(routeId)   if given, a tap on a touch screen opens a small card
 //                      with a link to this address instead of calling
 //                      onSelect, so a finger resting on the map never leaves
 //                      the page by accident
 // Returns {node, map, setSelected(id), highlight(id), destroy()}.
-export function drawRouteMap(L, mapData, recent, {onSelect = null, linkFor = null} = {}) {
+export function drawRouteMap(L, mapData, recent, {onSelect = null, linkFor = null, onStop = null} = {}) {
   const node = document.createElement("div");
   node.className = "route-map";
   node.setAttribute("role", "region");
@@ -144,9 +146,12 @@ export function drawRouteMap(L, mapData, recent, {onSelect = null, linkFor = nul
   let tiles = null;
   const stopsById = Object.fromEntries((mapData.timepoint_stops ?? []).map(s => [s.stop_id, s]));
 
+  // The picked route's stop markers, by stop id, for highlightStop.
+  let markers = {};
   function setSelected(id) {
     selected = id != null && layers[id] ? id : null;
     stopLayer.clearLayers();
+    markers = {};
     restyle();
     if (selected == null) {
       view = {bounds: all, padding: [8, 8], maxZoom: 12};
@@ -162,9 +167,12 @@ export function drawRouteMap(L, mapData, recent, {onSelect = null, linkFor = nul
       const marker = L.marker([pos.lat, pos.lon], {
         icon: L.divIcon({className: "stop-marker", html: bandIconHTML(b, 18), iconSize: [28, 28]}),
         keyboard: true, riseOnHover: true,
-      }).bindTooltip(`<strong>${esc(s.name)}</strong><br>${esc(stopSummary(s))}`, {className: "map-tip", direction: "top", offset: [0, -10]});
+      }).bindTooltip(`<strong>${esc(s.name)}</strong><br>${esc(stopSummary(s))}`, {className: "map-tip", direction: "auto", offset: [0, -10]});
       marker.on("add", () => marker.getElement()?.setAttribute("aria-label", `${s.name}: ${stopSummary(s)}`));
+      for (const on of ["mouseover", "focus"]) marker.on(on, () => onStop?.(s.stop_id));
+      for (const off of ["mouseout", "blur"]) marker.on(off, () => onStop?.(null));
       marker.addTo(stopLayer);
+      markers[s.stop_id] = marker;
     }
     view = {bounds: layers[selected].bounds, padding: [28, 28], maxZoom: 14};
     if (tiles) fit();
@@ -215,5 +223,20 @@ export function drawRouteMap(L, mapData, recent, {onSelect = null, linkFor = nul
     m.remove();
   }
 
-  return {node, map: m, setSelected, highlight, destroy};
+  // Point out one stop of the picked route (its row in the stop chart is
+  // being pointed at): its tip opens and its marker grows. null clears it.
+  let shown = null;
+  function highlightStop(id) {
+    if (shown && markers[shown]) {
+      markers[shown].closeTooltip();
+      markers[shown].getElement()?.classList.remove("stop-on");
+    }
+    shown = id != null && markers[id] ? id : null;
+    if (shown) {
+      markers[shown].openTooltip();
+      markers[shown].getElement()?.classList.add("stop-on");
+    }
+  }
+
+  return {node, map: m, setSelected, highlight, highlightStop, destroy};
 }

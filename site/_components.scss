@@ -275,3 +275,14 @@ details.as-table > summary:hover { color: var(--text-primary); }
 .how-measured { font-size: var(--fs-sm); margin: var(--sp-2) 0 0; }
 .headline .big-text { max-width: 26rem; padding-bottom: var(--sp-2); }
 .headline .big-text .big-label { padding-bottom: 0; }
+// Small multiples: three across on a wide screen, one on a phone.
+.chart-grid.small { grid-template-columns: repeat(auto-fit, minmax(min(100%, 19rem), 1fr)); gap: var(--sp-1) var(--sp-5); }
+.chart-grid.small .chart-title { font-size: var(--fs-sm); }
+// The map and the stop chart pointing at the same stop.
+.stop-marker.stop-on { transform-origin: center; z-index: 1000 !important; }
+.stop-marker.stop-on .band-icon { transform: scale(1.35); }
+svg text.row-on { font-weight: 700; fill: var(--text-primary); text-decoration: underline; }
+// Quarto's light/dark toggle draws its icon as a background image, but its
+// `.bi` class still names the icon font, which made every page download the
+// whole font (about 176 KB) for nothing.
+.quarto-color-scheme-toggle .bi::before, .quarto-color-scheme-toggle .bi { font-family: inherit !important; }

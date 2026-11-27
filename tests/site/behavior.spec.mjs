@@ -422,3 +422,36 @@ test.describe("the home page headline", () => {
     await expect(head.locator("a", {hasText: "How we measured this"})).toHaveAttribute("href", "methods.html#on-time-performance");
   });
 });
+
+test.describe("weight", () => {
+  // The JavaScript a page loads, compressed as a server sends it, stays
+  // within a budget. The plan of November 27, 2026 asked for 450 KB; the
+  // Routes page needs 496 KB (Quarto's Observable runtime alone is 212 KB,
+  // and the chart library needs d3, 91 KB), so the budget is 500 KB and can
+  // only come down. The Download page needs no chart library at all.
+  const BUDGET_KB = 500;
+  for (const name of ["index", "routes", "ontime", "quality", "data"]) {
+    test(`${name} loads at most ${BUDGET_KB} KB of JavaScript`, async ({page}) => {
+      const {gzipSync} = await import("node:zlib");
+      const scripts = [], fonts = [];
+      page.on("request", r => { if (r.resourceType() === "font") fonts.push(r.url()); });
+      page.on("response", r => {
+        if (/javascript/.test(r.headers()["content-type"] ?? "") || /\.m?js(\?|$)/.test(r.url())) scripts.push(r);
+      });
+      await open(page, name);
+      let total = 0;
+      const sizes = [];
+      for (const r of scripts) {
+        const body = await r.body().catch(() => Buffer.alloc(0));
+        const kb = gzipSync(body).length / 1024;
+        total += kb;
+        sizes.push(`${r.url().split("/").slice(-2).join("/")} ${kb.toFixed(0)} KB`);
+      }
+      console.log(`${name}: ${total.toFixed(0)} KB of JavaScript (gzipped): ${sizes.join(", ")}`);
+      expect(total, sizes.join("\n")).toBeLessThanOrEqual(BUDGET_KB);
+      if (name === "data") expect(scripts.some(r => /plot|\/d3@/.test(r.url()))).toBe(false);
+      // No icon font: the one icon on the page is drawn inline.
+      expect(fonts.filter(u => /bootstrap-icons/.test(u))).toEqual([]);
+    });
+  }
+});

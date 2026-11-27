@@ -203,17 +203,24 @@ export function pacificClock(iso) {
 
 // --- routes ------------------------------------------------------------------
 
+// Passio names the three NAS Whidbey shuttles "Naswi Am", "Naswi Pm" and
+// "Naswi Wkend"; readers know them as the NAS Whidbey shuttle.
+const LONG_NAMES = {"naswi am": "NAS Whidbey, morning", "naswi pm": "NAS Whidbey, afternoon", "naswi wkend": "NAS Whidbey, weekend"};
+export function longName(name) {
+  return LONG_NAMES[String(name ?? "").trim().toLowerCase()] ?? name;
+}
+
 // "60 Freeland - Langley - Clinton" from a map of route ids to names.
 export function routeLabel(routes, id) {
   const r = routes && routes[id];
   if (!r) return String(id);
-  return r.short_name ? `${r.short_name} ${r.long_name ?? ""}`.trim() : r.long_name || String(id);
+  return r.short_name ? `${r.short_name} ${r.long_name ?? ""}`.trim() : longName(r.long_name) || String(id);
 }
 
 // "Route 60", or the long name for routes without a number.
 export function routeTitle(r) {
   if (!r) return "";
-  return r.short_name ? `Route ${r.short_name}` : r.long_name || r.route_id || r.name || "";
+  return r.short_name ? `Route ${r.short_name}` : longName(r.long_name) || r.route_id || longName(r.name) || "";
 }
 
 // "Freeland - Langley - Clinton" for a numbered route, else nothing.
@@ -528,4 +535,41 @@ export function splitBar(b) {
     ...parts.map(([cls, , x]) => { const s = h("span", {class: `part ${cls}`}); s.style.width = `${(x * 100).toFixed(2)}%`; return s; }));
   const words = h("p", {class: "split-words"}, parts.map(([, word, x]) => `${fmtShare(x)} ${word}`).join(" · "));
   return h("div", {class: "split"}, bar, words);
+}
+
+// A CSV file read without d3, for a page that needs no chart library (the
+// Download page). Cells are typed as d3.autoType types them for these files:
+// numbers become numbers, true and false become booleans, an empty cell is
+// null. Quoted cells may hold commas, quotes ("") and line breaks.
+export async function csvPlain(path) {
+  try {
+    const r = await fetch(path);
+    return r.ok ? parseCsv(await r.text()) : [];
+  } catch (e) {
+    return [];
+  }
+}
+
+export function parseCsv(text) {
+  const rows = [];
+  let row = [], cell = "", quoted = false;
+  for (let i = 0; i < text.length; i++) {
+    const c = text[i];
+    if (quoted) {
+      if (c === '"' && text[i + 1] === '"') { cell += '"'; i++; }
+      else if (c === '"') quoted = false;
+      else cell += c;
+    } else if (c === '"') quoted = true;
+    else if (c === ",") { row.push(cell); cell = ""; }
+    else if (c === "\n" || c === "\r") {
+      if (c === "\r" && text[i + 1] === "\n") i++;
+      row.push(cell); rows.push(row); row = []; cell = "";
+    } else cell += c;
+  }
+  if (cell !== "" || row.length) { row.push(cell); rows.push(row); }
+  const [header, ...body] = rows.filter(r => r.length > 1 || r[0] !== "");
+  if (!header) return [];
+  const type = v => v === "" ? null : v === "true" ? true : v === "false" ? false
+    : /^-?\d+(\.\d+)?$/.test(v) ? +v : v;
+  return body.map(r => Object.fromEntries(header.map((k, i) => [k, type(r[i] ?? "")])));
 }

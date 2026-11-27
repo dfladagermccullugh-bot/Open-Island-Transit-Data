@@ -59,9 +59,15 @@ viewof routeId = {
 ```{ojs}
 //| echo: false
 //| output: false
+// The map and the stop chart point at the same stop: each puts itself here.
+linked = ({map: null, chart: null})
 mapView = {
   if (routeList.length === 0) return null;
-  const view = drawRouteMap(L, mapData, recent, {onSelect: pick});
+  const view = drawRouteMap(L, mapData, recent, {onSelect: pick, onStop: id => {
+    const s = recent?.routes?.[(viewof routeId).value]?.stops?.find(x => x.stop_id === id);
+    linked.chart?.highlight(s?.name ?? null);
+  }});
+  linked.map = view;
   invalidation.then(() => view.destroy());
   return view;
 }
@@ -209,17 +215,21 @@ stopChart = (s) => {
     hi: (d.deviation_s_p75 ?? d.deviation_s_median) / 60,
     band: band(d.on_time_share_of_observed, d.observed)}));
   if (stops.length === 0) return html`<h3>Stop by stop</h3><p class="empty">No stop on this route has enough departures yet.</p>`;
-  return html`<h3>Stop by stop</h3>
-  ${ch.figure({
-    note: "Each mark shows the typical departure at that stop, and the gray bar covers the middle half of all departures there. Anything inside the shaded band counts as on time. The figure at the right is the share of departures that were on time.",
-    chart: ch.dotRange(stops, {
+  const chart = ch.dotRange(stops, {
       label: "name", mid: "med", lo: "lo", hi: "hi", band: "band", window: [-1, 5],
       text: d => d.band.key === "none" ? "–" : pct(d.on_time_share_of_observed),
       axisLabel: "Minutes late (negative: early)",
       ariaLabel: "Typical departure at each timepoint stop, in minutes late",
       describe: stops.map(d => `${d.name}: ${lateness(d.deviation_s_median)}, ${pct(d.on_time_share_of_observed)} on time`).join("; "),
       tip: d => `${d.name}\nTypically ${lateness(d.deviation_s_median)}\n${pct(d.on_time_share_of_observed)} on time (${plural(d.observed, "departure")} seen)`,
-    }),
+      onPoint: d => linked.map?.highlightStop(d?.stop_id ?? null),
+    });
+  linked.chart = chart;
+  return html`<h3>Stop by stop</h3>
+  ${ch.figure({
+    note: "Each mark shows the typical departure at that stop, and the gray bar covers the middle half of all departures there. Anything inside the shaded band counts as on time. The figure at the right is the share of departures that were on time.",
+    chart,
+    methods: "on-time-performance",
     tableLabel: "Show the stops as a table",
     table: ch.table(stops, {
       caption: "On-time figures for each timepoint stop on this route",

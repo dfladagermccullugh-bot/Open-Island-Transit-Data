@@ -13,11 +13,12 @@ are free to download.
 ```{ojs}
 //| echo: false
 //| output: false
-import {csv, json, count, pct, megabytes, fileSize, longDate, emptyNote, guard, h, REPO_URL, DATA_URL, DATA_RAW_URL, RELEASES_URL} from "./lib.js"
-import {makeCharts} from "./charts.js"
-ch = makeCharts({Plot})
+import {csvPlain, json, count, pct, megabytes, fileSize, longDate, emptyNote, guard, h, REPO_URL, DATA_URL, DATA_RAW_URL, RELEASES_URL} from "./lib.js"
+// Tables only: no chart library on this page (d3 and Plot are never loaded).
+import {table} from "./charts.js"
+ch = ({table})
 raw = json("data/manifest/raw.json")
-files = csv(d3, "data/files.csv")
+files = csvPlain("data/files.csv")
 dictionary = json("data/datapackage.json")
 reports = json("data/reports/index.json")
 // A button that copies a value, and says so to screen readers.
@@ -39,7 +40,8 @@ copyButton = (text, label) => {
 ## Start here
 
 The daily figures are small tables you can open in a spreadsheet. Each link
-downloads the latest version of the file.
+opens the latest version of the file; your browser may show it as plain
+text, and you can save it from there.
 
 ```{ojs}
 //| echo: false

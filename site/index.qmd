@@ -22,7 +22,7 @@ and uses them to figure out how often the buses leave on time.]{.lede}
 ```{ojs}
 //| echo: false
 //| output: false
-import {json, pct, count, lateness, longDate, routeMap, routeSlug, routeOrder, routeTitle, band, bandIcon, bandLegend, emptyNote, guard, stats, h, sparkline, splitBar, fmtShare} from "./lib.js"
+import {json, pct, count, lateness, longDate, routeMap, routeSlug, routeOrder, routeTitle, band, bandIcon, bandLegend, emptyNote, guard, stats, h, sparkline, splitBar, fmtShare, longName} from "./lib.js"
 import {drawRouteMap, routeSummary} from "./map.js"
 recent = json("data/ontime/recent.json")
 head = json("data/ontime/headline.json")
@@ -105,7 +105,7 @@ guard(() => {
   const links = [...mapData.routes].sort(routeOrder).map(r => {
     const st = recent?.routes?.[r.route_id];
     const a = h("a", {href: routeHref(r.route_id), "aria-label": `${routeTitle(r)}: ${routeSummary(st)}`},
-      bandIcon(band(st?.on_time_share_of_observed, st?.observed)), r.short_name || r.long_name || r.route_id);
+      bandIcon(band(st?.on_time_share_of_observed, st?.observed)), r.short_name || longName(r.long_name) || r.route_id);
     for (const on of ["mouseenter", "focus"]) a.addEventListener(on, () => homeMap.highlight(r.route_id));
     for (const off of ["mouseleave", "blur"]) a.addEventListener(off, () => homeMap.highlight(null));
     return h("li", {}, a);

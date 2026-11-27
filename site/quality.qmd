@@ -11,7 +11,7 @@ as the feed itself. That's why we grade the feed every day.
 ```{ojs}
 //| echo: false
 //| output: false
-import {csv, json, pct, num, count, unit, routeLabel, longDate, pacificClock, plural, isFalse, isoDate, serviceDays, recentDays, withDates, showAllToggle, emptyNote, guard, stats, h, DATA_URL, DATA_RAW_URL} from "./lib.js"
+import {csv, json, pct, num, count, unit, routeLabel, longDate, pacificClock, plural, isFalse, isoDate, serviceDays, recentDays, withDates, showAllToggle, emptyNote, guard, stats, h, DATA_URL, DATA_RAW_URL, periodInput, periodName, fmtShare, hourLabel} from "./lib.js"
 import {makeCharts} from "./charts.js"
 ch = makeCharts({Plot})
 daily = csv(d3, "data/quality/daily.csv")
@@ -23,6 +23,7 @@ latestDate = days.length ? days.at(-1).day : null
 latest = latestDate ? json(`data/quality/days/${latestDate}.json`) : null
 noData = () => days.length === 0 ? emptyNote("no-days") : emptyNote("unavailable", `The details for ${longDate(latestDate)}`)
 ev = latest?.events ?? null
+qperiods = json("data/quality/periods.json")
 routeName = id => routeLabel(latest?.routes, id)
 ```
 
@@ -36,15 +37,15 @@ guard(() => {
   const far = lq.prediction_over_30min_share_5min;
   return html`<p class="note">These grades are for ${longDate(latestDate)}.${partial ? ` Collection began at ${pacificClock(latest.paradata.observed_from)} Pacific that day, so the grades cover only part of it.` : ""}</p>
   ${stats([
-    {label: "Did every scheduled trip show up?", value: pct(lq.trip_coverage),
+    {label: "Did every scheduled trip show up?", value: fmtShare(lq.trip_coverage),
      note: `of ${count(lq.scheduled_trips)} scheduled trips appeared in the tracking around the time they were due`},
-    {label: "Did the collector keep running?", value: pct(lq.vehicle_uptime, 1),
+    {label: "Did the collector keep running?", value: fmtShare(lq.vehicle_uptime),
      note: "of 20-second checks got a good answer from the feed"},
     {label: "How fresh are bus locations?", value: unit(lq.position_age_s_median, "second"),
      note: "typical age of a location when it first appears"},
     {label: "How close are arrival predictions?", value: unit(lq.prediction_min_5min, "min", 1, "min"),
      note: `typical miss, for predictions made 5 minutes before the bus arrived${far ? `; ${pct(far)} were off by more than 30 minutes` : ""}`},
-    {label: "Are buses where the route says?", value: lq.off_shape_share == null ? "–" : pct(1 - lq.off_shape_share),
+    {label: "Are buses where the route says?", value: lq.off_shape_share == null ? "–" : fmtShare(1 - lq.off_shape_share),
      note: "of locations were within 100 meters (about 330 feet) of the bus's published route"},
   ])}`;
 }, "The day's grades")
@@ -62,42 +63,92 @@ Hover over or tap each term for a plain explanation, or see the
 
 ## Over time
 
+Each small chart follows one measure. Pick how to group the days; a week
+runs Monday to Sunday, Pacific time.
+
 ```{ojs}
 //| echo: false
-viewof showAll = showAllToggle(days.length)
+viewof period = periodInput()
+```
+
+```{ojs}
+//| echo: false
+viewof showAll = period === "day" ? showAllToggle(days.length) : Object.assign(h("span", {hidden: true}), {value: false})
 ```
 
 ::: {.slot-trends}
 ```{ojs}
 //| echo: false
 //| output: false
+// Each measure: its column in quality/daily.csv (`key`) and, where the
+// period file pools it, its name there (`pooled`).
 series = [
-  {key: "trip_coverage", title: "Scheduled trips seen in the feed", share: true},
-  {key: "vehicle_uptime", title: "Collector uptime (vehicle locations)", share: true},
-  {key: "stale_in_service_rate", title: "Feed more than 2 minutes behind during service", share: true},
-  {key: "position_age_s_median", title: "Typical age of a bus location when first seen", word: "second"},
-  {key: "longest_gap_s_median", title: "Typical longest tracking gap per trip", word: "second"},
-  {key: "timepoint_coverage", title: "Departures at timetable stops we could time", share: true},
-  {key: "prediction_min_5min", title: "Typical arrival prediction miss, 5 minutes ahead", word: "minute"},
+  {key: "trip_coverage", pooled: "trip_coverage", title: "Scheduled trips seen in the feed", share: true},
+  {key: "vehicle_uptime", pooled: "vehicle_uptime", title: "Collector uptime (vehicle locations)", share: true},
+  {key: "timepoint_coverage", pooled: "timepoint_coverage", title: "Departures at timetable stops we could time", share: true},
+  {key: "off_shape_share", pooled: "off_shape_share", title: "Locations more than 100 meters off the route", share: true},
+  {key: "position_age_s_median", pooled: null, title: "Typical age of a bus location when first seen", word: "second"},
+  {key: "longest_gap_s_median", pooled: null, title: "Typical longest tracking gap per trip", word: "second"},
+  {key: "prediction_min_5min", pooled: null, title: "Typical arrival prediction miss, 5 minutes ahead", word: "minute"},
 ]
+howMeasured = html`<p class="how-measured"><a href="methods.html#feed-quality-metrics">How we measured these</a></p>`
+say = (s, v) => s.share ? fmtShare(v) : unit(v, s.word, 1)
+// The rows a small chart draws for the chosen period: service days from the
+// daily table, or weeks and months from the period file.
+periodRows = (s, grain) => (qperiods?.grains?.[grain] ?? [])
+  .filter(r => r.metrics?.[s.pooled]?.value != null)
+  .map(r => ({day: grain === "week" ? r.period : `${r.period}-01`, label: periodName(grain, r.period), partial: r.partial, value: r.metrics[s.pooled].value}))
+  .map(r => ({...r, date: new Date(`${r.day}T12:00:00Z`)}))
 ```
 
 ```{ojs}
 //| echo: false
 guard(() => {
   if (days.length === 0) return noData();
+  if (period === "hour") {
+    const hourly = qperiods?.grains?.hour?.pooled;
+    const pooled = series.filter(s => hourly?.metrics?.[s.pooled]?.length);
+    const none = series.filter(s => !pooled.includes(s)).map(s => s.title.toLowerCase());
+    if (pooled.length === 0) return emptyNote("unavailable", "The figures by hour");
+    const span = hourly.first_service_date === hourly.last_service_date ? `on ${longDate(hourly.last_service_date)}` : `from ${longDate(hourly.first_service_date)} to ${longDate(hourly.last_service_date)}`;
+    return html`<p class="note">By the hour each trip or departure was scheduled, in Pacific time, ${span}. Not measured by hour: ${none.join("; ")}.</p>
+      <div class="chart-grid small">${pooled.map(s => {
+        const rows = hourly.metrics[s.pooled].map(r => ({...r, label: hourLabel(r.hour)}));
+        return ch.figure({
+          title: s.title,
+          chart: ch.bars(rows, {category: "label", value: "value", upright: true, format: fmtShare, ariaLabel: `${s.title}, by scheduled hour`,
+            tip: d => `${d.label}\n${fmtShare(d.value)}\n${count(d.numerator)} of ${count(d.denominator)}`}),
+        });
+      })}</div>${howMeasured}`;
+  }
+  if (period === "week" || period === "month") {
+    const drawn = series.filter(s => s.pooled && periodRows(s, period).length);
+    const none = series.filter(s => !drawn.includes(s)).map(s => s.title.toLowerCase());
+    if (drawn.length === 0) return emptyNote("unavailable", `The figures by ${period}`);
+    return html`<p class="note">Each ${period} pools its service days: the ${period}'s seen trips over its scheduled trips, and so on, so a busier day counts for more.${none.length ? ` Shown by day only: ${none.join("; ")}.` : ""}</p>
+      <div class="chart-grid small">${drawn.map(s => {
+        const rows = periodRows(s, period);
+        return rows.length < 2
+          ? ch.figure({title: s.title, value: say(s, rows[0].value), chart: html`<p class="empty">${rows[0].label}${rows[0].partial ? " (part)" : ""}: ${say(s, rows[0].value)}. A line appears once a second ${period} comes in.</p>`})
+          : ch.figure({
+              title: s.title, value: say(s, rows.at(-1).value),
+              chart: ch.trend(rows, {y: "value", share: !!s.share, height: 150, maxTicks: 4,
+                ariaLabel: `${s.title}, by ${period}`, describe: `Latest ${period}: ${say(s, rows.at(-1).value)}.`,
+                tip: d => `${d.label}${d.partial ? " (part)" : ""}\n${say(s, d.value)}`}),
+                });
+      })}</div>${howMeasured}`;
+  }
   if (days.length < 2) return emptyNote("one-day", "Charts that follow each measure over time");
   const shown = recentDays(days, showAll);
-  const say = (s, v) => s.share ? pct(v, 1) : unit(v, s.word, 1);
-  return html`<div class="chart-grid">${series.map(s => ch.figure({
+  return html`<div class="chart-grid small">${series.map(s => ch.figure({
     title: s.title, value: say(s, days.at(-1)[s.key]),
     chart: ch.trend(shown, {
-      y: s.key, share: !!s.share, height: 200, maxTicks: 5, yLabel: s.share ? null : `${s.word}s`,
+      y: s.key, share: !!s.share, height: 150, maxTicks: 4, yLabel: s.share ? null : `${s.word}s`,
       ariaLabel: `${s.title}, by service day`,
       describe: `From ${longDate(shown[0].day)} to ${longDate(latestDate)}. Latest value: ${say(s, days.at(-1)[s.key])}. Every day's value is in the table under "All days".`,
       tip: d => `${longDate(d.day)}\n${say(s, d[s.key])}`,
     }),
-  }))}</div>`;
+  }))}</div>${howMeasured}`;
 }, "The charts over time")
 ```
 :::
