@@ -27,6 +27,7 @@ on:
 
 permissions:
   contents: write
+  actions: write # redeploy the site after publishing
 
 concurrency:
   group: compare
@@ -134,3 +135,8 @@ jobs:
           python -m pipeline.compare --data data-branch
       - name: Publish
         run: scripts/publish_data.sh "Comparison samples:"
+      # The site copies compare/summary.json at build time; without this the
+      # new samples would wait for a nightly run that changes data itself.
+      - name: Redeploy the site with the new comparisons
+        if: env.DATA_CHANGED == '1'
+        run: gh workflow run pages.yml --repo "$GITHUB_REPOSITORY" --ref main
