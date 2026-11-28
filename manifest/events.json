@@ -5,7 +5,7 @@
   "2026-11-19": {
    "service_date": "2026-11-19",
    "events_version": "events/0.6.0",
-   "ontime_version": "ontime/0.6.0",
+   "ontime_version": "ontime/0.7.0",
    "validate_version": "validate/0.3.0",
    "service_expected": true,
    "passio_version": "passio-9b1efa882037",
@@ -30,8 +30,8 @@
     }
    ],
    "release_tag": "parsed-2026-11",
-   "built_at": "2026-11-28T02:57:09+00:00",
-   "code_sha": "9391670124a6deb5872b16265817af23716155b3"
+   "built_at": "2026-11-28T03:23:28+00:00",
+   "code_sha": "21a2c711005a5c5a90912f374228bebec2e4cbb2"
   },
   "2026-11-20": {
    "service_date": "2026-11-20",
