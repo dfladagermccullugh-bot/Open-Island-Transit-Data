@@ -41,6 +41,12 @@ Each rule has a number, used in the messages and in ``docs/methods.md``:
   its worst-case range follows its counts, and its weighted share is
   recomputed from its cells, each the sum of its members in the day files;
   a day's untimed reasons match its quality file when no trip was canceled.
+  Since ``periods/0.4.0``: ``ontime/highlights.json`` covers the headline's
+  window; each route and time of day it considered is the sum of its days
+  (``by_route``, ``by_cell``), the ones it names as running late follow its
+  rule (enough departures, interval wholly below the system, lowest first,
+  at most three), each ferry terminal is the sum of its stop's days; and the
+  headline's ``since`` is the sum of every day file and ``manifest/raw.json``.
 - I9: every scheduled stop of every tracked trip has one stop event, in stop
   order, with statuses from the known set; a relay (``events/0.6.0``) names
   a second vehicle, not the first, with reports inside the trip's window.
@@ -506,6 +512,7 @@ def check_periods(
             res.problem("I8", "headline.json: counts are not the sum of its days")
         check_block(res, "headline.json current", head["current"], extra_shares=True)
         check_headline_ranges(res, head["current"], want)
+    check_highlights(res, data, ontime, head)
     if periods is not None:
         grains = periods["grains"]
         for row in grains.get("day", []):
@@ -539,6 +546,94 @@ def check_periods(
                     if "numerator" in m and m["value"] != share(m["numerator"], m["denominator"]):
                         res.problem("I8", f"quality periods {grain} {row['period']} {name}: "
                                     "value does not follow its counts")  # fmt: skip
+
+
+def check_highlights(
+    res: Result, data: Path, ontime: list[dict[str, Any]], head: dict[str, Any] | None
+) -> None:
+    """I8, since ``periods/0.4.0``: ``ontime/highlights.json`` and the
+    headline's ``since`` reconcile with the day files (``check_periods``)."""
+    if head is not None and "since" in head:
+        s = head["since"]
+        raw = (load_json(data / "manifest" / "raw.json") or {}).get("days", {})
+        dates = {d["service_date"] for d in ontime}
+        service = [d for d in ontime if d.get("service_expected", True)]
+        want = {
+            "first_service_date": ontime[0]["service_date"] if ontime else None,
+            "last_service_date": ontime[-1]["service_date"] if ontime else None,
+            "days": len(ontime),
+            "service_days": len(service),
+            "departures_scheduled": sum(d.get("scheduled", 0) for d in service),
+            "departures_timed": sum(d.get("observed", 0) for d in service),
+            "departures_on_time": sum(d.get("on_time", 0) for d in service),
+            "feed_responses_archived": sum(
+                v.get("ok_rows", 0) for k, v in raw.items() if k in dates
+            ),
+        }
+        if {k: s.get(k) for k in want} != want:
+            res.problem("I8", "headline.json: 'since' is not the sum of the day files")
+    high = load_json(data / "ontime" / "highlights.json")
+    if high is None:
+        return
+    if head is not None and (high["first_service_date"], high["last_service_date"]) != (
+        head["first_service_date"],
+        head["last_service_date"],
+    ):
+        res.problem("I8", "highlights.json: its window is not the headline's")
+    first, last = high["first_service_date"], high["last_service_date"]
+    window = [d for d in ontime if d.get("service_expected", True)
+              and first <= d["service_date"] <= last]  # fmt: skip
+    if high.get("days") != len(window):
+        res.problem("I8", "highlights.json: its count of days is not its window's")
+    sys_ = high["system"]
+    obs, on = sum(d.get("observed", 0) for d in window), sum(d.get("on_time", 0) for d in window)
+    if (sys_["observed"], sys_["on_time"]) != (obs, on) or sys_[
+        "on_time_share_of_observed"
+    ] != share(on, obs, 4):
+        res.problem("I8", "highlights.json: the system figure is not the sum of its days")
+    late = high.get("running_late")
+    if late is not None:
+        for g in late["groups"]:
+            where = f"highlights.json: {g['kind']} {g['key']}"
+            if g["kind"] == "route":
+                blocks = [(d.get("by_route") or {}).get(g["key"]) or {} for d in window]
+                got = (sum(b.get("observed", 0) for b in blocks),
+                       sum(b.get("on_time", 0) for b in blocks))  # fmt: skip
+            else:
+                cells = [v for d in window for c, v in (d.get("by_cell") or {}).items()
+                         if c.rsplit("|", 2)[1] == g["key"]]  # fmt: skip
+                got = (sum(v[1] for v in cells), sum(v[2] for v in cells))
+            if got != (g["observed"], g["on_time"]):
+                res.problem("I8", f"{where}: not the sum of its days")
+            if g["on_time_share_of_observed"] != share(g["on_time"], g["observed"], 4):
+                res.problem("I8", f"{where}: its share does not follow its counts")
+            iv = g["interval95"]
+            below = bool(iv and iv["high"] < sys_["on_time_share_of_observed"])
+            if g["observed"] < high["min_observed"] or g["below_system"] != below:
+                res.problem("I8", f"{where}: does not follow the rule for running late")
+        want_items = sorted(
+            (g for g in late["groups"] if g["below_system"]),
+            key=lambda g: (g["on_time_share_of_observed"], g["kind"], g["key"]),
+        )[: high["max_items"]]
+        if [(i["kind"], i["key"]) for i in late["items"]] != [
+            (g["kind"], g["key"]) for g in want_items
+        ] or late["items"] != want_items:
+            res.problem("I8", "highlights.json: the routes and times named are not the rule's")
+    for t in high.get("ferry_terminals", []):
+        total: Counter = Counter()
+        for r in t["routes"]:
+            stops = [((d.get("by_route_stop") or {}).get(r["route_id"]) or {}).get(t["stop_id"])
+                     for d in window]  # fmt: skip
+            counts = {k: sum((b or {}).get(k, 0) for b in stops)
+                      for k in ("scheduled", "observed", "on_time")}  # fmt: skip
+            if counts != {k: r[k] for k in counts}:
+                res.problem("I8", f"highlights.json: ferry stop {t['stop_id']} route "
+                            f"{r['route_id']} is not the sum of its days")  # fmt: skip
+            total.update(counts)
+        if any(t[k] != total[k] for k in ("scheduled", "observed", "on_time")) or t[
+            "on_time_share_of_observed"
+        ] != share(t["on_time"], t["observed"], 4):
+            res.problem("I8", f"highlights.json: ferry stop {t['stop_id']} does not add up")
 
 
 def _reason_sum(blocks: Iterable[dict[str, int]]) -> dict[str, int]:

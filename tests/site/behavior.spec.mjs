@@ -715,3 +715,120 @@ test.describe("the footer", () => {
       "Last independent rebuild: 2 days (November 19, 2026, November 20, 2026) rebuilt from raw on November 22, 2026, every file identical.");
   });
 });
+
+test.describe("finding a route or a stop from the home page", () => {
+  test("is a combobox that lists routes and stops and goes to the one picked", async ({page, problems}) => {
+    await open(page, "index");
+    const box = page.getByRole("combobox", {name: "Find a route or a stop"});
+    await expect(box).toBeEnabled();
+    await expect(box).toHaveAttribute("aria-expanded", "false");
+    await box.fill("60");
+    await expect(box).toHaveAttribute("aria-expanded", "true");
+    const list = page.getByRole("listbox", {name: "Routes and stops"});
+    await expect(list.getByRole("option").first()).toContainText("Route 60");
+    await expect(page.locator(".jump-status")).toContainText("Use the arrow keys");
+    await box.press("Enter");
+    await expect(page).toHaveURL(/routes\.html#60$/);
+    await expect(page.locator("#route-select")).toHaveValue("7922");
+    await expectClean(page, problems);
+  });
+
+  test("works from the keyboard alone: arrows, Enter and Escape", async ({page}) => {
+    await open(page, "index");
+    const box = page.getByRole("combobox", {name: "Find a route or a stop"});
+    await expect(box).toBeEnabled();
+    await box.focus();
+    await page.keyboard.type("clinton f");
+    const options = page.getByRole("option");
+    await expect(options.first()).toContainText("Clinton Ferry Terminal");
+    await page.keyboard.press("Escape");
+    await expect(box).toHaveAttribute("aria-expanded", "false");
+    await expect(box).toHaveValue("clinton f");
+    await page.keyboard.press("ArrowDown");
+    await expect(box).toHaveAttribute("aria-expanded", "true");
+    const first = options.first();
+    await expect(first).toHaveAttribute("aria-selected", "true");
+    await expect(box).toHaveAttribute("aria-activedescendant", await first.getAttribute("id"));
+    await page.keyboard.press("Enter");
+    await expect(page).toHaveURL(/stops\.html#178409$/);
+    await expect(page.locator("#stop-pick")).toHaveValue("178409");
+  });
+
+  test("a second Escape clears the box, and a stop is found by part of its name", async ({page}) => {
+    await open(page, "index");
+    const box = page.getByRole("combobox", {name: "Find a route or a stop"});
+    await expect(box).toBeEnabled();
+    await box.fill("coupeville ferry");
+    await expect(page.getByRole("option", {name: /Engle Rd at Coupeville Ferry Terminal/})).toHaveCount(1);
+    await box.press("Escape");
+    await box.press("Escape");
+    await expect(box).toHaveValue("");
+    await box.fill("zzzz");
+    await expect(box).toHaveAttribute("aria-expanded", "false");
+    await expect(page.locator(".jump-status")).toHaveText("No route or stop matches.");
+  });
+
+  test("the Stops page follows its address when only the part after # changes", async ({page}) => {
+    await open(page, "stops", {hash: "#178409"});
+    await expect(page.locator("#stop-pick")).toHaveValue("178409");
+    await page.evaluate(() => { location.hash = "#178134"; });
+    await expect(page.locator("#stop-pick")).toHaveValue("178134");
+    await expect(page.locator(".ferry-callout")).toContainText("Coupeville ferry terminal");
+  });
+});
+
+test.describe("highlights on the home page", () => {
+  test("names what ran clearly worse, with its range, and how they are picked", async ({page}) => {
+    await open(page, "index");
+    const late = page.locator(".slot-late");
+    await expect(late).toContainText("Of all the departures we timed over the 2 days with service to November 20, 2026, 68% were on time. These ran clearly worse:");
+    const items = late.locator(".late-list li");
+    await expect(items).toHaveCount(3);
+    await expect(items.nth(0)).toContainText("Route 60");
+    await expect(items.nth(0)).toContainText("43% on time, very likely between");
+    await expect(items.nth(0).locator("a")).toHaveAttribute("href", "routes.html#60");
+    await expect(items.nth(2)).toContainText("Buses due 3 to 6 PM");
+    await expect(late.locator("a", {hasText: "How we pick these"})).toHaveAttribute("href", "methods.html#running-late-and-the-ferry-terminals");
+  });
+
+  test("says so when nothing ran clearly worse", async ({page}) => {
+    await useScenario(page, "nothing-late");
+    await open(page, "index");
+    await expect(page.locator(".slot-late")).toContainText("No route and no time of day ran clearly worse than that.");
+    await expect(page.locator(".slot-late .late-list")).toHaveCount(0);
+  });
+
+  test("says how long we have been tracking", async ({page}) => {
+    await open(page, "index");
+    await expect(page.locator(".slot-headline .since")).toHaveText(
+      "Updated daily. Tracking since November 19, 2026. 3,492 departures timed so far.");
+  });
+});
+
+test.describe("ferries", () => {
+  test("routes that stop at a ferry terminal carry a tag", async ({page}) => {
+    await open(page, "index");
+    const links = page.locator(".route-links");
+    for (const n of ["1", "58", "60", "6"]) {
+      const a = links.getByRole("link", {name: new RegExp(`^Route ${n}:`)});
+      await expect(a).toHaveAccessibleName(/Stops at the (Clinton|Coupeville) ferry terminal$/);
+      await expect(a.locator(".ferry-tag")).toHaveCount(1);
+    }
+    await expect(links.getByRole("link", {name: /^Route 10:/}).locator(".ferry-tag")).toHaveCount(0);
+    await open(page, "routes", {hash: "#58"});
+    const title = page.locator(".route-title");
+    await expect(title.locator(".ferry-tag")).toContainText("Ferry");
+    await expect(page.locator("#route-detail")).toContainText("This route stops at the Clinton ferry terminal: Clinton Ferry Terminal, for the Mukilteo/Clinton ferry.");
+  });
+
+  test("a terminal's stop page says how its buses did", async ({page}) => {
+    await open(page, "stops", {hash: "#178409"});
+    const note = page.locator(".ferry-callout");
+    await expect(note).toContainText("Ferry terminal for the Mukilteo/Clinton ferry.");
+    await expect(note).toContainText("Of the 178 buses we timed at the Clinton ferry terminal over the last 2 days with service, to November 20, 2026, 63% were on time, from 1 minute early to 5 minutes late.");
+    await expect(note).toContainText("Route 1 ends here, so we time its arrival");
+    await expect(note).toContainText("For routes 58 and 60 we time the bus as it leaves.");
+    await page.locator("#stop-pick").selectOption("178376");
+    await expect(page.locator(".ferry-callout")).toHaveCount(0);
+  });
+});

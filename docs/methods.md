@@ -495,6 +495,39 @@ same file, from `untimed`, `by_cell` and `by_trip_cell` in the on-time day
 files. The publishing rule I8 recomputes the worst-case range and the
 weighted share from the day files.)
 
+### Running late and the ferry terminals
+
+Since November 28, 2026, the home page names what ran clearly worse than
+the system as a whole over the same 28 days with service as the headline.
+We look at each route and at each of the five times of day used above
+(before 7 AM, 7 to 9 AM, 9 AM to 3 PM, 3 to 6 PM, and from 6 PM). Each
+needs at least 10 timed departures. For each one we find a range for its
+on-time share the same way as for the headline, by drawing its whole trips
+2,000 times. A route or time of day is named only when the top of that
+range is still below the system's share, so chance alone is unlikely to
+explain the difference. We name at most three, lowest share first, and
+when none qualifies the page says that nothing ran clearly worse than
+usual. A route can be named and so can the time of day when most of its
+trips run. Because the system's share includes the group being compared,
+this test leans toward naming nothing.
+
+The ferry terminals are the stops at Clinton (for the Mukilteo ferry) and
+at Coupeville (for the Port Townsend ferry), listed with the bus routes
+that serve them in `reference/ferry-terminals.csv`. On each terminal's
+stop page we give the share of the buses we timed there that were on time
+over the same 28 days, by the headline's rule: at a route's last stop we
+time the arrival, and arriving early counts as on time; elsewhere we time
+the departure. We do not yet check whether a bus met a particular sailing.
+
+The line under the headline counts the whole archive: the first day we
+have, the days with service since then, and the departures we have timed.
+
+(Code: `pipeline/periods.py`, `running_late`, `pick_late`, `ferry_block`
+and `since`, from `by_trip_cell` and `by_route_stop` in the on-time day
+files; output `ontime/highlights.json` and `since` in
+`ontime/headline.json`. The publishing rule I8 recomputes every count from
+the day files and checks the choice of the routes and times named.)
+
 ## 5. Validation
 
 Three checks back up the inferred times and the on-time figures.

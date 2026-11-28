@@ -458,6 +458,46 @@ deviation comes from every pooled deviation (`deviations_s`, kept by hour
 in the day files since `ontime/0.4.1`). The publishing rule I8 checks that
 each of these equals the sum of its days.
 
+Since `periods/0.4.0` (November 28, 2026), `headline.json` also has
+`since`, the whole archive for the line under the headline:
+`first_service_date` and `last_service_date` (the first and last day
+files), `days` and `service_days`, `departures_scheduled`,
+`departures_timed` and `departures_on_time` (summed over every service
+day), and `feed_responses_archived` (the `ok_rows` of `manifest/raw.json`
+for the same days: every saved answer of the three live feeds).
+
+### `ontime/highlights.json`
+
+Since `periods/0.4.0` (November 28, 2026), written by `pipeline/periods.py`
+over the same window as `headline.json` (`first_service_date`,
+`last_service_date`, `days`, at most `window_service_days`). `system` holds the window's
+timed departures (`observed`), those on time (`on_time`) and their share.
+
+`running_late` says which routes and times of day ran clearly worse than
+the system (`docs/methods.md`, section 4, "Running late"). `groups` lists
+every route (`kind` `route`, `key` the route id, with `short_name` and
+`long_name`) and time of day (`kind` `time_of_day`, `key` one of `early`,
+`morning`, `midday`, `afternoon`, `evening`, with `hours`, the first hour
+and the hour after the last, Pacific time; `band_hours` lists them all)
+with at least `min_observed` (10) timed departures: `observed`, `on_time`,
+`on_time_share_of_observed`, `interval95` (95% range from 2,000 resamples
+of whole trips: `low`, `high`, `trips`, `resamples`, `method`) and
+`below_system`, true when `interval95.high` is under the system's share.
+`items` holds the groups below the system, lowest share first, at most
+`max_items` (3); it is empty when none is. `running_late` is empty when a
+day in the window was made before `ontime/0.7.0`.
+
+`ferry_terminals` has one entry for each row of
+`reference/ferry-terminals.csv`: `stop_id`, `stop_name`, `terminal`,
+`ferry_route`, `bus_routes` (route numbers as printed), `routes_not_found`
+(numbers the window's day files do not have), the stop's `scheduled`,
+`observed` and `on_time` departures summed over those routes and the
+window, `on_time_share_of_observed`, and `routes`, the same counts for each
+route with its `position` in the trip (`first` and `middle`: departures;
+`last`: arrivals, where arriving early counts as on time, as in the
+headline). The publishing rule I8 checks every count against the day files
+and the choice of `items` against its rule.
+
 ## `maps/<passio version>__timetable-<date>-<hash>.json`
 
 `pipeline/gtfs/routemap.py` writes one of these for each timepoints folder.

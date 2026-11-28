@@ -159,13 +159,13 @@
    "hash": "29bb8f3f6509dd6e34e6eeed9fb8ad73d1244e9ab1dd3671826d922826eeb493"
   },
   "periods": {
-   "version": "periods/0.3.0",
+   "version": "periods/0.4.0",
    "constant": "pipeline/periods.py::PERIODS_VERSION",
    "sources": [
     "pipeline/periods.py",
     "pipeline/stats.py"
    ],
-   "hash": "dd68f451440ff35a9e3198ab9e46249e66cad0d87e018c4f72fb374c578a282c"
+   "hash": "a1331a458ac705a0ed2f2d15f53fa9e99577d35b56ef5adf81d9e9fafdc4d533"
   },
   "compare": {
    "version": "compare/0.3.0",

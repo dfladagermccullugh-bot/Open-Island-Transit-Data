@@ -1,5 +1,5 @@
 {
- "periods_version": "periods/0.3.0",
+ "periods_version": "periods/0.4.0",
  "window_service_days": 28,
  "first_service_date": "2026-11-24",
  "last_service_date": "2026-11-25",
@@ -147,5 +147,15 @@
    "on_time_share_of_observed": 1.0,
    "observed_share": 1.0
   }
- ]
+ ],
+ "since": {
+  "first_service_date": "2026-11-24",
+  "last_service_date": "2026-11-26",
+  "days": 3,
+  "service_days": 2,
+  "departures_scheduled": 24,
+  "departures_timed": 21,
+  "departures_on_time": 16,
+  "feed_responses_archived": 2044
+ }
 }

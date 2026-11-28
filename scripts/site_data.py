@@ -29,6 +29,7 @@ OPTIONAL = (
     "files.csv",
     "datapackage.json",
     "ontime/headline.json",
+    "ontime/highlights.json",
     "ontime/periods.json",
     "quality/periods.json",
     "quality/notes.json",

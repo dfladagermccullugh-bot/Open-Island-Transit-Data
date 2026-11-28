@@ -194,3 +194,118 @@ def test_one_list_of_untimed_reasons():
     cols = [n.removeprefix("untimed_") for n, _ in QUALITY_HEADLINE if n.startswith("untimed_")]
     assert tuple(cols) == UNTIMED_REASONS == periods.UNTIMED_REASONS
     assert set(UNTIMED_REASONS) < set(periods.REASON_NAMES)
+
+
+# --- highlights and since (periods/0.4.0) ------------------------------------------
+
+
+def _late_days(n=5):
+    """Route A on time 9 of 10 at midday, route B 2 of 10 in the evening."""
+    trips = {f"A{k}": {"A|midday|middle": [10, 10, 9]} for k in range(10)}
+    trips |= {f"B{k}": {"B|evening|middle": [10, 10, 2]} for k in range(10)}
+    days = []
+    for x in run_of(n):
+        d = _with_cells(x, trips)
+        d["by_route"] = {"A": {"observed": 100, "on_time": 90},
+                         "B": {"observed": 100, "on_time": 20}}  # fmt: skip
+        d["routes"] = {"A": {"short_name": "1", "long_name": "One"},
+                       "B": {"short_name": "58", "long_name": "Fifty-eight"}}  # fmt: skip
+        d["by_route_stop"] = {"B": {"FERRY": {"scheduled": 10, "observed": 8, "on_time": 6,
+                                              "position": "last"}}}  # fmt: skip
+        days.append(d)
+    return days
+
+
+FERRY = [{"stop_id": "FERRY", "stop_name": "Ferry", "terminal": "Clinton",
+          "ferry_route": "Mukilteo/Clinton", "bus_routes": "58 99"}]  # fmt: skip
+
+
+def test_highlights_name_what_is_clearly_below_the_system_and_repeat_exactly():
+    days = _late_days()
+    h = periods.highlights(days, FERRY)
+    assert h == periods.highlights(days, FERRY)
+    assert h["system"] == {"observed": 1000, "on_time": 550, "on_time_share_of_observed": 0.55}
+    late = h["running_late"]
+    # Route B (20%) and the evening (the same departures) are named; route A
+    # and midday (90%) are not.
+    named = [(i["kind"], i["key"]) for i in late["items"]]
+    assert named == [("route", "B"), ("time_of_day", "evening")]
+    assert late["items"][0]["short_name"] == "58" and late["items"][1]["hours"] == [18, 24]
+    assert all(i["interval95"]["high"] < 0.55 for i in late["items"])
+    assert {g["key"]: g["below_system"] for g in late["groups"]} == {
+        "A": False, "B": False, "midday": False, "evening": True} | {"B": True}  # fmt: skip
+
+
+def test_highlights_need_enough_departures_and_name_at_most_three():
+    trips = {f"T{r}{k}": {f"{r}|midday|middle": [1, 1, 0 if r != "OK" else 1]}
+             for r in ("OK", "W", "X", "Y", "Z") for k in range(30)}  # fmt: skip
+    trips |= {"S": {"S|evening|middle": [9, 9, 0]}}  # 9 departures: too few to name
+    days = [_with_cells(x, trips) for x in run_of(1)]
+    late = periods.highlights(days, [])["running_late"]
+    assert len(late["items"]) == 3
+    assert all(i["kind"] == "route" and i["key"] in "WXYZ" for i in late["items"])
+    assert "S" not in {g["key"] for g in late["groups"]}
+
+
+def test_nothing_is_named_when_nothing_is_clearly_worse():
+    trips = {f"T{k}": {f"{'AB'[k % 2]}|midday|middle": [4, 4, 3]} for k in range(40)}
+    late = periods.highlights([_with_cells(x, trips) for x in run_of(3)], [])["running_late"]
+    assert late["items"] == [] and len(late["groups"]) == 3
+
+
+def test_ferry_terminals_sum_their_routes_and_say_which_are_missing():
+    (t,) = periods.highlights(_late_days(), FERRY)["ferry_terminals"]
+    assert (t["observed"], t["on_time"], t["on_time_share_of_observed"]) == (40, 30, 0.75)
+    assert t["routes"] == [{"route_id": "B", "short_name": "58", "position": "last",
+                            "scheduled": 50, "observed": 40, "on_time": 30}]  # fmt: skip
+    assert t["routes_not_found"] == ["99"]
+
+
+def test_the_reference_list_of_ferry_terminals():
+    rows = periods.read_ferry_terminals()
+    assert {r["terminal"]: r["bus_routes"].split() for r in rows} == {
+        "Clinton": ["1", "58", "60"], "Coupeville": ["6"]}  # fmt: skip
+
+
+def test_since_covers_the_whole_archive():
+    days = run_of(30)
+    days[3]["service_expected"] = False
+    raw = {d["service_date"]: {"ok_rows": 100} for d in days} | {"2027-01-01": {"ok_rows": 7}}
+    s = periods.headline(days, raw)["since"]
+    assert s == {"first_service_date": "2026-11-02", "last_service_date": "2026-12-01",
+                 "days": 30, "service_days": 29, "departures_scheduled": 29 * 12,
+                 "departures_timed": 290, "departures_on_time": 232,
+                 "feed_responses_archived": 3000}  # fmt: skip
+
+
+def test_i8_checks_the_highlights_and_since(tmp_path):
+    data = tmp_path / "data-branch"
+    shutil.copytree(GOLDEN, data)
+    assert (data / "ontime" / "highlights.json").exists()
+    assert [p for p in inv.run(data, light_only=True).problems if p.startswith("I8")] == []
+
+    def broken(path, change):
+        shutil.rmtree(data)
+        shutil.copytree(GOLDEN, data)
+        obj = json.loads((data / path).read_text())
+        change(obj)
+        (data / path).write_text(json.dumps(obj))
+        return [p for p in inv.run(data, light_only=True).problems if p.startswith("I8")]
+
+    def more_timed(h):
+        h["since"]["departures_timed"] += 1
+
+    def wrong_group(h):
+        h["running_late"]["groups"][0]["on_time"] += 1
+
+    def named_anyway(h):
+        g = h["running_late"]["groups"][0]
+        h["running_late"]["items"] = [{**g, "below_system": True}]
+
+    def ferry_off(h):
+        h["ferry_terminals"][0]["on_time"] += 1
+
+    assert any("since" in p for p in broken("ontime/headline.json", more_timed))
+    assert any("not the sum" in p for p in broken("ontime/highlights.json", wrong_group))
+    assert broken("ontime/highlights.json", named_anyway)
+    assert any("ferry" in p for p in broken("ontime/highlights.json", ferry_off))

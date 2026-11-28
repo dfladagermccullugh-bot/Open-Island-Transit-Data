@@ -19,13 +19,15 @@ move over a whole day, see [Replay a day](replay.qmd).
 ```{ojs}
 //| echo: false
 //| output: false
-import {json, pct, count, band, routeTitle, routeSub, routeOrder, routeSlug, routeFromHash, lateness, plural, longDate, routeMap, withDates, bandIcon, bandTag, bandLegend, emptyNote, guard, stats, h, MIN_OBSERVED, DATA_URL, DATA_RAW_URL} from "./lib.js"
+import {json, pct, count, band, routeTitle, routeSub, routeOrder, routeSlug, routeFromHash, lateness, plural, longDate, routeMap, withDates, bandIcon, bandTag, bandLegend, emptyNote, guard, stats, h, MIN_OBSERVED, DATA_URL, DATA_RAW_URL, ferryRoutes, ferryTag, ferryWhere} from "./lib.js"
 import {drawRouteMap, routeSummary} from "./map.js"
 import {makeCharts} from "./charts.js"
 import {Plot} from "./vendor/plot-0.6.11/plot.js"
 ch = makeCharts({Plot})
 L = require(new URL("vendor/leaflet-1.9.4/leaflet.js", document.baseURI).href)
 recent = json("data/ontime/recent.json")
+high = json("data/ontime/highlights.json")
+ferry = ferryRoutes(high)
 mapData = routeMap(recent?.timepoints)
 routeList = mapData == null || !Array.isArray(mapData.routes) ? [] : mapData.routes
   .map(r => ({...r, stats: recent?.routes?.[r.route_id] ?? null}))
@@ -184,7 +186,7 @@ overview = () => {
       sort: {key: "seen", descending: true}, pageSize: 40,
       columns: [
         {key: "name", label: "Route", sortValue: r => routeList.indexOf(r.route),
-         format: (v, r) => h("a", {href: `#${routeSlug(r.route, r.route.route_id)}`}, v)},
+         format: (v, r) => h("span", {}, h("a", {href: `#${routeSlug(r.route, r.route.route_id)}`}, v), ferryTag(ferry.get(r.route.route_id)))},
         {key: "where", label: "Serves"},
         {key: "on_time", label: "On time", align: "right", format: v => pct(v)},
         {key: "typical", label: "Typical departure", align: "right", format: v => lateness(v)},
@@ -195,7 +197,9 @@ overview = () => {
 }
 
 detail = (r, s) => {
-  const title = html`<h2 class="route-title">${routeTitle(r)} <span class="route-sub">${routeSub(r)}</span></h2>`;
+  const terminals = ferry.get(r.route_id);
+  const ferryNote = terminals ? html`<p class="note">This route stops ${ferryWhere(terminals)}: ${terminals.map((t, i) => html`${i ? " and " : ""}<a href="stops.html#${encodeURIComponent(t.stop_id)}">${t.stop_name}</a>`)}, for the ${terminals.map(t => t.ferry_route).join(" and ")} ${terminals.length === 1 ? "ferry" : "ferries"}.</p>` : "";
+  const title = html`<h2 class="route-title">${routeTitle(r)} <span class="route-sub">${routeSub(r)}</span>${ferryTag(terminals)}</h2>${ferryNote}`;
   if (s == null) return html`${title}
     <p class="empty">None of this route's timepoint departures were scheduled during this period.</p>`;
   const b = band(s.on_time_share_of_observed, s.observed);

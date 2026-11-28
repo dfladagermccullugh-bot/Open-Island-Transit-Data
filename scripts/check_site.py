@@ -26,7 +26,8 @@ from pathlib import Path
 # Quarto makes each id from the heading's words, so renaming a heading breaks
 # its links; this list makes that fail the site check.
 METHOD_ANCHORS = ("collection", "feed-quality-metrics", "arrival-and-departure-times",
-                  "on-time-performance", "how-sure-we-are", "validation",
+                  "on-time-performance", "how-sure-we-are",
+                  "running-late-and-the-ferry-terminals", "validation",
                   "comparisons")  # fmt: skip
 PAGES = (
     "index",

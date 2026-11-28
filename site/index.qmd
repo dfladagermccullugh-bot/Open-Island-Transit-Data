@@ -10,6 +10,18 @@ include-in-header:
 ::: {.hero}
 # How on time are Island Transit's buses?
 
+```{=html}
+<div class="jump" id="jump" role="search" aria-label="Routes and stops">
+  <label for="jump-input">Find a route or a stop</label>
+  <div class="jump-field">
+    <input id="jump-input" type="text" role="combobox" aria-autocomplete="list" aria-expanded="false" aria-controls="jump-list" aria-describedby="jump-help" autocomplete="off" spellcheck="false" placeholder="A route number or a stop name" disabled>
+    <ul id="jump-list" role="listbox" aria-label="Routes and stops" hidden></ul>
+  </div>
+  <p class="jump-help note" id="jump-help">Type, then pick from the list with the arrow keys and Enter.</p>
+  <p class="jump-status visually-hidden" role="status"></p>
+</div>
+```
+
 ::::: {.slot-headline}
 ```{ojs}
 //| echo: false
@@ -38,6 +50,7 @@ guard(() => {
         <span class="note">A bus counts as on time if it leaves from 1 minute early to 5 minutes late.${scRecent ? ` ${scNote}` : ""}</span></p>
         ${counts}
         ${change ? html`<p class="change">${spark}<span>${change}</span></p>` : ""}
+        ${useHead ? sinceLine(head.since) : ""}
       </div>
     </div>
     ${splitBar(o)}
@@ -68,8 +81,12 @@ those saved reports to figure out how often the buses leave on time.]{.lede}
 ```{ojs}
 //| echo: false
 //| output: false
-import {json, pct, count, lateness, longDate, routeMap, routeSlug, routeOrder, routeTitle, band, bandIcon, bandLegend, emptyNote, guard, stats, h, sparkline, splitBar, fmtShare, longName, reasonBars} from "./lib.js"
+import {json, pct, count, lateness, longDate, routeMap, routeSlug, routeOrder, routeTitle, routeSub, band, bandIcon, bandLegend, emptyNote, guard, stats, h, sparkline, splitBar, fmtShare, longName, reasonBars, ferryRoutes, ferryTag, ferryWhere, sinceLine, timeOfDay} from "./lib.js"
 import {drawRouteMap, routeSummary} from "./map.js"
+import {jumpBox, jumpItems} from "./jump.js"
+high = json("data/ontime/highlights.json")
+stopIndex = json("data/views/stops/index.json")
+ferry = ferryRoutes(high)
 recent = json("data/ontime/recent.json")
 head = json("data/ontime/headline.json")
 notes = json("data/quality/notes.json")
@@ -114,6 +131,40 @@ howSure = (c, days, extra) => {
 ```
 
 
+## Running late {#running-late}
+
+::: {.slot-late}
+```{ojs}
+//| echo: false
+// The routes and times of day that ran clearly worse than all buses over the
+// headline's 28 days (ontime/highlights.json, pipeline/periods.py).
+guard(() => {
+  const late = high?.running_late;
+  if (late == null) return emptyNote("unavailable", "This list");
+  const all = high.system?.on_time_share_of_observed;
+  const days = high.first_service_date === high.last_service_date ? `on ${longDate(high.last_service_date)}`
+    : `over the ${high.days} days with service to ${longDate(high.last_service_date)}`;
+  const routes = mapData?.routes ?? [];
+  const item = i => {
+    const iv = i.interval95;
+    const range = iv ? `, very likely between ${pct(iv.low)} and ${pct(iv.high)}` : "";
+    const fig = `${pct(i.on_time_share_of_observed)} on time${range}, of ${count(i.observed)} departures timed`;
+    if (i.kind === "route") {
+      const r = routes.find(x => x.route_id === i.key) ?? {route_id: i.key, short_name: i.short_name, long_name: i.long_name};
+      return h("li", {}, h("a", {href: routeHref(i.key)}, routeTitle(r)), routeSub(r) ? ` (${routeSub(r)})` : "", `: ${fig}`);
+    }
+    return h("li", {}, h("strong", {}, `Buses due ${timeOfDay(i.hours)}`), `: ${fig}`);
+  };
+  const body = late.items.length
+    ? html`<p>Of all the departures we timed ${days}, ${pct(all)} were on time. These ran clearly worse:</p>
+      <ul class="late-list">${late.items.map(item)}</ul>`
+    : html`<p>Of all the departures we timed ${days}, ${pct(all)} were on time. No route and no time of day ran clearly worse than that.</p>`;
+  return html`<div class="late-callout">${body}
+    <p class="note">"Clearly" means that even the top of its likely range is below ${pct(all)}, so chance alone is unlikely to explain it. <a href="methods.html#running-late-and-the-ferry-terminals">How we pick these</a></p></div>`;
+}, "This list")
+```
+:::
+
 ## Every route at a glance
 
 Pick any route on the map or from the list under it to see how it did at
@@ -125,6 +176,14 @@ each stop.
 L = require(new URL("vendor/leaflet-1.9.4/leaflet.js", document.baseURI).href)
 mapData = routeMap(recent?.timepoints)
 routeHref = id => `routes.html#${routeSlug(mapData.routes.find(r => r.route_id === id), id)}`
+// Wire up the jump box once the routes and stops are in.
+jump = {
+  const root = document.getElementById("jump");
+  if (root == null || root.classList.contains("ready")) return null;
+  const routes = [...(mapData?.routes ?? [])].sort(routeOrder);
+  const items = jumpItems({routes, stops: stopIndex?.stops ?? [], routeTitle, routeSub, routeSlug, longName});
+  return items.length ? jumpBox(root, items) : null;
+}
 homeMap = {
   if (mapData == null || !Array.isArray(mapData.routes)) return null;
   const view = drawRouteMap(L, mapData, recent, {
@@ -145,8 +204,10 @@ guard(() => {
   const when = days > 1 ? `, last ${days} days` : days === 1 ? ", latest day" : "";
   const links = [...mapData.routes].sort(routeOrder).map(r => {
     const st = recent?.routes?.[r.route_id];
-    const a = h("a", {href: routeHref(r.route_id), "aria-label": `${routeTitle(r)}: ${routeSummary(st)}`},
-      bandIcon(band(st?.on_time_share_of_observed, st?.observed)), r.short_name || longName(r.long_name) || r.route_id);
+    const terminals = ferry.get(r.route_id);
+    const a = h("a", {href: routeHref(r.route_id), "aria-label": `${routeTitle(r)}: ${routeSummary(st)}${terminals ? `. Stops ${ferryWhere(terminals)}` : ""}`},
+      bandIcon(band(st?.on_time_share_of_observed, st?.observed)), r.short_name || longName(r.long_name) || r.route_id,
+      ferryTag(terminals, {iconOnly: true}));
     for (const on of ["mouseenter", "focus"]) a.addEventListener(on, () => homeMap.highlight(r.route_id));
     for (const off of ["mouseleave", "blur"]) a.addEventListener(off, () => homeMap.highlight(null));
     return h("li", {}, a);

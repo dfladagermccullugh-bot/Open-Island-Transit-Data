@@ -40,6 +40,7 @@ library only, like the publishing gate that checks these files (I8).
 from __future__ import annotations
 
 import argparse
+import csv
 import json
 import sys
 from collections import defaultdict
@@ -49,10 +50,10 @@ from functools import partial
 from pathlib import Path
 from typing import Any
 
-from pipeline.common import DayFiles
+from pipeline.common import DayFiles, load_json
 from pipeline.stats import median, share
 
-PERIODS_VERSION = "periods/0.3.0"  # 0.3.0: untimed reasons, worst-case range, weighted share
+PERIODS_VERSION = "periods/0.4.0"  # 0.4.0: highlights.json (running late, ferries), since
 WINDOW = 28  # service days
 MIN_PREVIOUS = 14  # service days before a "previous window" is shown
 COUNTS = ("scheduled", "observed", "on_time", "early", "late")
@@ -71,6 +72,13 @@ REASON_NAMES = {
     "unknown": "no reason recorded",
 }
 POSITIONS = ("first", "middle", "last")
+MIN_OBSERVED = 10  # timed departures a route or time of day needs to be named (site/lib.js)
+MAX_HIGHLIGHTS = 3  # routes or times of day named as running late
+# The hour bands of the weighting cells (pipeline/events/ontime.py HOUR_BANDS),
+# as the hours they cover, for the page to put in words.
+BAND_HOURS = {"early": [0, 7], "morning": [7, 9], "midday": [9, 15], "afternoon": [15, 18],
+              "evening": [18, 24]}  # fmt: skip
+FERRY_TERMINALS = Path(__file__).resolve().parents[1] / "reference" / "ferry-terminals.csv"
 
 _share = partial(share, digits=4)
 
@@ -117,13 +125,19 @@ def trip_interval(days: list[dict[str, Any]]) -> dict[str, Any] | None:
     draws as many (day, trip) pairs as there are, with replacement; the
     interval runs from the 2.5th to the 97.5th percentile of the shares.
     None when a day has no counts per trip (made before ``ontime/0.5.0``)."""
-    import numpy as np
-
     pairs = []
     for d in days:
         if "by_trip" not in d:
             return None
         pairs += list(d["by_trip"].values())
+    return pair_interval(pairs)
+
+
+def pair_interval(pairs: list[list[int]]) -> dict[str, Any] | None:
+    """The bootstrap of ``trip_interval`` over given ``[observed, on_time]``
+    pairs, one per (day, trip). None for fewer than two trips with a time."""
+    import numpy as np
+
     pairs = [p for p in pairs if p[0] > 0]
     if len(pairs) < 2:
         return None
@@ -181,7 +195,9 @@ def _partial(key: str, grain: str, first: date, last: date) -> bool:
     return start < first or end > last
 
 
-def headline(days: list[dict[str, Any]]) -> dict[str, Any] | None:
+def headline(
+    days: list[dict[str, Any]], raw_days: dict[str, Any] | None = None
+) -> dict[str, Any] | None:
     service = [d for d in days if _service(d)]
     if not service:
         return None
@@ -229,6 +245,28 @@ def headline(days: list[dict[str, Any]]) -> dict[str, Any] | None:
         "previous_needs_service_days": MIN_PREVIOUS,
         "change_points": change,
         "spark": spark,
+        "since": since(days, raw_days or {}),
+    }
+
+
+def since(days: list[dict[str, Any]], raw_days: dict[str, Any]) -> dict[str, Any]:
+    """Since ``periods/0.4.0``: the whole archive, for the line under the
+    headline. Departures timed and on time are summed over every day file;
+    feed responses archived are the ``ok_rows`` of ``manifest/raw.json``
+    (every saved answer of the three live feeds) for the same days."""
+    dates = {d["service_date"] for d in days}
+    service = [d for d in days if _service(d)]
+    return {
+        "first_service_date": days[0]["service_date"],
+        "last_service_date": days[-1]["service_date"],
+        "days": len(days),
+        "service_days": len(service),
+        "departures_scheduled": sum(d.get("scheduled", 0) for d in service),
+        "departures_timed": sum(d.get("observed", 0) for d in service),
+        "departures_on_time": sum(d.get("on_time", 0) for d in service),
+        "feed_responses_archived": sum(
+            v.get("ok_rows", 0) for k, v in raw_days.items() if k in dates
+        ),
     }
 
 
@@ -446,6 +484,143 @@ def ontime_periods(days: list[dict[str, Any]]) -> dict[str, Any]:
     return out
 
 
+# --- highlights (periods/0.4.0) -----------------------------------------------------
+
+
+def _group_trips(window: list[dict[str, Any]]) -> dict[tuple[str, str], dict[str, list[int]]]:
+    """(kind, key) -> "day|trip" -> [observed, on_time], from each day's
+    ``by_trip_cell``: kind ``route`` keyed by route id, kind ``time_of_day``
+    keyed by hour band."""
+    out: dict[tuple[str, str], dict[str, list[int]]] = defaultdict(dict)
+    for d in window:
+        for trip, cells in d["by_trip_cell"].items():
+            for c, v in cells.items():
+                route, band, _ = c.rsplit("|", 2)
+                for g in (("route", route), ("time_of_day", band)):
+                    acc = out[g].setdefault(f"{d['service_date']}|{trip}", [0, 0])
+                    acc[0] += v[1]
+                    acc[1] += v[2]
+    return out
+
+
+def route_names(days: list[dict[str, Any]]) -> dict[str, dict[str, str]]:
+    """Route id -> its names, the latest day's winning."""
+    names: dict[str, dict[str, str]] = {}
+    for d in days:
+        names.update(d.get("routes") or {})
+    return names
+
+
+def running_late(window: list[dict[str, Any]], system: float | None) -> dict[str, Any] | None:
+    """The routes and times of day whose on-time share is clearly below the
+    system's over the window: each with at least ``MIN_OBSERVED`` timed
+    departures, a 95% interval from resampling its whole trips, and that
+    interval wholly below the system's share. The ``MAX_HIGHLIGHTS`` lowest
+    shares are named (``items``); ``groups`` lists every route and time of
+    day considered, so the choice can be checked. None when a day lacks
+    counts per trip and cell (before ``ontime/0.7.0``)."""
+    if not window or any("by_trip_cell" not in d for d in window):
+        return None
+    names = route_names(window)
+    groups = []
+    for (kind, key), trips in sorted(_group_trips(window).items()):
+        observed = sum(v[0] for v in trips.values())
+        on_time = sum(v[1] for v in trips.values())
+        if observed < MIN_OBSERVED:
+            continue
+        g: dict[str, Any] = {"kind": kind, "key": key}
+        if kind == "route":
+            r = names.get(key, {})
+            g |= {"short_name": r.get("short_name", ""), "long_name": r.get("long_name", "")}
+        else:
+            g["hours"] = BAND_HOURS.get(key)
+        iv = pair_interval(list(trips.values()))
+        below = bool(iv and system is not None and iv["high"] < system)
+        groups.append({**g, "observed": observed, "on_time": on_time,
+                       "on_time_share_of_observed": _share(on_time, observed),
+                       "interval95": iv, "below_system": below})  # fmt: skip
+    items = pick_late(groups)
+    return {"items": items, "groups": groups}
+
+
+def pick_late(groups: list[dict[str, Any]]) -> list[dict[str, Any]]:
+    """The groups clearly below the system, lowest share first, at most
+    ``MAX_HIGHLIGHTS``."""
+    below = [g for g in groups if g["below_system"]]
+    below.sort(key=lambda g: (g["on_time_share_of_observed"], g["kind"], g["key"]))
+    return below[:MAX_HIGHLIGHTS]
+
+
+def read_ferry_terminals(path: Path = FERRY_TERMINALS) -> list[dict[str, str]]:
+    if not path.exists():
+        return []
+    with path.open(encoding="utf-8", newline="") as fh:
+        return list(csv.DictReader(fh))
+
+
+def ferry_block(
+    window: list[dict[str, Any]], terminals: list[dict[str, str]]
+) -> list[dict[str, Any]]:
+    """Each ferry terminal stop of ``reference/ferry-terminals.csv``: the
+    departures (and, at a route's last stop, arrivals) timed there over the
+    window, summed over the bus routes the file names, with the share on
+    time by the headline's rule."""
+    names = route_names(window)
+    by_short: dict[str, list[str]] = defaultdict(list)
+    for rid, r in sorted(names.items()):
+        by_short[r.get("short_name", "")].append(rid)
+    out = []
+    for t in terminals:
+        stop, wanted = t["stop_id"].strip(), t["bus_routes"].split()
+        routes = []
+        for short in wanted:
+            for rid in by_short.get(short, []):
+                blocks = [d.get("by_route_stop", {}).get(rid, {}).get(stop) for d in window]
+                blocks = [b for b in blocks if b]
+                c = {k: sum(b.get(k, 0) for b in blocks) for k in COUNTS[:3]}
+                position = blocks[-1].get("position") if blocks else None
+                routes.append({"route_id": rid, "short_name": short, "position": position, **c})
+        total = {k: sum(r[k] for r in routes) for k in ("scheduled", "observed", "on_time")}
+        out.append({
+            "stop_id": stop, "stop_name": t["stop_name"], "terminal": t["terminal"],
+            "ferry_route": t["ferry_route"], "bus_routes": wanted,
+            "routes_not_found": [s for s in wanted if s not in by_short],
+            **total, "on_time_share_of_observed": _share(total["on_time"], total["observed"]),
+            "routes": routes,
+        })  # fmt: skip
+    return out
+
+
+def highlights(
+    days: list[dict[str, Any]], terminals: list[dict[str, str]] | None = None
+) -> dict[str, Any] | None:
+    """``ontime/highlights.json``: over the headline's window (the last
+    ``WINDOW`` service days), what is running late and how buses do at the
+    ferry terminals. I8 checks it against the day files."""
+    service = [d for d in days if _service(d)]
+    if not service:
+        return None
+    window = service[-WINDOW:]
+    observed = sum(d.get("observed", 0) for d in window)
+    on_time = sum(d.get("on_time", 0) for d in window)
+    system = _share(on_time, observed)
+    return {
+        "periods_version": PERIODS_VERSION,
+        "window_service_days": WINDOW,
+        "days": len(window),
+        "first_service_date": window[0]["service_date"],
+        "last_service_date": window[-1]["service_date"],
+        "system": {"observed": observed, "on_time": on_time, "on_time_share_of_observed": system},
+        "min_observed": MIN_OBSERVED,
+        "max_items": MAX_HIGHLIGHTS,
+        "band_hours": BAND_HOURS,
+        "running_late": running_late(window, system),
+        "ferry_terminals": ferry_block(
+            window, read_ferry_terminals() if terminals is None else terminals
+        ),
+    }
+
+
 # --- quality ----------------------------------------------------------------------
 
 
@@ -637,9 +812,13 @@ def write(data: Path) -> dict[str, int]:
     ontime_days = DayFiles(data / "ontime" / "days").all()
     quality_days = DayFiles(data / "quality" / "days").all()
     if ontime_days:
-        head = headline(ontime_days)
+        raw = (load_json(data / "manifest" / "raw.json") or {}).get("days", {})
+        head = headline(ontime_days, raw)
         if head is not None:
             _dump(data / "ontime" / "headline.json", head)
+        high = highlights(ontime_days)
+        if high is not None:
+            _dump(data / "ontime" / "highlights.json", high)
         _dump(data / "ontime" / "periods.json", ontime_periods(ontime_days))
     if quality_days:
         by_date = {d["service_date"]: d for d in ontime_days}

@@ -165,6 +165,14 @@ export const SCENARIOS = {
   },
 
   // Files present, numbers missing.
+  // Nothing ran clearly worse than all buses (ontime/highlights.json).
+  "nothing-late": (rel, text) => {
+    if (rel !== "ontime/highlights.json") return text;
+    const h = JSON.parse(text);
+    h.running_late.items = [];
+    for (const g of h.running_late.groups) g.below_system = false;
+    return JSON.stringify(h);
+  },
   nulls: (rel, text) => (isJson(rel) && !rel.startsWith("maps/") ? JSON.stringify(nullLeaves(JSON.parse(text))) : text),
 
   // Files present, whole sections missing.

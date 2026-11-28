@@ -1,5 +1,5 @@
 {
- "periods_version": "periods/0.3.0",
+ "periods_version": "periods/0.4.0",
  "metrics": {
   "trip_coverage": {
    "pooled_as": "ratio of sums",

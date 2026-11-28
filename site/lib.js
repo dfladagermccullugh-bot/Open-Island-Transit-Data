@@ -603,3 +603,55 @@ export function reasonBars(untimed) {
       h("span", {class: "reason-count"}, `${count(n)} (${fmtShare(n / total)})`));
   }));
 }
+
+// --- highlights: running late, ferries, tracking since (periods/0.4.0) -------
+
+// "before 7 AM", "7 to 9 AM", "9 AM to 3 PM", "from 6 PM": the hours of a
+// time of day in ontime/highlights.json ([first hour, hour after the last]).
+export function timeOfDay(hours) {
+  if (!Array.isArray(hours)) return "";
+  const [a, b] = hours;
+  const clock = x => `${x % 12 === 0 ? 12 : x % 12}`;
+  const half = x => (x < 12 || x === 24 ? "AM" : "PM");
+  if (a === 0) return `before ${clock(b)} ${half(b)}`;
+  if (b === 24) return `from ${clock(a)} ${half(a)}`;
+  return half(a) === half(b) ? `${clock(a)} to ${clock(b)} ${half(b)}` : `${clock(a)} ${half(a)} to ${clock(b)} ${half(b)}`;
+}
+
+// Route id -> the ferry terminals it stops at, from ontime/highlights.json.
+export function ferryRoutes(high) {
+  const out = new Map();
+  for (const t of high?.ferry_terminals ?? []) {
+    for (const r of t.routes ?? []) {
+      if (!out.has(r.route_id)) out.set(r.route_id, []);
+      out.get(r.route_id).push(t);
+    }
+  }
+  return out;
+}
+
+const FERRY_ICON = `<svg class="ferry-icon" viewBox="0 0 16 16" width="14" height="14" aria-hidden="true" focusable="false"><path d="M3 9h10l-1.6 3.2a1.5 1.5 0 0 1-1.3.8H5.9a1.5 1.5 0 0 1-1.3-.8z M5 8V5.5h6V8 M7 5.5V3.5h2v2" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linejoin="round"/></svg>`;
+
+// "at the Clinton ferry terminal" or "at the Clinton and Coupeville ferry terminals".
+export function ferryWhere(terminals) {
+  const names = [...new Set((terminals ?? []).map(t => t.terminal))];
+  return names.length ? `at the ${names.join(" and ")} ferry ${names.length === 1 ? "terminal" : "terminals"}` : "";
+}
+
+// A small "Ferry" tag for a route that stops at a ferry terminal; with
+// {iconOnly: true} the word is left to the link's own label.
+export function ferryTag(terminals, {iconOnly = false} = {}) {
+  if (!terminals?.length) return "";
+  const where = ferryWhere(terminals);
+  const tag = h("span", {class: iconOnly ? "ferry-tag icon-only" : "ferry-tag", title: `Stops ${where}`});
+  tag.innerHTML = FERRY_ICON;
+  if (!iconOnly) tag.append("Ferry", h("span", {class: "visually-hidden"}, `: stops ${where}`));
+  return tag;
+}
+
+// "Updated daily. Tracking since November 19, 2026. 15,490 departures timed so far."
+export function sinceLine(since) {
+  if (!since?.first_service_date) return "";
+  const timed = since.departures_timed ? ` ${count(since.departures_timed)} departures timed so far.` : "";
+  return h("p", {class: "since"}, `Updated daily. Tracking since ${longDate(since.first_service_date)}.${timed}`);
+}

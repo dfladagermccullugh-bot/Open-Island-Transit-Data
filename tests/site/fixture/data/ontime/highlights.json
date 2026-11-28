@@ -1,0 +1,513 @@
+{
+ "periods_version": "periods/0.4.0",
+ "window_service_days": 28,
+ "days": 2,
+ "first_service_date": "2026-11-19",
+ "last_service_date": "2026-11-20",
+ "system": {
+  "observed": 3492,
+  "on_time": 2390,
+  "on_time_share_of_observed": 0.6844
+ },
+ "min_observed": 10,
+ "max_items": 3,
+ "band_hours": {
+  "early": [
+   0,
+   7
+  ],
+  "morning": [
+   7,
+   9
+  ],
+  "midday": [
+   9,
+   15
+  ],
+  "afternoon": [
+   15,
+   18
+  ],
+  "evening": [
+   18,
+   24
+  ]
+ },
+ "running_late": {
+  "items": [
+   {
+    "kind": "route",
+    "key": "7922",
+    "short_name": "60",
+    "long_name": "Freeland - Langley - Clinton",
+    "observed": 589,
+    "on_time": 251,
+    "on_time_share_of_observed": 0.4261,
+    "interval95": {
+     "low": 0.3345,
+     "high": 0.5231,
+     "trips": 79,
+     "resamples": 2000,
+     "method": "bootstrap over trips"
+    },
+    "below_system": true
+   },
+   {
+    "kind": "route",
+    "key": "7923",
+    "short_name": "58",
+    "long_name": "Clinton Ferry/ Scatchet Head",
+    "observed": 145,
+    "on_time": 67,
+    "on_time_share_of_observed": 0.4621,
+    "interval95": {
+     "low": 0.3169,
+     "high": 0.6014,
+     "trips": 25,
+     "resamples": 2000,
+     "method": "bootstrap over trips"
+    },
+    "below_system": true
+   },
+   {
+    "kind": "time_of_day",
+    "key": "afternoon",
+    "hours": [
+     15,
+     18
+    ],
+    "observed": 1026,
+    "on_time": 582,
+    "on_time_share_of_observed": 0.5673,
+    "interval95": {
+     "low": 0.5038,
+     "high": 0.6306,
+     "trips": 159,
+     "resamples": 2000,
+     "method": "bootstrap over trips"
+    },
+    "below_system": true
+   }
+  ],
+  "groups": [
+   {
+    "kind": "route",
+    "key": "6737",
+    "short_name": "1C",
+    "long_name": "West Camano Shuttle",
+    "observed": 120,
+    "on_time": 107,
+    "on_time_share_of_observed": 0.8917,
+    "interval95": {
+     "low": 0.7727,
+     "high": 0.976,
+     "trips": 22,
+     "resamples": 2000,
+     "method": "bootstrap over trips"
+    },
+    "below_system": false
+   },
+   {
+    "kind": "route",
+    "key": "6743",
+    "short_name": "9",
+    "long_name": "West Oak Harbor",
+    "observed": 148,
+    "on_time": 73,
+    "on_time_share_of_observed": 0.4932,
+    "interval95": {
+     "low": 0.3161,
+     "high": 0.6899,
+     "trips": 13,
+     "resamples": 2000,
+     "method": "bootstrap over trips"
+    },
+    "below_system": false
+   },
+   {
+    "kind": "route",
+    "key": "6744",
+    "short_name": "10",
+    "long_name": "Central Oak Harbor",
+    "observed": 405,
+    "on_time": 328,
+    "on_time_share_of_observed": 0.8099,
+    "interval95": {
+     "low": 0.7132,
+     "high": 0.8975,
+     "trips": 41,
+     "resamples": 2000,
+     "method": "bootstrap over trips"
+    },
+    "below_system": false
+   },
+   {
+    "kind": "route",
+    "key": "7913",
+    "short_name": "3C",
+    "long_name": "Stanwood/ Camano Island",
+    "observed": 143,
+    "on_time": 125,
+    "on_time_share_of_observed": 0.8741,
+    "interval95": {
+     "low": 0.8014,
+     "high": 0.9379,
+     "trips": 42,
+     "resamples": 2000,
+     "method": "bootstrap over trips"
+    },
+    "below_system": false
+   },
+   {
+    "kind": "route",
+    "key": "7914",
+    "short_name": "2C",
+    "long_name": "East Camano",
+    "observed": 170,
+    "on_time": 111,
+    "on_time_share_of_observed": 0.6529,
+    "interval95": {
+     "low": 0.5375,
+     "high": 0.7605,
+     "trips": 23,
+     "resamples": 2000,
+     "method": "bootstrap over trips"
+    },
+    "below_system": false
+   },
+   {
+    "kind": "route",
+    "key": "7915",
+    "short_name": "411C",
+    "long_name": "Mount Vernon/ Camano Island",
+    "observed": 113,
+    "on_time": 85,
+    "on_time_share_of_observed": 0.7522,
+    "interval95": {
+     "low": 0.5948,
+     "high": 0.8982,
+     "trips": 21,
+     "resamples": 2000,
+     "method": "bootstrap over trips"
+    },
+    "below_system": false
+   },
+   {
+    "kind": "route",
+    "key": "7916",
+    "short_name": "412",
+    "long_name": "Everett/ Camano Island",
+    "observed": 62,
+    "on_time": 37,
+    "on_time_share_of_observed": 0.5968,
+    "interval95": {
+     "low": 0.4677,
+     "high": 0.7461,
+     "trips": 14,
+     "resamples": 2000,
+     "method": "bootstrap over trips"
+    },
+    "below_system": false
+   },
+   {
+    "kind": "route",
+    "key": "7918",
+    "short_name": "6",
+    "long_name": "Oak Harbor/ Coupeville Ferry",
+    "observed": 242,
+    "on_time": 186,
+    "on_time_share_of_observed": 0.7686,
+    "interval95": {
+     "low": 0.6626,
+     "high": 0.8636,
+     "trips": 30,
+     "resamples": 2000,
+     "method": "bootstrap over trips"
+    },
+    "below_system": false
+   },
+   {
+    "kind": "route",
+    "key": "7919",
+    "short_name": "411W",
+    "long_name": "March Point Anacortes/ Oak Harbor",
+    "observed": 218,
+    "on_time": 137,
+    "on_time_share_of_observed": 0.6284,
+    "interval95": {
+     "low": 0.5339,
+     "high": 0.7149,
+     "trips": 38,
+     "resamples": 2000,
+     "method": "bootstrap over trips"
+    },
+    "below_system": false
+   },
+   {
+    "kind": "route",
+    "key": "7920",
+    "short_name": "2",
+    "long_name": "Ault Field Rd/ Oak Harbor",
+    "observed": 187,
+    "on_time": 124,
+    "on_time_share_of_observed": 0.6631,
+    "interval95": {
+     "low": 0.4921,
+     "high": 0.8242,
+     "trips": 19,
+     "resamples": 2000,
+     "method": "bootstrap over trips"
+    },
+    "below_system": false
+   },
+   {
+    "kind": "route",
+    "key": "7922",
+    "short_name": "60",
+    "long_name": "Freeland - Langley - Clinton",
+    "observed": 589,
+    "on_time": 251,
+    "on_time_share_of_observed": 0.4261,
+    "interval95": {
+     "low": 0.3345,
+     "high": 0.5231,
+     "trips": 79,
+     "resamples": 2000,
+     "method": "bootstrap over trips"
+    },
+    "below_system": true
+   },
+   {
+    "kind": "route",
+    "key": "7923",
+    "short_name": "58",
+    "long_name": "Clinton Ferry/ Scatchet Head",
+    "observed": 145,
+    "on_time": 67,
+    "on_time_share_of_observed": 0.4621,
+    "interval95": {
+     "low": 0.3169,
+     "high": 0.6014,
+     "trips": 25,
+     "resamples": 2000,
+     "method": "bootstrap over trips"
+    },
+    "below_system": true
+   },
+   {
+    "kind": "route",
+    "key": "9404",
+    "short_name": "1",
+    "long_name": "Clinton / Oak Harbor",
+    "observed": 834,
+    "on_time": 671,
+    "on_time_share_of_observed": 0.8046,
+    "interval95": {
+     "low": 0.7503,
+     "high": 0.8556,
+     "trips": 97,
+     "resamples": 2000,
+     "method": "bootstrap over trips"
+    },
+    "below_system": false
+   },
+   {
+    "kind": "route",
+    "key": "9431",
+    "short_name": "",
+    "long_name": "Naswi Am",
+    "observed": 49,
+    "on_time": 39,
+    "on_time_share_of_observed": 0.7959,
+    "interval95": {
+     "low": 0.6733,
+     "high": 0.92,
+     "trips": 5,
+     "resamples": 2000,
+     "method": "bootstrap over trips"
+    },
+    "below_system": false
+   },
+   {
+    "kind": "route",
+    "key": "9432",
+    "short_name": "",
+    "long_name": "Naswi Pm",
+    "observed": 67,
+    "on_time": 49,
+    "on_time_share_of_observed": 0.7313,
+    "interval95": {
+     "low": 0.4477,
+     "high": 0.9385,
+     "trips": 7,
+     "resamples": 2000,
+     "method": "bootstrap over trips"
+    },
+    "below_system": false
+   },
+   {
+    "kind": "time_of_day",
+    "key": "afternoon",
+    "hours": [
+     15,
+     18
+    ],
+    "observed": 1026,
+    "on_time": 582,
+    "on_time_share_of_observed": 0.5673,
+    "interval95": {
+     "low": 0.5038,
+     "high": 0.6306,
+     "trips": 159,
+     "resamples": 2000,
+     "method": "bootstrap over trips"
+    },
+    "below_system": true
+   },
+   {
+    "kind": "time_of_day",
+    "key": "early",
+    "hours": [
+     0,
+     7
+    ],
+    "observed": 324,
+    "on_time": 276,
+    "on_time_share_of_observed": 0.8519,
+    "interval95": {
+     "low": 0.7846,
+     "high": 0.9102,
+     "trips": 50,
+     "resamples": 2000,
+     "method": "bootstrap over trips"
+    },
+    "below_system": false
+   },
+   {
+    "kind": "time_of_day",
+    "key": "evening",
+    "hours": [
+     18,
+     24
+    ],
+    "observed": 548,
+    "on_time": 388,
+    "on_time_share_of_observed": 0.708,
+    "interval95": {
+     "low": 0.6262,
+     "high": 0.7852,
+     "trips": 97,
+     "resamples": 2000,
+     "method": "bootstrap over trips"
+    },
+    "below_system": false
+   },
+   {
+    "kind": "time_of_day",
+    "key": "midday",
+    "hours": [
+     9,
+     15
+    ],
+    "observed": 1233,
+    "on_time": 871,
+    "on_time_share_of_observed": 0.7064,
+    "interval95": {
+     "low": 0.651,
+     "high": 0.7585,
+     "trips": 186,
+     "resamples": 2000,
+     "method": "bootstrap over trips"
+    },
+    "below_system": false
+   },
+   {
+    "kind": "time_of_day",
+    "key": "morning",
+    "hours": [
+     7,
+     9
+    ],
+    "observed": 361,
+    "on_time": 273,
+    "on_time_share_of_observed": 0.7562,
+    "interval95": {
+     "low": 0.6732,
+     "high": 0.8333,
+     "trips": 59,
+     "resamples": 2000,
+     "method": "bootstrap over trips"
+    },
+    "below_system": false
+   }
+  ]
+ },
+ "ferry_terminals": [
+  {
+   "stop_id": "178409",
+   "stop_name": "Clinton Ferry Terminal",
+   "terminal": "Clinton",
+   "ferry_route": "Mukilteo/Clinton",
+   "bus_routes": [
+    "1",
+    "58",
+    "60"
+   ],
+   "routes_not_found": [],
+   "scheduled": 197,
+   "observed": 178,
+   "on_time": 112,
+   "on_time_share_of_observed": 0.6292,
+   "routes": [
+    {
+     "route_id": "9404",
+     "short_name": "1",
+     "position": "last",
+     "scheduled": 87,
+     "observed": 82,
+     "on_time": 69
+    },
+    {
+     "route_id": "7923",
+     "short_name": "58",
+     "position": "middle",
+     "scheduled": 30,
+     "observed": 24,
+     "on_time": 14
+    },
+    {
+     "route_id": "7922",
+     "short_name": "60",
+     "position": "first",
+     "scheduled": 80,
+     "observed": 72,
+     "on_time": 29
+    }
+   ]
+  },
+  {
+   "stop_id": "178134",
+   "stop_name": "Engle Rd at Coupeville Ferry Terminal",
+   "terminal": "Coupeville",
+   "ferry_route": "Port Townsend/Coupeville",
+   "bus_routes": [
+    "6"
+   ],
+   "routes_not_found": [],
+   "scheduled": 34,
+   "observed": 26,
+   "on_time": 17,
+   "on_time_share_of_observed": 0.6538,
+   "routes": [
+    {
+     "route_id": "7918",
+     "short_name": "6",
+     "position": "middle",
+     "scheduled": 34,
+     "observed": 26,
+     "on_time": 17
+    }
+   ]
+  }
+ ]
+}

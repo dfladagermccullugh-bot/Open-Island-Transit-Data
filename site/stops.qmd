@@ -18,6 +18,7 @@ import {makeCharts} from "./charts.js"
 import {Plot} from "./vendor/plot-0.6.11/plot.js"
 ch = makeCharts({Plot})
 index = json("data/views/stops/index.json")
+high = json("data/ontime/highlights.json")
 stopList = (index?.stops ?? []).filter(s => s && s.stop_id)
 fromHash = () => decodeURIComponent(location.hash.slice(1))
 SOURCES = ({own: "the trip's own reports", borrowed_before: "the bus before it showed this trip",
@@ -43,13 +44,53 @@ viewof stopId = {
   const label = h("label", {for: "stop-pick", class: "picker-label"}, "Stop");
   const box = h("div", {class: "picker route-picker"}, label, select);
   box.value = start;
-  select.addEventListener("change", () => {
-    box.value = select.value;
-    history.replaceState(history.state, "", `#${encodeURIComponent(select.value)}`);
+  const show = id => {
+    box.value = id;
     box.dispatchEvent(new Event("input", {bubbles: true}));
+  };
+  select.addEventListener("change", () => {
+    history.replaceState(history.state, "", `#${encodeURIComponent(select.value)}`);
+    show(select.value);
   });
+  // Follow the address: the jump box on the home page, a link from another
+  // page, or a new stop typed after the #.
+  const follow = () => {
+    const id = fromHash();
+    if (id && id !== box.value && stopList.some(s => s.stop_id === id)) {
+      select.value = id;
+      show(id);
+    }
+  };
+  addEventListener("hashchange", follow);
+  invalidation.then(() => removeEventListener("hashchange", follow));
   return box;
 }
+```
+
+```{ojs}
+//| echo: false
+// At a ferry terminal: how the buses there did over the headline's 28 days
+// (ontime/highlights.json, pipeline/periods.py).
+guard(() => {
+  const t = (high?.ferry_terminals ?? []).find(x => x.stop_id === stopId);
+  if (!t) return html``;
+  const routeNo = r => r.short_name || r.route_id;
+  const ends = t.routes.filter(r => r.position === "last" && r.observed > 0).map(routeNo);
+  const leaves = t.routes.filter(r => r.position !== "last" && r.observed > 0).map(routeNo);
+  const list = xs => xs.length === 1 ? xs[0] : `${xs.slice(0, -1).join(", ")} and ${xs.at(-1)}`;
+  const how = [
+    ends.length ? `${ends.length === 1 ? "Route" : "Routes"} ${list(ends)} ${ends.length === 1 ? "ends" : "end"} here, so we time ${ends.length === 1 ? "its" : "their"} arrival, and arriving early counts as on time.` : "",
+    leaves.length ? `For ${leaves.length === 1 ? "route" : "routes"} ${list(leaves)} we time the bus as it leaves.` : "",
+  ].filter(Boolean).join(" ");
+  const days = high.days === 1 ? longDate(high.last_service_date) : `the last ${high.days} days with service, to ${longDate(high.last_service_date)}`;
+  const fig = t.observed > 0
+    ? `Of the ${count(t.observed)} buses we timed at the ${t.terminal} ferry terminal ${high.days === 1 ? "on" : "over"} ${days}, ${pct(t.on_time_share_of_observed)} were on time, from 1 minute early to 5 minutes late.`
+    : `We have not timed a bus at the ${t.terminal} ferry terminal ${high.days === 1 ? "on" : "over"} ${days}.`;
+  return html`<div class="ferry-callout" role="note" aria-label="Ferry terminal">
+    <p><strong>Ferry terminal for the ${t.ferry_route} ferry.</strong> ${fig}</p>
+    ${how ? html`<p class="note">${how} We don't check whether a bus met a particular sailing.</p>` : ""}
+  </div>`;
+}, "The ferry note")
 ```
 
 ```{ojs}

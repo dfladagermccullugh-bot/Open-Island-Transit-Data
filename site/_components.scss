@@ -49,7 +49,7 @@ h3 { margin-top: var(--sp-6); }
 .hero .lede { font-size: var(--fs-lg); color: var(--text-secondary); max-width: 44rem; margin: 0; display: block; }
 .hero .hero-about { padding: var(--sp-5) 0; }
 @media (min-width: $bp-narrow + 1) {
-  .hero > h1 { order: -2; }
+  .hero > h1, .hero > .jump { order: -2; }
   .hero .hero-about { order: -1; padding-top: 0; }
 }
 // On a phone, the counts and the trend line follow the split bar and the
@@ -60,13 +60,53 @@ h3 { margin-top: var(--sp-6); }
   .headline-block .headline, .headline-block .big-text { display: contents; }
   .headline-block .big { margin-top: var(--sp-3); }
   .headline-block .big-label { padding-bottom: 0; margin-top: var(--sp-2); }
-  .headline-block .counts, .headline-block .change { order: 1; }
+  .headline-block .counts, .headline-block .change, .headline-block .since { order: 1; }
   .headline-block > details, .headline-block > .trust, .headline-block > .how-measured { order: 2; }
 }
 .headline { display: flex; flex-wrap: wrap; align-items: flex-end; gap: var(--sp-2) var(--sp-5); margin: var(--sp-5) 0 var(--sp-2); }
 .headline .big { font-size: var(--fs-hero); font-weight: 700; line-height: 1; letter-spacing: -.02em; font-variant-numeric: tabular-nums; }
 .headline .big-label { font-size: var(--fs-lg); max-width: 26rem; padding-bottom: var(--sp-2); margin: 0; }
 .headline .big-label .note { display: block; margin-top: var(--sp-1); }
+.headline .since { font-size: var(--fs-sm); color: var(--text-secondary); margin: var(--sp-1) 0 0; }
+
+// The jump box (site/jump.js): a text box with a list of routes and stops
+// under it. Its markup is on the page from the start, so nothing moves when
+// the data arrives.
+.hero .jump { margin: 0 0 var(--sp-4); max-width: 32rem; }
+.jump label { display: block; font-weight: 600; margin: 0 0 var(--sp-1); }
+.jump-field { position: relative; }
+.jump input { font: inherit; width: 100%; min-height: 2.75rem; padding: var(--sp-2) var(--sp-3);
+  color: var(--text-primary); background: var(--card); border: 1px solid var(--border-strong); border-radius: var(--radius-md); }
+.jump input::placeholder { color: var(--text-secondary); opacity: 1; }
+.jump input:disabled { cursor: wait; }
+.jump [role=listbox] { position: absolute; z-index: 1100; left: 0; right: 0; top: calc(100% + 2px); margin: 0; padding: var(--sp-1) 0;
+  list-style: none; max-height: 22rem; overflow-y: auto; background: var(--card); border: 1px solid var(--border-strong);
+  border-radius: var(--radius-md); box-shadow: var(--shadow-md); }
+.jump [role=listbox][hidden] { display: none; }
+.jump [role=option] { display: flex; flex-wrap: wrap; align-items: baseline; gap: 0 var(--sp-2); min-height: 2.75rem;
+  padding: var(--sp-2) var(--sp-3); cursor: pointer; max-width: none; }
+.jump [role=option].active, .jump [role=option]:hover { background: var(--panel-accent); }
+.jump [role=option].active { outline: 2px solid var(--focus); outline-offset: -2px; }
+.jump .jump-kind { font-size: var(--fs-xs); font-weight: 700; text-transform: uppercase; letter-spacing: .04em; color: var(--text-secondary); min-width: 3rem; }
+.jump .jump-label { font-weight: 600; }
+.jump .jump-sub { font-size: var(--fs-sm); color: var(--text-secondary); }
+.jump .jump-help { margin: var(--sp-1) 0 0; }
+
+// "Running late" (ontime/highlights.json).
+.late-callout { max-width: var(--measure); }
+.late-callout .late-list { padding-left: 1.25rem; margin: var(--sp-2) 0; }
+.late-callout .late-list li { margin: var(--sp-1) 0; }
+.slot-late:not(:has(.late-callout, .empty)) { min-height: 9rem; }
+
+// The ferry tag on routes that stop at a ferry terminal.
+.ferry-tag { display: inline-flex; align-items: center; gap: .2rem; margin-left: .4rem; padding: 0 .35rem;
+  font-size: var(--fs-xs); font-weight: 600; line-height: 1.5; color: var(--text-primary); background: var(--panel-accent);
+  border-radius: var(--radius-sm); vertical-align: middle; white-space: nowrap; }
+.ferry-tag.icon-only { padding: 0 .2rem; margin-left: .25rem; }
+.ferry-tag .ferry-icon { flex: none; }
+.ferry-callout { background: var(--panel-accent); border-radius: var(--radius-md); padding: var(--sp-3) var(--sp-4); max-width: var(--measure); margin: var(--sp-3) 0; }
+.ferry-callout p { margin: 0; }
+.ferry-callout p + p { margin-top: var(--sp-2); }
 
 // Space held for parts that are drawn after the page loads, so the page
 // does not jump when they arrive. Each hold ends when its part is there (or

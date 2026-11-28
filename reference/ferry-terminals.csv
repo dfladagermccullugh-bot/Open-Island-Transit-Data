@@ -1,0 +1,3 @@
+stop_id,stop_name,terminal,ferry_route,bus_routes,source
+178409,Clinton Ferry Terminal,Clinton,Mukilteo/Clinton,1 58 60,"Island Transit printed timetables (September 27, 2026) and Passio stops.txt, read 2026-11-28"
+178134,Engle Rd at Coupeville Ferry Terminal,Coupeville,Port Townsend/Coupeville,6,"Island Transit printed timetables (September 27, 2026) and Passio stops.txt, read 2026-11-28"
