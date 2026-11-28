@@ -7,10 +7,11 @@
   "2026-11-22",
   "2026-11-23",
   "2026-11-24",
-  "2026-11-25"
+  "2026-11-25",
+  "2026-11-27"
  ],
- "trips": 1861,
- "unobserved": 58,
+ "trips": 2202,
+ "unobserved": 64,
  "canceled_left_out": 0,
  "thresholds": {
   "min_days": 14,
@@ -19,183 +20,183 @@
  "rates": {
   "by_hour": {
    "3": {
-    "scheduled": 12,
+    "scheduled": 15,
     "unobserved": 0,
     "rate": 0.0
    },
    "4": {
-    "scheduled": 28,
+    "scheduled": 35,
     "unobserved": 0,
     "rate": 0.0
    },
    "5": {
-    "scheduled": 72,
+    "scheduled": 90,
     "unobserved": 1,
-    "rate": 0.013889
+    "rate": 0.011111
    },
    "6": {
-    "scheduled": 104,
+    "scheduled": 126,
     "unobserved": 0,
     "rate": 0.0
    },
    "7": {
-    "scheduled": 118,
+    "scheduled": 142,
     "unobserved": 4,
-    "rate": 0.033898
+    "rate": 0.028169
    },
    "8": {
-    "scheduled": 116,
+    "scheduled": 138,
     "unobserved": 0,
     "rate": 0.0
    },
    "9": {
-    "scheduled": 112,
+    "scheduled": 133,
     "unobserved": 1,
-    "rate": 0.008929
+    "rate": 0.007519
    },
    "10": {
-    "scheduled": 112,
+    "scheduled": 133,
     "unobserved": 1,
-    "rate": 0.008929
+    "rate": 0.007519
    },
    "11": {
-    "scheduled": 122,
+    "scheduled": 145,
     "unobserved": 1,
-    "rate": 0.008197
+    "rate": 0.006897
    },
    "12": {
-    "scheduled": 136,
-    "unobserved": 3,
-    "rate": 0.022059
+    "scheduled": 161,
+    "unobserved": 4,
+    "rate": 0.024845
    },
    "13": {
-    "scheduled": 136,
+    "scheduled": 158,
     "unobserved": 3,
-    "rate": 0.022059
+    "rate": 0.018987
    },
    "14": {
-    "scheduled": 149,
-    "unobserved": 3,
-    "rate": 0.020134
+    "scheduled": 172,
+    "unobserved": 4,
+    "rate": 0.023256
    },
    "15": {
-    "scheduled": 138,
+    "scheduled": 160,
     "unobserved": 8,
-    "rate": 0.057971
+    "rate": 0.05
    },
    "16": {
-    "scheduled": 146,
-    "unobserved": 7,
-    "rate": 0.047945
+    "scheduled": 170,
+    "unobserved": 8,
+    "rate": 0.047059
    },
    "17": {
-    "scheduled": 147,
-    "unobserved": 8,
-    "rate": 0.054422
+    "scheduled": 172,
+    "unobserved": 9,
+    "rate": 0.052326
    },
    "18": {
-    "scheduled": 136,
-    "unobserved": 11,
-    "rate": 0.080882
+    "scheduled": 160,
+    "unobserved": 12,
+    "rate": 0.075
    },
    "19": {
-    "scheduled": 72,
-    "unobserved": 7,
-    "rate": 0.097222
+    "scheduled": 86,
+    "unobserved": 8,
+    "rate": 0.093023
    },
    "20": {
-    "scheduled": 5,
+    "scheduled": 6,
     "unobserved": 0,
     "rate": 0.0
    }
   },
   "by_hour_band": {
    "early (before 7)": {
-    "scheduled": 216,
+    "scheduled": 266,
     "unobserved": 1,
-    "rate": 0.00463
+    "rate": 0.003759
    },
    "morning peak (7-9)": {
-    "scheduled": 234,
+    "scheduled": 280,
     "unobserved": 4,
-    "rate": 0.017094
+    "rate": 0.014286
    },
    "midday (9-15)": {
-    "scheduled": 767,
-    "unobserved": 12,
-    "rate": 0.015645
+    "scheduled": 902,
+    "unobserved": 14,
+    "rate": 0.015521
    },
    "afternoon peak (15-18)": {
-    "scheduled": 431,
-    "unobserved": 23,
-    "rate": 0.053364
+    "scheduled": 502,
+    "unobserved": 25,
+    "rate": 0.049801
    },
    "evening (18 on)": {
-    "scheduled": 213,
-    "unobserved": 18,
-    "rate": 0.084507
+    "scheduled": 252,
+    "unobserved": 20,
+    "rate": 0.079365
    }
   },
   "by_route": {
    "6737": {
+    "scheduled": 106,
+    "unobserved": 6,
+    "rate": 0.056604
+   },
+   "6743": {
+    "scheduled": 60,
+    "unobserved": 2,
+    "rate": 0.033333
+   },
+   "6744": {
+    "scheduled": 204,
+    "unobserved": 1,
+    "rate": 0.004902
+   },
+   "7913": {
+    "scheduled": 183,
+    "unobserved": 10,
+    "rate": 0.054645
+   },
+   "7914": {
+    "scheduled": 102,
+    "unobserved": 6,
+    "rate": 0.058824
+   },
+   "7915": {
     "scheduled": 90,
     "unobserved": 5,
     "rate": 0.055556
    },
-   "6743": {
-    "scheduled": 49,
-    "unobserved": 2,
-    "rate": 0.040816
-   },
-   "6744": {
-    "scheduled": 176,
-    "unobserved": 1,
-    "rate": 0.005682
-   },
-   "7913": {
-    "scheduled": 153,
-    "unobserved": 10,
-    "rate": 0.065359
-   },
-   "7914": {
-    "scheduled": 86,
-    "unobserved": 5,
-    "rate": 0.05814
-   },
-   "7915": {
-    "scheduled": 76,
-    "unobserved": 5,
-    "rate": 0.065789
-   },
    "7916": {
-    "scheduled": 46,
-    "unobserved": 4,
-    "rate": 0.086957
+    "scheduled": 56,
+    "unobserved": 5,
+    "rate": 0.089286
    },
    "7918": {
-    "scheduled": 139,
+    "scheduled": 162,
     "unobserved": 5,
-    "rate": 0.035971
+    "rate": 0.030864
    },
    "7919": {
-    "scheduled": 126,
+    "scheduled": 152,
     "unobserved": 6,
-    "rate": 0.047619
+    "rate": 0.039474
    },
    "7920": {
-    "scheduled": 84,
+    "scheduled": 97,
     "unobserved": 1,
-    "rate": 0.011905
+    "rate": 0.010309
    },
    "7922": {
-    "scheduled": 292,
+    "scheduled": 349,
     "unobserved": 3,
-    "rate": 0.010274
+    "rate": 0.008596
    },
    "7923": {
-    "scheduled": 90,
-    "unobserved": 10,
-    "rate": 0.111111
+    "scheduled": 110,
+    "unobserved": 13,
+    "rate": 0.118182
    },
    "7924": {
     "scheduled": 10,
@@ -203,9 +204,9 @@
     "rate": 0.0
    },
    "9404": {
-    "scheduled": 364,
+    "scheduled": 432,
     "unobserved": 1,
-    "rate": 0.002747
+    "rate": 0.002315
    },
    "9430": {
     "scheduled": 40,
@@ -213,12 +214,12 @@
     "rate": 0.0
    },
    "9431": {
-    "scheduled": 20,
+    "scheduled": 25,
     "unobserved": 0,
     "rate": 0.0
    },
    "9432": {
-    "scheduled": 20,
+    "scheduled": 24,
     "unobserved": 0,
     "rate": 0.0
    }
@@ -235,30 +236,30 @@
     "rate": 0.017857
    },
    "weekday": {
-    "scheduled": 1525,
-    "unobserved": 52,
-    "rate": 0.034098
+    "scheduled": 1866,
+    "unobserved": 58,
+    "rate": 0.031083
    }
   },
   "by_trips_in_service": {
    "1-9": {
-    "scheduled": 306,
-    "unobserved": 8,
-    "rate": 0.026144
+    "scheduled": 330,
+    "unobserved": 9,
+    "rate": 0.027273
    },
    "10-14": {
-    "scheduled": 713,
-    "unobserved": 12,
-    "rate": 0.01683
+    "scheduled": 845,
+    "unobserved": 13,
+    "rate": 0.015385
    },
    "15-19": {
-    "scheduled": 842,
-    "unobserved": 38,
-    "rate": 0.045131
+    "scheduled": 1027,
+    "unobserved": 42,
+    "rate": 0.040896
    }
   }
  },
  "model": null,
- "model_status": "not fitted: needs 14 days and 30 unobserved trips (have 7 and 58)",
+ "model_status": "not fitted: needs 14 days and 30 unobserved trips (have 8 and 64)",
  "limits": "The model treats trips as independent. Trips lost together on one day or one bus make its standard errors too small and its p-values too confident. Days with no service are left out, and so are trips the feed marked as canceled that no bus reported."
 }
