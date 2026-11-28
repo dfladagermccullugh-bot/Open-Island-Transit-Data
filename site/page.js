@@ -10,8 +10,9 @@ const ROOT = new URL(".", import.meta.url);
 
 // --- footer ------------------------------------------------------------------
 
-// Says which service day the figures run through. The file is written when
-// the site is built (scripts/site_data.py).
+// Says which service day the figures run through and, when the publishing
+// gate's report is there, how many of its rules they passed and when. The
+// file is written when the site is built (scripts/site_data.py).
 async function showDataThrough() {
   const slot = document.getElementById("data-through");
   if (!slot) return;
@@ -20,6 +21,14 @@ async function showDataThrough() {
     const build = r.ok ? await r.json() : null;
     const text = longDate(build?.data_through);
     if (text) slot.textContent = `Data through ${text} · `;
+    const gate = build?.gate;
+    const ran = longDate(gate?.ran_at?.slice(0, 10));
+    if (gate?.rules && ran) {
+      const link = document.createElement("a");
+      link.href = new URL("limits.html#gate", ROOT).href;
+      link.textContent = `Every figure here passed ${gate.rules} automatic checks on ${ran}`;
+      slot.append(link, " · ");
+    }
   } catch (e) {
     // No date is better than a wrong one.
   }

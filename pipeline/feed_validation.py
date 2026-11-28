@@ -39,7 +39,7 @@ from datetime import date, datetime, time, timedelta
 from pathlib import Path
 from typing import Any
 
-from pipeline.common import sha256_file, utcnow
+from pipeline.common import local_release_file, sha256_file, utcnow
 from pipeline.config import PACIFIC
 
 VALIDATION_VERSION = "feedcheck/0.1.0"
@@ -71,7 +71,7 @@ def _release_file(
     tag: str, name: str, sha: str, releases: Path | None, work: Path, repo: str
 ) -> Path:
     if releases is not None:
-        path = releases / tag / name
+        path = local_release_file(releases, tag, name, sha)
         if sha256_file(path) != sha:
             raise SystemExit(f"{name}: not the published file (SHA-256 differs)")
         return path

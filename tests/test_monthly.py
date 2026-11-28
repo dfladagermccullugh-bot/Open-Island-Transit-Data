@@ -138,7 +138,8 @@ def test_main_writes_once_and_publishes(tmp_path, monkeypatch):
     uploads, notes = [], []
     monkeypatch.setattr(monthly.release, "ensure_release", lambda *a, **k: None)
 
-    def upload(tag, repo, out, files):
+    def upload(tag, repo, out, files, content_names=True):
+        assert content_names is False  # checksum files keep their plain names
         uploads.append((tag, files[0]["name"]))
 
     monkeypatch.setattr(monthly.release, "upload", upload)

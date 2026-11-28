@@ -33,7 +33,7 @@ from pathlib import Path
 from typing import Any
 
 from pipeline import release
-from pipeline.common import code_sha, load_json, stamp, utcnow
+from pipeline.common import asset_of, code_sha, load_json, stamp, utcnow
 from pipeline.config import PACIFIC, REPO
 from pipeline.stats import share
 
@@ -171,7 +171,7 @@ def checksums(data: Path, month: str) -> dict[str, list[dict[str, Any]]]:
 
 
 def sums_text(files: list[dict[str, Any]]) -> str:
-    return "".join(f"{f['sha256']}  {f['name']}\n" for f in files)
+    return "".join(f"{f['sha256']}  {asset_of(f)}\n" for f in files)
 
 
 def _collection(all_quality: dict[str, Any]) -> tuple[dict[str, Any], set[str]]:
@@ -518,7 +518,13 @@ def publish(data: Path, report: dict[str, Any], repo: str, work: Path) -> None:
         kind = tag.split("-")[0]
         title = f"{TAG_TITLES.get(kind, kind)}, {datetime.strptime(month, '%Y-%m'):%B %Y}"
         release.ensure_release(tag, repo, title=title, notes=notes)
-        release.upload(tag, repo, work, [{"name": path.name, "bytes": entry["checksums_bytes"]}])
+        release.upload(
+            tag,
+            repo,
+            work,
+            [{"name": path.name, "bytes": entry["checksums_bytes"]}],
+            content_names=False,
+        )
         release.set_notes(tag, repo, notes)
 
 

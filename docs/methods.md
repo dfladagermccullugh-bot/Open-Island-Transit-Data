@@ -468,9 +468,14 @@ the daily tables match the day files cell for cell, and that the 28-day
 figures on the home and routes pages are the sums of the days they cover. It
 looks for missing days, for days made by an older version of our code, and
 for a bus timed on two trips at once. For the last three days, it counts the
-on-time figures again from the stop times themselves. If any of these rules
-fails, the site keeps showing the previous night's figures until the problem
-is fixed. These rules check our arithmetic, not the buses: they catch a
+on-time figures again from the stop times themselves. Our programs write
+their new figures to a holding branch first, and the public `data` branch,
+which the site and every reader use, moves forward to them only when every
+rule passes. If any rule fails, the `data` branch and the site keep the last
+figures that passed until the problem is fixed, and the watchdog names the
+failed rule. The daily tables and stop times are saved under names that
+include a short fingerprint of their contents, so a rebuilt file never
+replaces one the `data` branch still points to. These rules check our arithmetic, not the buses: they catch a
 number that was added up or copied wrong, but not a stop time that was
 inferred wrong. Checks 1, 2 and 3 are there for that.
 
@@ -479,8 +484,16 @@ inferred wrong. Checks 1, 2 and 3 are there for that.
 observer's guide is `docs/field-check.md`. Checks 2 and 3 run in
 `pipeline/events/validate.py` and are written to `validation` in
 `ontime/days/<date>.json`. The publishing rules are I1 to I12 in
-`pipeline/invariants.py`; the nightly job runs them before it redeploys the
-site, and the site job runs the first eight before it copies the data in.
+`pipeline/invariants.py`; the nightly job runs them over `data-staging` and
+`scripts/promote_data.sh` fast-forwards `data` to the checked commit only
+when they pass, with their report in `checks/gate.json`. The comparison and
+validator jobs run the first eight (`scripts/light_gate_promote.sh`,
+`checks/gate-light.json`), and the site job runs them again before it copies
+the data in. Parsed and stop-event files are named by `pipeline/release.py`
+(`stop-events-<date>-<first 8 characters of the SHA-256>.parquet`, recorded
+as `asset` in the manifests; raw files keep plain names), and `python -m pipeline.release prune` deletes
+a file only once neither the new `data` commit nor the one before it names
+it, never in a `raw-*` release.
 `scripts/check_versions.py` makes sure a change to the code behind a number
 comes with a new version, so every day is rebuilt with it.)
 

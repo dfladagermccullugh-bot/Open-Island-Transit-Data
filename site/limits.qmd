@@ -102,6 +102,40 @@ the previous night's figures if they don't.
 html`<p>On ${lastO ? longDate(lastO.service_date) : "the latest day"}, ${say(lastO?.feed_agreement_share, x => pct(x, 1))} of our departure times agreed with the feed within 30 seconds. Timed in person, our times were off by ${say(fc?.overall?.mae_s, x => unit(x, "second", 1))} on average, over ${say(fc?.overall?.n, count)} moments, all on route 60.</p>`
 ```
 
+### Nothing unchecked reaches the site {#gate}
+
+Each night our programs write their new figures to a holding copy of the
+data first. Then a set of automatic rules, our publishing gate, checks that
+copy. The rules make sure every total adds up from the day files, that no bus
+is in two places at once, that every file we point to is really there with
+the same contents, and that every table matches its description. Only when
+every rule passes do the figures move to the public copy of the data, the
+one this site, the examples and anyone downloading the data read. If a rule
+fails, the public copy and this site keep the last figures that passed, and
+we get a note naming the rule.
+
+The gate's own report sits beside the data as `checks/gate.json`. It lists
+the rules it ran, what they found, and when. The comparisons with other bus
+systems and the reports from the official feed validators are added during
+the day; they pass the first eight rules at once and the whole gate the next
+night.
+
+The large files, such as each day's bus positions and departures, are kept
+on GitHub. Each new one gets a name that includes a short fingerprint of its
+contents, so a rebuilt file is saved beside the old one instead of over it,
+and an old file is removed only after the public copy has stopped pointing
+to it.
+
+```{ojs}
+//| echo: false
+build = json("data/build.json")
+```
+
+```{ojs}
+//| echo: false
+build?.gate?.rules ? html`<p>The figures on this site passed all ${count(build.gate.rules)} rules on ${longDate(build.gate.ran_at.slice(0, 10))}.</p>` : html``
+```
+
 We also checked the schedule itself. On November 27, 2026, we compared
 3,015 times printed in Island Transit's September 27, 2026 guide with the
 schedule the feed follows: 96.7% matched exactly and 99.3% within a minute,

@@ -319,8 +319,20 @@ def workflow_states(repo: str = REPO) -> dict[str, str]:
         return {}
 
 
-def data_dir_main(now: datetime, data: Path) -> int:
-    """The tiered checks of ``scripts/anomaly.py`` on a data branch checkout.
+def head(folder: Path | None) -> str | None:
+    """The commit a git checkout is at, or None."""
+    import subprocess
+
+    if folder is None or not (folder / ".git").exists():
+        return None
+    done = subprocess.run(["git", "-C", str(folder), "rev-parse", "HEAD"],
+                          capture_output=True, text=True)  # fmt: skip
+    return done.stdout.strip() or None if done.returncode == 0 else None
+
+
+def data_dir_main(now: datetime, data: Path, staging: Path | None = None) -> int:
+    """The tiered checks of ``scripts/anomaly.py`` on a data branch checkout
+    (and the data-staging checkout, with ``--staging-dir``).
     Exit 4: a problem; 1: something to look at; 3: notes only; 0: nothing;
     2: the figures could not be read."""
     import anomaly
@@ -329,9 +341,12 @@ def data_dir_main(now: datetime, data: Path) -> int:
         print("data check: quality/daily.csv could not be read at " + now.isoformat())
         return 2
     expires, site_through = outside_checks()
+    if staging is not None and not staging.is_dir():
+        staging = None
     found = anomaly.evaluate(
-        data, now, last_listed(), expires, workflow_states(), site_through=site_through
-    )
+        data, now, last_listed(), expires, workflow_states(), site_through=site_through,
+        staging=staging, heads=(head(data), head(staging)),
+    )  # fmt: skip
     print(anomaly.report(found, now))
     return found.exit_code()
 
@@ -356,7 +371,11 @@ def main() -> int:
     now = datetime.now(UTC)
     if "--data" in sys.argv[1:]:
         if "--data-dir" in sys.argv[1:]:
-            return data_dir_main(now, Path(sys.argv[sys.argv.index("--data-dir") + 1]))
+            argv = sys.argv[1:]
+            staging = None
+            if "--staging-dir" in argv:
+                staging = Path(argv[argv.index("--staging-dir") + 1])
+            return data_dir_main(now, Path(argv[argv.index("--data-dir") + 1]), staging)
         return data_main(now)
     try:
         found = problems(Collector(), now, processed_days())

@@ -55,6 +55,27 @@ def file_entry(path: Path) -> FileEntry:
     return {"name": path.name, "bytes": path.stat().st_size, "sha256": sha256_file(path)}
 
 
+def asset_name(name: str, sha256: str) -> str:
+    """The content-addressed name of a Release file: its plain name with the
+    first 8 characters of its SHA-256 before the extension."""
+    stem, dot, ext = name.rpartition(".")
+    return f"{stem}-{sha256[:8]}.{ext}" if dot else f"{name}-{sha256[:8]}"
+
+
+def asset_of(f: Mapping[str, Any]) -> str:
+    """The name a manifest's file has in its Release: ``asset`` for files
+    uploaded since November 28, 2026, the plain name for older ones."""
+    return str(f.get("asset") or f["name"])
+
+
+def local_release_file(releases: Path, tag: str, name: str, sha256: str) -> Path:
+    """A Release file in a local folder laid out as ``<tag>/<file>``, under
+    its content-addressed name or its plain name, whichever is there."""
+    folder = releases / tag
+    named = folder / asset_name(name, sha256)
+    return named if named.exists() else folder / name
+
+
 def sha_of(entry: Mapping[str, Any], name: str) -> str:
     """The recorded SHA-256 of file ``name`` in a manifest entry."""
     return next(f["sha256"] for f in entry["files"] if f["name"] == name)

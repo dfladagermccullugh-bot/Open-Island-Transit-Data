@@ -16,15 +16,21 @@ its timestamp once they are.
 
 from __future__ import annotations
 
-from typing import Any, TypedDict
+from typing import Any, NotRequired, TypedDict
 
 
 class FileEntry(TypedDict):
-    """One published file."""
+    """One published file. ``name`` is the file's plain name, the one every
+    stage uses on disk (``stop-events-2026-11-20.parquet``). ``asset`` is the
+    name of the file in its Release when that differs: files uploaded since
+    November 28, 2026 carry the first 8 characters of their SHA-256
+    (``stop-events-2026-11-20-1a2b3c4d.parquet``), so a rebuild never
+    overwrites a file a published manifest still names."""
 
     name: str
     bytes: int
     sha256: str
+    asset: NotRequired[str]
 
 
 class RawDay(TypedDict, total=False):

@@ -40,6 +40,14 @@ jobs:
         with:
           ref: data
           path: data-branch
+      # What the writers published and the gate has not passed (yet): a
+      # failed gate's report, and how long data has stayed behind.
+      - name: Get the staging data branch
+        continue-on-error: true
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          ref: data-staging
+          path: data-staging
       - name: Start the nightly job if yesterday is still unprocessed
         continue-on-error: true
         run: python scripts/catch_up.py
@@ -81,7 +89,7 @@ jobs:
         if: always()
         run: |
           set +e
-          python scripts/watchdog.py --data --data-dir data-branch | tee data-report.txt
+          python scripts/watchdog.py --data --data-dir data-branch --staging-dir data-staging | tee data-report.txt
           echo "code=${PIPESTATUS[0]}" >> "$GITHUB_OUTPUT"
       - name: Open or update the data issue while there is something to look at
         if: always() && (steps.data.outputs.code == '1' || steps.data.outputs.code == '4')

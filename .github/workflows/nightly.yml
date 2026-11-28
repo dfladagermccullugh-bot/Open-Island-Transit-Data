@@ -5,15 +5,17 @@ name: Nightly archive
 # version registry and crosswalk, infers stop events and on-time summaries,
 # computes the daily quality metrics, and writes a report for each closed
 # month (with checksums and notes on its Releases). All outputs except the
-# Release files are committed to the `data` branch, after each stage, so a
-# stage that fails or runs out of time does not hold back the ones before
-# it. Runs after midnight Pacific
+# Release files are committed to the `data-staging` branch after each stage,
+# so a stage that fails or runs out of time does not hold back the ones
+# before it. The `data` branch, which the site and every reader use, moves
+# to that commit only when the publishing gate passes (scripts/promote_data.sh),
+# so it only ever holds checked figures. Runs after midnight Pacific
 # (08:35 UTC) with further attempts through the day, because GitHub drops
 # scheduled runs when busy (the first 08:35 run never started). Every step
 # only handles pending days, so extra attempts cost about a minute and change
 # nothing. The watchdog also dispatches this workflow if yesterday is still
 # unprocessed (scripts/catch_up.py). The site is redeployed only when the
-# data branch changed and the publishing gate passed.
+# data branch moved.
 on:
   schedule:
     - cron: "35 8 * * *"
@@ -23,6 +25,11 @@ on:
     - cron: "13 17 * * *"
     - cron: "41 20 * * *"
   workflow_dispatch:
+    inputs:
+      force_gate_fail:
+        description: "Test only: make the gate fail, to check that data stays where it is"
+        type: boolean
+        default: false
 
 permissions:
   contents: write
@@ -32,12 +39,13 @@ permissions:
   id-token: write
   attestations: write
 
-concurrency:
-  group: nightly-archive
-  cancel-in-progress: false
-
 jobs:
   archive:
+    # One writer of the data branches at a time (with compare.yml and
+    # validators.yml), so promotions happen in order.
+    concurrency:
+      group: data-writer
+      cancel-in-progress: false
     runs-on: ubuntu-latest
     timeout-minutes: 60
     env:
@@ -57,17 +65,10 @@ jobs:
         env:
           HC_PING_URL: ${{ secrets.HC_PING_URL }}
 
-      - name: Get the data branch (create it on the first run)
+      - name: Get the staging data branch (create it from data the first time)
         run: |
-          git init -q data-branch
-          cd data-branch
-          git remote add origin "https://x-access-token:${GH_TOKEN}@github.com/${GITHUB_REPOSITORY}.git"
-          if git fetch -q --depth 1 origin data; then
-            git checkout -q -b data FETCH_HEAD
-          else
-            git checkout -q --orphan data
-          fi
-          cp ../docs/data-branch-readme.md README.md
+          scripts/get_data_branch.sh
+          cp docs/data-branch-readme.md data-branch/README.md
 
       # Each stage records its exit code and the job goes on: one failing
       # stage must not hold back the others. What it finished is published
@@ -82,7 +83,7 @@ jobs:
           echo "code=$?" >> "$GITHUB_OUTPUT"
       - name: Publish after archive
         if: always()
-        run: scripts/publish_data.sh "After archive:"
+        run: scripts/publish_data.sh data-staging "After archive:"
 
       - name: Build parsed tables for archived days
         id: tables
@@ -97,7 +98,7 @@ jobs:
           echo "code=$?" >> "$GITHUB_OUTPUT"
       - name: Publish after tables
         if: always()
-        run: scripts/publish_data.sh "After tables:"
+        run: scripts/publish_data.sh data-staging "After tables:"
 
       - name: Update static GTFS versions
         id: static
@@ -112,7 +113,7 @@ jobs:
           echo "code=$?" >> "$GITHUB_OUTPUT"
       - name: Publish after static
         if: always()
-        run: scripts/publish_data.sh "After static:"
+        run: scripts/publish_data.sh data-staging "After static:"
 
       - name: Infer stop events and on-time summary
         id: events
@@ -125,7 +126,7 @@ jobs:
           echo "code=$?" >> "$GITHUB_OUTPUT"
       - name: Publish after events
         if: always()
-        run: scripts/publish_data.sh "After events:"
+        run: scripts/publish_data.sh data-staging "After events:"
 
       - name: Score field observations
         id: field
@@ -137,7 +138,7 @@ jobs:
           echo "code=$?" >> "$GITHUB_OUTPUT"
       - name: Publish after field
         if: always()
-        run: scripts/publish_data.sh "After field:"
+        run: scripts/publish_data.sh data-staging "After field:"
 
       - name: Compute quality metrics
         id: quality
@@ -150,7 +151,7 @@ jobs:
           echo "code=$?" >> "$GITHUB_OUTPUT"
       - name: Publish after quality
         if: always()
-        run: scripts/publish_data.sh "After quality:"
+        run: scripts/publish_data.sh data-staging "After quality:"
 
       # The home page headline and the hour, day, week and month views
       # (pipeline/periods.py), rebuilt from all day files.
@@ -164,7 +165,7 @@ jobs:
           echo "code=$?" >> "$GITHUB_OUTPUT"
       - name: Publish after periods
         if: always()
-        run: scripts/publish_data.sh "After periods:"
+        run: scripts/publish_data.sh data-staging "After periods:"
 
       # Comparisons with other bus systems (pipeline/compare.py), from our
       # deviations and the peers' published rules in reference/peers/.
@@ -178,7 +179,7 @@ jobs:
           echo "code=$?" >> "$GITHUB_OUTPUT"
       - name: Publish after comparisons
         if: always()
-        run: scripts/publish_data.sh "After comparisons:"
+        run: scripts/publish_data.sh data-staging "After comparisons:"
 
       # The tiered data checks (scripts/anomaly.py), written for the site
       # as quality/notes.json. A finding here does not fail the nightly
@@ -192,7 +193,7 @@ jobs:
           echo "exit $?"
       - name: Publish after notes
         if: always()
-        run: scripts/publish_data.sh "After notes:"
+        run: scripts/publish_data.sh data-staging "After notes:"
 
       - name: Monthly reports and release checksums for closed months
         id: monthly
@@ -204,7 +205,7 @@ jobs:
           echo "code=$?" >> "$GITHUB_OUTPUT"
       - name: Publish after monthly
         if: always()
-        run: scripts/publish_data.sh "After monthly:"
+        run: scripts/publish_data.sh data-staging "After monthly:"
 
       # files.csv lists every Release file with its address and SHA-256;
       # datapackage.json is the codebook in a form a program can read.
@@ -218,21 +219,7 @@ jobs:
           echo "code=$?" >> "$GITHUB_OUTPUT"
       - name: Publish after the index
         if: always()
-        run: scripts/publish_data.sh "After index:"
-
-      # The publishing gate (pipeline/invariants.py): every rule the published
-      # figures must obey, the stop events of the last three days recounted,
-      # and the data branch checked against Releases (I12, pipeline/check.py).
-      # The site is redeployed only if it passes, so a broken figure stays
-      # off the site while the previous deploy stays up.
-      - name: Check the published figures (publishing gate)
-        id: gate
-        if: always()
-        timeout-minutes: 10
-        run: |
-          set +e
-          python -m pipeline.invariants --data data-branch --work work/events
-          echo "code=$?" >> "$GITHUB_OUTPUT"
+        run: scripts/publish_data.sh data-staging "After index:"
 
       - name: Validate the published tables against datapackage.json
         id: frictionless
@@ -242,6 +229,51 @@ jobs:
           set +e
           pip install -q frictionless==5.21.0 && (cd data-branch && frictionless validate datapackage.json)
           echo "code=$?" >> "$GITHUB_OUTPUT"
+
+      # The publishing gate (pipeline/invariants.py): every rule the published
+      # figures must obey, the stop events of the last three days recounted,
+      # the data branch checked against Releases (I12, pipeline/check.py), and
+      # the Frictionless result above. Its report, checks/gate.json, goes to
+      # data-staging whether it passed or not (the watchdog names the failed
+      # rules); data moves only when it passed.
+      - name: Check the published figures (publishing gate)
+        id: gate
+        if: always()
+        timeout-minutes: 10
+        env:
+          FRICTIONLESS: ${{ steps.frictionless.outputs.code }}
+          FORCE_FAIL: ${{ inputs.force_gate_fail }}
+        run: |
+          set +e
+          extra=(--extra-check "frictionless=${FRICTIONLESS:-none}")
+          if [ "$FORCE_FAIL" = "true" ]; then extra+=(--extra-check "forced-test-failure=1"); fi
+          python -m pipeline.invariants --data data-branch --work work/events \
+            --report data-branch/checks/gate.json --commit "$(git -C data-branch rev-parse HEAD)" \
+            "${extra[@]}"
+          echo "code=$?" >> "$GITHUB_OUTPUT"
+      - name: Record the gate's report on data-staging
+        if: always()
+        run: scripts/publish_data.sh data-staging "Gate:"
+      - name: Move data to the checked commit
+        id: promote
+        if: always() && steps.gate.outputs.code == '0'
+        run: scripts/promote_data.sh
+      # Release files that neither the new data commit nor the one before it
+      # (which the live site was built from) names; raw releases are never
+      # touched. Not essential: a file left over is only clutter.
+      - name: Delete Release files no published manifest names
+        if: always() && env.PROMOTED == '1'
+        continue-on-error: true
+        run: |
+          also=()
+          if [ -n "$DATA_BASE" ]; then
+            mkdir -p work/previous-data
+            paths=(manifest)
+            if git -C data-branch cat-file -e "$DATA_BASE:reports" 2>/dev/null; then paths+=(reports); fi
+            git -C data-branch archive "$DATA_BASE" "${paths[@]}" | tar -x -C work/previous-data
+            also=(--also work/previous-data)
+          fi
+          python -m pipeline.release prune --data data-branch "${also[@]}"
 
       - name: Attest the Release files this run built or read
         if: always() && hashFiles('work/files/*', 'work/tables/*', 'work/events/*') != ''
@@ -254,7 +286,7 @@ jobs:
             work/events/*
 
       - name: Redeploy the site with the new data
-        if: always() && env.DATA_CHANGED == '1' && steps.gate.outputs.code == '0' && steps.frictionless.outputs.code == '0'
+        if: always() && env.PROMOTED == '1'
         run: gh workflow run pages.yml --repo "$GITHUB_REPOSITORY" --ref main
 
       - name: Tell the outside monitor how the run ended
@@ -273,5 +305,5 @@ jobs:
           steps.field.outputs.code != '0' || steps.periods.outputs.code != '0' || steps.compare.outputs.code != '0' ||
           steps.quality.outputs.code != '0' || steps.monthly.outputs.code != '0' ||
           steps.index.outputs.code != '0' || steps.gate.outputs.code != '0' ||
-          steps.frictionless.outputs.code != '0')
+          steps.frictionless.outputs.code != '0' || steps.promote.outcome == 'failure')
         run: exit 1

@@ -38,6 +38,7 @@ sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
 
 import pipeline.archive.build as archive_build
 import pipeline.release as rel
+from pipeline.common import local_release_file
 
 RAW_KEPT = ("manifest/raw.json", "README.md")
 
@@ -81,7 +82,7 @@ def main(argv: list[str] | None = None) -> int:
     def ensure_release(tag, repo, title, notes):
         (store / tag).mkdir(parents=True, exist_ok=True)
 
-    def upload(tag, repo, out, files):
+    def upload(tag, repo, out, files, content_names=True):
         for f in files:
             dst = store / tag / f["name"]
             shutil.copy(out / f["name"], dst)
@@ -91,7 +92,7 @@ def main(argv: list[str] | None = None) -> int:
         path = dest / name
         if not (path.exists() and hashlib.sha256(path.read_bytes()).hexdigest() == sha256):
             dest.mkdir(parents=True, exist_ok=True)
-            shutil.copy(store / tag / name, path)
+            shutil.copy(local_release_file(store, tag, name, sha256), path)
         assert hashlib.sha256(path.read_bytes()).hexdigest() == sha256, name
         return path
 

@@ -54,9 +54,11 @@ repository.
   collector, written to files, uploaded to the month's GitHub Release, checked,
   and then listed in `manifest/raw.json` on the `data` branch. The later
   stages (parsed tables, schedule versions, stop events, field check, quality,
-  monthly reports, the file index and data dictionary) follow in the same job. The `data` branch is committed and
+  monthly reports, the file index and data dictionary) follow in the same job. The `data-staging` branch is committed and
   pushed after every stage (`scripts/publish_data.sh`), so a stage that fails
-  or runs out of time does not hold back the ones before it.
+  or runs out of time does not hold back the ones before it; `data`, which
+  the prune reads, moves to it only when the publishing gate passes
+  (`scripts/promote_data.sh`).
 - The prune (`prune-archived` cron job, `supabase/functions/collect/prune.ts`)
   runs once a day: the collector reads that manifest and deletes its own copy of a
   day only if the day is at least 3 days old, every listed file can be

@@ -59,7 +59,7 @@ def release_files(
         if r["service_date"] not in wanted:
             continue
         if releases is not None:
-            body = (releases / r["release_tag"] / r["name"]).read_bytes()
+            body = (releases / r["release_tag"] / (r.get("asset") or r["name"])).read_bytes()
         else:
             with urllib.request.urlopen(r["url"], timeout=120) as resp:
                 body = resp.read()

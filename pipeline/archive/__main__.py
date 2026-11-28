@@ -51,7 +51,11 @@ def upload(day: date, entry: dict[str, Any], out: Path, repo: str) -> str:
             "static GTFS download. See docs/codebook.md and LICENSE-DATA.md."
         ),
     )
-    release.upload(tag, repo, out, entry["files"])
+    # Plain names: the collector's prune confirms each raw file by its plain
+    # name (supabase/functions/collect/prune.ts), and a day's raw files are
+    # never rebuilt once the manifest lists them, so no published file can be
+    # overwritten here.
+    release.upload(tag, repo, out, entry["files"], content_names=False)
     return tag
 
 

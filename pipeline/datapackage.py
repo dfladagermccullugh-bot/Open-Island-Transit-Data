@@ -42,18 +42,20 @@ from typing import Any
 import pyarrow as pa
 
 from pipeline.archive.build import FETCH_LOG_COLUMNS, RAW_SCHEMA
-from pipeline.common import DATA_FORMAT_VERSION, load_json, write_csv
+from pipeline.common import DATA_FORMAT_VERSION, asset_of, load_json, write_csv
 from pipeline.config import REPO
 from pipeline.events.__main__ import DAILY, EVENT_SCHEMA, TRACK_SCHEMA
 from pipeline.events.routes import ROUTE_COLUMNS
 from pipeline.quality.__main__ import HEADLINE
 from pipeline.tables.build import SPECS
 
-DICTIONARY_VERSION = "dictionary/0.1.3"  # 0.1.3: site address islandtransitdata.org
+DICTIONARY_VERSION = "dictionary/0.1.4"  # 0.1.4: content-addressed Release names (asset)
 CODEBOOK = Path(__file__).resolve().parents[1] / "docs" / "codebook.md"
 SITE = "https://islandtransitdata.org/"
 
-FILES_COLUMNS = ["service_date", "table", "release_tag", "name", "bytes", "sha256", "url"]
+FILES_COLUMNS = [
+    "service_date", "table", "release_tag", "name", "asset", "bytes", "sha256", "url",
+]  # fmt: skip
 TIMEPOINT_COLUMNS = [
     "route_short_name", "day_type", "direction", "order", "printed_stop", "passio_route_id",
     "passio_direction_id", "passio_stop_id", "passio_stop_name", "match",
@@ -304,7 +306,10 @@ def _files_section() -> dict[str, str]:
         "table": "The kind of table, as named in this dictionary (`vehicles`, `stop-events`, "
         "`raw`, `fetch-log`, `static-passio`, `static-trillium` and so on)",
         "release_tag": "The Release the file is in",
-        "name": "The file's name",
+        "name": "The file's plain name, the one every program here uses on disk",
+        "asset": "Its name in the Release: since November 28, 2026 the plain name with the "
+        "first 8 characters of its SHA-256 added, so a rebuilt file never replaces one "
+        "that is still published; for older files, the plain name",
         "bytes": "Its size",
         "sha256": "SHA-256 of the file, to check a download against",
         "url": "Where to download it",
@@ -357,7 +362,14 @@ def build(repo: str = REPO, codebook: Path = CODEBOOK) -> dict[str, Any]:
             out["pathPattern"] = t.path
         if t.release:
             out["release"] = t.release
-            out["urlPattern"] = f"https://github.com/{repo}/releases/download/{t.release}/{t.path}"
+            # Files uploaded since November 28, 2026 carry the first 8
+            # characters of their SHA-256 before the extension; files.csv
+            # gives every file's exact address.
+            stem, ext = t.path.rsplit(".", 1)
+            out["urlPattern"] = (
+                f"https://github.com/{repo}/releases/download/{t.release}/{stem}-<sha8>.{ext}"
+            )
+            out["addresses"] = "files.csv"
         out |= {"format": t.format, "mediatype": MEDIA[t.format], "oneRowIs": t.one_row,
                 "schema": schema(t, book)}  # fmt: skip
         if t.format == "csv":
@@ -431,9 +443,11 @@ def files_index(data: Path, repo: str = REPO) -> list[list[Any]]:
             if not tag:
                 continue
             for f in entry.get("files", []):
-                url = f"https://github.com/{repo}/releases/download/{tag}/{f['name']}"
+                asset = asset_of(f)
+                url = f"https://github.com/{repo}/releases/download/{tag}/{asset}"
                 seen[(tag, f["name"])] = [
-                    day, table_of(f["name"]), tag, f["name"], f.get("bytes"), f["sha256"], url,
+                    day, table_of(f["name"]), tag, f["name"], asset, f.get("bytes"), f["sha256"],
+                    url,
                 ]  # fmt: skip
     return sorted(seen.values(), key=lambda r: (r[0], r[2], r[3]))
 

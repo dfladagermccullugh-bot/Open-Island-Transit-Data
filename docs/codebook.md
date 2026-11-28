@@ -23,8 +23,24 @@ the site draws, and `reports/` holds one report for each complete month.
 
 Two files at the top of the `data` branch help a program find its way.
 `files.csv` lists every file in the Releases, one row each, with its service
-day, the kind of table it holds, its release, name, size, SHA-256 and the
-address to download it from. `datapackage.json` is this codebook in a form a
+day, the kind of table it holds, its release, its plain name, its name in
+the Release (`asset`), size, SHA-256 and the address to download it from.
+Parsed tables and stop-event files uploaded since November 28, 2026 are
+named in the Release by their plain name with the first 8 characters of
+their SHA-256 before the extension (`stop-events-2026-11-27-1a2b3c4d.parquet`),
+so a rebuilt file is added beside the old one; the manifests record that
+name as `asset`. Older files and the raw archive, which is never rebuilt,
+keep their plain names. Every program here saves a download under its
+plain name.
+
+`checks/gate.json` is the report of the publishing gate the branch's figures
+passed: `passed` (always true on `data`), `mode` (`full`), `rules` and
+`rules_count`, `problems` (empty), `notes`, `latest_service_date`,
+`checked_commit` (the `data-staging` commit that was checked), `ran_at`, the
+`workflow` and its `run_url`. `checks/gate-light.json` is the same for the
+light gate (rules I1 to I8) that the comparison and validator jobs run when
+they add files during the day. On `data-staging`, either file can also hold a
+failed run, with its problems listed. `datapackage.json` is this codebook in a form a
 program can read: every table with its columns, their types and units, in
 the Data Package format. Both are written by `pipeline/datapackage.py`.
 

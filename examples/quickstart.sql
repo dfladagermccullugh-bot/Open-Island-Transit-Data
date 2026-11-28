@@ -16,7 +16,7 @@ WHERE "table" = 'stop-events'
 ORDER BY service_date DESC
 LIMIT 1;
 
--- Download that file (curl -LO <url>), then put its name here. One row per
+-- Download that file (curl -L -o <name> <url>), then put its name here. One row per
 -- scheduled stop of every trip that day; times are in UTC.
 -- SELECT route_id, departure_status, count(*) AS stops
 -- FROM 'stop-events-2026-11-20.parquet'

@@ -47,6 +47,15 @@ Each rule has a number, used in the messages and in ``docs/methods.md``:
 I1 to I8 read only the data branch and need no third-party library; they are
 the ``--light`` set. I9 to I11 read the stop-event files of the last
 ``--days`` days (3 by default, 0 for all), and I12 lists the Releases.
+
+``--report <file>`` writes what ran as JSON (``checks/gate.json`` on the data
+branch, ``GATE_VERSION``): the rules, whether they passed, every problem and
+note, the data branch commit that was checked (``--commit``) and when.
+``--extra-check NAME=CODE`` adds the result of a check run outside this
+module (the Frictionless validation of the tables): any code but 0 is a
+problem and fails the gate. The writers publish to ``data-staging`` and move
+``data`` to the checked commit only when the gate passed
+(``scripts/promote_data.sh``), so ``data`` holds only checked figures.
 """
 
 from __future__ import annotations
@@ -64,11 +73,12 @@ from pathlib import Path
 from typing import Any
 
 from pipeline.columns import ONTIME_DAILY, QUALITY_HEADLINE
-from pipeline.common import DayFiles, csv_cell, load_json
+from pipeline.common import DayFiles, csv_cell, load_json, stamp
 from pipeline.config import COLLECTION_START, REPO
 from pipeline.events.routes import COUNTS, WINDOW_DAYS, window_of
 from pipeline.stats import quantile, share
 
+GATE_VERSION = "gate/0.1.0"
 LOCK = Path(__file__).with_name("versions.lock.json")
 TOLERANCE_S = 30.0  # I10: a report may time one trip's end and the next one's start
 MAX_DEVIATION_S = 7200.0  # I10
@@ -509,10 +519,10 @@ Fetch = Callable[[str, str, str], Path]
 
 def local_fetch(releases: Path) -> Fetch:
     """Release files from a folder laid out as ``<tag>/<name>``, checked by SHA-256."""
-    from pipeline.common import sha256_file
+    from pipeline.common import local_release_file, sha256_file
 
     def get(tag: str, name: str, sha256: str) -> Path:
-        path = releases / tag / name
+        path = local_release_file(releases, tag, name, sha256)
         if not path.exists() or sha256_file(path) != sha256:
             raise FileNotFoundError(f"{tag}/{name} missing or not the published file")
         return path
@@ -708,6 +718,45 @@ def run(
     return res
 
 
+def add_extra(res: Result, checks: list[str]) -> None:
+    """Results of checks run outside this module, given as ``NAME=CODE``."""
+    for item in checks:
+        name, _, code = item.partition("=")
+        res.ran.append(name)
+        if code.strip() != "0":
+            res.problem(name, f"exited with code {code.strip() or 'none'}")
+
+
+def gate_report(res: Result, data: Path, *, light_only: bool, commit: str | None) -> dict[str, Any]:
+    """What ran and what it found, for ``checks/gate.json``."""
+    quality = data / "quality" / "daily.csv"
+    latest = None
+    if quality.exists():
+        with quality.open(newline="", encoding="utf-8") as fh:
+            rows = list(csv.DictReader(fh))
+        latest = rows[-1]["service_date"] if rows else None
+    run = os.environ.get("GITHUB_RUN_ID")
+    return {
+        "gate_version": GATE_VERSION,
+        "passed": not res.problems,
+        "mode": "light" if light_only else "full",
+        "rules": res.ran,
+        "rules_count": len(res.ran),
+        "problems": res.problems,
+        "notes": res.notes,
+        "latest_service_date": latest,
+        "checked_commit": commit,
+        "ran_at": stamp(),
+        "workflow": os.environ.get("GITHUB_WORKFLOW"),
+        "run_url": (
+            f"{os.environ.get('GITHUB_SERVER_URL', 'https://github.com')}/"
+            f"{os.environ.get('GITHUB_REPOSITORY', REPO)}/actions/runs/{run}"
+            if run
+            else None
+        ),
+    }
+
+
 def report(res: Result) -> int:
     for p in res.problems:
         print(f"PROBLEM {p}")
@@ -725,6 +774,10 @@ def main(argv: list[str] | None = None) -> int:
     ap.add_argument("--work", type=Path, help="where Release files are downloaded or found")
     ap.add_argument("--days", type=int, default=3, help="days for I9 to I11 (0: all)")
     ap.add_argument("--repo", default=os.environ.get("GITHUB_REPOSITORY", REPO))
+    ap.add_argument("--report", type=Path, help="write what ran as JSON (checks/gate.json)")
+    ap.add_argument("--commit", help="the data branch commit being checked, for --report")
+    ap.add_argument("--extra-check", action="append", default=[], metavar="NAME=CODE",
+                    help="the exit code of a check run outside this module")  # fmt: skip
     ap.add_argument(
         "--allow-old-versions",
         action="store_true",
@@ -740,6 +793,13 @@ def main(argv: list[str] | None = None) -> int:
         days=args.days,
         allow_old=args.allow_old_versions,
     )
+    add_extra(res, args.extra_check)
+    if args.report:
+        import json
+
+        out = gate_report(res, args.data, light_only=args.light, commit=args.commit)
+        args.report.parent.mkdir(parents=True, exist_ok=True)
+        args.report.write_text(json.dumps(out, indent=1) + "\n", encoding="utf-8")
     return report(res)
 
 

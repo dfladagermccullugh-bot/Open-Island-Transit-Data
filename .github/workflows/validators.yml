@@ -5,7 +5,9 @@ name: Validators
 # and its GTFS Realtime validator on one archived hour a week. Only their
 # summaries are kept, under validation/ on the data branch; scripts/anomaly.py
 # reads them. Runs daily after the nightly job; the realtime check runs when
-# its last report is a week old.
+# its last report is a week old. Writes to data-staging; data moves after the
+# light gate (scripts/light_gate_promote.sh), or with the nightly job's next
+# promotion when staging holds commits its full gate has not passed.
 on:
   schedule:
     - cron: "53 16 * * *"
@@ -13,10 +15,7 @@ on:
 
 permissions:
   contents: write
-
-concurrency:
-  group: validators
-  cancel-in-progress: false
+  actions: write # redeploy the site after publishing
 
 env:
   # A pinned release, checked by its SHA-256 before use.
@@ -28,6 +27,11 @@ env:
 
 jobs:
   validate:
+    # One writer of the data branches at a time (with nightly.yml and
+    # compare.yml), so promotions happen in order.
+    concurrency:
+      group: data-writer
+      cancel-in-progress: false
     runs-on: ubuntu-latest
     timeout-minutes: 40
     env:
@@ -42,13 +46,8 @@ jobs:
             pyproject.toml
             constraints.txt
       - run: pip install -e . -c constraints.txt
-      - name: Get the data branch
-        run: |
-          git init -q data-branch
-          cd data-branch
-          git remote add origin "https://x-access-token:${GH_TOKEN}@github.com/${GITHUB_REPOSITORY}.git"
-          git fetch -q --depth 1 origin data
-          git checkout -q -b data FETCH_HEAD
+      - name: Get the staging data branch
+        run: scripts/get_data_branch.sh
       - id: due
         name: Is a realtime check due?
         run: python -m pipeline.feed_validation --data data-branch --due >> "$GITHUB_OUTPUT"
@@ -75,6 +74,15 @@ jobs:
           python -m pipeline.feed_validation "${args[@]}"
       # A summary is written whole once its validator has finished, so what
       # one validator found is kept even if the other fails.
-      - name: Publish
+      - name: Publish to data-staging
         if: ${{ !cancelled() }}
-        run: scripts/publish_data.sh "Validators:"
+        run: scripts/publish_data.sh data-staging "Validators:"
+      - name: Check the figures and move data
+        if: ${{ !cancelled() && env.STAGING_BASE == env.DATA_BASE }}
+        run: scripts/light_gate_promote.sh
+      - name: Leave the promotion to the nightly job
+        if: ${{ !cancelled() && env.STAGING_BASE != env.DATA_BASE }}
+        run: echo "data-staging holds commits the nightly gate has not passed; the nightly job promotes these summaries with them"
+      - name: Redeploy the site with the new summaries
+        if: ${{ !cancelled() && env.PROMOTED == '1' }}
+        run: gh workflow run pages.yml --repo "$GITHUB_REPOSITORY" --ref main

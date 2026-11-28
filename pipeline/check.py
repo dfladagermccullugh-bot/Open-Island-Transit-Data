@@ -4,8 +4,10 @@
 
 For every day in ``manifest/raw.json``, ``parsed.json`` and ``events.json``
 that has a release tag, each listed file must be in that release at the
-recorded size. Every day pinned in ``static.json`` must have its crosswalk
-and timepoints folders and its route map. Every day with parsed tables must have
+recorded size, under its content-addressed name (``asset``) or, for files
+uploaded before November 28, 2026, its plain name. Every day pinned in
+``static.json`` must have its crosswalk and timepoints folders and its route
+map. Every day with parsed tables must have
 ``quality/days/<date>.json``, and every day with stop events
 ``ontime/days/<date>.json``. Every monthly report's checksum files must be
 in their releases at the recorded size. Prints one line per problem; exits 1 if there
@@ -24,7 +26,7 @@ from pathlib import Path
 from typing import Any
 
 from pipeline import release
-from pipeline.common import load_json
+from pipeline.common import asset_of, load_json
 from pipeline.config import REPO
 
 Assets = Callable[[str], dict[str, int]]
@@ -64,10 +66,11 @@ def check(data: Path, assets: Assets) -> tuple[list[str], dict[str, int]]:
                 continue
             for f in entry["files"]:
                 counts["files"] += 1
-                size = have.get(f["name"])
+                size = have.get(asset_of(f))
                 if size != f["bytes"]:
                     problems.append(
-                        f"{name} {day}: {f['name']} in {tag} is {size} bytes, manifest {f['bytes']}"
+                        f"{name} {day}: {asset_of(f)} in {tag} is {size} bytes, "
+                        f"manifest {f['bytes']}"
                     )
     static = _load(data / "manifest" / "static.json")
     for day, pins in static["days"].items():
@@ -110,14 +113,17 @@ def index_problems(data: Path, manifests: dict[str, dict[str, Any]]) -> list[str
     if not path.exists():
         return []
     recorded = {
-        f["name"]: (str(f["bytes"]), f["sha256"])
+        f["name"]: (str(f["bytes"]), f["sha256"], asset_of(f))
         for manifest in manifests.values()
         for entry in manifest["days"].values()
         if entry.get("release_tag")
         for f in entry["files"]
     }
     with path.open(newline="", encoding="utf-8") as fh:
-        listed = {r["name"]: (r["bytes"], r["sha256"]) for r in csv.DictReader(fh)}
+        listed = {
+            r["name"]: (r["bytes"], r["sha256"], r.get("asset") or r["name"])
+            for r in csv.DictReader(fh)
+        }
     out = [f"files.csv: {name} is missing" for name in sorted(recorded.keys() - listed.keys())]
     out += [f"files.csv: {name} is in no manifest" for name in sorted(listed.keys() - recorded)]
     out += [

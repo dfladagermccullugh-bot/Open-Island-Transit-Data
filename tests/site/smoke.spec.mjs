@@ -43,6 +43,10 @@ test("a missing page shows the 404 page with working styles and links", async ({
   // The footer's date is read from the site's own folder, not from beside
   // the missing address: the only 404 is the page that was asked for.
   await expect(page.locator("#data-through")).toContainText("Data through");
+  // The publishing gate's report, from build.json, links to its explanation.
+  const gate = page.locator("#data-through a");
+  await expect(gate).toHaveText("Every figure here passed 13 automatic checks on November 21, 2026");
+  expect(new URL(await gate.getAttribute("href")).pathname).toBe("/limits.html");
   expect(problems.filter(p => /404/.test(p))).toHaveLength(1);
   expect(problems.filter(p => !/404/.test(p))).toEqual([]);
 });

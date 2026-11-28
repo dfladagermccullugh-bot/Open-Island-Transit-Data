@@ -71,8 +71,21 @@ of data (`pipeline/quality/`). Coverage asks whether every scheduled trip
 appears at all. Nonresponse looks for gaps and failed requests. Measurement
 error covers GPS wobble, stale locations and wrong predictions. Processing
 error catches IDs that don't match the schedule, and paradata is the log of
-the collection itself. After each nightly run, the site rebuilds itself with
-the new numbers (`site/`).
+the collection itself.
+
+Each night's new figures go first to a holding branch, `data-staging`. A set
+of automatic rules, the publishing gate (`pipeline/invariants.py`), then
+checks that every total adds up from the day files, that the stop events
+recount to the same on-time figures, and that every file the lists point to
+is in the Releases with the same SHA-256. Only when every rule passes does
+the `data` branch move forward to what was checked, and only then does the
+site rebuild itself with the new numbers (`site/`). So the `data` branch
+only ever holds checked figures, and `checks/gate.json` on it says which
+rules they passed and when. Each parsed table and stop-event file in the
+Releases gets a name that ends in the first 8 characters of its SHA-256, so
+a rebuilt file is added beside the old one instead of replacing a file the
+`data` branch still points to. The raw files keep plain names, since they
+are never rebuilt.
 
 ## Data
 
@@ -80,7 +93,7 @@ the new numbers (`site/`).
 |---|---|
 | Releases `raw-YYYY-MM` | Every response from the feed, exactly as received; the request log; the schedule files |
 | Releases `parsed-YYYY-MM` | Tables of bus locations, arrival predictions, alerts, and inferred stop arrivals and departures (Parquet) |
-| [`data` branch](https://github.com/dfladagermccullugh-bot/Open-Island-Transit-Data/tree/data) | Daily quality and on-time figures (JSON and CSV), route maps, the printed timepoints matched to the schedule's stops, a crosswalk between the two schedule files, monthly reports, `files.csv` listing every Release file with its size and SHA-256, and `datapackage.json` describing every table and column for programs |
+| [`data` branch](https://github.com/dfladagermccullugh-bot/Open-Island-Transit-Data/tree/data) | Daily quality and on-time figures (JSON and CSV), route maps, the printed timepoints matched to the schedule's stops, a crosswalk between the two schedule files, monthly reports, `files.csv` listing every Release file with its size, SHA-256 and address, `datapackage.json` describing every table and column for programs, and `checks/gate.json`, the report of the publishing gate every figure on the branch passed |
 
 The [codebook](docs/codebook.md) describes every file and column, the
 [methods](docs/methods.md) give the exact definition behind every number,

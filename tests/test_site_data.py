@@ -43,3 +43,19 @@ def test_a_missing_required_file_or_map_is_reported(tmp_path):
     root = branch(tmp_path / "b")
     (root / "maps" / "p__t.json").unlink()
     assert site_data.wanted(root)[1] == ["maps/p__t.json"]
+
+
+def test_the_gate_summary_shows_only_a_passed_gate(tmp_path):
+    root = branch(tmp_path)
+    assert site_data.gate_summary(root) is None
+    (root / "checks").mkdir()
+    report = {"passed": True, "rules_count": 13, "ran_at": "2026-11-28T09:02:11+00:00",
+              "latest_service_date": "2026-11-27"}  # fmt: skip
+    (root / "checks" / "gate.json").write_text(json.dumps(report))
+    assert site_data.gate_summary(root) == {
+        "rules": 13,
+        "ran_at": "2026-11-28T09:02:11+00:00",
+        "latest_service_date": "2026-11-27",
+    }
+    (root / "checks" / "gate.json").write_text(json.dumps({**report, "passed": False}))
+    assert site_data.gate_summary(root) is None

@@ -139,7 +139,10 @@ def test_the_file_index_lists_every_release_file_once():
     assert set(names) == expected
     row = next(r for r in rows if r[3] == "vehicles-2026-11-24.parquet")
     assert row[:3] == ["2026-11-24", "vehicles", "parsed-2026-11"]
-    assert row[6] == (
+    # The golden archive's files carry no ``asset`` (they were "uploaded" by
+    # the rehearsal's folder), so the Release name is the plain name.
+    assert row[4] == "vehicles-2026-11-24.parquet"
+    assert row[7] == (
         "https://github.com/example/synthetic/releases/download/parsed-2026-11/"
         "vehicles-2026-11-24.parquet"
     )
@@ -159,3 +162,14 @@ def test_the_file_index_lists_every_release_file_once():
 )
 def test_the_kind_of_table_is_read_from_the_file_name(name, table):
     assert datapackage.table_of(name) == table
+
+
+def test_a_content_addressed_file_is_listed_under_its_release_name(tmp_path):
+    entry = {"name": "stop-events-2026-11-24.parquet", "bytes": 5, "sha256": "ab12cd34" + "0" * 56,
+             "asset": "stop-events-2026-11-24-ab12cd34.parquet"}  # fmt: skip
+    (tmp_path / "manifest").mkdir()
+    (tmp_path / "manifest" / "events.json").write_text(json.dumps(
+        {"days": {"2026-11-24": {"release_tag": "parsed-2026-11", "files": [entry]}}}))  # fmt: skip
+    [row] = datapackage.files_index(tmp_path, "o/r")
+    assert row[3:5] == ["stop-events-2026-11-24.parquet", "stop-events-2026-11-24-ab12cd34.parquet"]
+    assert row[7].endswith("/parsed-2026-11/stop-events-2026-11-24-ab12cd34.parquet")

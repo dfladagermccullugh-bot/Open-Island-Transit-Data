@@ -16,7 +16,8 @@ limits are used instead.
   (below 95%); trip coverage far below usual (z < -4, or 15 points); a day
   still unprocessed 36 hours after it ended; a scheduled workflow that
   GitHub turned off for inactivity; the dispatch token expiring within 7
-  days.
+  days; ``data-staging`` ahead of ``data`` for more than 26 hours (the
+  publishing gate has held the new figures back that long).
 - Tier 2, look (exit 1; a comment on the "Data check" issue): many more
   impossible jumps than usual (z > 4 and more than 20); position age (95th
   percentile) more than twice usual; off-shape share well above usual
@@ -25,7 +26,9 @@ limits are used instead.
   timetable; feed agreement (check 2) below 90%; fewer printed timepoint
   names tied to a stop than the day before; the token expiring within 21
   days; an error code from the official validators that the schedule
-  version or the week before did not have (``pipeline/feed_validation.py``).
+  version or the week before did not have (``pipeline/feed_validation.py``);
+  the publishing gate failed on ``data-staging`` (its failed rules are
+  named).
 - Tier 3, information (exit 3; nothing fails): a new Passio schedule
   version (and the validator's errors in it), schedule downloads that
   disagreed, canceled trips, the holiday list running out, the first
@@ -60,6 +63,8 @@ MAD_SCALE = 1.4826
 UNPROCESSED_AFTER = timedelta(hours=36)
 TOKEN_PROBLEM_DAYS = 7
 TOKEN_LOOK_DAYS = 21
+STAGING_AHEAD = timedelta(hours=26)
+GATE_REPORTS = ("checks/gate.json", "checks/gate-light.json")
 
 # Metric: (daily.csv column, MAD floor, the check, fixed limit with little history).
 # Each check names the tier and the direction that is a finding.
@@ -245,6 +250,51 @@ def check_processed(
         day += timedelta(days=1)
 
 
+def _gate(folder: Path, name: str) -> dict[str, Any] | None:
+    path = folder / name
+    try:
+        return json.loads(path.read_text(encoding="utf-8")) if path.exists() else None
+    except ValueError:
+        return None
+
+
+def check_staging(
+    f: Findings, data: Path, staging: Path, heads: tuple[str | None, str | None], now: datetime
+) -> None:
+    """``data`` moves to ``data-staging`` only when the publishing gate
+    passes (``scripts/promote_data.sh``). ``heads`` is (data, staging)
+    commit. Staging ahead of data is normal for the minutes a run takes; a
+    failed gate is something to look at, and new figures held back more than
+    26 hours (since data last moved) a problem."""
+    data_head, staging_head = heads
+    if not data_head or not staging_head or data_head == staging_head:
+        return
+    for name in GATE_REPORTS:
+        g = _gate(staging, name)
+        if g and g.get("passed") is False:
+            shown = "; ".join(g.get("problems", [])[:5])
+            more = len(g.get("problems", [])) - 5
+            f.add("look", f"the publishing gate ({g.get('mode', '?')}) failed on data-staging at "
+                  f"{g.get('ran_at')}: {shown}{f' (and {more} more)' if more > 0 else ''}; the "
+                  "data branch and the site stay at the last checked figures")  # fmt: skip
+    moved = [_when(g.get("ran_at")) for n in GATE_REPORTS if (g := _gate(data, n))]
+    last = max((m for m in moved if m), default=None)
+    if last is not None and now - last > STAGING_AHEAD:
+        f.add(
+            "problem",
+            f"data-staging has been ahead of data for more than "
+            f"{STAGING_AHEAD.total_seconds() / 3600:.0f} hours (data last moved at "
+            f"{last.isoformat(timespec='minutes')}); new figures are not reaching readers",
+        )
+
+
+def _when(text: Any) -> datetime | None:
+    try:
+        return datetime.fromisoformat(str(text)) if text else None
+    except ValueError:
+        return None
+
+
 def check_token(f: Findings, expires: datetime | None, now: datetime) -> None:
     if expires is None:
         return
@@ -349,8 +399,11 @@ def read_rows(path: Path) -> list[dict[str, str]]:
 
 def evaluate(data: Path, now: datetime, last_holiday: date | None = None,
              token_expires: datetime | None = None, workflows: dict[str, str] | None = None,
-             gate: bool = True, site_through: date | None = None) -> Findings:  # fmt: skip
-    """Every finding for a data branch checkout."""
+             gate: bool = True, site_through: date | None = None,
+             staging: Path | None = None,
+             heads: tuple[str | None, str | None] = (None, None)) -> Findings:  # fmt: skip
+    """Every finding for a data branch checkout (and, with ``staging``, the
+    data-staging checkout beside it)."""
     f = Findings()
     quality = read_rows(data / "quality" / "daily.csv")
     ontime_path = data / "ontime" / "daily.csv"
@@ -373,6 +426,8 @@ def evaluate(data: Path, now: datetime, last_holiday: date | None = None,
     check_workflows(f, workflows or {})
     check_holidays(f, last_holiday, now.astimezone(PACIFIC).date())
     check_validation(f, data, quality, now)
+    if staging is not None:
+        check_staging(f, data, staging, heads, now)
     return f
 
 

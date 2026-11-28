@@ -200,3 +200,46 @@ def test_realtime_validator_findings_while_fresh(tmp_path):
     stale = anomaly.Findings()
     anomaly.check_validation(stale, data, quality_rows(), NOW + timedelta(days=3))
     assert stale.looks == stale.notes == []
+
+
+def _gate_file(folder, passed, ran_at, problems=(), name="gate.json"):
+    import json
+
+    (folder / "checks").mkdir(parents=True, exist_ok=True)
+    (folder / "checks" / name).write_text(
+        json.dumps({"passed": passed, "mode": "full", "ran_at": ran_at, "problems": list(problems)})
+    )
+
+
+def test_a_failed_gate_on_staging_is_named_and_a_long_hold_is_a_problem(tmp_path):
+    data, staging = tmp_path / "data", tmp_path / "staging"
+    _gate_file(data, True, (NOW - timedelta(hours=5)).isoformat())
+    _gate_file(
+        staging,
+        False,
+        (NOW - timedelta(hours=1)).isoformat(),
+        ["I4 quality/daily.csv row 2026-12-04 differs", "frictionless exited with code 1"],
+    )
+
+    # Level branches: nothing to say, whatever the reports hold.
+    f = anomaly.Findings()
+    anomaly.check_staging(f, data, staging, ("a", "a"), NOW)
+    assert (f.problems, f.looks) == ([], [])
+
+    f = anomaly.Findings()
+    anomaly.check_staging(f, data, staging, ("a", "b"), NOW)
+    assert f.problems == []
+    assert len(f.looks) == 1 and "I4 quality/daily.csv" in f.looks[0]
+    assert "frictionless" in f.looks[0]
+
+    # Data last moved 30 hours ago and staging is still ahead.
+    _gate_file(data, True, (NOW - timedelta(hours=30)).isoformat())
+    f = anomaly.Findings()
+    anomaly.check_staging(f, data, staging, ("a", "b"), NOW)
+    assert len(f.problems) == 1 and "more than 26 hours" in f.problems[0]
+
+    # A light gate's promotion counts as data moving.
+    _gate_file(data, True, (NOW - timedelta(hours=2)).isoformat(), name="gate-light.json")
+    f = anomaly.Findings()
+    anomaly.check_staging(f, data, staging, ("a", "b"), NOW)
+    assert f.problems == []
