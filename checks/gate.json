@@ -1,6 +1,6 @@
 {
  "gate_version": "gate/0.1.0",
- "passed": false,
+ "passed": true,
  "mode": "full",
  "rules": [
   "I1",
@@ -15,18 +15,14 @@
   "I10",
   "I11",
   "I12",
-  "frictionless",
-  "forced-test-failure"
+  "frictionless"
  ],
- "rules_count": 14,
- "problems": [
-  "frictionless exited with code 1",
-  "forced-test-failure exited with code 1"
- ],
+ "rules_count": 13,
+ "problems": [],
  "notes": [],
  "latest_service_date": "2026-11-26",
- "checked_commit": "58951c7224e6541a6973a4357fa42a887b652a57",
- "ran_at": "2026-11-28T00:50:32+00:00",
+ "checked_commit": "d467022c596d61667e7d1214ba63b810aa5ba326",
+ "ran_at": "2026-11-28T00:53:26+00:00",
  "workflow": "Nightly archive",
- "run_url": "https://github.com/dfladagermccullugh-bot/Open-Island-Transit-Data/actions/runs/46089938255"
+ "run_url": "https://github.com/dfladagermccullugh-bot/Open-Island-Transit-Data/actions/runs/46090189693"
 }
