@@ -36,7 +36,11 @@ export async function csv(d3, path) {
 export async function json(path) {
   try {
     const r = await fetch(path);
-    return r.ok ? await r.json() : null;
+    if (r.ok) return await r.json();
+    // Read the body of a missing file too, so the request ends (a page
+    // waiting for the network to go quiet would otherwise wait forever).
+    await r.text();
+    return null;
   } catch (e) {
     return null;
   }

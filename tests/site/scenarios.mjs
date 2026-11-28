@@ -165,6 +165,14 @@ export const SCENARIOS = {
   },
 
   // Files present, numbers missing.
+  // A data branch from before periods/0.4.0: no highlights file, no "since".
+  "before-highlights": (rel, text) => {
+    if (rel === "ontime/highlights.json") return null;
+    if (rel !== "ontime/headline.json") return text;
+    const {since, ...rest} = JSON.parse(text);
+    return JSON.stringify(rest);
+  },
+
   // Nothing ran clearly worse than all buses (ontime/highlights.json).
   "nothing-late": (rel, text) => {
     if (rel !== "ontime/highlights.json") return text;

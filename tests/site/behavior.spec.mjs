@@ -798,6 +798,20 @@ test.describe("highlights on the home page", () => {
     await expect(page.locator(".slot-late .late-list")).toHaveCount(0);
   });
 
+  test("pages still run, and the jump box still works, before the highlights are published", async ({page, problems}) => {
+    await useScenario(page, "before-highlights");
+    for (const name of ["index", "routes", "stops"]) {
+      await open(page, name);
+      await expectClean(page, problems.filter(p => !/Failed to load resource.*404/.test(p)));
+    }
+    await open(page, "index");
+    await expect(page.locator(".slot-late")).toContainText("This list can't be shown right now.");
+    await expect(page.locator(".slot-headline .since")).toHaveCount(0);
+    const box = page.getByRole("combobox", {name: "Find a route or a stop"});
+    await box.fill("58");
+    await expect(page.getByRole("option").first()).toContainText("Route 58");
+  });
+
   test("says how long we have been tracking", async ({page}) => {
     await open(page, "index");
     await expect(page.locator(".slot-headline .since")).toHaveText(
