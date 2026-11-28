@@ -20,22 +20,23 @@
  "timepoints": "passio-9b1efa882037__timetable-2026-09-27-d7e09c5d",
  "passio_version": "passio-9b1efa882037",
  "ontime_versions": [
-  "ontime/0.5.0"
+  "ontime/0.5.0",
+  "ontime/0.6.0"
  ],
  "overall": {
   "scheduled": 14664,
-  "observed": 12602,
-  "on_time": 9306,
-  "early": 232,
-  "late": 3064,
-  "observed_share": 0.8594,
-  "on_time_share_of_observed": 0.7385,
-  "early_share_of_observed": 0.0184,
-  "late_share_of_observed": 0.2431,
-  "deviation_s_median": 154.0,
-  "deviation_s_p25": 55.0,
-  "deviation_s_p75": 295.0,
-  "deviations_counted": 12602
+  "observed": 13050,
+  "on_time": 9686,
+  "early": 244,
+  "late": 3120,
+  "observed_share": 0.8899,
+  "on_time_share_of_observed": 0.7422,
+  "early_share_of_observed": 0.0187,
+  "late_share_of_observed": 0.2391,
+  "deviation_s_median": 150.5,
+  "deviation_s_p25": 52.0,
+  "deviation_s_p75": 292.0,
+  "deviations_counted": 13050
  },
  "routes": {
   "6737": {
@@ -43,18 +44,18 @@
    "short_name": "1C",
    "long_name": "West Camano Shuttle",
    "scheduled": 802,
-   "observed": 435,
-   "on_time": 397,
+   "observed": 442,
+   "on_time": 404,
    "early": 5,
    "late": 33,
-   "observed_share": 0.5424,
-   "on_time_share_of_observed": 0.9126,
-   "early_share_of_observed": 0.0115,
-   "late_share_of_observed": 0.0759,
-   "deviation_s_median": 92.0,
-   "deviation_s_p25": 26.0,
-   "deviation_s_p75": 201.5,
-   "deviations_counted": 435,
+   "observed_share": 0.5511,
+   "on_time_share_of_observed": 0.914,
+   "early_share_of_observed": 0.0113,
+   "late_share_of_observed": 0.0747,
+   "deviation_s_median": 91.0,
+   "deviation_s_p25": 26.2,
+   "deviation_s_p75": 200.8,
+   "deviations_counted": 442,
    "daily": [
     {
      "service_date": "2026-11-19",
@@ -64,15 +65,15 @@
     },
     {
      "service_date": "2026-11-20",
-     "observed_share": 0.5833,
-     "on_time_share_of_observed": 0.9405,
-     "deviation_s_median": 103.3
+     "observed_share": 0.5903,
+     "on_time_share_of_observed": 0.9412,
+     "deviation_s_median": 99.4
     },
     {
      "service_date": "2026-11-21",
-     "observed_share": 0.358,
+     "observed_share": 0.3704,
      "on_time_share_of_observed": 1.0,
-     "deviation_s_median": 71.6
+     "deviation_s_median": 66.6
     },
     {
      "service_date": "2026-11-22",
@@ -82,9 +83,9 @@
     },
     {
      "service_date": "2026-11-23",
-     "observed_share": 0.5625,
-     "on_time_share_of_observed": 0.8765,
-     "deviation_s_median": 120.9
+     "observed_share": 0.5833,
+     "on_time_share_of_observed": 0.881,
+     "deviation_s_median": 104.8
     },
     {
      "service_date": "2026-11-24",
@@ -94,9 +95,9 @@
     },
     {
      "service_date": "2026-11-25",
-     "observed_share": 0.5903,
-     "on_time_share_of_observed": 0.8941,
-     "deviation_s_median": 93.7
+     "observed_share": 0.6042,
+     "on_time_share_of_observed": 0.8966,
+     "deviation_s_median": 92.4
     }
    ],
    "stops": [
@@ -231,18 +232,18 @@
      "name": "Terry's Corner",
      "order": 39,
      "scheduled": 179,
-     "observed": 135,
-     "on_time": 129,
+     "observed": 142,
+     "on_time": 136,
      "early": 2,
      "late": 4,
-     "observed_share": 0.7542,
-     "on_time_share_of_observed": 0.9556,
-     "early_share_of_observed": 0.0148,
-     "late_share_of_observed": 0.0296,
-     "deviation_s_median": 9.0,
-     "deviation_s_p25": -134.0,
-     "deviation_s_p75": 28.5,
-     "deviations_counted": 135
+     "observed_share": 0.7933,
+     "on_time_share_of_observed": 0.9577,
+     "early_share_of_observed": 0.0141,
+     "late_share_of_observed": 0.0282,
+     "deviation_s_median": 12.0,
+     "deviation_s_p25": -131.8,
+     "deviation_s_p75": 30.8,
+     "deviations_counted": 142
     }
    ]
   },
@@ -251,18 +252,18 @@
    "short_name": "9",
    "long_name": "West Oak Harbor",
    "scheduled": 730,
-   "observed": 484,
-   "on_time": 236,
+   "observed": 504,
+   "on_time": 252,
    "early": 0,
-   "late": 248,
-   "observed_share": 0.663,
-   "on_time_share_of_observed": 0.4876,
+   "late": 252,
+   "observed_share": 0.6904,
+   "on_time_share_of_observed": 0.5,
    "early_share_of_observed": 0.0,
-   "late_share_of_observed": 0.5124,
-   "deviation_s_median": 307.5,
-   "deviation_s_p25": 170.8,
-   "deviation_s_p75": 428.2,
-   "deviations_counted": 484,
+   "late_share_of_observed": 0.5,
+   "deviation_s_median": 300.5,
+   "deviation_s_p25": 163.0,
+   "deviation_s_p75": 425.0,
+   "deviations_counted": 504,
    "daily": [
     {
      "service_date": "2026-11-19",
@@ -272,27 +273,27 @@
     },
     {
      "service_date": "2026-11-20",
-     "observed_share": 0.6424,
-     "on_time_share_of_observed": 0.5377,
-     "deviation_s_median": 276.6
+     "observed_share": 0.6727,
+     "on_time_share_of_observed": 0.5405,
+     "deviation_s_median": 260.2
     },
     {
      "service_date": "2026-11-23",
-     "observed_share": 0.7758,
-     "on_time_share_of_observed": 0.5859,
-     "deviation_s_median": 259.9
+     "observed_share": 0.8121,
+     "on_time_share_of_observed": 0.6045,
+     "deviation_s_median": 251.5
     },
     {
      "service_date": "2026-11-24",
-     "observed_share": 0.6182,
-     "on_time_share_of_observed": 0.4216,
-     "deviation_s_median": 315.2
+     "observed_share": 0.6364,
+     "on_time_share_of_observed": 0.4381,
+     "deviation_s_median": 315.1
     },
     {
      "service_date": "2026-11-25",
-     "observed_share": 0.6909,
-     "on_time_share_of_observed": 0.4298,
-     "deviation_s_median": 332.3
+     "observed_share": 0.7273,
+     "on_time_share_of_observed": 0.4417,
+     "deviation_s_median": 324.2
     }
    ],
    "stops": [
@@ -535,18 +536,18 @@
      "name": "Harbor Station Transfer Center Bayshore Dr",
      "order": 26,
      "scheduled": 97,
-     "observed": 44,
-     "on_time": 40,
+     "observed": 64,
+     "on_time": 56,
      "early": 0,
-     "late": 4,
-     "observed_share": 0.4536,
-     "on_time_share_of_observed": 0.9091,
+     "late": 8,
+     "observed_share": 0.6598,
+     "on_time_share_of_observed": 0.875,
      "early_share_of_observed": 0.0,
-     "late_share_of_observed": 0.0909,
-     "deviation_s_median": 37.0,
-     "deviation_s_p25": 13.8,
-     "deviation_s_p75": 106.0,
-     "deviations_counted": 44
+     "late_share_of_observed": 0.125,
+     "deviation_s_median": 49.5,
+     "deviation_s_p25": 15.5,
+     "deviation_s_p75": 149.5,
+     "deviations_counted": 64
     }
    ]
   },
@@ -555,18 +556,18 @@
    "short_name": "10",
    "long_name": "Central Oak Harbor",
    "scheduled": 1751,
-   "observed": 1711,
-   "on_time": 1482,
+   "observed": 1719,
+   "on_time": 1490,
    "early": 6,
    "late": 223,
-   "observed_share": 0.9772,
-   "on_time_share_of_observed": 0.8662,
+   "observed_share": 0.9817,
+   "on_time_share_of_observed": 0.8668,
    "early_share_of_observed": 0.0035,
-   "late_share_of_observed": 0.1303,
-   "deviation_s_median": 107.0,
+   "late_share_of_observed": 0.1297,
+   "deviation_s_median": 106.0,
    "deviation_s_p25": 40.0,
-   "deviation_s_p75": 206.0,
-   "deviations_counted": 1711,
+   "deviation_s_p75": 205.5,
+   "deviations_counted": 1719,
    "daily": [
     {
      "service_date": "2026-11-19",
@@ -576,15 +577,15 @@
     },
     {
      "service_date": "2026-11-20",
-     "observed_share": 0.9821,
-     "on_time_share_of_observed": 0.8,
-     "deviation_s_median": 160.4
+     "observed_share": 0.9929,
+     "on_time_share_of_observed": 0.8022,
+     "deviation_s_median": 160.0
     },
     {
      "service_date": "2026-11-21",
-     "observed_share": 0.996,
-     "on_time_share_of_observed": 0.9518,
-     "deviation_s_median": 82.6
+     "observed_share": 1.0,
+     "on_time_share_of_observed": 0.952,
+     "deviation_s_median": 81.9
     },
     {
      "service_date": "2026-11-22",
@@ -594,21 +595,21 @@
     },
     {
      "service_date": "2026-11-23",
-     "observed_share": 0.95,
-     "on_time_share_of_observed": 0.8459,
-     "deviation_s_median": 107.2
+     "observed_share": 0.9571,
+     "on_time_share_of_observed": 0.847,
+     "deviation_s_median": 104.8
     },
     {
      "service_date": "2026-11-24",
-     "observed_share": 0.975,
-     "on_time_share_of_observed": 0.8718,
+     "observed_share": 0.9786,
+     "on_time_share_of_observed": 0.8723,
      "deviation_s_median": 116.6
     },
     {
      "service_date": "2026-11-25",
-     "observed_share": 0.9893,
-     "on_time_share_of_observed": 0.7726,
-     "deviation_s_median": 130.2
+     "observed_share": 0.9929,
+     "on_time_share_of_observed": 0.7734,
+     "deviation_s_median": 129.9
     }
    ],
    "stops": [
@@ -761,18 +762,18 @@
      "name": "Harbor Station Transfer Center Bayshore Dr",
      "order": 22,
      "scheduled": 351,
-     "observed": 321,
-     "on_time": 301,
+     "observed": 329,
+     "on_time": 309,
      "early": 1,
      "late": 19,
-     "observed_share": 0.9145,
-     "on_time_share_of_observed": 0.9377,
-     "early_share_of_observed": 0.0031,
-     "late_share_of_observed": 0.0592,
-     "deviation_s_median": 17.0,
-     "deviation_s_p25": -129.0,
-     "deviation_s_p75": 50.0,
-     "deviations_counted": 321
+     "observed_share": 0.9373,
+     "on_time_share_of_observed": 0.9392,
+     "early_share_of_observed": 0.003,
+     "late_share_of_observed": 0.0578,
+     "deviation_s_median": 18.0,
+     "deviation_s_p25": -128.0,
+     "deviation_s_p75": 54.0,
+     "deviations_counted": 329
     }
    ]
   },
@@ -781,18 +782,18 @@
    "short_name": "3C",
    "long_name": "Stanwood/ Camano Island",
    "scheduled": 533,
-   "observed": 450,
-   "on_time": 398,
+   "observed": 488,
+   "on_time": 436,
    "early": 4,
    "late": 48,
-   "observed_share": 0.8443,
-   "on_time_share_of_observed": 0.8844,
-   "early_share_of_observed": 0.0089,
-   "late_share_of_observed": 0.1067,
-   "deviation_s_median": 110.0,
-   "deviation_s_p25": 33.2,
-   "deviation_s_p75": 222.8,
-   "deviations_counted": 450,
+   "observed_share": 0.9156,
+   "on_time_share_of_observed": 0.8934,
+   "early_share_of_observed": 0.0082,
+   "late_share_of_observed": 0.0984,
+   "deviation_s_median": 95.5,
+   "deviation_s_p25": 36.8,
+   "deviation_s_p75": 214.2,
+   "deviations_counted": 488,
    "daily": [
     {
      "service_date": "2026-11-19",
@@ -802,39 +803,39 @@
     },
     {
      "service_date": "2026-11-20",
-     "observed_share": 0.8476,
-     "on_time_share_of_observed": 0.8876,
-     "deviation_s_median": 102.2
+     "observed_share": 0.9714,
+     "on_time_share_of_observed": 0.902,
+     "deviation_s_median": 82.1
     },
     {
      "service_date": "2026-11-21",
-     "observed_share": 0.8857,
-     "on_time_share_of_observed": 0.8387,
-     "deviation_s_median": 152.6
+     "observed_share": 0.9429,
+     "on_time_share_of_observed": 0.8485,
+     "deviation_s_median": 148.1
     },
     {
      "service_date": "2026-11-22",
-     "observed_share": 0.7429,
-     "on_time_share_of_observed": 0.9615,
-     "deviation_s_median": 40.6
+     "observed_share": 0.7714,
+     "on_time_share_of_observed": 0.963,
+     "deviation_s_median": 42.8
     },
     {
      "service_date": "2026-11-23",
-     "observed_share": 0.9048,
-     "on_time_share_of_observed": 0.8737,
-     "deviation_s_median": 132.7
+     "observed_share": 0.981,
+     "on_time_share_of_observed": 0.8835,
+     "deviation_s_median": 117.5
     },
     {
      "service_date": "2026-11-24",
-     "observed_share": 0.7524,
-     "on_time_share_of_observed": 0.9494,
-     "deviation_s_median": 100.6
+     "observed_share": 0.8286,
+     "on_time_share_of_observed": 0.954,
+     "deviation_s_median": 90.8
     },
     {
      "service_date": "2026-11-25",
-     "observed_share": 0.8762,
-     "on_time_share_of_observed": 0.8696,
-     "deviation_s_median": 109.1
+     "observed_share": 0.9333,
+     "on_time_share_of_observed": 0.8776,
+     "deviation_s_median": 96.0
     }
    ],
    "stops": [
@@ -915,36 +916,36 @@
      "name": "Haggen Grocery",
      "order": 12,
      "scheduled": 76,
-     "observed": 68,
-     "on_time": 66,
+     "observed": 70,
+     "on_time": 68,
      "early": 0,
      "late": 2,
-     "observed_share": 0.8947,
-     "on_time_share_of_observed": 0.9706,
+     "observed_share": 0.9211,
+     "on_time_share_of_observed": 0.9714,
      "early_share_of_observed": 0.0,
-     "late_share_of_observed": 0.0294,
-     "deviation_s_median": 107.0,
+     "late_share_of_observed": 0.0286,
+     "deviation_s_median": 104.0,
      "deviation_s_p25": 51.0,
-     "deviation_s_p75": 176.5,
-     "deviations_counted": 68
+     "deviation_s_p75": 175.8,
+     "deviations_counted": 70
     },
     {
      "stop_id": "178376",
      "name": "Terry's Corner",
      "order": 15,
      "scheduled": 153,
-     "observed": 98,
-     "on_time": 98,
+     "observed": 134,
+     "on_time": 134,
      "early": 0,
      "late": 0,
-     "observed_share": 0.6405,
+     "observed_share": 0.8758,
      "on_time_share_of_observed": 1.0,
      "early_share_of_observed": 0.0,
      "late_share_of_observed": 0.0,
-     "deviation_s_median": -187.5,
-     "deviation_s_p25": -386.0,
-     "deviation_s_p75": 30.0,
-     "deviations_counted": 98
+     "deviation_s_median": 21.0,
+     "deviation_s_p25": -348.0,
+     "deviation_s_p75": 50.0,
+     "deviations_counted": 134
     }
    ]
   },
@@ -953,18 +954,18 @@
    "short_name": "2C",
    "long_name": "East Camano",
    "scheduled": 851,
-   "observed": 603,
-   "on_time": 420,
+   "observed": 606,
+   "on_time": 423,
    "early": 4,
    "late": 179,
-   "observed_share": 0.7086,
-   "on_time_share_of_observed": 0.6965,
+   "observed_share": 0.7121,
+   "on_time_share_of_observed": 0.698,
    "early_share_of_observed": 0.0066,
-   "late_share_of_observed": 0.2968,
+   "late_share_of_observed": 0.2954,
    "deviation_s_median": 204.0,
-   "deviation_s_p25": 107.0,
+   "deviation_s_p25": 105.5,
    "deviation_s_p75": 330.0,
-   "deviations_counted": 603,
+   "deviations_counted": 606,
    "daily": [
     {
      "service_date": "2026-11-19",
@@ -998,15 +999,15 @@
     },
     {
      "service_date": "2026-11-24",
-     "observed_share": 0.6562,
-     "on_time_share_of_observed": 0.6952,
-     "deviation_s_median": 192.1
+     "observed_share": 0.6625,
+     "on_time_share_of_observed": 0.6981,
+     "deviation_s_median": 190.1
     },
     {
      "service_date": "2026-11-25",
-     "observed_share": 0.6438,
-     "on_time_share_of_observed": 0.6214,
-     "deviation_s_median": 196.3
+     "observed_share": 0.6562,
+     "on_time_share_of_observed": 0.6286,
+     "deviation_s_median": 196.1
     }
    ],
    "stops": [
@@ -1123,18 +1124,18 @@
      "name": "Terry's Corner",
      "order": 41,
      "scheduled": 171,
-     "observed": 141,
-     "on_time": 129,
+     "observed": 144,
+     "on_time": 132,
      "early": 4,
      "late": 8,
-     "observed_share": 0.8246,
-     "on_time_share_of_observed": 0.9149,
-     "early_share_of_observed": 0.0284,
-     "late_share_of_observed": 0.0567,
-     "deviation_s_median": 13.0,
-     "deviation_s_p25": -40.0,
-     "deviation_s_p75": 50.0,
-     "deviations_counted": 141
+     "observed_share": 0.8421,
+     "on_time_share_of_observed": 0.9167,
+     "early_share_of_observed": 0.0278,
+     "late_share_of_observed": 0.0556,
+     "deviation_s_median": 14.0,
+     "deviation_s_p25": -29.5,
+     "deviation_s_p75": 52.2,
+     "deviations_counted": 144
     }
    ]
   },
@@ -1143,18 +1144,18 @@
    "short_name": "411C",
    "long_name": "Mount Vernon/ Camano Island",
    "scheduled": 442,
-   "observed": 391,
-   "on_time": 346,
+   "observed": 403,
+   "on_time": 357,
    "early": 11,
-   "late": 34,
-   "observed_share": 0.8846,
-   "on_time_share_of_observed": 0.8849,
-   "early_share_of_observed": 0.0281,
-   "late_share_of_observed": 0.087,
+   "late": 35,
+   "observed_share": 0.9118,
+   "on_time_share_of_observed": 0.8859,
+   "early_share_of_observed": 0.0273,
+   "late_share_of_observed": 0.0868,
    "deviation_s_median": 56.0,
-   "deviation_s_p25": 11.0,
-   "deviation_s_p75": 152.0,
-   "deviations_counted": 391,
+   "deviation_s_p25": 12.0,
+   "deviation_s_p75": 151.0,
+   "deviations_counted": 403,
    "daily": [
     {
      "service_date": "2026-11-19",
@@ -1164,15 +1165,15 @@
     },
     {
      "service_date": "2026-11-20",
-     "observed_share": 0.8831,
-     "on_time_share_of_observed": 0.8824,
+     "observed_share": 0.9091,
+     "on_time_share_of_observed": 0.8857,
      "deviation_s_median": 33.2
     },
     {
      "service_date": "2026-11-21",
-     "observed_share": 0.9524,
-     "on_time_share_of_observed": 0.925,
-     "deviation_s_median": 93.6
+     "observed_share": 0.9762,
+     "on_time_share_of_observed": 0.9268,
+     "deviation_s_median": 88.0
     },
     {
      "service_date": "2026-11-22",
@@ -1182,21 +1183,21 @@
     },
     {
      "service_date": "2026-11-23",
-     "observed_share": 0.9221,
-     "on_time_share_of_observed": 0.9155,
-     "deviation_s_median": 70.5
+     "observed_share": 0.9481,
+     "on_time_share_of_observed": 0.9041,
+     "deviation_s_median": 73.8
     },
     {
      "service_date": "2026-11-24",
-     "observed_share": 0.8052,
-     "on_time_share_of_observed": 0.9677,
-     "deviation_s_median": 60.1
+     "observed_share": 0.8571,
+     "on_time_share_of_observed": 0.9697,
+     "deviation_s_median": 55.7
     },
     {
      "service_date": "2026-11-25",
-     "observed_share": 0.8052,
-     "on_time_share_of_observed": 0.9677,
-     "deviation_s_median": 44.7
+     "observed_share": 0.8442,
+     "on_time_share_of_observed": 0.9692,
+     "deviation_s_median": 43.6
     }
    ],
    "stops": [
@@ -1367,18 +1368,18 @@
      "name": "Skagit Station",
      "order": 12,
      "scheduled": 76,
-     "observed": 52,
-     "on_time": 50,
+     "observed": 64,
+     "on_time": 61,
      "early": 0,
-     "late": 2,
-     "observed_share": 0.6842,
-     "on_time_share_of_observed": 0.9615,
+     "late": 3,
+     "observed_share": 0.8421,
+     "on_time_share_of_observed": 0.9531,
      "early_share_of_observed": 0.0,
-     "late_share_of_observed": 0.0385,
-     "deviation_s_median": -55.5,
-     "deviation_s_p25": -209.2,
-     "deviation_s_p75": 51.2,
-     "deviations_counted": 52
+     "late_share_of_observed": 0.0469,
+     "deviation_s_median": 27.0,
+     "deviation_s_p25": -183.5,
+     "deviation_s_p75": 55.0,
+     "deviations_counted": 64
     },
     {
      "stop_id": "178376",
@@ -1459,18 +1460,18 @@
    "short_name": "412",
    "long_name": "Everett/ Camano Island",
    "scheduled": 272,
-   "observed": 185,
-   "on_time": 92,
-   "early": 8,
+   "observed": 207,
+   "on_time": 110,
+   "early": 12,
    "late": 85,
-   "observed_share": 0.6801,
-   "on_time_share_of_observed": 0.4973,
-   "early_share_of_observed": 0.0432,
-   "late_share_of_observed": 0.4595,
-   "deviation_s_median": 287.0,
-   "deviation_s_p25": 37.0,
-   "deviation_s_p75": 423.0,
-   "deviations_counted": 185,
+   "observed_share": 0.761,
+   "on_time_share_of_observed": 0.5314,
+   "early_share_of_observed": 0.058,
+   "late_share_of_observed": 0.4106,
+   "deviation_s_median": 236.0,
+   "deviation_s_p25": 32.5,
+   "deviation_s_p75": 403.5,
+   "deviations_counted": 207,
    "daily": [
     {
      "service_date": "2026-11-19",
@@ -1480,27 +1481,27 @@
     },
     {
      "service_date": "2026-11-20",
-     "observed_share": 0.6,
-     "on_time_share_of_observed": 0.6389,
-     "deviation_s_median": 189.2
+     "observed_share": 0.6833,
+     "on_time_share_of_observed": 0.6585,
+     "deviation_s_median": 101.4
     },
     {
      "service_date": "2026-11-23",
-     "observed_share": 0.65,
-     "on_time_share_of_observed": 0.4872,
-     "deviation_s_median": 287.4
+     "observed_share": 0.7667,
+     "on_time_share_of_observed": 0.5217,
+     "deviation_s_median": 217.3
     },
     {
      "service_date": "2026-11-24",
-     "observed_share": 0.7667,
-     "on_time_share_of_observed": 0.4565,
-     "deviation_s_median": 303.7
+     "observed_share": 0.8167,
+     "on_time_share_of_observed": 0.4898,
+     "deviation_s_median": 293.8
     },
     {
      "service_date": "2026-11-25",
-     "observed_share": 0.7667,
-     "on_time_share_of_observed": 0.4565,
-     "deviation_s_median": 303.1
+     "observed_share": 0.8833,
+     "on_time_share_of_observed": 0.5094,
+     "deviation_s_median": 274.4
     }
    ],
    "stops": [
@@ -1617,36 +1618,36 @@
      "name": "Terry's Corner",
      "order": 19,
      "scheduled": 45,
-     "observed": 33,
-     "on_time": 30,
+     "observed": 37,
+     "on_time": 34,
      "early": 3,
      "late": 0,
-     "observed_share": 0.7333,
-     "on_time_share_of_observed": 0.9091,
-     "early_share_of_observed": 0.0909,
+     "observed_share": 0.8222,
+     "on_time_share_of_observed": 0.9189,
+     "early_share_of_observed": 0.0811,
      "late_share_of_observed": 0.0,
-     "deviation_s_median": 10.0,
-     "deviation_s_p25": -305.0,
-     "deviation_s_p75": 37.0,
-     "deviations_counted": 33
+     "deviation_s_median": 16.0,
+     "deviation_s_p25": -284.0,
+     "deviation_s_p75": 50.0,
+     "deviations_counted": 37
     },
     {
      "stop_id": "178258",
      "name": "Everett Station",
      "order": 20,
      "scheduled": 46,
-     "observed": 20,
-     "on_time": 19,
-     "early": 0,
+     "observed": 38,
+     "on_time": 33,
+     "early": 4,
      "late": 1,
-     "observed_share": 0.4348,
-     "on_time_share_of_observed": 0.95,
-     "early_share_of_observed": 0.0,
-     "late_share_of_observed": 0.05,
-     "deviation_s_median": -155.5,
-     "deviation_s_p25": -422.5,
-     "deviation_s_p75": 83.8,
-     "deviations_counted": 20
+     "observed_share": 0.8261,
+     "on_time_share_of_observed": 0.8684,
+     "early_share_of_observed": 0.1053,
+     "late_share_of_observed": 0.0263,
+     "deviation_s_median": -81.0,
+     "deviation_s_p25": -376.8,
+     "deviation_s_p75": 80.2,
+     "deviations_counted": 38
     }
    ]
   },
@@ -1655,18 +1656,18 @@
    "short_name": "6",
    "long_name": "Oak Harbor/ Coupeville Ferry",
    "scheduled": 1033,
-   "observed": 899,
-   "on_time": 705,
-   "early": 35,
-   "late": 159,
-   "observed_share": 0.8703,
-   "on_time_share_of_observed": 0.7842,
-   "early_share_of_observed": 0.0389,
-   "late_share_of_observed": 0.1769,
-   "deviation_s_median": 140.0,
-   "deviation_s_p25": 48.5,
-   "deviation_s_p75": 257.5,
-   "deviations_counted": 899,
+   "observed": 965,
+   "on_time": 760,
+   "early": 42,
+   "late": 163,
+   "observed_share": 0.9342,
+   "on_time_share_of_observed": 0.7876,
+   "early_share_of_observed": 0.0435,
+   "late_share_of_observed": 0.1689,
+   "deviation_s_median": 130.0,
+   "deviation_s_p25": 41.0,
+   "deviation_s_p75": 252.0,
+   "deviations_counted": 965,
    "daily": [
     {
      "service_date": "2026-11-19",
@@ -1676,39 +1677,39 @@
     },
     {
      "service_date": "2026-11-20",
-     "observed_share": 0.8721,
-     "on_time_share_of_observed": 0.8533,
-     "deviation_s_median": 125.1
+     "observed_share": 0.9477,
+     "on_time_share_of_observed": 0.8466,
+     "deviation_s_median": 111.6
     },
     {
      "service_date": "2026-11-21",
-     "observed_share": 0.8682,
-     "on_time_share_of_observed": 0.7679,
-     "deviation_s_median": 122.1
+     "observed_share": 0.938,
+     "on_time_share_of_observed": 0.7851,
+     "deviation_s_median": 99.4
     },
     {
      "service_date": "2026-11-22",
-     "observed_share": 0.876,
-     "on_time_share_of_observed": 0.8584,
-     "deviation_s_median": 95.1
+     "observed_share": 0.9535,
+     "on_time_share_of_observed": 0.8699,
+     "deviation_s_median": 85.9
     },
     {
      "service_date": "2026-11-23",
-     "observed_share": 0.8488,
-     "on_time_share_of_observed": 0.9315,
-     "deviation_s_median": 83.0
+     "observed_share": 0.9186,
+     "on_time_share_of_observed": 0.9241,
+     "deviation_s_median": 75.0
     },
     {
      "service_date": "2026-11-24",
-     "observed_share": 0.8837,
-     "on_time_share_of_observed": 0.7171,
-     "deviation_s_median": 169.3
+     "observed_share": 0.9419,
+     "on_time_share_of_observed": 0.716,
+     "deviation_s_median": 163.7
     },
     {
      "service_date": "2026-11-25",
-     "observed_share": 0.8895,
-     "on_time_share_of_observed": 0.6993,
-     "deviation_s_median": 200.0
+     "observed_share": 0.9593,
+     "on_time_share_of_observed": 0.703,
+     "deviation_s_median": 187.9
     }
    ],
    "stops": [
@@ -1717,18 +1718,18 @@
      "name": "Harbor Station Transfer Center Bayshore Dr",
      "order": 1,
      "scheduled": 120,
-     "observed": 107,
-     "on_time": 90,
+     "observed": 108,
+     "on_time": 91,
      "early": 0,
      "late": 17,
-     "observed_share": 0.8917,
-     "on_time_share_of_observed": 0.8411,
+     "observed_share": 0.9,
+     "on_time_share_of_observed": 0.8426,
      "early_share_of_observed": 0.0,
-     "late_share_of_observed": 0.1589,
+     "late_share_of_observed": 0.1574,
      "deviation_s_median": 61.0,
-     "deviation_s_p25": 35.0,
-     "deviation_s_p75": 130.5,
-     "deviations_counted": 107
+     "deviation_s_p25": 35.5,
+     "deviation_s_p75": 130.2,
+     "deviations_counted": 108
     },
     {
      "stop_id": "197248",
@@ -1915,36 +1916,36 @@
      "name": "Main St at Coupeville Elementary School",
      "order": 24,
      "scheduled": 66,
-     "observed": 63,
-     "on_time": 49,
+     "observed": 65,
+     "on_time": 51,
      "early": 1,
      "late": 13,
-     "observed_share": 0.9545,
-     "on_time_share_of_observed": 0.7778,
-     "early_share_of_observed": 0.0159,
-     "late_share_of_observed": 0.2063,
-     "deviation_s_median": 188.0,
-     "deviation_s_p25": 133.0,
-     "deviation_s_p75": 277.5,
-     "deviations_counted": 63
+     "observed_share": 0.9848,
+     "on_time_share_of_observed": 0.7846,
+     "early_share_of_observed": 0.0154,
+     "late_share_of_observed": 0.2,
+     "deviation_s_median": 186.0,
+     "deviation_s_p25": 131.0,
+     "deviation_s_p75": 276.0,
+     "deviations_counted": 65
     },
     {
      "stop_id": "178134",
      "name": "Engle Rd at Coupeville Ferry Terminal",
      "order": 28,
      "scheduled": 132,
-     "observed": 40,
-     "on_time": 10,
-     "early": 28,
-     "late": 2,
-     "observed_share": 0.303,
-     "on_time_share_of_observed": 0.25,
-     "early_share_of_observed": 0.7,
-     "late_share_of_observed": 0.05,
-     "deviation_s_median": -153.5,
-     "deviation_s_p25": -292.8,
-     "deviation_s_p75": -55.5,
-     "deviations_counted": 40
+     "observed": 103,
+     "on_time": 62,
+     "early": 35,
+     "late": 6,
+     "observed_share": 0.7803,
+     "on_time_share_of_observed": 0.6019,
+     "early_share_of_observed": 0.3398,
+     "late_share_of_observed": 0.0583,
+     "deviation_s_median": -59.0,
+     "deviation_s_p25": -172.5,
+     "deviation_s_p75": 41.0,
+     "deviations_counted": 103
     },
     {
      "stop_id": "178311",
@@ -1989,18 +1990,18 @@
    "short_name": "411W",
    "long_name": "March Point Anacortes/ Oak Harbor",
    "scheduled": 813,
-   "observed": 682,
-   "on_time": 381,
+   "observed": 708,
+   "on_time": 406,
    "early": 27,
-   "late": 274,
-   "observed_share": 0.8389,
-   "on_time_share_of_observed": 0.5587,
-   "early_share_of_observed": 0.0396,
-   "late_share_of_observed": 0.4018,
-   "deviation_s_median": 253.0,
-   "deviation_s_p25": 107.2,
-   "deviation_s_p75": 381.0,
-   "deviations_counted": 682,
+   "late": 275,
+   "observed_share": 0.8708,
+   "on_time_share_of_observed": 0.5734,
+   "early_share_of_observed": 0.0381,
+   "late_share_of_observed": 0.3884,
+   "deviation_s_median": 246.5,
+   "deviation_s_p25": 94.0,
+   "deviation_s_p75": 371.5,
+   "deviations_counted": 708,
    "daily": [
     {
      "service_date": "2026-11-19",
@@ -2010,33 +2011,33 @@
     },
     {
      "service_date": "2026-11-20",
-     "observed_share": 0.8639,
-     "on_time_share_of_observed": 0.6644,
-     "deviation_s_median": 205.3
+     "observed_share": 0.9053,
+     "on_time_share_of_observed": 0.6732,
+     "deviation_s_median": 198.9
     },
     {
      "service_date": "2026-11-21",
-     "observed_share": 0.8615,
-     "on_time_share_of_observed": 0.5893,
-     "deviation_s_median": 263.5
+     "observed_share": 0.9385,
+     "on_time_share_of_observed": 0.623,
+     "deviation_s_median": 258.9
     },
     {
      "service_date": "2026-11-23",
-     "observed_share": 0.7574,
-     "on_time_share_of_observed": 0.5625,
-     "deviation_s_median": 244.9
+     "observed_share": 0.787,
+     "on_time_share_of_observed": 0.5789,
+     "deviation_s_median": 243.9
     },
     {
      "service_date": "2026-11-24",
-     "observed_share": 0.8047,
-     "on_time_share_of_observed": 0.5441,
-     "deviation_s_median": 252.3
+     "observed_share": 0.8343,
+     "on_time_share_of_observed": 0.5603,
+     "deviation_s_median": 246.0
     },
     {
      "service_date": "2026-11-25",
-     "observed_share": 0.929,
-     "on_time_share_of_observed": 0.4904,
-     "deviation_s_median": 280.9
+     "observed_share": 0.9527,
+     "on_time_share_of_observed": 0.5031,
+     "deviation_s_median": 277.4
     }
    ],
    "stops": [
@@ -2189,18 +2190,18 @@
      "name": "Harbor Station Transfer Center Bayshore Dr",
      "order": 18,
      "scheduled": 125,
-     "observed": 84,
-     "on_time": 39,
+     "observed": 110,
+     "on_time": 64,
      "early": 27,
-     "late": 18,
-     "observed_share": 0.672,
-     "on_time_share_of_observed": 0.4643,
-     "early_share_of_observed": 0.3214,
-     "late_share_of_observed": 0.2143,
-     "deviation_s_median": 48.0,
-     "deviation_s_p25": -170.2,
-     "deviation_s_p75": 286.5,
-     "deviations_counted": 84
+     "late": 19,
+     "observed_share": 0.88,
+     "on_time_share_of_observed": 0.5818,
+     "early_share_of_observed": 0.2455,
+     "late_share_of_observed": 0.1727,
+     "deviation_s_median": 42.0,
+     "deviation_s_p25": -90.2,
+     "deviation_s_p75": 257.8,
+     "deviations_counted": 110
     },
     {
      "stop_id": "178201",
@@ -2245,18 +2246,18 @@
    "short_name": "2",
    "long_name": "Ault Field Rd/ Oak Harbor",
    "scheduled": 840,
-   "observed": 737,
-   "on_time": 580,
+   "observed": 801,
+   "on_time": 640,
    "early": 0,
-   "late": 157,
-   "observed_share": 0.8774,
-   "on_time_share_of_observed": 0.787,
+   "late": 161,
+   "observed_share": 0.9536,
+   "on_time_share_of_observed": 0.799,
    "early_share_of_observed": 0.0,
-   "late_share_of_observed": 0.213,
-   "deviation_s_median": 131.0,
-   "deviation_s_p25": 65.0,
-   "deviation_s_p75": 253.0,
-   "deviations_counted": 737,
+   "late_share_of_observed": 0.201,
+   "deviation_s_median": 123.0,
+   "deviation_s_p25": 55.0,
+   "deviation_s_p75": 247.0,
+   "deviations_counted": 801,
    "daily": [
     {
      "service_date": "2026-11-19",
@@ -2266,39 +2267,39 @@
     },
     {
      "service_date": "2026-11-20",
-     "observed_share": 0.9,
-     "on_time_share_of_observed": 0.6325,
-     "deviation_s_median": 231.9
+     "observed_share": 0.9923,
+     "on_time_share_of_observed": 0.6667,
+     "deviation_s_median": 216.4
     },
     {
      "service_date": "2026-11-21",
-     "observed_share": 0.9077,
-     "on_time_share_of_observed": 0.9237,
-     "deviation_s_median": 94.8
+     "observed_share": 0.9923,
+     "on_time_share_of_observed": 0.9302,
+     "deviation_s_median": 82.0
     },
     {
      "service_date": "2026-11-22",
-     "observed_share": 0.9154,
-     "on_time_share_of_observed": 0.9328,
-     "deviation_s_median": 60.6
+     "observed_share": 0.9692,
+     "on_time_share_of_observed": 0.9365,
+     "deviation_s_median": 55.8
     },
     {
      "service_date": "2026-11-23",
-     "observed_share": 0.8923,
-     "on_time_share_of_observed": 0.7328,
-     "deviation_s_median": 140.7
+     "observed_share": 0.9846,
+     "on_time_share_of_observed": 0.75,
+     "deviation_s_median": 136.7
     },
     {
      "service_date": "2026-11-24",
-     "observed_share": 0.8154,
-     "on_time_share_of_observed": 0.8396,
-     "deviation_s_median": 102.6
+     "observed_share": 0.9,
+     "on_time_share_of_observed": 0.8547,
+     "deviation_s_median": 97.1
     },
     {
      "service_date": "2026-11-25",
-     "observed_share": 0.8385,
-     "on_time_share_of_observed": 0.7248,
-     "deviation_s_median": 215.1
+     "observed_share": 0.9231,
+     "on_time_share_of_observed": 0.725,
+     "deviation_s_median": 211.7
     }
    ],
    "stops": [
@@ -2451,18 +2452,18 @@
      "name": "Harbor Station Transfer Center Bayshore Dr",
      "order": 23,
      "scheduled": 168,
-     "observed": 81,
-     "on_time": 74,
+     "observed": 145,
+     "on_time": 134,
      "early": 0,
-     "late": 7,
-     "observed_share": 0.4821,
-     "on_time_share_of_observed": 0.9136,
+     "late": 11,
+     "observed_share": 0.8631,
+     "on_time_share_of_observed": 0.9241,
      "early_share_of_observed": 0.0,
-     "late_share_of_observed": 0.0864,
-     "deviation_s_median": 25.0,
-     "deviation_s_p25": 15.0,
-     "deviation_s_p75": 52.0,
-     "deviations_counted": 81
+     "late_share_of_observed": 0.0759,
+     "deviation_s_median": 18.0,
+     "deviation_s_p25": -190.0,
+     "deviation_s_p75": 48.0,
+     "deviations_counted": 145
     }
    ]
   },
@@ -2471,18 +2472,18 @@
    "short_name": "60",
    "long_name": "Freeland - Langley - Clinton",
    "scheduled": 2333,
-   "observed": 2060,
-   "on_time": 1243,
-   "early": 18,
-   "late": 799,
-   "observed_share": 0.883,
-   "on_time_share_of_observed": 0.6034,
-   "early_share_of_observed": 0.0087,
-   "late_share_of_observed": 0.3879,
-   "deviation_s_median": 234.0,
-   "deviation_s_p25": 90.0,
-   "deviation_s_p75": 420.2,
-   "deviations_counted": 2060,
+   "observed": 2131,
+   "on_time": 1286,
+   "early": 19,
+   "late": 826,
+   "observed_share": 0.9134,
+   "on_time_share_of_observed": 0.6035,
+   "early_share_of_observed": 0.0089,
+   "late_share_of_observed": 0.3876,
+   "deviation_s_median": 233.0,
+   "deviation_s_p25": 90.5,
+   "deviation_s_p75": 421.0,
+   "deviations_counted": 2131,
    "daily": [
     {
      "service_date": "2026-11-19",
@@ -2492,39 +2493,39 @@
     },
     {
      "service_date": "2026-11-20",
-     "observed_share": 0.8728,
-     "on_time_share_of_observed": 0.4573,
-     "deviation_s_median": 313.7
+     "observed_share": 0.8969,
+     "on_time_share_of_observed": 0.4523,
+     "deviation_s_median": 318.4
     },
     {
      "service_date": "2026-11-21",
-     "observed_share": 0.9313,
-     "on_time_share_of_observed": 0.7651,
-     "deviation_s_median": 172.5
+     "observed_share": 0.95,
+     "on_time_share_of_observed": 0.7566,
+     "deviation_s_median": 173.7
     },
     {
      "service_date": "2026-11-22",
-     "observed_share": 0.8625,
-     "on_time_share_of_observed": 0.7971,
-     "deviation_s_median": 185.0
+     "observed_share": 0.8875,
+     "on_time_share_of_observed": 0.7958,
+     "deviation_s_median": 181.2
     },
     {
      "service_date": "2026-11-23",
-     "observed_share": 0.8772,
-     "on_time_share_of_observed": 0.675,
-     "deviation_s_median": 187.2
+     "observed_share": 0.9298,
+     "on_time_share_of_observed": 0.6769,
+     "deviation_s_median": 185.3
     },
     {
      "service_date": "2026-11-24",
-     "observed_share": 0.8904,
+     "observed_share": 0.9276,
      "on_time_share_of_observed": 0.5887,
      "deviation_s_median": 242.3
     },
     {
      "service_date": "2026-11-25",
-     "observed_share": 0.8684,
-     "on_time_share_of_observed": 0.6692,
-     "deviation_s_median": 208.6
+     "observed_share": 0.8947,
+     "on_time_share_of_observed": 0.6716,
+     "deviation_s_median": 209.6
     }
    ],
    "stops": [
@@ -2533,18 +2534,18 @@
      "name": "Clinton Ferry Terminal",
      "order": 1,
      "scheduled": 291,
-     "observed": 215,
-     "on_time": 136,
+     "observed": 259,
+     "on_time": 159,
      "early": 7,
-     "late": 72,
-     "observed_share": 0.7388,
-     "on_time_share_of_observed": 0.6326,
-     "early_share_of_observed": 0.0326,
-     "late_share_of_observed": 0.3349,
-     "deviation_s_median": 183.0,
-     "deviation_s_p25": 20.0,
-     "deviation_s_p75": 467.0,
-     "deviations_counted": 215
+     "late": 93,
+     "observed_share": 0.89,
+     "on_time_share_of_observed": 0.6139,
+     "early_share_of_observed": 0.027,
+     "late_share_of_observed": 0.3591,
+     "deviation_s_median": 191.0,
+     "deviation_s_p25": 22.0,
+     "deviation_s_p75": 486.0,
+     "deviations_counted": 259
     },
     {
      "stop_id": "197274",
@@ -2731,18 +2732,18 @@
      "name": "Freeland at Main St",
      "order": 28,
      "scheduled": 291,
-     "observed": 225,
-     "on_time": 167,
-     "early": 1,
-     "late": 57,
-     "observed_share": 0.7732,
-     "on_time_share_of_observed": 0.7422,
-     "early_share_of_observed": 0.0044,
-     "late_share_of_observed": 0.2533,
-     "deviation_s_median": 180.0,
-     "deviation_s_p25": 70.0,
-     "deviation_s_p75": 301.0,
-     "deviations_counted": 225
+     "observed": 252,
+     "on_time": 187,
+     "early": 2,
+     "late": 63,
+     "observed_share": 0.866,
+     "on_time_share_of_observed": 0.7421,
+     "early_share_of_observed": 0.0079,
+     "late_share_of_observed": 0.25,
+     "deviation_s_median": 179.0,
+     "deviation_s_p25": 70.8,
+     "deviation_s_p75": 292.0,
+     "deviations_counted": 252
     }
    ]
   },
@@ -2751,18 +2752,18 @@
    "short_name": "58",
    "long_name": "Clinton Ferry/ Scatchet Head",
    "scheduled": 540,
-   "observed": 434,
-   "on_time": 237,
+   "observed": 441,
+   "on_time": 240,
    "early": 2,
-   "late": 195,
-   "observed_share": 0.8037,
-   "on_time_share_of_observed": 0.5461,
-   "early_share_of_observed": 0.0046,
-   "late_share_of_observed": 0.4493,
-   "deviation_s_median": 270.0,
-   "deviation_s_p25": 141.5,
-   "deviation_s_p75": 438.8,
-   "deviations_counted": 434,
+   "late": 199,
+   "observed_share": 0.8167,
+   "on_time_share_of_observed": 0.5442,
+   "early_share_of_observed": 0.0045,
+   "late_share_of_observed": 0.4512,
+   "deviation_s_median": 271.0,
+   "deviation_s_p25": 143.0,
+   "deviation_s_p75": 439.0,
+   "deviations_counted": 441,
    "daily": [
     {
      "service_date": "2026-11-19",
@@ -2772,15 +2773,15 @@
     },
     {
      "service_date": "2026-11-20",
-     "observed_share": 0.7917,
-     "on_time_share_of_observed": 0.4526,
+     "observed_share": 0.8083,
+     "on_time_share_of_observed": 0.4536,
      "deviation_s_median": 320.1
     },
     {
      "service_date": "2026-11-23",
-     "observed_share": 0.7917,
-     "on_time_share_of_observed": 0.7368,
-     "deviation_s_median": 204.6
+     "observed_share": 0.8,
+     "on_time_share_of_observed": 0.7292,
+     "deviation_s_median": 204.7
     },
     {
      "service_date": "2026-11-24",
@@ -2790,9 +2791,9 @@
     },
     {
      "service_date": "2026-11-25",
-     "observed_share": 0.8167,
-     "on_time_share_of_observed": 0.6122,
-     "deviation_s_median": 226.6
+     "observed_share": 0.85,
+     "on_time_share_of_observed": 0.6078,
+     "deviation_s_median": 231.0
     }
    ],
    "stops": [
@@ -2909,18 +2910,18 @@
      "name": "Clinton Ferry Terminal",
      "order": 10,
      "scheduled": 90,
-     "observed": 68,
-     "on_time": 44,
+     "observed": 71,
+     "on_time": 46,
      "early": 2,
-     "late": 22,
-     "observed_share": 0.7556,
-     "on_time_share_of_observed": 0.6471,
-     "early_share_of_observed": 0.0294,
-     "late_share_of_observed": 0.3235,
-     "deviation_s_median": 215.0,
-     "deviation_s_p25": 109.8,
-     "deviation_s_p75": 365.5,
-     "deviations_counted": 68
+     "late": 23,
+     "observed_share": 0.7889,
+     "on_time_share_of_observed": 0.6479,
+     "early_share_of_observed": 0.0282,
+     "late_share_of_observed": 0.3239,
+     "deviation_s_median": 220.0,
+     "deviation_s_p25": 101.5,
+     "deviation_s_p75": 366.0,
+     "deviations_counted": 71
     },
     {
      "stop_id": "197281",
@@ -2981,18 +2982,18 @@
      "name": "Blakely at Swede Hill Rd",
      "order": 13,
      "scheduled": 90,
-     "observed": 69,
-     "on_time": 17,
+     "observed": 73,
+     "on_time": 18,
      "early": 0,
-     "late": 52,
-     "observed_share": 0.7667,
-     "on_time_share_of_observed": 0.2464,
+     "late": 55,
+     "observed_share": 0.8111,
+     "on_time_share_of_observed": 0.2466,
      "early_share_of_observed": 0.0,
-     "late_share_of_observed": 0.7536,
+     "late_share_of_observed": 0.7534,
      "deviation_s_median": 444.0,
      "deviation_s_p25": 310.0,
-     "deviation_s_p75": 606.0,
-     "deviations_counted": 69
+     "deviation_s_p75": 589.0,
+     "deviations_counted": 73
     }
    ]
   },
@@ -3001,24 +3002,24 @@
    "short_name": "4",
    "long_name": "Deception Pass/ Oak Harbor",
    "scheduled": 55,
-   "observed": 43,
-   "on_time": 34,
+   "observed": 47,
+   "on_time": 38,
    "early": 3,
    "late": 6,
-   "observed_share": 0.7818,
-   "on_time_share_of_observed": 0.7907,
-   "early_share_of_observed": 0.0698,
-   "late_share_of_observed": 0.1395,
-   "deviation_s_median": 129.0,
-   "deviation_s_p25": 28.0,
-   "deviation_s_p75": 260.0,
-   "deviations_counted": 43,
+   "observed_share": 0.8545,
+   "on_time_share_of_observed": 0.8085,
+   "early_share_of_observed": 0.0638,
+   "late_share_of_observed": 0.1277,
+   "deviation_s_median": 113.0,
+   "deviation_s_p25": 20.0,
+   "deviation_s_p75": 252.5,
+   "deviations_counted": 47,
    "daily": [
     {
      "service_date": "2026-11-22",
-     "observed_share": 0.7818,
-     "on_time_share_of_observed": 0.7907,
-     "deviation_s_median": 129.2
+     "observed_share": 0.8545,
+     "on_time_share_of_observed": 0.8085,
+     "deviation_s_median": 112.9
     }
    ],
    "stops": [
@@ -3135,18 +3136,18 @@
      "name": "Harbor Station Transfer Center Bayshore Dr",
      "order": 16,
      "scheduled": 10,
-     "observed": 8,
-     "on_time": 5,
+     "observed": 10,
+     "on_time": 7,
      "early": 3,
      "late": 0,
-     "observed_share": 0.8,
-     "on_time_share_of_observed": 0.625,
-     "early_share_of_observed": 0.375,
+     "observed_share": 1.0,
+     "on_time_share_of_observed": 0.7,
+     "early_share_of_observed": 0.3,
      "late_share_of_observed": 0.0,
-     "deviation_s_median": -45.0,
-     "deviation_s_p25": -351.2,
-     "deviation_s_p75": 44.8,
-     "deviations_counted": 8
+     "deviation_s_median": -31.0,
+     "deviation_s_p25": -268.8,
+     "deviation_s_p75": 52.5,
+     "deviations_counted": 10
     },
     {
      "stop_id": "178346",
@@ -3171,18 +3172,18 @@
      "name": "Deception Pass State Park at Cranberry Lake",
      "order": 18,
      "scheduled": 10,
-     "observed": 5,
-     "on_time": 5,
+     "observed": 7,
+     "on_time": 7,
      "early": 0,
      "late": 0,
-     "observed_share": 0.5,
+     "observed_share": 0.7,
      "on_time_share_of_observed": 1.0,
      "early_share_of_observed": 0.0,
      "late_share_of_observed": 0.0,
-     "deviation_s_median": -18.0,
-     "deviation_s_p25": -34.0,
-     "deviation_s_p75": 48.0,
-     "deviations_counted": 5
+     "deviation_s_median": -1.0,
+     "deviation_s_p25": -26.0,
+     "deviation_s_p75": 36.5,
+     "deviations_counted": 7
     }
    ]
   },
@@ -3191,18 +3192,18 @@
    "short_name": "1",
    "long_name": "Clinton / Oak Harbor",
    "scheduled": 3136,
-   "observed": 3001,
-   "on_time": 2400,
+   "observed": 3079,
+   "on_time": 2468,
    "early": 42,
-   "late": 559,
-   "observed_share": 0.957,
-   "on_time_share_of_observed": 0.7997,
-   "early_share_of_observed": 0.014,
-   "late_share_of_observed": 0.1863,
-   "deviation_s_median": 138.0,
-   "deviation_s_p25": 58.0,
-   "deviation_s_p75": 251.0,
-   "deviations_counted": 3001,
+   "late": 569,
+   "observed_share": 0.9818,
+   "on_time_share_of_observed": 0.8016,
+   "early_share_of_observed": 0.0136,
+   "late_share_of_observed": 0.1848,
+   "deviation_s_median": 137.0,
+   "deviation_s_p25": 56.0,
+   "deviation_s_p75": 249.0,
+   "deviations_counted": 3079,
    "daily": [
     {
      "service_date": "2026-11-19",
@@ -3212,38 +3213,38 @@
     },
     {
      "service_date": "2026-11-20",
-     "observed_share": 0.9615,
-     "on_time_share_of_observed": 0.8397,
-     "deviation_s_median": 129.9
+     "observed_share": 0.9866,
+     "on_time_share_of_observed": 0.8438,
+     "deviation_s_median": 127.9
     },
     {
      "service_date": "2026-11-21",
-     "observed_share": 0.932,
-     "on_time_share_of_observed": 0.6652,
-     "deviation_s_median": 192.4
+     "observed_share": 0.984,
+     "on_time_share_of_observed": 0.6707,
+     "deviation_s_median": 188.6
     },
     {
      "service_date": "2026-11-22",
-     "observed_share": 0.956,
-     "on_time_share_of_observed": 0.9121,
-     "deviation_s_median": 97.6
+     "observed_share": 0.984,
+     "on_time_share_of_observed": 0.9065,
+     "deviation_s_median": 99.0
     },
     {
      "service_date": "2026-11-23",
-     "observed_share": 0.9631,
-     "on_time_share_of_observed": 0.8417,
-     "deviation_s_median": 132.1
+     "observed_share": 0.9816,
+     "on_time_share_of_observed": 0.8447,
+     "deviation_s_median": 131.1
     },
     {
      "service_date": "2026-11-24",
-     "observed_share": 0.9497,
-     "on_time_share_of_observed": 0.8042,
-     "deviation_s_median": 145.3
+     "observed_share": 0.9799,
+     "on_time_share_of_observed": 0.8068,
+     "deviation_s_median": 144.5
     },
     {
      "service_date": "2026-11-25",
-     "observed_share": 0.9615,
-     "on_time_share_of_observed": 0.7561,
+     "observed_share": 0.9849,
+     "on_time_share_of_observed": 0.7568,
      "deviation_s_median": 145.4
     }
    ],
@@ -3253,18 +3254,18 @@
      "name": "Harbor Station Transfer Center Bayshore Dr",
      "order": 1,
      "scheduled": 315,
-     "observed": 229,
-     "on_time": 203,
+     "observed": 280,
+     "on_time": 245,
      "early": 0,
-     "late": 26,
-     "observed_share": 0.727,
-     "on_time_share_of_observed": 0.8865,
+     "late": 35,
+     "observed_share": 0.8889,
+     "on_time_share_of_observed": 0.875,
      "early_share_of_observed": 0.0,
-     "late_share_of_observed": 0.1135,
-     "deviation_s_median": 53.0,
-     "deviation_s_p25": 15.0,
-     "deviation_s_p75": 161.0,
-     "deviations_counted": 229
+     "late_share_of_observed": 0.125,
+     "deviation_s_median": 62.0,
+     "deviation_s_p25": 14.0,
+     "deviation_s_p75": 173.0,
+     "deviations_counted": 280
     },
     {
      "stop_id": "197242",
@@ -3343,18 +3344,18 @@
      "name": "Main St at Coupeville Elementary School",
      "order": 19,
      "scheduled": 187,
-     "observed": 185,
-     "on_time": 160,
+     "observed": 187,
+     "on_time": 162,
      "early": 2,
      "late": 23,
-     "observed_share": 0.9893,
-     "on_time_share_of_observed": 0.8649,
-     "early_share_of_observed": 0.0108,
-     "late_share_of_observed": 0.1243,
+     "observed_share": 1.0,
+     "on_time_share_of_observed": 0.8663,
+     "early_share_of_observed": 0.0107,
+     "late_share_of_observed": 0.123,
      "deviation_s_median": 86.0,
      "deviation_s_p25": 23.0,
-     "deviation_s_p75": 184.0,
-     "deviations_counted": 185
+     "deviation_s_p75": 181.5,
+     "deviations_counted": 187
     },
     {
      "stop_id": "178249",
@@ -3469,18 +3470,18 @@
      "name": "Clinton Ferry Terminal",
      "order": 40,
      "scheduled": 318,
-     "observed": 282,
-     "on_time": 230,
+     "observed": 305,
+     "on_time": 252,
      "early": 18,
-     "late": 34,
-     "observed_share": 0.8868,
-     "on_time_share_of_observed": 0.8156,
-     "early_share_of_observed": 0.0638,
-     "late_share_of_observed": 0.1206,
-     "deviation_s_median": 29.0,
-     "deviation_s_p25": -5.0,
-     "deviation_s_p75": 137.5,
-     "deviations_counted": 282
+     "late": 35,
+     "observed_share": 0.9591,
+     "on_time_share_of_observed": 0.8262,
+     "early_share_of_observed": 0.059,
+     "late_share_of_observed": 0.1148,
+     "deviation_s_median": 30.0,
+     "deviation_s_p25": -10.0,
+     "deviation_s_p75": 136.0,
+     "deviations_counted": 305
     },
     {
      "stop_id": "197237",
@@ -3505,18 +3506,18 @@
      "name": "Coupeville Park & Ride",
      "order": 44,
      "scheduled": 174,
-     "observed": 166,
-     "on_time": 120,
+     "observed": 168,
+     "on_time": 122,
      "early": 2,
      "late": 44,
-     "observed_share": 0.954,
-     "on_time_share_of_observed": 0.7229,
-     "early_share_of_observed": 0.012,
-     "late_share_of_observed": 0.2651,
-     "deviation_s_median": 187.5,
-     "deviation_s_p25": 95.5,
-     "deviation_s_p75": 318.0,
-     "deviations_counted": 166
+     "observed_share": 0.9655,
+     "on_time_share_of_observed": 0.7262,
+     "early_share_of_observed": 0.0119,
+     "late_share_of_observed": 0.2619,
+     "deviation_s_median": 185.5,
+     "deviation_s_p25": 94.8,
+     "deviation_s_p75": 314.0,
+     "deviations_counted": 168
     },
     {
      "stop_id": "178194",
@@ -3615,30 +3616,30 @@
    "short_name": "",
    "long_name": "Naswi Wkend",
    "scheduled": 140,
-   "observed": 128,
-   "on_time": 100,
+   "observed": 136,
+   "on_time": 108,
    "early": 15,
    "late": 13,
-   "observed_share": 0.9143,
-   "on_time_share_of_observed": 0.7812,
-   "early_share_of_observed": 0.1172,
-   "late_share_of_observed": 0.1016,
-   "deviation_s_median": 48.0,
-   "deviation_s_p25": -33.8,
-   "deviation_s_p75": 165.5,
-   "deviations_counted": 128,
+   "observed_share": 0.9714,
+   "on_time_share_of_observed": 0.7941,
+   "early_share_of_observed": 0.1103,
+   "late_share_of_observed": 0.0956,
+   "deviation_s_median": 47.0,
+   "deviation_s_p25": -27.5,
+   "deviation_s_p75": 162.8,
+   "deviations_counted": 136,
    "daily": [
     {
      "service_date": "2026-11-21",
-     "observed_share": 0.9286,
-     "on_time_share_of_observed": 0.7692,
-     "deviation_s_median": 45.5
+     "observed_share": 0.9857,
+     "on_time_share_of_observed": 0.7826,
+     "deviation_s_median": 41.2
     },
     {
      "service_date": "2026-11-22",
-     "observed_share": 0.9,
-     "on_time_share_of_observed": 0.7937,
-     "deviation_s_median": 61.8
+     "observed_share": 0.9571,
+     "on_time_share_of_observed": 0.806,
+     "deviation_s_median": 55.1
     }
    ],
    "stops": [
@@ -3701,36 +3702,36 @@
      "name": "Seaplane Base NEX/ Commisary",
      "order": 8,
      "scheduled": 20,
-     "observed": 19,
-     "on_time": 18,
+     "observed": 20,
+     "on_time": 19,
      "early": 0,
      "late": 1,
-     "observed_share": 0.95,
-     "on_time_share_of_observed": 0.9474,
+     "observed_share": 1.0,
+     "on_time_share_of_observed": 0.95,
      "early_share_of_observed": 0.0,
-     "late_share_of_observed": 0.0526,
-     "deviation_s_median": -119.0,
-     "deviation_s_p25": -214.0,
-     "deviation_s_p75": 48.0,
-     "deviations_counted": 19
+     "late_share_of_observed": 0.05,
+     "deviation_s_median": -107.0,
+     "deviation_s_p25": -195.5,
+     "deviation_s_p75": 56.0,
+     "deviations_counted": 20
     },
     {
      "stop_id": "178398",
      "name": "Harbor Station Transfer Center Bayshore Dr",
      "order": 9,
      "scheduled": 40,
-     "observed": 30,
-     "on_time": 19,
+     "observed": 37,
+     "on_time": 26,
      "early": 7,
      "late": 4,
-     "observed_share": 0.75,
-     "on_time_share_of_observed": 0.6333,
-     "early_share_of_observed": 0.2333,
-     "late_share_of_observed": 0.1333,
-     "deviation_s_median": 12.5,
-     "deviation_s_p25": -78.0,
-     "deviation_s_p75": 106.2,
-     "deviations_counted": 30
+     "observed_share": 0.925,
+     "on_time_share_of_observed": 0.7027,
+     "early_share_of_observed": 0.1892,
+     "late_share_of_observed": 0.1081,
+     "deviation_s_median": 23.0,
+     "deviation_s_p25": -57.0,
+     "deviation_s_p75": 75.0,
+     "deviations_counted": 37
     }
    ]
   },
@@ -3739,24 +3740,24 @@
    "short_name": "",
    "long_name": "Naswi Am",
    "scheduled": 200,
-   "observed": 184,
-   "on_time": 143,
+   "observed": 190,
+   "on_time": 148,
    "early": 29,
-   "late": 12,
-   "observed_share": 0.92,
-   "on_time_share_of_observed": 0.7772,
-   "early_share_of_observed": 0.1576,
-   "late_share_of_observed": 0.0652,
-   "deviation_s_median": 38.5,
-   "deviation_s_p25": -33.0,
-   "deviation_s_p75": 100.8,
-   "deviations_counted": 184,
+   "late": 13,
+   "observed_share": 0.95,
+   "on_time_share_of_observed": 0.7789,
+   "early_share_of_observed": 0.1526,
+   "late_share_of_observed": 0.0684,
+   "deviation_s_median": 39.0,
+   "deviation_s_p25": -29.0,
+   "deviation_s_p75": 102.2,
+   "deviations_counted": 190,
    "daily": [
     {
      "service_date": "2026-11-20",
-     "observed_share": 0.94,
-     "on_time_share_of_observed": 0.7872,
-     "deviation_s_median": 31.4
+     "observed_share": 0.98,
+     "on_time_share_of_observed": 0.7959,
+     "deviation_s_median": 33.2
     },
     {
      "service_date": "2026-11-23",
@@ -3766,8 +3767,8 @@
     },
     {
      "service_date": "2026-11-24",
-     "observed_share": 0.92,
-     "on_time_share_of_observed": 0.7609,
+     "observed_share": 1.0,
+     "on_time_share_of_observed": 0.76,
      "deviation_s_median": 62.8
     },
     {
@@ -3927,18 +3928,18 @@
      "name": "Harbor Station Transfer Center Bayshore Dr",
      "order": 24,
      "scheduled": 40,
-     "observed": 33,
-     "on_time": 16,
+     "observed": 39,
+     "on_time": 21,
      "early": 13,
-     "late": 4,
-     "observed_share": 0.825,
-     "on_time_share_of_observed": 0.4848,
-     "early_share_of_observed": 0.3939,
-     "late_share_of_observed": 0.1212,
-     "deviation_s_median": -65.0,
-     "deviation_s_p25": -201.0,
-     "deviation_s_p75": 110.0,
-     "deviations_counted": 33
+     "late": 5,
+     "observed_share": 0.975,
+     "on_time_share_of_observed": 0.5385,
+     "early_share_of_observed": 0.3333,
+     "late_share_of_observed": 0.1282,
+     "deviation_s_median": -26.0,
+     "deviation_s_p25": -137.0,
+     "deviation_s_p75": 120.0,
+     "deviations_counted": 39
     }
    ]
   },
@@ -3947,18 +3948,18 @@
    "short_name": "",
    "long_name": "Naswi Pm",
    "scheduled": 193,
-   "observed": 175,
-   "on_time": 112,
+   "observed": 183,
+   "on_time": 120,
    "early": 23,
    "late": 40,
-   "observed_share": 0.9067,
-   "on_time_share_of_observed": 0.64,
-   "early_share_of_observed": 0.1314,
-   "late_share_of_observed": 0.2286,
-   "deviation_s_median": 100.0,
+   "observed_share": 0.9482,
+   "on_time_share_of_observed": 0.6557,
+   "early_share_of_observed": 0.1257,
+   "late_share_of_observed": 0.2186,
+   "deviation_s_median": 102.0,
    "deviation_s_p25": -7.0,
-   "deviation_s_p75": 269.5,
-   "deviations_counted": 175,
+   "deviation_s_p75": 249.5,
+   "deviations_counted": 183,
    "daily": [
     {
      "service_date": "2026-11-19",
@@ -3968,27 +3969,27 @@
     },
     {
      "service_date": "2026-11-20",
-     "observed_share": 0.875,
-     "on_time_share_of_observed": 0.8286,
-     "deviation_s_median": 53.4
+     "observed_share": 0.95,
+     "on_time_share_of_observed": 0.8421,
+     "deviation_s_median": 64.0
     },
     {
      "service_date": "2026-11-23",
-     "observed_share": 0.95,
-     "on_time_share_of_observed": 0.5263,
+     "observed_share": 1.0,
+     "on_time_share_of_observed": 0.55,
      "deviation_s_median": 38.3
     },
     {
      "service_date": "2026-11-24",
-     "observed_share": 0.9,
-     "on_time_share_of_observed": 0.8611,
+     "observed_share": 0.95,
+     "on_time_share_of_observed": 0.8684,
      "deviation_s_median": 63.9
     },
     {
      "service_date": "2026-11-25",
-     "observed_share": 0.925,
-     "on_time_share_of_observed": 0.4054,
-     "deviation_s_median": 346.6
+     "observed_share": 0.95,
+     "on_time_share_of_observed": 0.4211,
+     "deviation_s_median": 330.2
     }
    ],
    "stops": [
@@ -4141,18 +4142,18 @@
      "name": "Harbor Station Transfer Center Bayshore Dr",
      "order": 27,
      "scheduled": 39,
-     "observed": 29,
-     "on_time": 17,
+     "observed": 37,
+     "on_time": 25,
      "early": 5,
      "late": 7,
-     "observed_share": 0.7436,
-     "on_time_share_of_observed": 0.5862,
-     "early_share_of_observed": 0.1724,
-     "late_share_of_observed": 0.2414,
-     "deviation_s_median": -60.0,
-     "deviation_s_p25": -245.0,
-     "deviation_s_p75": 196.0,
-     "deviations_counted": 29
+     "observed_share": 0.9487,
+     "on_time_share_of_observed": 0.6757,
+     "early_share_of_observed": 0.1351,
+     "late_share_of_observed": 0.1892,
+     "deviation_s_median": -8.0,
+     "deviation_s_p25": -197.0,
+     "deviation_s_p75": 187.0,
+     "deviations_counted": 37
     }
    ]
   }
