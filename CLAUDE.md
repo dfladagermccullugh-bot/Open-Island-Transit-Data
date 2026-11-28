@@ -164,6 +164,10 @@ Plan: `docs/plan-2026-11-27.md`. Work goes on the session's own `claude/...` bra
 - **Lighthouse, 2026-11-27** (session 9's item, done once Davin allowed the tools). `scripts/test_site.sh lighthouse` (`@lhci/cli` 0.16.1, `tests/site/lighthouserc.json`: accessibility at least 0.95, at most 450 KB of compressed JavaScript, all 12 pages) runs in the CI site job; locally set `CHROME_PATH=/opt/pw-browsers/chromium-1243/chrome-linux64/chrome`. Pages load `site/vendor/plot-0.6.11/plot.js` (`import {Plot, d3} from "./vendor/plot-0.6.11/plot.js"`), not the CDN's Plot and d3. To use another Plot or d3 function: add it to `tests/site/build/plot-entry.js`, run `node tests/site/make-plot.mjs`, update the two SHA-256 values in `scripts/check_site.py` (`VENDORED`); `check_site` fails a page that calls a function the bundle lacks.
 ## Next steps, in order
 
+**Current plan, approved 2026-11-28: `docs/plan-2026-11-28.md`** (12 sessions, S1 to S12, in order: gated data branch and safe Release names, determinism and weekly rebuild proof, first and last stops with relays, honest headline with untimed reasons and ranges, Compare cut to Skagit and Intercity like for like, navbar regroup, jump box and highlights and ferry tag, pre-rendered figures and layout fixes and feedback link, citations and DEMO.md, printed times and December 27 rehearsal, resilience items D1 to D5, final pass). Davin answered every open choice on 2026-11-28 with "according to the recommendations by Neon and Grokbot": this reverses his November 21 flat-navbar rule and his November 27 "about two peers per region". Ask D1 to D6 at the start of the session that needs each.
+
+The November 27 plan below is done.
+
 **Approved plan, 2026-11-27: `docs/plan-2026-11-27.md`** (all 15 sessions and the Phase 5 statistics done on 2026-11-27; see the session notes above) (accuracy gate, direction-aware timepoints, glitch filter, following the physical bus, autonomy tiers, period switch and clearer site, comparisons, stop views and replay). Work it in its session order. Davin approved it and lets Claude publish site copy directly. The items below are the earlier history.
 
 
