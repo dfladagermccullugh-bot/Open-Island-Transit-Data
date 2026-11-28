@@ -1,6 +1,6 @@
 {
  "service_date": "2026-11-26",
- "quality_version": "quality/0.7.0",
+ "quality_version": "quality/0.8.0",
  "computed_at": "2026-12-08T09:00:00+00:00",
  "scheduled_service": {
   "trips": 4,
@@ -306,7 +306,7 @@
   }
  },
  "events": {
-  "events_version": "events/0.5.0",
+  "events_version": "events/0.6.0",
   "stop_coverage": {
    "timepoints": {
     "scheduled": 12,
@@ -318,6 +318,23 @@
     "by_route": {
      "R1": {
       "scheduled": 12,
+      "observed": 0,
+      "coverage": 0.0
+     }
+    },
+    "by_position": {
+     "first": {
+      "scheduled": 4,
+      "observed": 0,
+      "coverage": 0.0
+     },
+     "middle": {
+      "scheduled": 4,
+      "observed": 0,
+      "coverage": 0.0
+     },
+     "last": {
+      "scheduled": 4,
       "observed": 0,
       "coverage": 0.0
      }
@@ -333,6 +350,23 @@
     "by_route": {
      "R1": {
       "scheduled": 16,
+      "observed": 0,
+      "coverage": 0.0
+     }
+    },
+    "by_position": {
+     "first": {
+      "scheduled": 4,
+      "observed": 0,
+      "coverage": 0.0
+     },
+     "middle": {
+      "scheduled": 8,
+      "observed": 0,
+      "coverage": 0.0
+     },
+     "last": {
+      "scheduled": 4,
       "observed": 0,
       "coverage": 0.0
      }
@@ -377,6 +411,26 @@
    "scheduled_trips_with_reports": 0,
    "trips_with_no_usable_report": 0,
    "trips_with_more_than_one_vehicle": 0
+  },
+  "between_trips": {
+   "position_reports": 0,
+   "in_trips": 0,
+   "between_trips": 0,
+   "between_trips_share": null,
+   "deadhead": 0,
+   "deadhead_by": {
+    "between_two_trips": 0,
+    "to_or_from_the_depot": 0,
+    "depot_area": 0
+   },
+   "unassigned": 0,
+   "unassigned_share": null,
+   "depot_area": [
+    48.08,
+    48.23,
+    -122.72,
+    -122.55
+   ]
   },
   "prediction_error": {
    "observed_events_with_predictions": 0,
@@ -471,11 +525,12 @@
   },
   "missing_vehicles": {
    "previous_days_available": 2,
-   "vehicles_seen_previously": 2,
-   "missing_count": 2,
+   "vehicles_seen_previously": 3,
+   "missing_count": 3,
    "missing_today": [
     "B1",
-    "B2"
+    "B2",
+    "B3"
    ],
    "new_today": []
   }

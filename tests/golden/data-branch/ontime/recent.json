@@ -20,7 +20,7 @@
  "timepoints": "passio-20af7aa7267e__timetable-2026-09-27-a09fbb25",
  "passio_version": "passio-20af7aa7267e",
  "ontime_versions": [
-  "ontime/0.5.0"
+  "ontime/0.6.0"
  ],
  "overall": {
   "scheduled": 24,
@@ -34,7 +34,7 @@
   "late_share_of_observed": 0.1429,
   "deviation_s_median": 1.0,
   "deviation_s_p25": -7.0,
-  "deviation_s_p75": 146.0,
+  "deviation_s_p75": 136.0,
   "deviations_counted": 21
  },
  "routes": {
@@ -53,7 +53,7 @@
    "late_share_of_observed": 0.1429,
    "deviation_s_median": 1.0,
    "deviation_s_p25": -7.0,
-   "deviation_s_p75": 146.0,
+   "deviation_s_p75": 136.0,
    "deviations_counted": 21,
    "daily": [
     {
@@ -121,7 +121,7 @@
      "late_share_of_observed": 0.1429,
      "deviation_s_median": -7.0,
      "deviation_s_p25": -7.0,
-     "deviation_s_p75": 80.5,
+     "deviation_s_p75": 74.5,
      "deviations_counted": 7
     }
    ]

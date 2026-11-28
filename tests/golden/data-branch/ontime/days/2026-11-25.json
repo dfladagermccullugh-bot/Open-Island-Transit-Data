@@ -1,5 +1,5 @@
 {
- "ontime_version": "ontime/0.5.0",
+ "ontime_version": "ontime/0.6.0",
  "definition": {
   "window_s": [-60,300],
   "measured": "departure at timepoints; arrival at the last stop",
@@ -39,7 +39,7 @@
    "late": 0,
    "on_time_share_of_observed": 1.0,
    "deviation_s_median": 21.3,
-   "deviations_s": [-7,1,1,13,21,21,146,148,151]
+   "deviations_s": [-7,1,1,13,21,21,136,146,151]
   },
   "7": {
    "scheduled": 3,
@@ -53,11 +53,44 @@
    "deviations_s": [-7,1,1]
   }
  },
+ "by_position": {
+  "first": {
+   "scheduled": 4,
+   "observed": 4,
+   "observed_share": 1.0,
+   "on_time": 4,
+   "early": 0,
+   "late": 0,
+   "on_time_share_of_observed": 1.0,
+   "deviation_s_median": 11.3
+  },
+  "middle": {
+   "scheduled": 4,
+   "observed": 4,
+   "observed_share": 1.0,
+   "on_time": 4,
+   "early": 0,
+   "late": 0,
+   "on_time_share_of_observed": 1.0,
+   "deviation_s_median": 11.3
+  },
+  "last": {
+   "scheduled": 4,
+   "observed": 4,
+   "observed_share": 1.0,
+   "on_time": 4,
+   "early": 0,
+   "late": 0,
+   "on_time_share_of_observed": 1.0,
+   "deviation_s_median": 2.7
+  }
+ },
  "by_route_stop": {
   "R1": {
    "S0": {
     "name": "Harbor Station",
     "stop_sequence_median": 1,
+    "position": "first",
     "scheduled": 4,
     "observed": 4,
     "observed_share": 1.0,
@@ -71,6 +104,7 @@
    "S2": {
     "name": "Midway Mall",
     "stop_sequence_median": 3,
+    "position": "middle",
     "scheduled": 4,
     "observed": 4,
     "observed_share": 1.0,
@@ -84,6 +118,7 @@
    "S3": {
     "name": "Ferry Terminal",
     "stop_sequence_median": 4,
+    "position": "last",
     "scheduled": 4,
     "observed": 4,
     "observed_share": 1.0,
@@ -92,7 +127,7 @@
     "late": 0,
     "on_time_share_of_observed": 1.0,
     "deviation_s_median": 2.7,
-    "deviations_s": [-7,-7,13,148]
+    "deviations_s": [-7,-7,13,136]
    }
   }
  },
@@ -107,7 +142,7 @@
  "no_service_day": null,
  "passio_version": "passio-20af7aa7267e",
  "timepoints": "passio-20af7aa7267e__timetable-2026-09-27-a09fbb25",
- "events_version": "events/0.5.0",
+ "events_version": "events/0.6.0",
  "routes": {
   "R1": {
    "short_name": "1",
@@ -117,8 +152,8 @@
  "validation": {
   "validate_version": "validate/0.3.0",
   "feed_agreement": {
-   "compared": 8,
-   "inside_change_interval_share": 0.25,
+   "compared": 7,
+   "inside_change_interval_share": 0.2857,
    "within_tolerance_share": 1.0,
    "tolerance_s": 30.0,
    "feed_change_after_departure_s": {
@@ -129,8 +164,8 @@
    "feed_sequence_going_backwards": 0,
    "by_route": {
     "R1": {
-     "compared": 8,
-     "within_tolerance": 8,
+     "compared": 7,
+     "within_tolerance": 7,
      "share": 1.0
     }
    }
@@ -140,7 +175,7 @@
    "negative": 0,
    "over_max_speed": 0,
    "across_skipped_stretch": 0,
-   "max_speed_ms": 9.3,
+   "max_speed_ms": 9.5,
    "max_allowed_ms": 35.0,
    "fastest": []
   },
@@ -168,7 +203,8 @@
   "vehicles_on_two_or_more_routes": 0,
   "consecutive_trip_pairs": 2,
   "block_disagreements": 0,
-  "trips_with_borrowed_reports": 4
+  "relays": 1,
+  "trips_with_borrowed_reports": 2
  },
  "feed_agreement_share": 1.0
 }

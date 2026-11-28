@@ -252,11 +252,11 @@ Passio schedule, whether or not we observed it.
 | `stop_distance_m` | The stop's distance along the trip's shape; empty if the stop is `unplaced`. Where two points on one stretch of the shape are equally near the stop, the earlier one (since `events/0.3.1`) |
 | `stop_offset_m` | How far the stop sits from the shape at that point, in meters (since `events/0.3.0`) |
 | `scheduled_arrival`, `scheduled_departure` | Passio schedule, as UTC timestamps |
-| `arrival_time` | When the bus first came within 40 meters (about 130 feet) of the stop along the shape |
-| `departure_time` | When it moved more than 40 meters past the stop |
+| `arrival_time` | When the bus first came within 40 meters (about 130 feet) of the stop along the shape. At a trip's last stop, if that was not seen, since `events/0.6.0`: when the bus came inside a circle of 100 meters (about 330 feet) around the stop, after the trip's other timed stops (`report_source` starts with `terminal_`) |
+| `departure_time` | When it moved more than 40 meters past the stop. At a trip's first stop, if that was not seen, since `events/0.6.0`: when the bus last left the 100-meter circle around the stop before its other timed stops (`report_source` starts with `terminal_`) |
 | `arrival_gap_s`, `departure_gap_s` | Seconds between the two position reports the time was interpolated from |
 | `arrival_status`, `departure_status` | `observed`; `gap` (reports more than 120 s apart, no time given); `not_reached` (tracking ended before the stop); `past_when_first_seen`; `skipped` (the bus left out the part of the shape the stop is on); `no_shape` (the trip has no shape); `unplaced` (the stop could not be placed on the shape in stop order within 150 m of it); `no_reports` (no vehicle carried the trip id); `not_applicable` (no arrival at the first stop, no departure at the last) |
-| `report_source` | Where the two position reports that timed this stop came from (the least direct of them if the arrival and departure differ): `own` (the trip's own id), `borrowed_before` (the same bus before its first report under this trip's id, often still showing the previous trip's id at the first stop), `borrowed_after` (the same bus after its last report under this trip's id, often already showing the next trip's id), `borrowed_within` (the same bus between them, with no trip id or another one). Empty when the stop was not observed. Since `events/0.5.0` (`docs/methods.md`, section 3) |
+| `report_source` | Where the two position reports that timed this stop came from (the least direct of them if the arrival and departure differ): `own` (the trip's own id), `borrowed_before` (the same bus before its first report under this trip's id, often still showing the previous trip's id at the first stop), `borrowed_after` (the same bus after its last report under this trip's id, often already showing the next trip's id), `borrowed_within` (the same bus between them, with no trip id or another one); since `events/0.6.0` also `relay` (a second bus that took the trip over, or handed it over, on the way) and, at a first or last stop timed by the 100-meter circle, `terminal_` followed by one of the others (`terminal_borrowed_after`: the bus already showed its next trip). Empty when the stop was not observed. Since `events/0.5.0` (`docs/methods.md`, section 3) |
 
 ### `trip-tracks-YYYY-MM-DD.parquet`
 
@@ -279,7 +279,11 @@ retraced segments (`docs/methods.md`, section 3).
 | `position_reports` | That vehicle's reports in the window |
 | `glitch_reports` | That vehicle's reports in the window that were left out as GPS glitches (`pipeline/glitch.py`, `docs/methods.md` section 3). `position_reports` does not include them. Since `events/0.4.0` |
 | `reports_borrowed_before`, `reports_borrowed_after`, `reports_borrowed_within` | Reports of the same bus under another trip id or none that the trip also used: before its first own report (from 30 minutes before its start, or the end of the bus's previous trip if later), after its last own report (up to 30 minutes after its end, but not past the moment the bus left its next trip's first stop), and in between. `position_reports` counts only its own. Since `events/0.5.0` |
+| `relay_vehicle_key` | A second vehicle that ran part of the trip under its id, right before or right after the chosen one: its reports end at most 5 minutes before the other's begin and within 300 meters (about 1,000 feet) of that place. Empty if none. Since `events/0.6.0` |
+| `reports_relay` | The relay vehicle's reports the trip used; 0 if none |
+| `relay_from`, `relay_to` | The relay vehicle's first and last report used, UTC; empty if none |
 | `reports_used` | Reports placed on the shape |
+| `first_report_used`, `last_report_used` | The first and last report the trip used, on the shape or for the 100-meter circle at its first and last stop, UTC. The quality stage counts the reports outside every trip's span (`between_trips`). Since `events/0.6.0` |
 | `reports_before_start`, `reports_after_end` | Reports from before tracking began or after the bus reached the end; never compared with the shape |
 | `off_shape_reports`, `wrong_direction_reports` | Reports set aside while tracking. Since `events/0.3.1`, a report equally near two segments of the shape is measured on the earlier one, and one nearest a corner has its direction checked against the segment leaving the corner, so the counts are the same on any computer (`docs/methods.md`, section 3) |
 | `shape_id`, `shape_length_m` | The trip's shape and its length |
@@ -302,7 +306,12 @@ Since `ontime/0.2.0` it also breaks them down by route and timepoint stop
 deviation in whole seconds (`deviations_s`). Since `ontime/0.5.0`,
 `by_trip` gives, for each trip with any timed timepoint, the number of its
 timepoint departures we timed and the number on time, as a pair
-`[observed, on_time]`; the headline's range resamples these. The `validation` section holds
+`[observed, on_time]`; the headline's range resamples these. Since
+`ontime/0.6.0`, each stop in `by_route_stop` has its `position` in the trips
+that serve it (`first`, `middle` or `last`, whichever most of its events are;
+`middle` on a tie), and `by_position` gives the same counts as the day's
+totals for the events at a trip's first stop, its middle stops and its last
+stop, so the gap between them can be seen. The `validation` section holds
 the automatic checks of the method (`pipeline/events/validate.py`,
 `docs/methods.md`, section 5). It shows how often our departures agree with
 the feed's `current_stop_sequence`, overall and by route, and how many
@@ -321,7 +330,9 @@ how many buses ran trips, how many ran two or more routes, how many pairs of
 trips one bus ran one after the other, how many of those pairs Passio's
 schedule puts in different blocks (`block_disagreements`; the feed shows
 what the bus did, so these are reported, not corrected), and how many trips
-used reports their bus sent under another trip id or none.
+used reports their bus sent under another trip id or none. Since
+`events/0.6.0`, `continuity.relays` counts the trips a second bus took over
+or handed over on the way (`relay_vehicle_key` in the trip tracks).
 
 | `daily.csv` column | Meaning |
 |---|---|
@@ -431,7 +442,17 @@ times, and it is empty when a day has none. Since `quality/0.7.0`, each
 minutes-ahead block of `events.prediction_error.by_horizon_min` also has
 `quantiles_20_s`: the 2.5th, 7.5th and so on up to the 97.5th percentile of
 the prediction error in seconds (predicted minus our time), for a chart of
-20 dots. The file also records which
+20 dots. Since `quality/0.8.0`, `events.stop_coverage.timepoints` and
+`events.stop_coverage.all_stops` have `by_position` (`first`, `middle` and
+`last`, each with `scheduled`, `observed` and `coverage`), and
+`events.between_trips` counts the position reports that no trip used, as
+`docs/methods.md` section 2 describes: `position_reports`, `in_trips`,
+`between_trips` and `between_trips_share`, then `deadhead` (driving or
+waiting with no trip, split in `deadhead_by` into `between_two_trips`,
+`to_or_from_the_depot` and `depot_area`) and `unassigned` with
+`unassigned_share`. `depot_area` gives the box we use for the stretch
+between Greenbank and Coupeville (south, north, west and east edges, in
+degrees). The file also records which
 schedule we used (`schedule`) and the SHA-256 fingerprints of the input
 files (`inputs`). We recompute a day when `QUALITY_VERSION` changes or when
 its parsed tables or stop events are rebuilt, or when its schedule version or
@@ -520,6 +541,9 @@ is named `hour_band: <band>`, `route: <route id>`, `day_type: <type>` or
 | `glitch_reports_removed` | Position reports left out as GPS glitches: a bus jumping somewhere impossible and back (`measurement.glitches` in the day file). Since `quality/0.6.0` |
 | `unresolved_jumps` | Impossible jumps that were not left out, because there was no jump back or the bus could have made it by driving fast (often a timestamp a few seconds off). Since `quality/0.6.0` |
 | `complete` | False when the day's quality file was written before its stop events existed; the nightly catch-up and the watchdog then treat the day as not processed, and the next run rebuilds it. Since `quality/0.6.1` |
+| `first_stop_timepoint_coverage`, `middle_stop_timepoint_coverage`, `last_stop_timepoint_coverage` | `timepoint_coverage` for the events at a trip's first stop, at its middle stops and at its last stop. Since `quality/0.8.0` |
+| `between_trips_share` | Positions that no trip used, divided by positions (`events.between_trips`). Since `quality/0.8.0` |
+| `between_trips_unassigned_share` | The part of those positions with no likely reason: the bus ran no trip before and after, was more than an hour from its first or last trip, and was not between Greenbank and Coupeville. Since `quality/0.8.0` |
 | `quality_version` | Version of the quality code |
 
 Counts of positions (`over_coverage_share`, `trip_id_match_rate`, the share

@@ -36,10 +36,12 @@ Each rule has a number, used in the messages and in ``docs/methods.md``:
 - I8: the period files (``ontime/headline.json``, ``ontime/periods.json``,
   ``quality/periods.json``) reconcile with the day files.
 - I9: every scheduled stop of every tracked trip has one stop event, in stop
-  order, with statuses from the known set.
+  order, with statuses from the known set; a relay (``events/0.6.0``) names
+  a second vehicle, not the first, with reports inside the trip's window.
 - I10: one bus cannot be in two places at once: on each vehicle, a trip's
   last timed event is no later than the next trip's first plus 30 seconds,
-  and no timepoint deviation is beyond two hours.
+  counting the part of a trip a relay vehicle ran as that vehicle's, and no
+  timepoint deviation is beyond two hours.
 - I11: the on-time counts of the last days, recounted from their stop-event
   files (checked by SHA-256) with ``ontime.classify``, equal the day files.
 - I12: the data branch agrees with Releases (``pipeline/check.py``).
@@ -81,6 +83,7 @@ from pipeline.stats import quantile, share
 GATE_VERSION = "gate/0.1.0"
 LOCK = Path(__file__).with_name("versions.lock.json")
 TOLERANCE_S = 30.0  # I10: a report may time one trip's end and the next one's start
+RELAY_SOURCES = frozenset({"relay", "terminal_relay"})  # I10: timed by a relay vehicle
 MAX_DEVIATION_S = 7200.0  # I10
 STATUSES = {
     "observed",
@@ -569,6 +572,7 @@ def check_events(
                 res.problem("I9", f"{day} trip {e['trip_id']}: a time without 'observed' or back")
     for t in tracks:
         trip = t["trip_id"]
+        _check_relay(res, day, t)
         rows = by_trip.pop(trip, [])
         if t["problem"]:
             if rows:
@@ -594,11 +598,16 @@ def check_events(
     for e in events:
         by_trip[e["trip_id"]].append(e)
     for trip, rows in by_trip.items():
-        times = [e[f"{k}_time"] for e in rows for k in ("arrival", "departure")]
+        # Times a relay vehicle's reports gave are that vehicle's (below).
+        mine = [e for e in rows if e.get("report_source") not in RELAY_SOURCES]
+        times = [e[f"{k}_time"] for e in mine for k in ("arrival", "departure")]
         times = [x for x in times if x is not None]
         vehicle = rows[0]["vehicle_key"]
         if times and vehicle is not None:
             spans[vehicle].append((min(times), max(times), trip))
+    for t in tracks:
+        if t.get("relay_vehicle_key") and t.get("relay_from") and t.get("relay_to"):
+            spans[t["relay_vehicle_key"]].append((t["relay_from"], t["relay_to"], t["trip_id"]))
     for vehicle, trips in spans.items():
         trips.sort()
         for (_, p_end, p), (n_start, _, n) in itertools.pairwise(trips):
@@ -614,6 +623,29 @@ def check_events(
             if dev is not None and abs(dev) > MAX_DEVIATION_S:
                 res.problem("I10", f"{day} trip {e['trip_id']} stop {e['stop_id']}: "
                             f"deviation {dev:.0f} s")  # fmt: skip
+
+
+def _check_relay(res: Result, day: str, t: dict[str, Any]) -> None:
+    """I9 for the relay columns of one trip track (absent before events/0.6.0)."""
+    if "relay_vehicle_key" not in t:
+        return
+    other, n = t["relay_vehicle_key"], t["reports_relay"]
+    first, last = t["relay_from"], t["relay_to"]
+    if other is None:
+        if n or first is not None or last is not None:
+            res.problem("I9", f"{day} trip {t['trip_id']}: relay reports without a relay vehicle")
+        return
+    margin = timedelta(minutes=30)
+    if (
+        other == t["vehicle_key"]
+        or not n
+        or first is None
+        or last is None
+        or first > last
+        or first < t["scheduled_start"] - margin
+        or last > t["scheduled_end"] + margin
+    ):
+        res.problem("I9", f"{day} trip {t['trip_id']}: relay with vehicle {other} does not add up")
 
 
 def _stops(day: dict[str, Any]) -> dict[tuple[str, str], tuple[dict[str, int], list[int]]]:

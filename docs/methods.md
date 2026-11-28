@@ -60,9 +60,10 @@ with a plain name beside the researchers' term.
 |---|---|
 | Trip coverage | Scheduled trips with at least one vehicle position carrying that `trip_id` within 30 minutes of the trip's scheduled time, divided by scheduled trips |
 | Canceled trips | Scheduled trips the feed itself says did not run: the trip carries a `CANCELED` or `DELETED` flag in a trip update or a vehicle position, or a service alert with the effect `NO_SERVICE` names the trip while the trip is scheduled. Counted beside trip coverage. A second coverage figure takes the canceled trips that no bus reported out of the scheduled trips |
-| Stop-level coverage | Scheduled timepoint events with an inferred stop event, divided by scheduled timepoint events |
+| Stop-level coverage | Scheduled timepoint events with an inferred stop event, divided by scheduled timepoint events. Also given apart for a trip's first stop, its middle stops and its last stop |
 | Never-reporting units | Routes with scheduled service and no observations; vehicles seen in the previous 30 days but not today |
 | Over-coverage | Positions whose `trip_id` is not in the schedule or not scheduled that day, or that have no `trip_id`, divided by positions |
+| Positions between trips | Positions that no trip used, divided by positions. A trip uses the positions from the first to the last one our script followed along its shape or used near its first and last stops. We call a position between trips deadhead, meaning the bus was driving or waiting with no trip, when the bus ran a trip before and after it that day, when it came within an hour before the bus's first trip or after its last, or when it was sent from the stretch between Greenbank and Coupeville where the depot is. Any others are unassigned. From November 19 to 25, 2026, between 4% and 12% of positions each day came between trips, and no more than 0.5% were unassigned |
 
 A trip id on its own is not enough to say a trip was tracked. The same ids
 run every day, and a bus waiting at a terminal often shows its next trip's
@@ -285,6 +286,38 @@ from the trip's own positions or borrowed ones. On November 25, 2026, this
 took the last stops our script could not time from 170 of 339 to 43, and
 the first stops it saw only after the bus had left from 92 of 341 to 24.
 
+Buses rarely wait exactly where the schedule puts a trip's first or last
+stop. At the Clinton ferry terminal they wait in a bay about 50 meters
+(about 160 feet) from the stop's mapped point, and at Everett Station about
+160 meters (about 520 feet) away, so the 40-meter rule along the shape often
+missed them. Since November 28, 2026, when that rule gives no time for a
+trip's first departure or last arrival, our script draws a circle of 100
+meters (about 330 feet) around the stop. The last arrival is the first
+moment, after the trip's other timed stops, that the bus comes inside the
+circle, and the first departure is the last moment, before them, that it
+leaves the circle. As everywhere else, the script draws a straight line in
+time between the two positions on either side, and only when they are at
+most 120 seconds apart. Some routes pass their end stop partway along, so the
+script skips a crossing the bus could only have made by driving the rest of
+the route faster than 35 m/s (about 78 mph), and it does not use the circle
+when the stop next to the terminal lies within 200 meters (about 660 feet)
+of it. Because the circle is wider than 40 meters, a time taken from it comes
+a few seconds early at a last stop and a few seconds late at a first stop.
+On the six days from November 20 to 25, 2026, this raised the last stops at
+timepoints that we could time from 73.3% to 90.0% and the first stops from
+77.6% to 88.0%, while the middle stops stayed at 89.6%. The newly timed last
+arrivals were spread around the schedule much like the ones timed before,
+and no time timed before changed.
+
+Sometimes a driver changes by changing buses, and then two buses carry one
+trip id one after the other. When one bus's positions under the trip's id
+end no more than 5 minutes before the other's begin, and within 300 meters
+(about 1,000 feet) of that place, our script joins the two and counts the
+trip as a relay. A second bus that shows the trip's id while the first is
+still driving it is a bus showing the wrong id, and our script leaves it
+out as before. From November 19 to 25, 2026, there were two relays, both
+before the trip's first departure, so no stop time came from them.
+
 Sometimes two pieces of the shape are exactly as close to a position as each
 other. This happens when the nearest point is a corner where two pieces meet,
 and when the shape draws the same stretch of road out and back. Computers
@@ -339,8 +372,9 @@ one.
 
 | Problem | Handling |
 |---|---|
-| Layovers at terminals | First stop: departure only. Last stop: arrival only |
-| Vehicles with no trip | Excluded; counted as over-coverage |
+| Layovers at terminals | First stop: departure only. Last stop: arrival only. When the 40-meter rule along the shape gives no time there, the moment the bus leaves or enters a circle of 100 meters (about 330 feet) around the stop does |
+| Vehicles with no trip | Excluded; counted as over-coverage. Positions that no trip used are counted as between trips, split into deadhead and unassigned (section 2) |
+| Two buses on one trip, one after the other | Joined as a relay when the handover is within 5 minutes and 300 meters (about 1,000 feet); otherwise the bus with more positions is used |
 | Trip label changes early or late at a layover | Positions accepted only within the trip's scheduled window ± 30 minutes and on its shape |
 | Detours | Positions more than 100 meters (about 330 feet) off the shape are set aside and counted. A stop the bus passed while off the shape gets no time and counts as not observed |
 | Parts of the shape not driven | Tracking moves past them once two positions agree; their stops are `skipped`, counted as not observed |
@@ -349,7 +383,8 @@ one.
 | Schedule changes daily | Each service day is pinned to the static version in effect that day, and keeps it. If two complete downloads on one day differ, the day gets the version whose scheduled trips the live feed reported |
 | A trip the schedule files describe badly | If a trip names a stop that is missing from the schedule, that trip gets no stop times and is counted (`problem` in `trip-tracks`); the rest of the day is unaffected |
 
-(Code: `pipeline/events/infer.py`; following the bus across trip ids:
+(Code: `pipeline/events/infer.py`, with the circle at terminals in
+`_terminal`; following the bus across trip ids and relays:
 `pipeline/events/continuity.py`; GPS glitches: `pipeline/glitch.py`;
 shapes, projection and the rule for equal distances:
 `pipeline/events/geometry.py`; timepoints: `pipeline/gtfs/timepoints.py`.)

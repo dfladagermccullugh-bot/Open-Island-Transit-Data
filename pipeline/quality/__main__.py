@@ -36,7 +36,7 @@ from pipeline.gtfs.tables import rows as _csv
 from pipeline.gtfs.zipread import ZipContents, load_zip
 from pipeline.quality import gaps
 from pipeline.quality import stops as stop_metrics
-from pipeline.quality.metrics import QUALITY_VERSION, day_metrics, refresh
+from pipeline.quality.metrics import QUALITY_VERSION, day_metrics, distinct_reports, refresh
 
 FETCH_COLUMNS = [
     "fetch_id",
@@ -193,6 +193,7 @@ def event_metrics(
             _csv(passio, "shapes.txt"), {t["shape_id"] for t in tracks if t["shape_id"]}
         ),
         "assignment": stop_metrics.assignment(vehicles, tracks, static_trip_ids, todays_trip_ids),
+        "between_trips": stop_metrics.between_trips(distinct_reports(vehicles), tracks),
         "prediction_error": stop_metrics.prediction_error(predictions, events),
         "jitter": stop_metrics.jitter(vehicles, terminals(passio)),
         "missing_vehicles": stop_metrics.missing_vehicles(

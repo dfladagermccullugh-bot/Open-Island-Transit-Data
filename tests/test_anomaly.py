@@ -271,3 +271,17 @@ def test_a_rebuild_that_differs_is_something_to_look_at(tmp_path):
     (tmp_path / "checks" / "reproduce.json").write_text(json.dumps(report))
     anomaly.check_reproduce(f, tmp_path)
     assert len(f.looks) == 1 and "2026-11-24 (stop-events-2026-11-24.parquet)" in f.looks[0]
+
+
+def test_end_stops_timed_much_less_often_than_the_middle_are_a_note():
+    f = anomaly.Findings()
+    ok = {"first_stop_timepoint_coverage": "0.88", "middle_stop_timepoint_coverage": "0.90",
+          "last_stop_timepoint_coverage": "0.91"}  # fmt: skip
+    anomaly.check_positions(f, quality_rows(**ok))
+    assert f.notes == []
+    anomaly.check_positions(f, quality_rows(**{**ok, "last_stop_timepoint_coverage": "0.73"}))
+    assert f.notes == ["2026-12-04: last stops timed 73.0%, middle stops 90.0%"]
+    assert f.problems == [] and f.looks == []
+    f = anomaly.Findings()
+    anomaly.check_positions(f, quality_rows())  # files from before quality/0.8.0
+    assert f.notes == []

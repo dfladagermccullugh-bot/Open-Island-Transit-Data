@@ -110,7 +110,7 @@
    "departure_status": "string",
    "report_source": "string"
   },
-  "content": "97aa0dc64ceaeba43affffeeb4d1ec787a266bedc4f6b3076f5c008a093650af"
+  "content": "dcb292e6c4584c4de39f50c32ddfd6fcd65f59a9c15c11c164420979e83b59a3"
  },
  "parsed-2026-11/stop-events-2026-11-26.parquet": {
   "rows": 16,
@@ -151,7 +151,13 @@
    "reports_borrowed_before": "int32",
    "reports_borrowed_after": "int32",
    "reports_borrowed_within": "int32",
+   "relay_vehicle_key": "string",
+   "reports_relay": "int32",
+   "relay_from": "timestamp[us, tz=UTC]",
+   "relay_to": "timestamp[us, tz=UTC]",
    "reports_used": "int32",
+   "first_report_used": "timestamp[us, tz=UTC]",
+   "last_report_used": "timestamp[us, tz=UTC]",
    "reports_before_start": "int32",
    "reports_after_end": "int32",
    "off_shape_reports": "int32",
@@ -163,7 +169,7 @@
    "skipped_m": "double",
    "problem": "string"
   },
-  "content": "8690a119929e3b6206753887ba6b3d44c42cd9d4df72ae4514790ec44209b625"
+  "content": "dc7362fc390e197c5adfe7bf15d1bad70c27b8c9e52775a75c660302f60d1ea7"
  },
  "parsed-2026-11/trip-tracks-2026-11-25.parquet": {
   "rows": 4,
@@ -179,7 +185,13 @@
    "reports_borrowed_before": "int32",
    "reports_borrowed_after": "int32",
    "reports_borrowed_within": "int32",
+   "relay_vehicle_key": "string",
+   "reports_relay": "int32",
+   "relay_from": "timestamp[us, tz=UTC]",
+   "relay_to": "timestamp[us, tz=UTC]",
    "reports_used": "int32",
+   "first_report_used": "timestamp[us, tz=UTC]",
+   "last_report_used": "timestamp[us, tz=UTC]",
    "reports_before_start": "int32",
    "reports_after_end": "int32",
    "off_shape_reports": "int32",
@@ -191,7 +203,7 @@
    "skipped_m": "double",
    "problem": "string"
   },
-  "content": "d474b335fa0435ddad0b461f6247f550ff822e6769bfe441572873252463688a"
+  "content": "5dad2ea78f520354bd1f7fc01480bc1cbb8c1b3eb1aced09c8fa73f8ce6bba8f"
  },
  "parsed-2026-11/trip-tracks-2026-11-26.parquet": {
   "rows": 4,
@@ -207,7 +219,13 @@
    "reports_borrowed_before": "int32",
    "reports_borrowed_after": "int32",
    "reports_borrowed_within": "int32",
+   "relay_vehicle_key": "string",
+   "reports_relay": "int32",
+   "relay_from": "timestamp[us, tz=UTC]",
+   "relay_to": "timestamp[us, tz=UTC]",
    "reports_used": "int32",
+   "first_report_used": "timestamp[us, tz=UTC]",
+   "last_report_used": "timestamp[us, tz=UTC]",
    "reports_before_start": "int32",
    "reports_after_end": "int32",
    "off_shape_reports": "int32",
@@ -219,7 +237,7 @@
    "skipped_m": "double",
    "problem": "string"
   },
-  "content": "b10478b0c8a0a879197ebc9c7ea1cf2c8eb439cdada5fcba71a0e7f29fe3106a"
+  "content": "dbdb30998b7be2e0caa99a32bf41d5d0fc8879e73449bad9facf79d01330d0ba"
  },
  "parsed-2026-11/trip-update-stops-2026-11-24.parquet": {
   "rows": 512,
@@ -410,7 +428,7 @@
   "content": "40883c8dee418ee79c8fd5b2e00215dd7275b25d9b0e20880e0723e4430e90ed"
  },
  "parsed-2026-11/vehicles-2026-11-25.parquet": {
-  "rows": 174,
+  "rows": 252,
   "columns": {
    "vehicle_key": "string",
    "vehicle_id": "string",
@@ -439,7 +457,7 @@
    "last_requested_at": "timestamp[us, tz=UTC]",
    "times_seen": "int32"
   },
-  "content": "5d05d67613c92addb9b3059184b25794c59731bb985f9ff052e22e0ffdae828c"
+  "content": "d972457d8bc67d1825035af4617589605078371607b2546fdffcaf61bf3e2b26"
  },
  "parsed-2026-11/vehicles-2026-11-26.parquet": {
   "rows": 0,
@@ -474,7 +492,7 @@
   "content": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945"
  },
  "raw-2026-11/fetch-log-2026-11-24.csv": "e89c3d291fd3ba693dbf1b878593bf9613cc678fb8275cb13d5e587fb7743134",
- "raw-2026-11/fetch-log-2026-11-25.csv": "9c7cce70525407a293f4dc6f00870236e83fd0c413268b95637315977a28f937",
+ "raw-2026-11/fetch-log-2026-11-25.csv": "19f0cac187addc8b4f00a16c6749d3698492109da73824e4ad7d6f2dd0a380e1",
  "raw-2026-11/fetch-log-2026-11-26.csv": "1f0ae7eeef4e181a0a78cc19b98ad29f4093f06e096e52d3064b1886eac55c1e",
  "raw-2026-11/raw-2026-11-24.parquet": {
   "rows": 682,
@@ -520,7 +538,7 @@
    "logged_at": "timestamp[us, tz=UTC]",
    "body": "binary"
   },
-  "content": "3db9dd5ab20102490f5ec403d9dbf394b7c8cbf4e3868caf6baf0df371642fe6"
+  "content": "615ad0086dc7accb30142e1acf3e662e587a645f623f7e6ce9e554094ad6d1bb"
  },
  "raw-2026-11/raw-2026-11-26.parquet": {
   "rows": 682,

@@ -21,7 +21,7 @@ from typing import Any
 from pipeline.common import Row
 from pipeline.config import PACIFIC
 from pipeline.events.geometry import drop_retraced
-from pipeline.events.ontime import classify
+from pipeline.events.ontime import POSITIONS, classify, position
 from pipeline.geo import meters_between
 from pipeline.stats import mean, quantile, rounded, share
 
@@ -53,13 +53,15 @@ def stop_coverage(events: list[Row], collection_start: datetime) -> dict[str, An
         counts: Counter[str] = Counter()
         reasons: Counter[str] = Counter()
         by_route: dict[str, Counter[str]] = defaultdict(Counter)
+        by_position: dict[str, Counter[str]] = {p: Counter() for p in POSITIONS}
         for e in rows:
             cat, _, _ = classify(e)
             seen = cat != "not_observed"
             counts["scheduled"] += 1
             counts["observed"] += seen
-            by_route[e["route_id"]]["scheduled"] += 1
-            by_route[e["route_id"]]["observed"] += seen
+            for c in (by_route[e["route_id"]], by_position[position(e)]):
+                c["scheduled"] += 1
+                c["observed"] += seen
             if not seen:
                 reasons[_not_observed_reason(e)] += 1
         return {
@@ -71,6 +73,11 @@ def stop_coverage(events: list[Row], collection_start: datetime) -> dict[str, An
                 r: {**c, "coverage": share(c["observed"], c["scheduled"])}
                 for r, c in sorted(by_route.items())
             },
+            # Since quality/0.8.0: a trip's first stop, its last, and the rest.
+            "by_position": {
+                p: {**c, "coverage": share(c["observed"], c["scheduled"])}
+                for p, c in by_position.items()
+            },
         }
 
     def when(e: Row) -> datetime | None:
@@ -80,6 +87,78 @@ def stop_coverage(events: list[Row], collection_start: datetime) -> dict[str, An
     return {
         "timepoints": block([e for e in rows if e["is_timepoint"]]),
         "all_stops": block(rows),
+    }
+
+
+# --- reports between trips --------------------------------------------------------
+
+# The stretch of Whidbey Island between Greenbank and Coupeville, where the
+# depot is (Davin): (south, north, west, east) in degrees.
+DEPOT_AREA = (48.08, 48.23, -122.72, -122.55)
+TO_FROM_DEPOT_S = 3600  # before a bus's first trip of the day or after its last
+
+
+def between_trips(reports: list[Row], tracks: list[Row]) -> dict[str, Any]:
+    """Position reports that no trip used, split by what the bus was likely
+    doing. Since ``quality/0.8.0``.
+
+    A report is in a trip when it falls within the span of reports one of
+    the bus's trips used (``first_report_used`` to ``last_report_used``, and
+    for a relay vehicle ``relay_from`` to ``relay_to``). The others are
+    ``deadhead`` (driving or waiting between trips, with no passengers
+    expected) when the bus ran a trip before and after it that day
+    (``between_two_trips``), when it came within an hour before the bus's
+    first trip or after its last (``to_or_from_the_depot``), or when it was
+    sent from the stretch between Greenbank and Coupeville where the depot
+    is (``depot_area``); the rest are ``unassigned``."""
+    spans: dict[str, list[tuple[datetime, datetime]]] = defaultdict(list)
+    for t in tracks:
+        if t.get("vehicle_key") and t.get("first_report_used"):
+            spans[t["vehicle_key"]].append((t["first_report_used"], t["last_report_used"]))
+        if t.get("relay_vehicle_key") and t.get("relay_from"):
+            spans[t["relay_vehicle_key"]].append((t["relay_from"], t["relay_to"]))
+    for v in spans.values():
+        v.sort()
+    south, north, west, east = DEPOT_AREA
+    counts: Counter[str] = Counter()
+    for r in reports:
+        ts, key = r["vehicle_ts"], r["vehicle_key"]
+        if ts is None or r["lat"] is None or r["lon"] is None:
+            continue
+        counts["reports"] += 1
+        own = spans.get(key, [])
+        if any(a <= ts <= b for a, b in own):
+            counts["in_trips"] += 1
+            continue
+        before = any(b < ts for _, b in own)
+        after = any(a > ts for a, _ in own)
+        if before and after:
+            why = "between_two_trips"
+        elif own and (
+            (after and own[0][0] - ts <= timedelta(seconds=TO_FROM_DEPOT_S))
+            or (before and ts - max(b for _, b in own) <= timedelta(seconds=TO_FROM_DEPOT_S))
+        ):
+            why = "to_or_from_the_depot"
+        elif south <= r["lat"] <= north and west <= r["lon"] <= east:
+            why = "depot_area"
+        else:
+            counts["unassigned"] += 1
+            continue
+        counts["deadhead"] += 1
+        counts[why] += 1
+    between = counts["deadhead"] + counts["unassigned"]
+    return {
+        "position_reports": counts["reports"],
+        "in_trips": counts["in_trips"],
+        "between_trips": between,
+        "between_trips_share": share(between, counts["reports"]),
+        "deadhead": counts["deadhead"],
+        "deadhead_by": {
+            k: counts[k] for k in ("between_two_trips", "to_or_from_the_depot", "depot_area")
+        },
+        "unassigned": counts["unassigned"],
+        "unassigned_share": share(counts["unassigned"], counts["reports"]),
+        "depot_area": list(DEPOT_AREA),
     }
 
 

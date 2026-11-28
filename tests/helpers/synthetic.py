@@ -12,7 +12,12 @@ Three service days are archived, in the layout ``scripts/rehearse_nightly.py
 2026-11-24  T1 on time, T2 a minute and a half early, T3 six minutes late,
             T4 never reported. One fetch fails and one times out.
 2026-11-25  All four trips reported; T2 loses three minutes of reports in the
-            middle of the trip.
+            middle of the trip. T3 ends in a layover bay 60 m (about 200
+            feet) north of the road, 50 m short of Ferry Terminal, which the
+            40 m rule along the shape never reaches (the terminal rule times
+            it). B3 drives the first five minutes of T4 and B2 takes over
+            where it stopped (a relay). Between T1 and T3, B1 drives back to
+            Harbor Station showing T3's id and waits there (deadhead).
 2026-11-26  Thanksgiving: no buses, every feed empty. ``reference/
             no-service-days.csv`` lists the day, so ``service_expected`` is
             false.
@@ -56,6 +61,15 @@ SILENCE = {DAYS[1]: ("T2", 300, 480)}
 # Seconds after T1's real departure during which B1's GPS puts it about 5.5 km
 # north of the road and back, on day two: a GPS glitch (pipeline/glitch.py).
 GLITCH = {DAYS[1]: ("T1", 200, 250, 0.05)}
+# The trip that ends in a layover bay, on day two: (trip, meters north, meters short).
+BAY = {DAYS[1]: ("T3", 60.0, 50.0)}
+# The trip two buses run one after the other, on day two: (trip, first bus, seconds).
+RELAY = {DAYS[1]: ("T4", "B3", 300)}
+# The bus that drives back empty between two of its trips, on day two:
+# (vehicle, trip id shown, from, to Pacific times as (hour, minute)).
+DEADHEAD = {DAYS[1]: ("B1", "T3", (6, 14), (6, 40))}
+M_PER_LON = 111_320 * 0.6665  # meters per degree of longitude at LAT, near enough
+M_PER_LAT = 111_320
 
 
 def _zip(files: dict[str, str]) -> bytes:
@@ -158,6 +172,9 @@ def vehicle_feed(day: date, now: datetime) -> bytes:
             continue
         done = min(max(since, 0), RUN_S) / RUN_S
         moving = 0 < since < RUN_S
+        relay = RELAY.get(day)
+        if relay and relay[0] == trip:
+            vehicle = relay[1] if since < relay[2] else vehicle
         e = msg.entity.add()
         e.id = vehicle
         v = e.vehicle
@@ -166,6 +183,11 @@ def vehicle_feed(day: date, now: datetime) -> bytes:
         glitching = jump and jump[0] == trip and jump[1] <= since < jump[2]
         v.position.latitude = LAT + (jump[3] if jump and glitching else 0.0)
         v.position.longitude = LON + STEP * (len(STOPS) - 1) * done
+        bay = BAY.get(day)
+        if bay and bay[0] == trip and since >= RUN_S - 6:
+            v.position.latitude = LAT + bay[1] / M_PER_LAT
+            v.position.longitude = LON + STEP * (len(STOPS) - 1) - bay[2] / M_PER_LON
+            moving = False
         v.position.bearing = 90.0
         v.position.speed = 9.3 if moving else 0.0
         nxt = min(int(done * (len(STOPS) - 1)) + 1, len(STOPS) - 1) if since > 0 else 0
@@ -174,6 +196,20 @@ def vehicle_feed(day: date, now: datetime) -> bytes:
         v.timestamp = int(now.timestamp()) - 3
         v.vehicle.id, v.vehicle.label = vehicle, f"Bus {vehicle}"
         v.occupancy_status = rt.VehiclePosition.MANY_SEATS_AVAILABLE
+    empty = DEADHEAD.get(day)
+    if empty and _pacific(day, *empty[2]) <= now < _pacific(day, *empty[3]):
+        # Back west at the same speed, then waiting at Harbor Station.
+        since = (now - _pacific(day, *empty[2])).total_seconds()
+        done = max(0.0, 1 - since / RUN_S)
+        e = msg.entity.add()
+        e.id = empty[0]
+        v = e.vehicle
+        v.trip.trip_id, v.trip.route_id = empty[1], "R1"
+        v.position.latitude, v.position.longitude = LAT, LON + STEP * (len(STOPS) - 1) * done
+        v.position.bearing, v.position.speed = 270.0, 9.3 if done > 0 else 0.0
+        v.current_stop_sequence, v.stop_id = 1, "S0"
+        v.timestamp = int(now.timestamp()) - 3
+        v.vehicle.id, v.vehicle.label = empty[0], f"Bus {empty[0]}"
     return msg.SerializeToString()
 
 

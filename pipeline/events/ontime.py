@@ -21,6 +21,11 @@ keeps every deviation (whole seconds) so that medians over several days can
 be computed exactly (``pipeline/events/routes.py``). Since ``ontime/0.4.1``
 ``by_hour`` keeps them too, for the hour-by-hour period figures
 (``pipeline/periods.py``).
+
+Since ``ontime/0.6.0`` each route and stop carries its ``position`` in the
+trips (``first``, ``middle`` or ``last``: the one most of its events have,
+``middle`` on a tie), and ``by_position`` counts the events by their own
+position, so the gap between a trip's ends and its middle can be shown.
 """
 
 from __future__ import annotations
@@ -33,7 +38,7 @@ from pipeline.common import Row
 from pipeline.config import PACIFIC
 from pipeline.stats import median
 
-ONTIME_VERSION = "ontime/0.5.0"  # 0.5.0: counts per trip, for the headline's interval
+ONTIME_VERSION = "ontime/0.6.0"  # 0.6.0: position (first, middle, last) of each stop
 EARLY_S = -60
 LATE_S = 300
 
@@ -51,6 +56,20 @@ def classify(event: Row) -> tuple[str, float | None, datetime | None]:
     if dev < EARLY_S and not last:
         return "early", dev, scheduled
     return "on_time", dev, scheduled
+
+
+POSITIONS = ("first", "middle", "last")
+
+
+def position(event: Row) -> str:
+    """Where in its trip a stop event lies: ``first``, ``middle`` or ``last``."""
+    return "first" if event.get("is_first_stop") else "last" if event["is_last_stop"] else "middle"
+
+
+def _mode(c: Counter) -> str:
+    top = max(c.values())
+    tied = [p for p in POSITIONS if c[p] == top]
+    return tied[0] if len(tied) == 1 else "middle"
 
 
 def _block(counts: Counter, devs: list[float]) -> dict[str, Any]:
@@ -88,6 +107,9 @@ def summarize(
     by_stop: dict[tuple[str, str], Counter] = defaultdict(Counter)
     stop_devs: dict[tuple[str, str], list[float]] = defaultdict(list)
     stop_seq: dict[tuple[str, str], list[int]] = defaultdict(list)
+    stop_pos: dict[tuple[str, str], Counter] = defaultdict(Counter)
+    by_position: dict[str, Counter] = {p: Counter() for p in POSITIONS}
+    position_devs: dict[str, list[float]] = {p: [] for p in POSITIONS}
     by_trip: dict[str, list[int]] = defaultdict(lambda: [0, 0])
     for e in events:
         if not e["is_timepoint"]:
@@ -100,9 +122,11 @@ def summarize(
             continue
         hour = scheduled.astimezone(PACIFIC).hour
         key = (e["route_id"], e["stop_id"])
-        for c in (total, by_route[e["route_id"]], by_hour[hour], by_stop[key]):
+        pos = position(e)
+        for c in (total, by_route[e["route_id"]], by_hour[hour], by_stop[key], by_position[pos]):
             c[cat] += 1
         stop_seq[key].append(e["stop_sequence"])
+        stop_pos[key][pos] += 1
         if cat != "not_observed" and e.get("trip_id") is not None:
             by_trip[e["trip_id"]][0] += 1
             by_trip[e["trip_id"]][1] += cat == "on_time"
@@ -111,12 +135,14 @@ def summarize(
             route_devs[e["route_id"]].append(dev)
             hour_devs[hour].append(dev)
             stop_devs[key].append(dev)
+            position_devs[pos].append(dev)
     route_stop: dict[str, dict[str, Any]] = defaultdict(dict)
     for (route, stop), c in sorted(by_stop.items()):
         seqs = sorted(stop_seq[(route, stop)])
         route_stop[route][stop] = {
             "name": (stop_names or {}).get(stop, ""),
             "stop_sequence_median": seqs[len(seqs) // 2],
+            "position": _mode(stop_pos[(route, stop)]),
             **_block(c, stop_devs[(route, stop)]),
             "deviations_s": sorted(round(d) for d in stop_devs[(route, stop)]),
         }
@@ -140,6 +166,7 @@ def summarize(
             }
             for h, c in sorted(by_hour.items())
         },
+        "by_position": {p: _block(by_position[p], position_devs[p]) for p in POSITIONS},
         "by_route_stop": dict(route_stop),
         # [observed, on time] timepoint departures of each trip with any
         # observed, so that an interval can resample whole trips.

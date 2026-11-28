@@ -1,6 +1,6 @@
 {
  "service_date": "2026-11-24",
- "quality_version": "quality/0.7.0",
+ "quality_version": "quality/0.8.0",
  "computed_at": "2026-12-08T09:00:00+00:00",
  "scheduled_service": {
   "trips": 4,
@@ -321,7 +321,7 @@
   }
  },
  "events": {
-  "events_version": "events/0.5.0",
+  "events_version": "events/0.6.0",
   "stop_coverage": {
    "timepoints": {
     "scheduled": 12,
@@ -334,6 +334,23 @@
      "R1": {
       "scheduled": 12,
       "observed": 9,
+      "coverage": 0.75
+     }
+    },
+    "by_position": {
+     "first": {
+      "scheduled": 4,
+      "observed": 3,
+      "coverage": 0.75
+     },
+     "middle": {
+      "scheduled": 4,
+      "observed": 3,
+      "coverage": 0.75
+     },
+     "last": {
+      "scheduled": 4,
+      "observed": 3,
       "coverage": 0.75
      }
     }
@@ -349,6 +366,23 @@
      "R1": {
       "scheduled": 16,
       "observed": 12,
+      "coverage": 0.75
+     }
+    },
+    "by_position": {
+     "first": {
+      "scheduled": 4,
+      "observed": 3,
+      "coverage": 0.75
+     },
+     "middle": {
+      "scheduled": 8,
+      "observed": 6,
+      "coverage": 0.75
+     },
+     "last": {
+      "scheduled": 4,
+      "observed": 3,
       "coverage": 0.75
      }
     }
@@ -392,6 +426,26 @@
    "scheduled_trips_with_reports": 3,
    "trips_with_no_usable_report": 0,
    "trips_with_more_than_one_vehicle": 0
+  },
+  "between_trips": {
+   "position_reports": 136,
+   "in_trips": 128,
+   "between_trips": 8,
+   "between_trips_share": 0.058824,
+   "deadhead": 8,
+   "deadhead_by": {
+    "between_two_trips": 3,
+    "to_or_from_the_depot": 5,
+    "depot_area": 0
+   },
+   "unassigned": 0,
+   "unassigned_share": 0.0,
+   "depot_area": [
+    48.08,
+    48.23,
+    -122.72,
+    -122.55
+   ]
   },
   "prediction_error": {
    "observed_events_with_predictions": 12,

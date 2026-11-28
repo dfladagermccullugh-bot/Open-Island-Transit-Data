@@ -68,7 +68,11 @@ the day one bus often runs several routes, and drivers sometimes change
 partway along a route. The feed's trip name changes at those moments, often
 a little early or late. Since November 27, 2026, our script follows each bus
 rather than each trip name, which cut the last stops we could not time by
-more than half, but some still slip through.
+more than half. Buses also wait in bays up to 160 meters (about 520 feet)
+from where the schedule puts the first or last stop, so since November 28,
+2026, a bus coming within 100 meters (about 330 feet) of such a stop counts as
+there. On the six days to November 25, that raised the last stops we could
+time from 73% to 90%, about as often as the stops in between.
 
 ```{ojs}
 //| echo: false

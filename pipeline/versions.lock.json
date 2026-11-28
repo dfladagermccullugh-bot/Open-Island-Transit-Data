@@ -49,7 +49,7 @@
    "hash": "bc9e67031b19d343e47595b3abf766b3678a2aec26446d16d19233453c39bddb"
   },
   "events": {
-   "version": "events/0.5.0",
+   "version": "events/0.6.0",
    "constant": "pipeline/events/infer.py::EVENTS_VERSION",
    "sources": [
     "pipeline/events/infer.py",
@@ -62,17 +62,17 @@
     "pipeline/glitch.py",
     "pipeline/events/continuity.py"
    ],
-   "hash": "f14f2b4ccd98d50284d430f883e340b069eff5bd44f865a18d4f76fc41e496db"
+   "hash": "9de806ac37d2581af49d3476080d2322cafa1dc011cfd47ad522684257259dc2"
   },
   "ontime": {
-   "version": "ontime/0.5.0",
+   "version": "ontime/0.6.0",
    "constant": "pipeline/events/ontime.py::ONTIME_VERSION",
    "sources": [
     "pipeline/events/ontime.py",
     "pipeline/stats.py",
     "pipeline/columns.py::ONTIME_DAILY"
    ],
-   "hash": "e99220b4b325eea885580f0ce49c605a44806e446857fc361af956ab81ec029a"
+   "hash": "0aed19ed6fcbc2b6d8ce9426e2afcdf6b3212d2bc43f024459b0a2b02fdfae9c"
   },
   "validate": {
    "version": "validate/0.3.0",
@@ -103,7 +103,7 @@
    "hash": "1c9ae40195076e09f9246adaf9ceb131a8e5ff0a544cec8d5b8e7ab71b3fbdb0"
   },
   "quality": {
-   "version": "quality/0.7.0",
+   "version": "quality/0.8.0",
    "constant": "pipeline/quality/metrics.py::QUALITY_VERSION",
    "sources": [
     "pipeline/quality/metrics.py",
@@ -121,7 +121,7 @@
     "pipeline/columns.py::QUALITY_HEADLINE",
     "pipeline/glitch.py"
    ],
-   "hash": "a7fe5616d8e3da3ae172e8738680c75b532d9ff7dd841fcb16e94bcb369a432c"
+   "hash": "491efdf26aa8a82a391f050ded32c7104ac5a6b4fde653e0edb820a43c61191a"
   },
   "gaps": {
    "version": "gaps/0.4.0",

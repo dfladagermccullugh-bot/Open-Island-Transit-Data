@@ -21,7 +21,11 @@ index = json("data/views/stops/index.json")
 stopList = (index?.stops ?? []).filter(s => s && s.stop_id)
 fromHash = () => decodeURIComponent(location.hash.slice(1))
 SOURCES = ({own: "the trip's own reports", borrowed_before: "the bus before it showed this trip",
-  borrowed_after: "the bus after it stopped showing this trip", borrowed_within: "the bus while it showed no trip"})
+  borrowed_after: "the bus after it stopped showing this trip", borrowed_within: "the bus while it showed no trip",
+  relay: "a second bus that took over the trip"})
+sourceName = v => v == null ? "–" : v.startsWith("terminal_")
+  ? `${SOURCES[v.slice(9)] ?? v.slice(9)}, timed 100 meters (about 330 feet) from the stop`
+  : SOURCES[v] ?? v
 RESULTS = ({on_time: "on time", early: "early", late: "late", gap: "no time: a gap in the bus's reports",
   not_reached: "no time: tracking ended first", past_when_first_seen: "no time: the bus was past it when first seen",
   no_reports: "no time: no reports for this trip", skipped: "no time: the bus left out this part of the route",
@@ -124,7 +128,7 @@ guard(() => {
         {key: "stop_sequence", label: "Stop", format: (v, r) => `${v}. ${names[r.stop_id] ?? r.stop_id}${r.is_timepoint ? " (timepoint)" : ""}`},
         {key: "scheduled_departure", label: "Scheduled", format: (v, r) => v ?? r.scheduled_arrival ?? "–"},
         {key: "departure", label: "Left", format: (v, r) => v ?? r.arrival ?? "–"},
-        {key: "report_source", label: "Timed from", format: v => v ? SOURCES[v] ?? v : "–"},
+        {key: "report_source", label: "Timed from", format: sourceName},
       ],
     });
   })();
@@ -142,7 +146,7 @@ guard(() => rows.length === 0 ? emptyNote("unavailable", "The departures") : ch.
     {key: "scheduled", label: "Scheduled"},
     {key: "minutes_late", label: "Minutes late", align: "right", format: v => v == null ? "–" : v.toFixed(1)},
     {key: "result", label: "Result", format: v => RESULTS[v] ?? v},
-    {key: "report_source", label: "Timed from", format: v => v ? SOURCES[v] ?? v : "–"},
+    {key: "report_source", label: "Timed from", format: sourceName},
     {key: "trip_id", label: "Trip"},
   ],
 }), "The departures table")

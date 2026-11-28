@@ -354,6 +354,14 @@ guard(() => {
     ["Distinct vehicles reporting", count(q.coverage?.vehicles_seen)],
     ...(ev == null ? [] : [
       ["All stop events with an inferred time", pct(ev.stop_coverage?.all_stops?.coverage, 1)],
+      ...(ev.stop_coverage?.timepoints?.by_position == null ? [] : [
+        ["Timepoint events timed at a trip's first stop, its middle stops and its last stop",
+          ["first", "middle", "last"].map(p => pct(ev.stop_coverage.timepoints.by_position[p]?.coverage, 1)).join(", ")],
+      ]),
+      ...(ev.between_trips == null ? [] : [
+        ["Positions sent between trips, while a bus drove to the next one, waited or went to the depot", pct(ev.between_trips.between_trips_share, 1)],
+        ["Positions between trips we could not explain", pct(ev.between_trips.unassigned_share, 2)],
+      ]),
       ["Positions more than 100 meters (about 330 feet) off the route shape", pct(fit.off_shape_share, 1)],
       ["Positions moving against the route shape", pct(fit.wrong_direction_share, 1)],
       ["Trips that left out part of the published route shape", fit.trips_skipping_part_of_shape == null ? "–"

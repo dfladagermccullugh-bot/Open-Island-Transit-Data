@@ -142,4 +142,17 @@ def test_the_made_up_days_hold_what_their_story_says(tmp_path, replay):
     ontime = json.loads((data / "ontime" / "days" / "2026-11-24.json").read_text())
     assert ontime["early"] > 0 and ontime["late"] > 0 and ontime["on_time"] > 0
     assert (data / "reports" / "2026-11.json").exists()
+    # Day two: a layover bay, a relay and a drive back between trips.
+    tag = tmp_path / "world" / "releases" / "parsed-2026-11"
+    events = pq.read_table(next(tag.glob("stop-events-2026-11-25*.parquet"))).to_pylist()
+    tracks = pq.read_table(next(tag.glob("trip-tracks-2026-11-25*.parquet"))).to_pylist()
+    end = next(e for e in events if e["trip_id"] == "T3" and e["is_last_stop"])
+    assert end["arrival_status"] == "observed" and end["report_source"] == "terminal_own"
+    t4 = next(t for t in tracks if t["trip_id"] == "T4")
+    assert (t4["vehicle_key"], t4["relay_vehicle_key"]) == ("B2", "B3")
+    t4_first = next(e for e in events if e["trip_id"] == "T4" and e["is_first_stop"])
+    assert t4_first["report_source"] == "relay"
+    between = second["events"]["between_trips"]
+    assert between["deadhead_by"]["between_two_trips"] > 30 and between["unassigned"] == 0
+    assert second["events"]["stop_coverage"]["timepoints"]["by_position"]["last"]["coverage"] == 1.0
     assert os.environ["OITD_NOW"] == NOW

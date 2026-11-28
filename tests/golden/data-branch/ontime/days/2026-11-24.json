@@ -1,5 +1,5 @@
 {
- "ontime_version": "ontime/0.5.0",
+ "ontime_version": "ontime/0.6.0",
  "definition": {
   "window_s": [-60,300],
   "measured": "departure at timepoints; arrival at the last stop",
@@ -53,11 +53,44 @@
    "deviations_s": []
   }
  },
+ "by_position": {
+  "first": {
+   "scheduled": 4,
+   "observed": 3,
+   "observed_share": 0.75,
+   "on_time": 1,
+   "early": 1,
+   "late": 1,
+   "on_time_share_of_observed": 0.3333,
+   "deviation_s_median": -14.4
+  },
+  "middle": {
+   "scheduled": 4,
+   "observed": 3,
+   "observed_share": 0.75,
+   "on_time": 1,
+   "early": 1,
+   "late": 1,
+   "on_time_share_of_observed": 0.3333,
+   "deviation_s_median": 1.3
+  },
+  "last": {
+   "scheduled": 4,
+   "observed": 3,
+   "observed_share": 0.75,
+   "on_time": 2,
+   "early": 0,
+   "late": 1,
+   "on_time_share_of_observed": 0.6667,
+   "deviation_s_median": -7.3
+  }
+ },
  "by_route_stop": {
   "R1": {
    "S0": {
     "name": "Harbor Station",
     "stop_sequence_median": 1,
+    "position": "first",
     "scheduled": 4,
     "observed": 3,
     "observed_share": 0.75,
@@ -71,6 +104,7 @@
    "S2": {
     "name": "Midway Mall",
     "stop_sequence_median": 3,
+    "position": "middle",
     "scheduled": 4,
     "observed": 3,
     "observed_share": 0.75,
@@ -84,6 +118,7 @@
    "S3": {
     "name": "Ferry Terminal",
     "stop_sequence_median": 4,
+    "position": "last",
     "scheduled": 4,
     "observed": 3,
     "observed_share": 0.75,
@@ -106,7 +141,7 @@
  "no_service_day": null,
  "passio_version": "passio-20af7aa7267e",
  "timepoints": "passio-20af7aa7267e__timetable-2026-09-27-a09fbb25",
- "events_version": "events/0.5.0",
+ "events_version": "events/0.6.0",
  "routes": {
   "R1": {
    "short_name": "1",
@@ -174,6 +209,7 @@
   "vehicles_on_two_or_more_routes": 0,
   "consecutive_trip_pairs": 1,
   "block_disagreements": 0,
+  "relays": 0,
   "trips_with_borrowed_reports": 1
  },
  "feed_agreement_share": 1.0

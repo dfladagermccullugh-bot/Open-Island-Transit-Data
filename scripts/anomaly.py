@@ -84,6 +84,7 @@ FEED_AGREEMENT_MIN = 0.90
 MATCH_RATE_MIN = 0.95
 COVERAGE_DROP = 0.15
 RESOLVED_DROP = 0.005
+END_STOP_GAP = 0.10  # a trip's first or last stops timed this much less often than its middle
 
 
 @dataclass
@@ -346,6 +347,24 @@ def check_workflows(f: Findings, states: dict[str, str]) -> None:
                   "turn it on again in the Actions tab")  # fmt: skip
 
 
+def check_positions(f: Findings, quality: list[dict[str, str]]) -> None:
+    """A note when the latest service day timed a trip's first or last stops
+    more than ``END_STOP_GAP`` less often than its middle stops (columns
+    since quality/0.8.0)."""
+    service = service_rows(quality)
+    if not service:
+        return
+    last = service[-1]
+    middle = _num(last, "middle_stop_timepoint_coverage")
+    if middle is None:
+        return
+    for pos in ("first", "last"):
+        x = _num(last, f"{pos}_stop_timepoint_coverage")
+        if x is not None and x < middle - END_STOP_GAP:
+            f.add("note", f"{last['service_date']}: {pos} stops timed {x:.1%}, middle stops "
+                  f"{middle:.1%}")  # fmt: skip
+
+
 def check_holidays(
     f: Findings, last_holiday: date | None, today: date, warn_days: int = 60
 ) -> None:
@@ -444,6 +463,7 @@ def evaluate(data: Path, now: datetime, last_holiday: date | None = None,
     check_workflows(f, workflows or {})
     check_holidays(f, last_holiday, now.astimezone(PACIFIC).date())
     check_validation(f, data, quality, now)
+    check_positions(f, quality)
     check_reproduce(f, data)
     if staging is not None:
         check_staging(f, data, staging, heads, now)

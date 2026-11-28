@@ -76,5 +76,15 @@ QUALITY_HEADLINE: list[tuple[str, tuple[str, ...]]] = [
     ("glitch_reports_removed", ("measurement", "glitches", "removed_reports")),
     ("unresolved_jumps", ("measurement", "glitches", "unresolved_jumps")),
     ("complete", ("complete",)),
+    # Since quality/0.8.0.
+    *(
+        (
+            f"{pos}_stop_timepoint_coverage",
+            ("events", "stop_coverage", "timepoints", "by_position", pos, "coverage"),
+        )
+        for pos in ("first", "middle", "last")
+    ),
+    ("between_trips_share", ("events", "between_trips", "between_trips_share")),
+    ("between_trips_unassigned_share", ("events", "between_trips", "unassigned_share")),
     ("quality_version", ("quality_version",)),
 ]

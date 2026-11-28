@@ -68,7 +68,7 @@
    "service_date": "2026-11-25",
    "tables_version": "tables/0.1.0",
    "rows": {
-    "vehicles": 174,
+    "vehicles": 252,
     "trip-updates": 152,
     "trip-update-stops": 512,
     "alerts": 0

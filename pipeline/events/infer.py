@@ -27,6 +27,16 @@ static version pinned to it:
    reports either side. If those reports are more than ``MAX_GAP_S`` apart
    the event is recorded as not observed. The first stop has a departure
    only; the last stop an arrival only.
+5. Since ``events/0.6.0``, a first-stop departure or last-stop arrival that
+   step 4 could not time is timed by the terminal rule (``_terminal``):
+   buses lay over in bays 45 to 160 meters from where the schedule puts
+   the stop, so the moment the bus leaves, or comes into, a circle of
+   ``TERMINAL_RADIUS_M`` around the stop is used, interpolated between the
+   two reports either side, if they are at most ``MAX_GAP_S`` apart. The
+   last-stop arrival needs a timed stop earlier in the trip and is the
+   first entry after it; the first-stop departure needs a timed stop later
+   in the trip and is the last exit before it. Not used when the next or
+   previous stop lies within ``TERMINAL_CLEAR_M`` of the terminal.
 
 Every scheduled stop of every scheduled trip gets a row, observed or not.
 A stop that cannot be placed on the shape in stop order, within
@@ -44,13 +54,14 @@ from pipeline import glitch
 from pipeline.common import Row
 from pipeline.events import continuity
 from pipeline.events.geometry import Shape
+from pipeline.geo import meters_between
 from pipeline.gtfs.schedule import Trip, day_origin, scheduled_trips
 from pipeline.gtfs.tables import rows as _rows
 from pipeline.gtfs.tables import seconds as _seconds
 from pipeline.gtfs.timepoints import is_timepoint
 from pipeline.gtfs.zipread import ZipContents
 
-EVENTS_VERSION = "events/0.5.0"  # 0.5.0: follows the physical bus (continuity.py)
+EVENTS_VERSION = "events/0.6.0"  # 0.6.0: terminal rule, relays, the span of reports used
 
 WINDOW_MIN = 30
 OFF_SHAPE_M = 100.0
@@ -68,6 +79,8 @@ REANCHOR_DEG = 45.0  # ... if the bus's bearing is this close to the shape's hea
 STOP_PASS_M = 150.0  # a shape passing within this distance of a stop may serve it
 MAX_STOP_OFFSET_M = 150.0  # a stop farther than this from its shape is not placed
 UNPLACED_COST_M = 10_000.0  # cost of leaving a stop out of the placement
+TERMINAL_RADIUS_M = 100.0  # a bus inside this circle of a first or last stop is at it
+TERMINAL_CLEAR_M = 200.0  # ... unless the stop next to the terminal is this close to it
 
 
 @dataclass
@@ -360,7 +373,7 @@ def _source(tr: Track, boundary: float, sources: dict[float, str]) -> str:
 
 def _pick(found: list[str]) -> str | None:
     """One source for a stop: the least direct of those that timed it."""
-    for name in ("borrowed_within", "borrowed_before", "borrowed_after", "own"):
+    for name in ("relay", "borrowed_within", "borrowed_before", "borrowed_after", "own"):
         if name in found:
             return name
     return None
@@ -415,6 +428,7 @@ def infer_day(
     # Pass 1: each trip's own reports and the vehicle they came from.
     todo = list(trips if trips is not None else scheduled_trips(contents, day))
     picked: list[tuple[str | None, dict[float, Row], int, int]] = []
+    relays: list[continuity.Relay | None] = []
     for trip in todo:
         lo, hi = trip.start - margin, trip.end + margin
         per_vehicle: dict[str, dict[float, Row]] = defaultdict(dict)
@@ -429,6 +443,7 @@ def infer_day(
         own = per_vehicle[vehicle_key] if vehicle_key else {}
         n_dropped = len(dropped.get(vehicle_key, ())) if vehicle_key else 0
         picked.append((vehicle_key, own, len(per_vehicle), n_dropped))
+        relays.append(continuity.relay(per_vehicle, vehicle_key) if vehicle_key else None)
 
     # Pass 2, in each vehicle's order of trips: add the reports the same bus
     # sent under another trip id or none (pipeline/events/continuity.py).
@@ -447,10 +462,11 @@ def infer_day(
                 j = indexes[pos + 1]
                 next_leaves = _leaves_first_stop(todo[j], static, picked[j][1])
             window = continuity.trip_window(trip, margin, prev_end, next_leaves)
-            reports, sources = continuity.reports_for(own, line, window)
+            relay = relays[i]
+            reports, sources = continuity.reports_for(own, line, window, relay)
             stop_events, summary, last = _one_trip(
                 trip, static, reports, sources, timepoints, origin, vehicle_key, n_vehicles,
-                n_dropped,
+                n_dropped, relay,
             )  # fmt: skip
             if last is not None:
                 prev_end = last
@@ -493,10 +509,12 @@ def _one_trip(
     vehicle_key: str | None,
     n_vehicles: int,
     n_dropped: int,
+    relay: continuity.Relay | None = None,
 ) -> tuple[list[Row], Row, float | None]:
     """Stop events and the trip summary of one trip, and the time of the last
-    report its track used (None if it used none)."""
+    report it used (None if it used none)."""
     counts = Counter(sources[r[0]] for r in reports)
+    relay_times = [r[0] for r in reports if sources[r[0]] == "relay"]
     summary: Row = {
         "trip_id": trip.trip_id,
         "route_id": trip.route_id,
@@ -509,6 +527,10 @@ def _one_trip(
         "reports_borrowed_before": counts["borrowed_before"],
         "reports_borrowed_after": counts["borrowed_after"],
         "reports_borrowed_within": counts["borrowed_within"],
+        "relay_vehicle_key": relay.vehicle_key if relay and relay_times else None,
+        "reports_relay": len(relay_times),
+        "relay_from": _dt(min(relay_times)) if relay_times else None,
+        "relay_to": _dt(max(relay_times)) if relay_times else None,
         "problem": None,
     }
     try:
@@ -517,9 +539,15 @@ def _one_trip(
         placed = static.place_stops(trip.trip_id)
         stop_rows = static.stop_times.get(trip.trip_id, [])
         direction = meta.get("direction_id") or ""
-        tr, stop_events = _trip_events(
-            trip, direction, stop_rows, placed, shape, reports, timepoints, origin, sources
+        ends = (_point(static, stop_rows, 0), _point(static, stop_rows, -1))
+        clear = (
+            _apart(static, stop_rows, 0, 1),
+            _apart(static, stop_rows, -1, -2),
         )
+        tr, stop_events, used = _trip_events(
+            trip, direction, stop_rows, placed, shape, reports, timepoints, origin, sources,
+            ends, clear,
+        )  # fmt: skip
     except (KeyError, ValueError) as exc:
         summary.update(dict.fromkeys(_TRACK_FIELDS), problem=f"{type(exc).__name__}: {exc}")
         return [], summary, None
@@ -528,6 +556,8 @@ def _one_trip(
     summary.update(
         {
             "reports_used": len(tr.dists),
+            "first_report_used": _dt(used[0]) if used else None,
+            "last_report_used": _dt(used[1]) if used else None,
             "reports_before_start": tr.before_start,
             "reports_after_end": tr.after_end,
             "off_shape_reports": tr.off_shape,
@@ -539,11 +569,29 @@ def _one_trip(
             "skipped_m": round(sum(b - a for a, b in tr.skips), 1),
         }
     )
-    return stop_events, summary, (tr.times[-1] if tr.times else None)
+    return stop_events, summary, (used[1] if used else None)
+
+
+def _point(static: StaticData, stop_rows: list[Row], i: int) -> tuple[float, float] | None:
+    if not stop_rows:
+        return None
+    s = static.stops[stop_rows[i]["stop_id"]]
+    return float(s["stop_lat"]), float(s["stop_lon"])
+
+
+def _apart(static: StaticData, stop_rows: list[Row], i: int, j: int) -> bool:
+    """Whether the terminal ``i`` lies farther than ``TERMINAL_CLEAR_M`` from
+    the stop ``j`` next to it, so that its circle holds no other stop."""
+    if len(stop_rows) < 2:
+        return False
+    a, b = _point(static, stop_rows, i), _point(static, stop_rows, j)
+    return a is not None and b is not None and meters_between(*a, *b) > TERMINAL_CLEAR_M
 
 
 _TRACK_FIELDS = (
     "reports_used",
+    "first_report_used",
+    "last_report_used",
     "reports_before_start",
     "reports_after_end",
     "off_shape_reports",
@@ -566,8 +614,11 @@ def _trip_events(
     timepoints: set[tuple[str, str, str]],
     origin: datetime,
     sources: dict[float, str] | None = None,
-) -> tuple[Track, list[Row]]:
-    """Track one trip and time its stops."""
+    ends: tuple[tuple[float, float] | None, tuple[float, float] | None] = (None, None),
+    clear: tuple[bool, bool] = (False, False),
+) -> tuple[Track, list[Row], tuple[float, float] | None]:
+    """Track one trip and time its stops. Also returns the span (first, last
+    epoch seconds) of the reports used, by the track or the terminal rule."""
     n = len(stop_rows)
     last_sd = placed[-1][0] if placed else None
     if shape is not None:
@@ -614,4 +665,95 @@ def _trip_events(
                 found.append(_source(tr, sd + sign * STOP_RADIUS_M, sources))
         row["report_source"] = _pick(found)
         out.append(row)
-    return tr, out
+    used = [tr.times[0], tr.times[-1]] if tr.times else []
+    if sources is not None and n >= 2:
+        terminals = ((0, "departure", ends[0], clear[0]), (n - 1, "arrival", ends[1], clear[1]))
+        for i, kind, point, ok in terminals:
+            row = out[i]
+            if row[f"{kind}_status"] not in UNTIMED or point is None or not ok:
+                continue
+            found_t = _terminal(reports, sources, point, out, i)
+            if found_t is None:
+                continue
+            t, gap, source, pair = found_t
+            row[f"{kind}_time"], row[f"{kind}_gap_s"] = _dt(t), round(gap, 1)
+            row[f"{kind}_status"], row["report_source"] = "observed", source
+            used += pair
+    return tr, out, (min(used), max(used)) if used else None
+
+
+# Statuses of a first-stop departure or last-stop arrival the terminal rule may time.
+UNTIMED = frozenset({"gap", "not_reached", "past_when_first_seen"})
+
+
+def _terminal(
+    reports: list[tuple],
+    sources: dict[float, str],
+    point: tuple[float, float],
+    rows: list[Row],
+    i: int,
+) -> tuple[float, float, str, list[float]] | None:
+    """The terminal rule (step 5 in the module's description): (epoch
+    seconds, seconds between the two reports used, ``report_source``, the
+    two reports' times), or None.
+
+    At the last stop (``i`` the last row), the first time after the trip's
+    latest other timed event that the bus comes inside the circle of
+    ``TERMINAL_RADIUS_M``. At the first stop, the last time before the
+    trip's earliest other timed event that it leaves the circle. Distances
+    are straight lines; the moment is interpolated on them. A crossing the
+    bus could only make by driving the rest of the route (or the start of
+    it) faster than ``MAX_SPEED_MS`` is a pass of the terminal on the way,
+    not the end (or start) of the trip, and the next one (or the one
+    before) is taken. The bus must be outside the circle at the other
+    timed event. ``report_source`` is ``terminal_`` and where the two
+    reports came from (``own``, ``borrowed_after`` for the next trip's
+    reports, ...)."""
+    last = i == len(rows) - 1
+    here = rows[i]["stop_distance_m"]
+    others = [
+        (e[f"{k}_time"].timestamp(), e["stop_distance_m"])
+        for j, e in enumerate(rows)
+        if j != i
+        for k in ("arrival", "departure")
+        if e[f"{k}_time"] is not None
+    ]
+    if not others:
+        return None
+    ref, ref_m = (max if last else min)(others, key=lambda x: x[0])
+    lat, lon = point
+    d = [meters_between(lat, lon, r[1], r[2]) for r in reports]
+    radius = TERMINAL_RADIUS_M
+
+    def plausible(t: float) -> bool:
+        if here is None or ref_m is None:
+            return True
+        meters = max(abs(here - ref_m) - radius - STOP_RADIUS_M, 0.0)
+        return meters <= MAX_SPEED_MS * abs(t - ref)
+
+    def moment(a: int, b: int) -> float:
+        return reports[a][0] + (d[a] - radius) / (d[a] - d[b]) * (reports[b][0] - reports[a][0])
+
+    at_ref = [k for k, r in enumerate(reports) if r[0] <= ref]
+    if at_ref and d[at_ref[-1]] <= radius:
+        return None  # inside the circle at the other timed event
+    pair: tuple[int, int] | None = None
+    if last:
+        for k in range(1, len(reports)):
+            if reports[k][0] > ref and d[k - 1] > radius >= d[k] and plausible(moment(k - 1, k)):
+                pair = (k - 1, k)
+                break
+    else:
+        for k in range(len(reports) - 1):
+            if reports[k + 1][0] > ref:
+                break
+            if d[k] <= radius < d[k + 1] and plausible(moment(k, k + 1)):
+                pair = (k, k + 1)
+    if pair is None:
+        return None
+    a, b = pair
+    gap = reports[b][0] - reports[a][0]
+    if gap > MAX_GAP_S:
+        return None
+    origin = _pick([sources.get(reports[a][0], "own"), sources.get(reports[b][0], "own")])
+    return moment(a, b), gap, f"terminal_{origin}", [reports[a][0], reports[b][0]]
