@@ -70,7 +70,7 @@ def edit_json(path: Path, change) -> None:
 def test_every_rule_passes_on_the_made_up_archive(world):
     res = run(world)
     assert res.problems == []
-    assert res.ran == [f"I{i}" for i in range(1, 13)]
+    assert res.ran == [f"I{i}" for i in (*range(1, 9), 13, *range(9, 13))]
 
 
 def test_light_set_needs_no_release_files(world):
@@ -272,3 +272,55 @@ def test_i6_old_versions_may_be_allowed_for_the_site_job(copy):
     )
     res = inv.run(copy / "data-branch", light_only=True, allow_old=True)
     assert "I6" not in rules(res) and any(n.startswith("I6") for n in res.notes)
+
+
+def test_i13_the_one_rule_difference_must_be_the_early_arrivals(copy):
+    path = copy / "data-branch" / "compare" / "summary.json"
+    it = json.loads(path.read_text())["island_transit"]
+    assert it["on_time"] - it["recount_on_time"] == it["last_stop_early_arrivals"]
+    edit_json(path, lambda c: c["island_transit"].update(recount_on_time=it["recount_on_time"] - 1))
+    res = inv.run(copy / "data-branch", light_only=True)
+    assert rules(res) == {"I13"}
+    assert any("not the early arrivals" in p for p in res.problems)
+
+
+def test_i13_a_recount_share_that_does_not_follow_its_counts(copy):
+    path = copy / "data-branch" / "compare" / "summary.json"
+    edit_json(path, lambda c: c["island_transit"].update(recount_under_our_rule=0.5))
+    assert rules(inv.run(copy / "data-branch", light_only=True)) == {"I13"}
+
+
+def test_i13_early_arrivals_that_are_not_the_days(copy):
+    def change(d):
+        d["last_stop_early_arrivals"] += 1
+
+    edit_json(copy / "data-branch" / "ontime" / "days" / "2026-11-24.json", change)
+    res = inv.run(copy / "data-branch", light_only=True)
+    assert "I13" in rules(res)
+
+
+def test_i13_an_old_summary_is_a_problem_but_a_note_for_the_site_job(copy):
+    path = copy / "data-branch" / "compare" / "summary.json"
+    edit_json(path, lambda c: c.update(compare_version="compare/0.2.0"))
+    assert rules(inv.run(copy / "data-branch", light_only=True)) == {"I13"}
+    res = inv.run(copy / "data-branch", light_only=True, allow_old=True)
+    assert "I13" not in rules(res) and any(n.startswith("I13") for n in res.notes)
+
+
+def test_i3_more_early_last_stop_arrivals_than_on_time_at_last_stops(copy):
+    def change(d):
+        d["last_stop_early_arrivals"] = d["by_position"]["last"]["on_time"] + 1
+
+    edit_json(copy / "data-branch" / "ontime" / "days" / "2026-11-25.json", change)
+    assert "I3" in rules(inv.run(copy / "data-branch", light_only=True))
+
+
+def test_i11_counts_the_early_last_stop_arrivals_again(world):
+    events, _ = _events(world, "2026-11-24")
+    day = json.loads((world / "data-branch" / "ontime" / "days" / "2026-11-24.json").read_text())
+    res = inv.Result()
+    inv.recount(res, day, events)
+    assert res.problems == []
+    more = {**day, "last_stop_early_arrivals": day["last_stop_early_arrivals"] + 1}
+    inv.recount(res, more, events)
+    assert rules(res) == {"I11"}

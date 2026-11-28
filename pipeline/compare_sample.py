@@ -11,11 +11,16 @@ minutes late). Timepoints are the stops the schedule marks as timepoints
 (``timepoint`` 1 in ``stop_times.txt``); a schedule that marks none counts
 every stop, and the summary says so.
 
-Only a summary is kept (about 3 KB): no other agency's raw data is stored.
+Only a summary is kept (a few kilobytes): no other agency's raw data is stored.
 It holds the share on time with a 95% interval from a bootstrap that
 resamples whole trips (departures on one trip are not independent), and the
 same share with a stop radius of 30, 40 and 50 meters, to show how much the
-figure depends on that choice.
+figure depends on that choice. Since ``compare-sample/0.3.0`` it also keeps
+``[moments, on time]`` for each trip (``by_trip``), so that the compare stage
+can pool several samples and resample their trips together, and the
+agency's own weekday and clock hours the sample covered (``local_weekday``,
+``local_hours``), so that Island Transit's figure can be recounted over the
+same hours (``pipeline/compare.py``).
 
 The agency's own time zone (``agency.txt``) sets what its schedule times
 mean; the inference code was written for Pacific time, so this module sets
@@ -36,6 +41,7 @@ from typing import Any
 from zoneinfo import ZoneInfo
 
 from pipeline.common import Row
+from pipeline.compare import local_hours
 from pipeline.events import infer
 from pipeline.events.ontime import EARLY_S, LATE_S, classify
 from pipeline.gtfs import schedule
@@ -44,7 +50,7 @@ from pipeline.gtfs.timepoints import ANY_DIRECTION
 from pipeline.gtfs.zipread import ZipContents, read_zip
 from pipeline.stats import quantile, share
 
-SAMPLE_VERSION = "compare-sample/0.2.0"
+SAMPLE_VERSION = "compare-sample/0.3.0"  # 0.3.0: counts per trip, local weekday and hours
 RADII = (30.0, 40.0, 50.0)
 BOOTSTRAP = 1000
 USER_AGENT = "OpenIslandTransitData-compare/0.1 (+https://github.com/dfladagermccullugh-bot/Open-Island-Transit-Data)"
@@ -179,11 +185,18 @@ def summarize(contents: ZipContents, vehicles: list[Row], start: datetime, end: 
         "position_reports": len(vehicles),
         "trips_measured": len(main),
         "moments_measured": len(devs),
+        "moments_on_time": sum(EARLY_S <= d <= LATE_S for d in devs),
         "on_time_share": on_time(devs),
         "on_time_interval_95": [lo, hi],
         "deviation_s_median": quantile(devs, 0.5),
         "by_stop_radius_m": {
             str(int(r)): on_time([d for ds in by_radius[r].values() for d in ds]) for r in RADII
+        },
+        "local_weekday": start.astimezone(zone).strftime("%A"),
+        "local_hours": local_hours(start, end, zone),
+        # [moments, on time] of each trip measured, for pooled intervals.
+        "by_trip": {
+            t: [len(ds), sum(EARLY_S <= d <= LATE_S for d in ds)] for t, ds in sorted(main.items())
         },
     }
 

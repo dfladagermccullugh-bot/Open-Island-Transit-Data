@@ -1,5 +1,5 @@
 {
- "compare_version": "compare/0.2.0",
+ "compare_version": "compare/0.3.0",
  "our_window": [
   1.0,
   5.0
@@ -8,11 +8,16 @@
   "first_service_date": "2026-11-19",
   "last_service_date": "2026-11-20",
   "service_days": 2,
-  "departures": 3353,
-  "recount_under_our_rule": 0.6457,
-  "deviation_s_p25": 70.0,
-  "deviation_s_median": 183.0,
-  "deviation_s_p75": 336.0
+  "departures": 3492,
+  "observed": 3492,
+  "on_time": 2390,
+  "headline_on_time_share": 0.6844,
+  "last_stop_early_arrivals": 143,
+  "recount_on_time": 2247,
+  "recount_under_our_rule": 0.6435,
+  "deviation_s_p25": 65.0,
+  "deviation_s_median": 179.0,
+  "deviation_s_p75": 330.25
  },
  "assumed_scales": [
   0.4,
@@ -23,6 +28,7 @@
   1.25,
   1.6
  ],
+ "pool_days": 56,
  "peers": [
   {
    "agency": "Skagit Transit",
@@ -38,7 +44,111 @@
     "https://www.skagittransit.org/assets/1/7/DRAFT_Skagit_Transit_TDP_2026-2031_060826.pdf"
    ],
    "confidence": "medium",
-   "classes": []
+   "classes": [
+    "A"
+   ],
+   "our_method_on_their_feed": {
+    "pool_first_date": "2026-10-09",
+    "pool_last_date": "2026-12-03",
+    "samples_pooled": 2,
+    "service_dates": [
+     "2026-12-01",
+     "2026-12-03"
+    ],
+    "hours": {
+     "Thursday": [
+      11,
+      12,
+      13
+     ],
+     "Tuesday": [
+      11,
+      12,
+      13
+     ]
+    },
+    "trips_measured": 163,
+    "moments_measured": 441,
+    "moments_on_time": 305,
+    "on_time_share": 0.6916,
+    "on_time_interval_95": [
+     0.6756,
+     0.7078
+    ],
+    "trips_reported": 187,
+    "trips_in_schedule": 187,
+    "share_in_schedule": 1.0,
+    "samples": [
+     {
+      "service_date": "2026-12-01",
+      "local_weekday": "Tuesday",
+      "local_hours": [
+       11,
+       12,
+       13
+      ],
+      "sample_start": "2026-12-01T19:17:00+00:00",
+      "sample_end": "2026-12-01T21:17:05+00:00",
+      "timepoints": "marked in the schedule",
+      "trips_measured": 81,
+      "moments_measured": 217,
+      "moments_on_time": 162,
+      "on_time_share": 0.7465,
+      "on_time_interval_95": [
+       null,
+       null
+      ],
+      "trips_reported": 93,
+      "trips_in_schedule": 93,
+      "by_stop_radius_m": {
+       "30": 0.7,
+       "40": 0.75,
+       "50": 0.78
+      }
+     },
+     {
+      "service_date": "2026-12-03",
+      "local_weekday": "Thursday",
+      "local_hours": [
+       11,
+       12,
+       13
+      ],
+      "sample_start": "2026-12-03T19:17:00+00:00",
+      "sample_end": "2026-12-03T21:17:04+00:00",
+      "timepoints": "marked in the schedule",
+      "trips_measured": 82,
+      "moments_measured": 224,
+      "moments_on_time": 143,
+      "on_time_share": 0.6384,
+      "on_time_interval_95": [
+       null,
+       null
+      ],
+      "trips_reported": 94,
+      "trips_in_schedule": 94,
+      "by_stop_radius_m": {
+       "30": 0.7,
+       "40": 0.75,
+       "50": 0.78
+      }
+     }
+    ],
+    "samples_skipped": [
+     {
+      "service_date": "2026-11-27",
+      "sample_start": "2026-11-27T19:17:00+00:00",
+      "reason": "the day after Thanksgiving Day"
+     }
+    ]
+   },
+   "island_same_hours": {
+    "service_dates": [
+     "2026-11-19"
+    ],
+    "departures": 88,
+    "recount_under_our_rule": 0.6705
+   }
   },
   {
    "agency": "Intercity Transit",
@@ -58,300 +168,112 @@
    ],
    "confidence": "medium",
    "classes": [
-    "R"
-   ],
-   "island_under_their_rule": 0.6183
-  },
-  {
-   "agency": "Kitsap Transit",
-   "region": "Washington",
-   "country": "USA",
-   "window": null,
-   "measured": "",
-   "cancellations": "",
-   "published_share": null,
-   "published_period": "",
-   "note": "No on-time figure for buses found; on-time is published only for fast ferries",
-   "sources": [
-    "https://www.kitsaptransit.com/agency-information/fast-ferries-performance-indicators"
-   ],
-   "confidence": "low",
-   "classes": []
-  },
-  {
-   "agency": "Mountain Line (Missoula)",
-   "region": "Other US states",
-   "country": "USA",
-   "window": [
-    1.0,
-    5.0
-   ],
-   "measured": "arrival timepoints",
-   "cancellations": "not stated",
-   "published_share": null,
-   "published_period": "Sep-Oct 2023",
-   "note": "Route-level figures only (73% to 96.5%); no systemwide figure or goal",
-   "sources": [
-    "https://mountainline.com/wp-content/uploads/2026/07/MUTD-Transit-Service-Plan-2025.pdf"
-   ],
-   "confidence": "medium",
-   "classes": [
-    "R"
-   ],
-   "island_under_their_rule": 0.6457
-  },
-  {
-   "agency": "Cache Valley Transit District",
-   "region": "Other US states",
-   "country": "USA",
-   "window": null,
-   "measured": "",
-   "cancellations": "",
-   "published_share": null,
-   "published_period": "",
-   "note": "No definition or figure found",
-   "sources": [],
-   "confidence": "low",
-   "classes": []
-  },
-  {
-   "agency": "BC Transit (Victoria)",
-   "region": "Canada",
-   "country": "Canada",
-   "window": [
-    1.0,
-    3.0
-   ],
-   "measured": "departure timing points",
-   "cancellations": "not stated",
-   "published_share": 0.67,
-   "published_period": "winter 2025",
-   "note": "System-level on-time departure at timing points; target 70%",
-   "sources": [
-    "https://www.bctransit.com/wp-content/uploads/2025/09/12a-Ridership-Performance-Report.pdf",
-    "https://www.bctransit.com/wp-content/uploads/142/723/2022-01-24-KAM-SDSPG-final0.pdf"
-   ],
-   "confidence": "high",
-   "classes": [
     "R",
-    "B"
-   ],
-   "island_under_their_rule": 0.4363,
-   "converted_to_our_window": {
-    "low": 0.8434,
-    "high": 0.9049,
-    "assumptions_used": 3,
-    "assumptions_tried": 7
-   }
-  },
-  {
-   "agency": "Halifax Transit",
-   "region": "Canada",
-   "country": "Canada",
-   "window": [
-    1.0,
-    3.0
-   ],
-   "measured": "arrival timepoints",
-   "cancellations": "reported separately as loss of service",
-   "published_share": 0.68,
-   "published_period": "Oct-Dec 2025",
-   "note": "Conventional bus; target 85%",
-   "sources": [
-    "https://www.halifax.ca/media/94050"
-   ],
-   "confidence": "high",
-   "classes": [
-    "R",
-    "B",
     "A"
    ],
-   "island_under_their_rule": 0.4363,
-   "converted_to_our_window": {
-    "low": 0.8419,
-    "high": 0.9072,
-    "assumptions_used": 3,
-    "assumptions_tried": 7
-   },
+   "island_under_their_rule": 0.6171,
    "our_method_on_their_feed": {
-    "service_date": "2026-11-24",
-    "sample_start": "2026-11-24T14:00:00+00:00",
-    "sample_end": "2026-11-24T16:00:00+00:00",
-    "timepoints": "marked in the schedule",
-    "trips_measured": 212,
-    "moments_measured": 1490,
-    "on_time_share": 0.7712,
-    "on_time_interval_95": [
-     0.741,
-     0.7998
+    "pool_first_date": "2026-10-09",
+    "pool_last_date": "2026-12-03",
+    "samples_pooled": 2,
+    "service_dates": [
+     "2026-12-01",
+     "2026-12-03"
     ],
-    "by_stop_radius_m": {
-     "30": 0.7651,
-     "40": 0.7712,
-     "50": 0.7743
+    "hours": {
+     "Thursday": [
+      11,
+      12,
+      13
+     ],
+     "Tuesday": [
+      11,
+      12,
+      13
+     ]
     },
-    "note": "made up for the site tests; not a real sample"
+    "trips_measured": 503,
+    "moments_measured": 2021,
+    "moments_on_time": 1520,
+    "on_time_share": 0.7521,
+    "on_time_interval_95": [
+     0.7507,
+     0.7538
+    ],
+    "trips_reported": 583,
+    "trips_in_schedule": 581,
+    "share_in_schedule": 0.9966,
+    "samples": [
+     {
+      "service_date": "2026-12-01",
+      "local_weekday": "Tuesday",
+      "local_hours": [
+       11,
+       12,
+       13
+      ],
+      "sample_start": "2026-12-01T19:17:00+00:00",
+      "sample_end": "2026-12-01T21:17:05+00:00",
+      "timepoints": "marked in the schedule",
+      "trips_measured": 251,
+      "moments_measured": 1007,
+      "moments_on_time": 757,
+      "on_time_share": 0.7517,
+      "on_time_interval_95": [
+       null,
+       null
+      ],
+      "trips_reported": 291,
+      "trips_in_schedule": 290,
+      "by_stop_radius_m": {
+       "30": 0.7,
+       "40": 0.75,
+       "50": 0.78
+      }
+     },
+     {
+      "service_date": "2026-12-03",
+      "local_weekday": "Thursday",
+      "local_hours": [
+       11,
+       12,
+       13
+      ],
+      "sample_start": "2026-12-03T19:17:00+00:00",
+      "sample_end": "2026-12-03T21:17:04+00:00",
+      "timepoints": "marked in the schedule",
+      "trips_measured": 252,
+      "moments_measured": 1014,
+      "moments_on_time": 763,
+      "on_time_share": 0.7525,
+      "on_time_interval_95": [
+       null,
+       null
+      ],
+      "trips_reported": 292,
+      "trips_in_schedule": 291,
+      "by_stop_radius_m": {
+       "30": 0.7,
+       "40": 0.75,
+       "50": 0.78
+      }
+     }
+    ],
+    "samples_skipped": [
+     {
+      "service_date": "2026-11-27",
+      "sample_start": "2026-11-27T19:17:00+00:00",
+      "reason": "the day after Thanksgiving Day"
+     }
+    ]
+   },
+   "island_same_hours": {
+    "service_dates": [
+     "2026-11-19"
+    ],
+    "departures": 88,
+    "recount_under_our_rule": 0.6705
    }
-  },
-  {
-   "agency": "Red Metropolitana de Movilidad (Santiago)",
-   "region": "Central and South America",
-   "country": "Chile",
-   "window": null,
-   "measured": "headway regularity stops along routes",
-   "cancellations": "missing buses lower the frequency index",
-   "published_share": 0.851,
-   "published_period": "Q2 2019",
-   "note": "Not a punctuality window: regularity compliance (ICR); frequency compliance 97.21%",
-   "sources": [
-    "https://mtt.gob.cl/transporte-publico-de-santiago-mejora-sus-indicadores-y-caen-los-tiempos-de-espera-de-los-usuarios/"
-   ],
-   "confidence": "low",
-   "classes": []
-  },
-  {
-   "agency": "TransMilenio and SITP (Bogota)",
-   "region": "Central and South America",
-   "country": "Colombia",
-   "window": null,
-   "measured": "",
-   "cancellations": "",
-   "published_share": null,
-   "published_period": "",
-   "note": "No published punctuality definition or figure found",
-   "sources": [],
-   "confidence": "low",
-   "classes": []
-  },
-  {
-   "agency": "Metrobus (Mexico City)",
-   "region": "Central and South America",
-   "country": "Mexico",
-   "window": null,
-   "measured": "",
-   "cancellations": "",
-   "published_share": null,
-   "published_period": "",
-   "note": "No published punctuality definition or figure found",
-   "sources": [
-    "https://procesos.finanzas.cdmx.gob.mx/PbR/public/Matrices_Metrobus_2024"
-   ],
-   "confidence": "low",
-   "classes": []
-  },
-  {
-   "agency": "England non-frequent buses (DfT)",
-   "region": "Europe",
-   "country": "UK",
-   "window": [
-    1.0,
-    5.98
-   ],
-   "measured": "not stated not stated",
-   "cancellations": "counted as not on time",
-   "published_share": 0.829,
-   "published_period": "year to March 2015",
-   "note": "England, services with fewer than 6 buses an hour; late limit 5 min 59 s; measure since discontinued; no Isle of Wight (Southern Vectis) figure found",
-   "sources": [
-    "https://www.gov.uk/government/publications/proportion-of-bus-services-running-on-time"
-   ],
-   "confidence": "medium",
-   "classes": [
-    "R",
-    "B"
-   ],
-   "island_under_their_rule": 0.7161,
-   "converted_to_our_window": {
-    "low": 0.6773,
-    "high": 0.7447,
-    "assumptions_used": 3,
-    "assumptions_tried": 7
-   }
-  },
-  {
-   "agency": "Connexxion Zeeland",
-   "region": "Europe",
-   "country": "Netherlands",
-   "window": null,
-   "measured": "arrival 78 measurement points",
-   "cancellations": "reported separately as trip loss (1.15% in 2024)",
-   "published_share": 0.931,
-   "published_period": "2024",
-   "note": "Share of arrivals not late; the late margin varies by stop type and is not given; 99.8% of departures not early",
-   "sources": [
-    "https://www.zeeland.nl/sites/default/files/digitaalarchief/IB25_3e55d604.pdf"
-   ],
-   "confidence": "medium",
-   "classes": []
-  },
-  {
-   "agency": "Rapid Penang",
-   "region": "Asia",
-   "country": "Malaysia",
-   "window": null,
-   "measured": "departure first stop",
-   "cancellations": "not stated",
-   "published_share": 0.9,
-   "published_period": "week to 2026-11-20",
-   "note": "Weekly punctuality at the first stop; the window is not stated",
-   "sources": [
-    "https://myrapid.com.my/rapid-bus-performance/"
-   ],
-   "confidence": "medium",
-   "classes": []
-  },
-  {
-   "agency": "Singapore buses (LTA)",
-   "region": "Asia",
-   "country": "Singapore",
-   "window": [
-    2.0,
-    5.0
-   ],
-   "measured": "arrival selected stops",
-   "cancellations": "not stated",
-   "published_share": null,
-   "published_period": "",
-   "note": "On-time adherence for services every 15 minutes or less often; 85% of arrivals required daily; frequent services use excess wait time; window from a secondary source; no recent official result found",
-   "sources": [
-    "https://landtransportguru.net/bus-service-reliability-framework/",
-    "https://www.lta.gov.sg/content/ltagov/en/who_we_are/our_work/public_transport_system/bus/bus_contracting_model.html"
-   ],
-   "confidence": "low",
-   "classes": [
-    "R"
-   ],
-   "island_under_their_rule": 0.6669
-  },
-  {
-   "agency": "Israel buses",
-   "region": "Asia",
-   "country": "Israel",
-   "window": null,
-   "measured": "",
-   "cancellations": "",
-   "published_share": null,
-   "published_period": "",
-   "note": "No official punctuality definition or figure found",
-   "sources": [
-    "https://open-bus-map-search.hasadna.org.il/"
-   ],
-   "confidence": "low",
-   "classes": []
-  },
-  {
-   "agency": "Moscow buses",
-   "region": "Asia",
-   "country": "Russia",
-   "window": null,
-   "measured": "",
-   "cancellations": "",
-   "published_share": null,
-   "published_period": "",
-   "note": "No published punctuality definition or figure found",
-   "sources": [],
-   "confidence": "low",
-   "classes": []
   }
  ]
 }

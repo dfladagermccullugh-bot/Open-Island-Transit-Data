@@ -26,6 +26,12 @@ Since ``ontime/0.6.0`` each route and stop carries its ``position`` in the
 trips (``first``, ``middle`` or ``last``: the one most of its events have,
 ``middle`` on a tie), and ``by_position`` counts the events by their own
 position, so the gap between a trip's ends and its middle can be shown.
+
+Since ``ontime/0.8.0`` the day counts ``last_stop_early_arrivals``: arrivals
+at a trip's last stop more than ``EARLY_S`` early, which are counted on time.
+Most agencies count them as early; the comparisons recount our figure that
+way (``pipeline/compare.py``), and the difference between the two is exactly
+this count (gate rule I13).
 """
 
 from __future__ import annotations
@@ -38,7 +44,7 @@ from pipeline.common import Row
 from pipeline.config import PACIFIC
 from pipeline.stats import median
 
-ONTIME_VERSION = "ontime/0.7.0"  # 0.7.0: untimed reasons, cells of route, hour band, position
+ONTIME_VERSION = "ontime/0.8.0"  # 0.8.0: early arrivals at last stops counted
 EARLY_S = -60
 LATE_S = 300
 
@@ -147,6 +153,7 @@ def summarize(
     by_position: dict[str, Counter] = {p: Counter() for p in POSITIONS}
     position_devs: dict[str, list[float]] = {p: [] for p in POSITIONS}
     by_trip: dict[str, list[int]] = defaultdict(lambda: [0, 0])
+    early_last = 0
     untimed: Counter = Counter()
     untimed_pos: dict[str, Counter] = {p: Counter() for p in POSITIONS}
     by_cell: dict[str, list[int]] = defaultdict(lambda: [0, 0, 0])
@@ -184,6 +191,7 @@ def summarize(
         if cat != "not_observed" and e.get("trip_id") is not None:
             by_trip[e["trip_id"]][0] += 1
             by_trip[e["trip_id"]][1] += cat == "on_time"
+        early_last += cat == "on_time" and dev is not None and dev < EARLY_S
         if dev is not None:
             devs.append(dev)
             route_devs[e["route_id"]].append(dev)
@@ -208,6 +216,9 @@ def summarize(
             "timepoints": "stops printed in Island Transit's timetables",
         },
         **_block(total, devs),
+        # Since ontime/0.8.0: of on_time, the arrivals at a last stop more
+        # than a minute early.
+        "last_stop_early_arrivals": early_last,
         "canceled": {
             "trip_ids": sorted(canceled),
             "timepoint_events_left_out": left_out,

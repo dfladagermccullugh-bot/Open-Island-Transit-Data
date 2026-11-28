@@ -247,6 +247,27 @@ say how service compares with earlier years. And they rest on one feed: if
 it reports wrong locations in a way our checks don't catch, our figures are
 wrong too. The [Methods](methods.qmd) page has the full details.
 
+## How far the comparisons go {#comparisons}
+
+The [Compare](compare.qmd) page sets Island Transit beside two Washington
+neighbors, Skagit Transit and Intercity Transit. We time their buses with
+our own method, from two-hour samples of their live feeds taken on Tuesdays
+and Thursdays around midday, and pool the samples of the last eight weeks.
+That is a small slice of their service: it misses early mornings, evenings
+and weekends, and each agency picks its own timepoints. Samples taken on a
+federal holiday or the day before or after one are left out, because
+service and traffic are unusual then. The first samples, on November 27,
+2026, the day after Thanksgiving, were left out this way, so the first
+pooled figures come from the samples of December 1, 2026.
+
+The Compare page also counts our own buses a little more strictly than the
+home page does. The home page counts a bus that reaches the end of its trip
+early as on time; the Compare page counts it as early, the way most
+agencies do, so that both sides are counted alike. Over November 19 to 25,
+2026, that moved our figure from 74.2% to 70.0%. A check before every
+update makes sure the two figures differ by exactly the number of those
+early arrivals.
+
 ::: {.corrections}
 {{< include ../docs/corrections.md >}}
 :::

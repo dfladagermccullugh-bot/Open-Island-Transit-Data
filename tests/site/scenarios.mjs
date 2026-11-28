@@ -129,6 +129,23 @@ export const SCENARIOS = {
     });
   },
 
+  // Before the first weekday sample: every sample so far was skipped (the
+  // day after Thanksgiving), and one more agency has no figure at all.
+  "compare-before-samples": (rel, text) => {
+    if (rel !== "compare/summary.json") return text;
+    const c = JSON.parse(text);
+    for (const p of c.peers) {
+      const pool = p.our_method_on_their_feed;
+      if (!pool) continue;
+      const skipped = [...pool.samples_skipped, ...pool.samples.map(s => ({service_date: s.service_date, sample_start: s.sample_start, reason: "the day after Thanksgiving Day"}))];
+      p.our_method_on_their_feed = {...pool, samples_pooled: 0, samples: [], service_dates: [], hours: {}, moments_measured: 0, on_time_share: null, on_time_interval_95: [null, null], samples_skipped: skipped};
+      p.classes = p.classes.filter(k => k !== "A");
+      delete p.island_same_hours;
+    }
+    c.peers.push({agency: "Nothing Found Transit", region: "Washington", window: null, measured: "", published_share: null, sources: [], classes: []});
+    return JSON.stringify(c);
+  },
+
   // A new printed timetable took effect more than a week before the latest day.
   "old-schedule-change": (rel, text) => {
     if (rel !== "ontime/recent.json") return text;

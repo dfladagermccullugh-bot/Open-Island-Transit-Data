@@ -38,7 +38,7 @@ passed: `passed` (always true on `data`), `mode` (`full`), `rules` and
 `rules_count`, `problems` (empty), `notes`, `latest_service_date`,
 `checked_commit` (the `data-staging` commit that was checked), `ran_at`, the
 `workflow` and its `run_url`. `checks/gate-light.json` is the same for the
-light gate (rules I1 to I8) that the comparison and validator jobs run when
+light gate (rules I1 to I8 and I13) that the comparison and validator jobs run when
 they add files during the day. On `data-staging`, either file can also hold a
 failed run, with its problems listed.
 
@@ -324,7 +324,10 @@ hour band of the scheduled time (Pacific: `early` before 7 AM, `morning`
 7 to 9, `midday` 9 to 3 PM, `afternoon` 3 to 6, `evening` from 6) and
 position, keyed `route|band|position`, each as `[scheduled, observed,
 on_time]`, and `by_trip_cell` gives the same for each trip, so the headline
-can weight timed departures and resample whole trips. The `validation` section holds
+can weight timed departures and resample whole trips. Since `ontime/0.8.0`,
+`last_stop_early_arrivals` counts the arrivals at a trip's last stop more
+than a minute early, which `on_time` includes; the comparisons count them as
+early (`compare/summary.json`). The `validation` section holds
 the automatic checks of the method (`pipeline/events/validate.py`,
 `docs/methods.md`, section 5). It shows how often our departures agree with
 the feed's `current_stop_sequence`, overall and by route, and how many
@@ -616,25 +619,55 @@ on-time day files.
 Since `compare/0.1.0` (November 27, 2026), written each night by
 `pipeline/compare.py` (`docs/methods.md`, section 6). `island_transit` gives
 the period and number of our departures at timepoints that the comparisons
-use (the last 28 service days) and `recount_under_our_rule`, the share of
-them from 1 minute early to 5 minutes late with every moment counted alike.
-Each entry of `peers` is one agency from `reference/peers/definitions.csv`:
-its `window` (minutes early, minutes late), what it times (`measured`), how
-it treats canceled trips, its `published_share` and `published_period`,
-`sources` and `confidence`; `island_under_their_rule` (class R, our
-departures recounted under its window); `converted_to_our_window` (class B,
-its figure under our window: `low`, `high`, and how many of the
-`assumed_scales` could reproduce its figure); since `compare/0.2.0`,
-`our_method_on_their_feed` (class A, the latest sample of its live feed run
-through our method: `service_date`, `sample_start` and `sample_end`, the
-`timepoints` used, `trips_measured`, `moments_measured`, `on_time_share`,
-`on_time_interval_95` and the share `by_stop_radius_m`); and `classes`, the
-ways it could be compared. Each sample is also kept whole, as
-`compare/<agency_id>/<date>.json`; since `compare-sample/0.2.0` a sample
-also names the `agency_timezone` its schedule times were read in, and how
+use (the last 28 service days, the same as the home page's figure). Since
+`compare/0.3.0` it explains the difference between the home page's figure
+and the recount under our own rule: `observed` and `on_time` (the home
+page's counts), `headline_on_time_share`, `last_stop_early_arrivals` (the
+sum of the days' counts), `recount_on_time` (`on_time` less
+`last_stop_early_arrivals`) and `recount_under_our_rule` (`recount_on_time`
+over `observed`, with every moment counted alike); before `compare/0.3.0`
+the recount was counted from the whole-second deviations, which put 15 more
+departures inside the window over November 19 to 25, 2026. `pool_days` is
+how many days of samples are pooled (56).
+
+Each entry of `peers` is one agency from `reference/peers/definitions.csv`
+(since `compare/0.3.0`, Skagit Transit and Intercity Transit): its `window`
+(minutes early, minutes late), what it times (`measured`), how it treats
+canceled trips, its `published_share` and `published_period`, `sources` and
+`confidence`; `island_under_their_rule` (class R, our departures recounted
+under its window); `converted_to_our_window` (class B, its figure under our
+window: `low`, `high`, and how many of the `assumed_scales` could reproduce
+its figure); `our_method_on_their_feed` (class A); `island_same_hours`; and
+`classes`, the ways it could be compared.
+
+Since `compare/0.3.0`, `our_method_on_their_feed` pools the agency's samples
+from `pool_first_date` to `pool_last_date` (the 56 days up to its latest
+sample): `samples_pooled`, their `service_dates`, the `hours` they covered
+(agency's clock, by weekday), `trips_measured`, `moments_measured`,
+`moments_on_time`, `on_time_share`, `on_time_interval_95` (resampling the
+trips of every pooled sample together; empty when a pooled sample predates
+`compare-sample/0.3.0` and has no trips), `trips_reported`,
+`trips_in_schedule` and their ratio `share_in_schedule`. `samples` lists
+each pooled sample (`service_date`, `local_weekday`, `local_hours`, start
+and end, counts, share, interval and the share `by_stop_radius_m`).
+`samples_skipped` lists the samples left out, with the `reason`: on or next
+to a US federal holiday (`reference/peers/no-service-days.csv`), or no
+departure measured. `island_same_hours` recounts our departures under our
+rule over the pool's weekdays and hours: the `service_dates` used,
+`departures` and `recount_under_our_rule`. Before `compare/0.3.0`,
+`our_method_on_their_feed` was the agency's latest sample alone.
+
+Each sample is also kept whole, as `compare/<agency_id>/<date>.json` (the
+date is when the sample started, in UTC). Since `compare-sample/0.2.0` a
+sample names the `agency_timezone` its schedule times were read in, and how
 many trip ids the buses reported (`trips_reported`) and how many of those
-the schedule holds (`trips_in_schedule`). A schedule download with no trips
-or no valid time zone ends the job before sampling, so no file is written.
+the schedule holds (`trips_in_schedule`). Since `compare-sample/0.3.0` it
+also has `moments_on_time`, `local_weekday`, `local_hours` and `by_trip`
+(`[moments, on time]` for each trip measured). A schedule download with no
+trips or no valid time zone ends the job before sampling, so no file is
+written. The samples of BC Transit (Victoria) and Halifax Transit taken on
+November 27, 2026 stay in the data branch; the comparisons no longer read
+them.
 
 ## `validation/`
 

@@ -93,7 +93,7 @@ def test_bootstrap_publish_and_promote(tmp_path: Path, remote: Path) -> None:
     assert tip(remote, "data") == tip(remote, "data-staging") != seed
     assert "PROMOTED=1" in env_file.read_text()
     report = json.loads((work / "data-branch" / "checks" / "gate.json").read_text())
-    assert report["passed"] and report["rules_count"] == 8
+    assert report["passed"] and report["rules_count"] == 9
 
     # A second run starts from staging and finds both branches level.
     _, env2 = new_run(tmp_path, remote, "run2")

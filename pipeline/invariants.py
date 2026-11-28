@@ -51,9 +51,16 @@ Each rule has a number, used in the messages and in ``docs/methods.md``:
 - I11: the on-time counts of the last days, recounted from their stop-event
   files (checked by SHA-256) with ``ontime.classify``, equal the day files.
 - I12: the data branch agrees with Releases (``pipeline/check.py``).
+- I13: the comparisons (``compare/summary.json``, ``compare/0.3.0``) explain
+  the one difference between our published figure and the recount under our
+  own rule exactly: both cover the headline's service days, and the
+  published count of departures on time less the recount is the sum of the
+  days' early arrivals at last stops (``last_stop_early_arrivals``); the
+  recount's share follows its counts; the recount over a peer's hours names
+  only service days of its pool, on its weekdays.
 
-I1 to I8 read only the data branch and need no third-party library; they are
-the ``--light`` set. I9 to I11 read the stop-event files of the last
+I1 to I8 and I13 read only the data branch and need no third-party library;
+they are the ``--light`` set. I9 to I11 read the stop-event files of the last
 ``--days`` days (3 by default, 0 for all), and I12 lists the Releases.
 
 ``--report <file>`` writes what ran as JSON (``checks/gate.json`` on the data
@@ -184,6 +191,10 @@ def check_ontime_day(res: Result, d: dict[str, Any]) -> None:
         if dict(summed) != totals and (d["by_route_stop"] or any(totals.values())):
             res.problem("I2", f"ontime {day}: sum of by_route_stop != totals")
     check_untimed_day(res, d)
+    early_last = d.get("last_stop_early_arrivals")
+    last = (d.get("by_position") or {}).get("last") or {}
+    if early_last is not None and early_last > last.get("on_time", 0):
+        res.problem("I3", f"ontime {day}: more early last-stop arrivals than on time at last stops")
 
 
 def _vsum(vectors: Iterable[list[int]]) -> list[int]:
@@ -619,8 +630,69 @@ def _period_of(day: str, grain: str) -> str:
     return (d - timedelta(days=d.weekday())).isoformat() if grain == "week" else f"{d:%Y-%m}"
 
 
+def check_compare(
+    res: Result,
+    data: Path,
+    ontime: list[dict[str, Any]],
+    versions: dict[str, str],
+    allow_old: bool = False,
+) -> None:
+    """I13. With ``allow_old`` (the site job, as for I6) a summary made by an
+    older version of the stage is a note."""
+    from pipeline.compare import WINDOW_DAYS as COMPARE_DAYS
+
+    summary = load_json(data / "compare" / "summary.json")
+    if summary is None:
+        return
+    want = versions.get("compare")
+    if want and summary.get("compare_version") != want:
+        text = f"compare/summary.json is {summary.get('compare_version')}, not {want}"
+        (res.note if allow_old else res.problem)("I13", text)
+        return
+    it = summary["island_transit"]
+    window = [d for d in ontime if d.get("service_expected", True)][-COMPARE_DAYS:]
+    if not window:
+        return
+    span = (window[0]["service_date"], window[-1]["service_date"])
+    if (it.get("first_service_date"), it.get("last_service_date")) != span:
+        res.problem("I13", "compare/summary.json: not the last service days")
+    if (it.get("observed"), it.get("on_time")) != (
+        sum(d["observed"] for d in window),
+        sum(d["on_time"] for d in window),
+    ):
+        res.problem("I13", "compare/summary.json: counts are not the sum of its days")
+    head = load_json(data / "ontime" / "headline.json")
+    cur = (head or {}).get("current") or {}
+    if head is not None and (
+        (head.get("first_service_date"), head.get("last_service_date")) != span
+        or it.get("headline_on_time_share") != cur.get("on_time_share_of_observed")
+    ):
+        res.problem("I13", "compare/summary.json: not the home page's figure and days")
+    early = [d.get("last_stop_early_arrivals") for d in window]
+    if None in early:
+        res.note("I13", "the one-rule difference waits for days rebuilt by ontime/0.8.0")
+        return
+    early_last, recount = it.get("last_stop_early_arrivals"), it.get("recount_on_time")
+    if early_last != sum(early):  # type: ignore[arg-type]
+        res.problem("I13", "compare/summary.json: early last-stop arrivals are not its days'")
+    if recount is None or it["on_time"] - recount != early_last:
+        res.problem("I13", "the published figure less the recount is not the early arrivals")
+    elif it.get("recount_under_our_rule") != share(recount, it["observed"], 4):
+        res.problem("I13", "compare/summary.json: the recount's share does not follow its counts")
+    for p in summary.get("peers", []):
+        same, pool = p.get("island_same_hours"), p.get("our_method_on_their_feed")
+        if same is None or pool is None:
+            continue
+        for day in same.get("service_dates", []):
+            weekday = date.fromisoformat(day).strftime("%A")
+            if not (pool["pool_first_date"] <= day <= pool["pool_last_date"]) or (
+                weekday not in pool.get("hours", {})
+            ):
+                res.problem("I13", f"{p['agency']}: {day} is outside its pool's days")
+
+
 def light(res: Result, data: Path, versions: dict[str, str], allow_old: bool = False) -> None:
-    """I1 to I8."""
+    """I1 to I8 and I13."""
     ontime_dir, quality_dir = data / "ontime", data / "quality"
     ontime = DayFiles(ontime_dir / "days").all()
     quality = DayFiles(quality_dir / "days").all()
@@ -649,7 +721,8 @@ def light(res: Result, data: Path, versions: dict[str, str], allow_old: bool = F
     check_complete(res, data, ontime_dir, quality_dir)
     check_periods(res, data, ontime, quality)
     check_untimed_sources(res, ontime, quality)
-    res.ran += ["I1", "I2", "I3", "I4", "I5", "I6", "I7", "I8"]
+    check_compare(res, data, ontime, versions, allow_old)
+    res.ran += ["I1", "I2", "I3", "I4", "I5", "I6", "I7", "I8", "I13"]
 
 
 # --- I9 to I11: the stop-event files of the last days ---------------------------
@@ -805,6 +878,8 @@ def recount(res: Result, day: dict[str, Any], events: list[dict[str, Any]]) -> N
     d = day["service_date"]
     if _counts(again) != _counts(day):
         res.problem("I11", f"{d}: recount {_counts(again)} != day file {_counts(day)}")
+    if again["last_stop_early_arrivals"] != day.get("last_stop_early_arrivals"):
+        res.problem("I11", f"{d}: recount of early last-stop arrivals differs from the day file")
     for name in ("by_route", "by_hour"):
         a = {k: _counts(b) for k, b in again[name].items()}
         b = {k: _counts(v) for k, v in day[name].items()}
@@ -939,7 +1014,9 @@ def report(res: Result) -> int:
 def main(argv: list[str] | None = None) -> int:
     ap = argparse.ArgumentParser(description="Check the rules every published figure obeys.")
     ap.add_argument("--data", type=Path, default=Path("data-branch"))
-    ap.add_argument("--light", action="store_true", help="only I1 to I8 (no third-party library)")
+    ap.add_argument(
+        "--light", action="store_true", help="only I1 to I8 and I13 (no third-party library)"
+    )
     ap.add_argument("--releases", type=Path, help="local Release files, <tag>/<name>")
     ap.add_argument("--work", type=Path, help="where Release files are downloaded or found")
     ap.add_argument("--days", type=int, default=3, help="days for I9 to I11 (0: all)")

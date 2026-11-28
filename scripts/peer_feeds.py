@@ -1,6 +1,6 @@
 """Find peers' open feeds in the Mobility Database catalog.
 
-    python scripts/peer_feeds.py [--names "Skagit,Intercity,Kitsap"]
+    python scripts/peer_feeds.py [--names "Skagit,Intercity Transit"]
 
 Prints, for each name, the catalog's schedule (GTFS) feeds and vehicle
 position (GTFS-Realtime) feeds that need no key, with their download
@@ -19,12 +19,8 @@ import sys
 import urllib.request
 
 CATALOG = "https://files.mobilitydatabase.org/feeds_v2.csv"
-DEFAULT_NAMES = (
-    "Skagit", "Intercity Transit", "Kitsap", "Mountain Line", "Cache Valley", "BC Transit",
-    "Halifax", "Red Metropolitana", "TransMilenio", "Metrobús", "Southern Vectis", "Isle of Wight",
-    "Connexxion", "Arriva", "Rapid Penang", "Prasarana", "Singapore", "Land Transport Authority",
-    "Israel", "Moscow", "Mosgortrans",
-)  # fmt: skip
+# Since compare/0.3.0 the comparisons keep the two Washington peers.
+DEFAULT_NAMES = ("Skagit", "Intercity Transit")
 
 
 def rows() -> list[dict[str, str]]:

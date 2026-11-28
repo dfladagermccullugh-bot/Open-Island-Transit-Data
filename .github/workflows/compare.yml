@@ -1,18 +1,17 @@
 name: Compare
 
-# Class A comparisons (pipeline/compare_sample.py): once a week per world
-# region, at a busy hour there, a two-hour sample of each peer's live feed
-# in reference/peers/feeds.csv is run through our own method. Only a small
-# summary of each sample is kept, on the data branch under compare/; no
-# other agency's raw data is stored. A missing sample is normal: feeds move
-# and go down. `mode: discover` lists the peers' open feeds in the Mobility
-# Database catalog instead (scripts/peer_feeds.py).
+# Class A comparisons (pipeline/compare_sample.py): on Tuesdays and
+# Thursdays around midday, a two-hour sample of each peer's live feed in
+# reference/peers/feeds.csv (since compare/0.3.0 the two Washington peers,
+# Skagit and Intercity) is run through our own method. The compare stage
+# pools the samples of the last 8 weeks. Only a small summary of each sample
+# is kept, on the data branch under compare/; no other agency's raw data is
+# stored. A missing sample is normal: feeds move and go down. `mode:
+# discover` lists the peers' open feeds in the Mobility Database catalog
+# instead (scripts/peer_feeds.py).
 on:
   schedule:
-    - cron: "17 18 * * 2" # North America, about 10 AM Pacific
-    - cron: "41 15 * * 3" # Central and South America, about noon in Santiago
-    - cron: "23 10 * * 4" # Europe, about 11 AM in London
-    - cron: "37 3 * * 5" # Asia, about 11 AM in Singapore
+    - cron: "17 19 * * 2,4" # 11:17 AM Pacific standard time (12:17 PM in summer)
   workflow_dispatch:
     inputs:
       mode:
@@ -20,8 +19,8 @@ on:
         type: choice
         options: [sample, discover]
         default: sample
-      region:
-        description: "Region to sample (as in feeds.csv); empty: the region of today's schedule"
+      agency:
+        description: "agency_id to sample (as in feeds.csv); empty: every peer"
         type: string
         default: ""
 
@@ -55,16 +54,13 @@ jobs:
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
       - id: pick
         env:
-          SCHEDULE: ${{ github.event.schedule }}
-          REGION: ${{ inputs.region }}
+          AGENCY: ${{ inputs.agency }}
         run: |
           python - <<'EOF' >> "$GITHUB_OUTPUT"
           import csv, json, os
-          by_cron = {"17 18 * * 2": "North America", "41 15 * * 3": "Central and South America",
-                     "23 10 * * 4": "Europe", "37 3 * * 5": "Asia"}
-          region = os.environ.get("REGION") or by_cron.get(os.environ.get("SCHEDULE", ""), "")
+          agency = os.environ.get("AGENCY", "")
           rows = [r for r in csv.DictReader(open("reference/peers/feeds.csv", encoding="utf-8"))
-                  if r["region"] == region and r["rt_url"] and r["static_url"]]
+                  if r["rt_url"] and r["static_url"] and agency in ("", r["agency_id"])]
           print("feeds=" + json.dumps(rows))
           EOF
 
@@ -117,7 +113,12 @@ jobs:
     env:
       GH_TOKEN: ${{ github.token }}
     steps:
+      # The code of main as it is now, not as it was when the run started two
+      # hours ago: a stage version bumped in between would otherwise make the
+      # gate refuse data that the nightly job has already rebuilt.
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          ref: main
       - uses: actions/setup-python@6d4fd22b20465ccc0f7354476588e8df7c9ca0e0 # v7.1.0
         with:
           python-version: "3.13"
@@ -135,7 +136,7 @@ jobs:
           python -m pipeline.compare --data data-branch
       - name: Publish to data-staging
         run: scripts/publish_data.sh data-staging "Comparison samples:"
-      # The light gate (I1 to I8), then data moves to the new commit. Only
+      # The light gate (I1 to I8 and I13), then data moves to the new commit. Only
       # when staging held nothing else: commits that the nightly job's full
       # gate has not passed are promoted by the nightly job, with these.
       - name: Check the figures and move data

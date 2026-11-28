@@ -65,14 +65,14 @@
    "hash": "9de806ac37d2581af49d3476080d2322cafa1dc011cfd47ad522684257259dc2"
   },
   "ontime": {
-   "version": "ontime/0.7.0",
+   "version": "ontime/0.8.0",
    "constant": "pipeline/events/ontime.py::ONTIME_VERSION",
    "sources": [
     "pipeline/events/ontime.py",
     "pipeline/stats.py",
     "pipeline/columns.py::ONTIME_DAILY"
    ],
-   "hash": "e05cfeeefd63a58d44243a888cb64919de9635ed932ee17689314a7327988148"
+   "hash": "c2bfc9424fe298778052cd2473f4889a62f954d92a9868a4697e13e3fc7c3968"
   },
   "validate": {
    "version": "validate/0.3.0",
@@ -168,13 +168,14 @@
    "hash": "dd68f451440ff35a9e3198ab9e46249e66cad0d87e018c4f72fb374c578a282c"
   },
   "compare": {
-   "version": "compare/0.2.0",
+   "version": "compare/0.3.0",
    "constant": "pipeline/compare.py::COMPARE_VERSION",
    "sources": [
     "pipeline/compare.py",
-    "pipeline/stats.py"
+    "pipeline/stats.py",
+    "pipeline/gtfs/holidays.py"
    ],
-   "hash": "4c605863247249e53f436e0b7d0b7a8501cfb537e95fb4a42258420908df0c6e"
+   "hash": "237326d26e8ebc7fbf1f68f951cdc0c2e259a3a4733bea4e2e0d6be87fd1f53c"
   },
   "feedcheck": {
    "version": "feedcheck/0.1.0",

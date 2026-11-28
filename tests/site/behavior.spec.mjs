@@ -580,11 +580,37 @@ test.describe("statistics", () => {
   });
 });
 
-test("a peer sampled with our own method shows its share and range (class A)", async ({page}) => {
-  await open(page, "compare");
-  const row = page.locator("tr", {hasText: "Halifax Transit"});
-  await expect(row).toContainText("77% (74% to 80%), November 24, 2026");
-  await expect(row).toContainText("R, B, A");
+test.describe("the Compare page", () => {
+  test("explains the one rule between the home page and the comparisons", async ({page}) => {
+    await open(page, "compare");
+    const block = page.locator(".one-rule");
+    await expect(block).toContainText("68% on the home page counts a bus that reaches the end of its trip early as on time.");
+    await expect(block).toContainText("64.3% here counts it as early, the way most agencies do.");
+    await expect(page.locator("main")).toContainText("They differ by exactly 143 arrivals: the times a bus reached the last stop of its trip more than a minute early.");
+  });
+
+  test("shows how big each peer's pooled sample is", async ({page}) => {
+    await open(page, "compare");
+    const table = page.locator("table", {has: page.locator("caption", {hasText: "The samples of each agency"})});
+    const row = table.locator("tr", {hasText: "Skagit Transit"});
+    await expect(row).toContainText("December 1, 2026, December 3, 2026");
+    await expect(row).toContainText("Tuesdays and Thursdays, 11 AM to 2 PM");
+    for (const cell of ["2", "163", "441", "100%"]) await expect(row.locator("td", {hasText: new RegExp(`^${cell}$`)})).toHaveCount(1);
+    // The chart pools each agency beside Island Transit over the same hours.
+    const fig = page.locator("figure", {hasText: "Share on time, 1 minute early to 5 minutes late"});
+    await expect(fig).toContainText("the day after Thanksgiving Day");
+    await expect(fig.locator("svg[aria-description]")).toHaveAttribute("aria-description", /Skagit Transit: \d+%, \d+% to \d+%; Island Transit, same hours as Skagit Transit: \d+%/);
+  });
+
+  test("hides an agency with no figure and waits for the first pooled sample", async ({page}) => {
+    await useScenario(page, "compare-before-samples");
+    await open(page, "compare");
+    const main = page.locator("main");
+    await expect(main).toContainText("No sample is pooled yet. The first samples are taken on the next Tuesday or Thursday.");
+    await expect(main).toContainText("We left out 6 samples taken on or next to a holiday");
+    await expect(main).not.toContainText("Nothing Found Transit");
+    await expect(page.locator("tr", {hasText: "Intercity Transit"})).toContainText("0 min early to 5 min late");
+  });
 });
 
 test.describe("the footer", () => {

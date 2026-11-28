@@ -1,82 +1,143 @@
 ---
-description: "How Island Transit's on-time record compares with other bus systems, adjusted for their different definitions of on time."
+description: "How Island Transit's buses compare with Skagit Transit's and Intercity Transit's, timed the same way."
 title: "Compared with other bus systems"
-subtitle: "Each agency's figure on the same footing as ours"
+subtitle: "Two Washington neighbors, timed the same way as ours"
 ---
 
 Bus agencies don't all mean the same thing by "on time." One counts a bus up
-to 5 minutes late, another only up to 3, and some time arrivals at every
-stop while others time departures at a few. So two published percentages
-can't be set side by side as they are: a stricter rule makes the same buses
-look worse. Below, each agency's own figure is put on the same footing as
-ours in one of two ways, and each row says which.
+to 5 minutes late, another only up to 3, and some time arrivals while others
+time departures. So two published percentages can't be set side by side as
+they are. We compare Island Transit with two other Washington agencies,
+Skagit Transit and Intercity Transit, because they publish the live
+locations of their buses just as Island Transit does. That lets us time
+their buses with our own method and our own rule.
 
 ```{ojs}
 //| echo: false
 //| output: false
-import {json, pct, count, longDate, emptyNote, guard, h} from "./lib.js"
+import {json, pct, count, longDate, emptyNote, guard, h, hourLabel, plural} from "./lib.js"
 import {makeCharts} from "./charts.js"
 import {Plot} from "./vendor/plot-0.6.11/plot.js"
 ch = makeCharts({Plot})
 cmp = json("data/compare/summary.json")
-peers = (cmp?.peers ?? []).filter(p => p && p.agency)
 it = cmp?.island_transit ?? null
-// A peer with no window either measures something else (headways, waiting
-// time) or published nothing we could find.
-rule = p => p.window != null ? `${p.window[0] ?? 0} min early to ${p.window[1]} min late`
-  : /headway|wait/i.test(`${p.measured} ${p.note}`) ? "not a punctuality window" : "rule not found"
+pool = p => p?.our_method_on_their_feed ?? null
+sampled = p => pool(p)?.on_time_share != null
+// A row is shown only when it has a figure of some kind.
+peers = (cmp?.peers ?? []).filter(p => p && p.agency &&
+  (p.published_share != null || p.island_under_their_rule != null || sampled(p)))
+rule = p => p.window != null ? `${p.window[0] ?? 0} min early to ${p.window[1]} min late` : "not stated"
+// "Tuesdays and Thursdays, 11 AM to 2 PM" from {"Thursday": [11, 12, 13], "Tuesday": [11, 12, 13]}.
+hoursText = hours => {
+  const days = Object.keys(hours ?? {});
+  if (!days.length) return "–";
+  const all = [...new Set(days.flatMap(d => hours[d]))].sort((a, b) => a - b);
+  const names = days.sort((a, b) => WEEK.indexOf(a) - WEEK.indexOf(b)).map(d => `${d}s`);
+  const list = names.length < 3 ? names.join(" and ") : `${names.slice(0, -1).join(", ")} and ${names.at(-1)}`;
+  return `${list}, ${hourLabel(all[0])} to ${hourLabel((all.at(-1) + 1) % 24)}`;
+}
+WEEK = ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday"]
+interval = v => Array.isArray(v) && v.every(Number.isFinite) ? ` (${pct(v[0])} to ${pct(v[1])})` : ""
+skipped = (cmp?.peers ?? []).flatMap(p => pool(p)?.samples_skipped ?? [])
 ```
 
-The first way recounts our own departures under the other agency's rule
-(marked R). That shows how Island Transit would score if it used that
-agency's definition. The second turns the other agency's published figure
-into a figure under our rule, 1 minute early to 5 minutes late (marked B).
-We don't have the other agency's departure times, so we assume its buses
-run early and late in a pattern like ours, only wider or narrower, and try
-several such patterns. The result is a range, not a single number, and a
-wide range means the answer depends a lot on that assumption.
+## One rule, two figures {#one-rule}
 
-A few agencies publish their own live bus locations, as Island Transit
-does. For those, we also run our own method on two hours of their buses
-once a week (marked A) and report the share on time under our rule, with a
-range that allows for chance. Two hours on one day is a small slice of
-their service, so treat it as a spot check.
+```{ojs}
+//| echo: false
+guard(() => {
+  if (!it) return emptyNote("unavailable", "The comparison of the two rules");
+  if (it.recount_under_our_rule == null || it.last_stop_early_arrivals == null)
+    return html`<p class="empty">The recount under the stricter rule isn't ready yet.</p>`;
+  return html`<div class="one-rule">
+    <p><strong class="big">${pct(it.headline_on_time_share)}</strong> on the home page counts a bus that reaches the end of its trip early as on time.</p>
+    <p><strong class="big">${pct(it.recount_under_our_rule, 1)}</strong> here counts it as early, the way most agencies do.</p>
+  </div>
+  <p>The two figures cover the same ${count(it.observed)} departures we could time from ${longDate(it.first_service_date)} to ${longDate(it.last_service_date)}. They differ by exactly ${plural(it.last_stop_early_arrivals, "arrival")}: the times a bus reached the last stop of its trip more than a minute early. A rider waiting at the last stop isn't hurt by an early bus, so the home page counts it as on time. Most agencies count it as early, so we use their way whenever we set our buses beside theirs.</p>`;
+}, "The comparison of the two rules")
+```
+
+## Their buses and ours, timed the same way {#same-way}
+
+On Tuesdays and Thursdays around midday, we read each agency's live bus
+locations every 20 seconds for two hours and run them through the same
+method we use for Island Transit: the same 40 meter (about 130 foot) circle
+around each stop, the timepoints the agency's own schedule marks, and the
+same rule, 1 minute early to 5 minutes late. We pool every sample from the
+last eight weeks. Beside each agency we show Island Transit counted over
+the same weekdays and the same hours of the day, with an early arrival at a
+last stop counted as early. The range around each agency's figure shows how
+much it could move by chance, from which trips happened to be in the
+samples.
 
 ::: {.slot-chart}
 ```{ojs}
 //| echo: false
 guard(() => {
   if (!cmp || !it) return emptyNote("unavailable", "The comparisons");
-  const rows = peers.filter(p => p.converted_to_our_window?.low != null)
-    .map(p => ({name: `${p.agency} (${p.country})`, lo: p.converted_to_our_window.low, hi: p.converted_to_our_window.high}));
-  const ours = it.recount_under_our_rule;
-  if (rows.length === 0) return html`<p class="empty">No other agency's figure could be converted yet.</p>`;
-  const all = [{name: "Island Transit (ours)", lo: ours, hi: ours, us: true}, ...rows];
+  const rows = peers.filter(sampled).flatMap(p => [
+    {name: p.agency, value: pool(p).on_time_share, lo: pool(p).on_time_interval_95?.[0] ?? pool(p).on_time_share, hi: pool(p).on_time_interval_95?.[1] ?? pool(p).on_time_share, group: p.agency},
+    {name: `Island Transit, same hours as ${p.agency}`, value: p.island_same_hours?.recount_under_our_rule, lo: null, hi: null, group: p.agency, us: true},
+  ]).filter(d => d.value != null);
+  const skipNote = skipped.length ? ` We left out ${plural(skipped.length, "sample")} taken on or next to a holiday (${[...new Set(skipped.map(s => `${longDate(s.service_date)}, ${s.reason}`))].join("; ")}), when service and traffic are unlike other weekdays.` : "";
+  if (rows.length === 0) return html`<p class="empty">No sample is pooled yet. The first samples are taken on the next Tuesday or Thursday.${skipNote}</p>`;
   return ch.figure({
-    title: "On time under our rule, 1 minute early to 5 minutes late",
-    note: `Island Transit: ${pct(ours, 1)} of ${count(it.departures)} departures at timepoints from ${longDate(it.first_service_date)} to ${longDate(it.last_service_date)}, with every moment counted alike. Each bar spans the converted figure under the assumptions tried.`,
+    title: "Share on time, 1 minute early to 5 minutes late",
+    note: `Open dots are the other agencies, each pooling its samples from the last eight weeks, with a bar for its 95% range. Filled dots are Island Transit over the same hours.${skipNote}`,
     chart: ch.responsive((width, narrow) => Plot.plot({
-      ariaLabel: "Converted on-time shares of other bus systems, beside Island Transit's",
-      ariaDescription: all.map(d => `${d.name}: ${d.us ? pct(d.lo, 1) : `${pct(d.lo)} to ${pct(d.hi)}`}`).join("; "),
+      ariaLabel: "On-time shares of other bus systems, timed with our method, beside Island Transit's over the same hours",
+      ariaDescription: rows.map(d => `${d.name}: ${pct(d.value)}${d.lo != null && d.hi != null && !d.us ? `, ${pct(d.lo)} to ${pct(d.hi)}` : ""}`).join("; "),
       style: {background: "transparent", fontSize: "12px", overflow: "visible"},
-      width, height: 34 * all.length + 50,
-      marginLeft: narrow ? 6 : Math.min(320, 14 + 6.6 * Math.max(...all.map(d => d.name.length))), marginRight: 30, marginTop: narrow ? 24 : 8, marginBottom: 36,
+      width, height: 34 * rows.length + 50,
+      marginLeft: narrow ? 6 : Math.min(320, 14 + 6.6 * Math.max(...rows.map(d => d.name.length))), marginRight: 30, marginTop: narrow ? 24 : 8, marginBottom: 36,
       x: {domain: [0, 1], grid: true, tickFormat: d => pct(d), label: null},
-      y: {domain: all.map(d => d.name), label: null, axis: narrow ? null : "left", tickSize: 0},
+      y: {domain: rows.map(d => d.name), label: null, axis: narrow ? null : "left", tickSize: 0},
       marks: [
-        Plot.ruleY(all, {y: "name", x1: "lo", x2: "hi", stroke: "var(--range)", strokeWidth: 6, strokeLinecap: "round"}),
-        Plot.dot(all.filter(d => d.us), {y: "name", x: "lo", r: 6, fill: "var(--series-1)", stroke: "var(--surface)", strokeWidth: 1.5}),
-        narrow ? Plot.text(all, {y: "name", x: 0, text: "name", textAnchor: "start", dy: -16, fill: "currentColor"}) : null,
-        Plot.tip(all, Plot.pointerY({y: "name", x: "hi", title: d => d.us ? `${d.name}\n${pct(d.lo, 1)}` : `${d.name}\n${pct(d.lo)} to ${pct(d.hi)} under our rule`})),
+        Plot.ruleY(rows.filter(d => !d.us), {y: "name", x1: "lo", x2: "hi", stroke: "var(--range)", strokeWidth: 6, strokeLinecap: "round"}),
+        Plot.dot(rows, {y: "name", x: "value", r: 6, fill: d => d.us ? "var(--series-1)" : "var(--surface)", stroke: d => d.us ? "var(--surface)" : "var(--series-1)", strokeWidth: 2}),
+        narrow ? Plot.text(rows, {y: "name", x: 0, text: "name", textAnchor: "start", dy: -16, fill: "currentColor"}) : null,
+        Plot.tip(rows, Plot.pointerY({y: "name", x: "value", title: d => `${d.name}\n${pct(d.value)}${d.us ? "" : interval([d.lo, d.hi])}`})),
       ],
-    }), {height: 34 * all.length + 50}),
+    }), {height: 34 * rows.length + 50}),
     methods: "comparisons",
   });
 }, "The comparison chart")
 ```
 :::
 
-## Every agency we looked at
+## The samples
+
+```{ojs}
+//| echo: false
+guard(() => {
+  if (!cmp) return emptyNote("unavailable", "The samples");
+  const rows = peers.filter(sampled).map(p => ({
+    agency: p.agency,
+    samples: pool(p).samples_pooled,
+    dates: pool(p).service_dates,
+    hours: hoursText(pool(p).hours),
+    trips: pool(p).trips_measured,
+    departures: pool(p).moments_measured,
+    inSchedule: pool(p).share_in_schedule,
+  }));
+  if (rows.length === 0) return html`<p class="empty">No sample is pooled yet.</p>`;
+  return html`${ch.table(rows, {
+    caption: "The samples of each agency's live feed that the figures above pool",
+    columns: [
+      {key: "agency", label: "Agency"},
+      {key: "samples", label: "Samples", align: "right", format: v => count(v)},
+      {key: "dates", label: "Dates", sortValue: r => r.dates?.[0] ?? null, format: v => (v ?? []).map(longDate).join(", ")},
+      {key: "hours", label: "Hours"},
+      {key: "trips", label: "Trips", align: "right", format: v => count(v)},
+      {key: "departures", label: "Departures timed", align: "right", format: v => count(v)},
+      {key: "inSchedule", label: "Trips found in their schedule", align: "right", format: v => pct(v)},
+    ],
+  })}
+  <p class="note">"Trips found in their schedule" is the share of the trips the buses reported that the agency's own schedule lists. When it is low, the feed and the schedule don't agree and we can't time those buses.</p>`;
+}, "The samples")
+```
+
+## What each agency publishes
 
 ```{ojs}
 //| echo: false
@@ -84,34 +145,29 @@ guard(() => {
   if (!cmp) return emptyNote("unavailable", "The comparison table");
   const rows = peers.map(p => ({
     ...p,
-    theirRule: rule(p) + (p.window != null && p.measured ? `, ${p.measured}` : ""),
+    theirRule: p.window == null ? "Not stated" : rule(p) + (p.measured ? `, ${p.measured}` : ""),
     theirs: p.published_share,
     ourUnderTheirs: p.island_under_their_rule ?? null,
-    range: p.converted_to_our_window?.low == null ? null : `${pct(p.converted_to_our_window.low)} to ${pct(p.converted_to_our_window.high)}`,
-    how: p.classes?.length ? p.classes.join(", ") : "published only",
-    sampled: p.our_method_on_their_feed ?? null,
   }));
+  if (rows.length === 0) return html`<p class="empty">No agency has a figure to compare yet.</p>`;
   return html`${ch.table(rows, {
-    caption: "Other bus systems' on-time rules and figures, and how they compare",
+    caption: "Each agency's own on-time rule and figure, and Island Transit under that rule",
     wide: true,
     columns: [
       {key: "agency", label: "Agency", format: (v, r) => r.sources?.[0] ? h("a", {href: r.sources[0]}, v) : v},
-      {key: "region", label: "Where"},
       {key: "theirRule", label: "Their rule"},
       {key: "theirs", label: "Their figure", align: "right", format: (v, r) => v == null ? "–" : `${pct(v, 1)}${r.published_period ? ` (${r.published_period})` : ""}`},
-      {key: "ourUnderTheirs", label: "Island Transit under their rule (R)", align: "right", format: v => v == null ? "–" : pct(v, 1)},
-      {key: "range", label: "Theirs under our rule (B)", align: "right", sortValue: r => r.converted_to_our_window?.low ?? null},
-      {key: "sampled", label: "Their buses, our method (A)", align: "right", sortValue: r => r.sampled?.on_time_share ?? null,
-       format: v => v?.on_time_share == null ? "–" : `${pct(v.on_time_share)}${Array.isArray(v.on_time_interval_95) && v.on_time_interval_95.every(Number.isFinite) ? ` (${pct(v.on_time_interval_95[0])} to ${pct(v.on_time_interval_95[1])})` : ""}${v.service_date ? `, ${longDate(v.service_date)}` : ""}`},
-      {key: "how", label: "Compared by"},
-      {key: "confidence", label: "Source"},
+      {key: "ourUnderTheirs", label: "Island Transit under their rule", align: "right", format: v => v == null ? "–" : pct(v, 1)},
+      {key: "note", label: "What their figure covers"},
     ],
   })}
-  <p class="note">"Source" says how firm the published rule and figure are: high when an official source states both. Rules that don't use a window, such as the excess wait time some cities use for frequent buses, can't be compared this way and are listed as published only.</p>`;
+  <p class="note">Each agency's figure comes from its own published report, linked from its name. Skagit Transit doesn't say how late a bus may be and still count as on time, so we can't recount our buses under its rule. Intercity Transit counts a bus from on schedule to 5 minutes late and publishes figures only for single routes.</p>`;
 }, "The comparison table")
 ```
 
-These comparisons are rough by nature. They can't adjust for differences in
-what each agency times (a departure or an arrival), at which stops, or how
-it counts a trip that never ran, and the agencies' figures cover different
-periods from ours. Each row links to the agency's own report.
+These comparisons have limits. Two hours on two weekdays a week is a slice
+of each agency's service, not all of it, and the samples miss early
+mornings, evenings and weekends. Each agency picks its own timepoints, and
+routes on a small island run under different conditions than routes in a
+city. Treat the figures as a fair check on how Island Transit's buses keep
+time next to its neighbors, not as a ranking.

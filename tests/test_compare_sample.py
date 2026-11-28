@@ -67,3 +67,14 @@ def test_a_sample_says_which_clock_it_used_and_how_many_trips_matched():
     assert out["agency_timezone"] == "America/Los_Angeles"
     assert out["trips_reported"] >= 1
     assert out["trips_in_schedule"] == out["trips_reported"]
+
+
+def test_a_sample_keeps_its_trips_and_hours_for_pooling():
+    contents = schedule_with_zone("America/Los_Angeles")
+    start = datetime.fromtimestamp(T0 - 600, UTC)
+    out = cs.summarize(contents, run(-60), start, start + timedelta(hours=1), "made-up")
+    assert sum(v[0] for v in out["by_trip"].values()) == out["moments_measured"]
+    assert sum(v[1] for v in out["by_trip"].values()) == out["moments_on_time"]
+    assert out["local_weekday"] == start.astimezone(schedule.PACIFIC).strftime("%A")
+    assert out["local_hours"][0] == start.astimezone(schedule.PACIFIC).hour
+    assert len(out["local_hours"]) in (1, 2)

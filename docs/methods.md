@@ -565,7 +565,9 @@ the daily tables match the day files cell for cell, and that the 28-day
 figures on the home and routes pages are the sums of the days they cover. It
 looks for missing days, for days made by an older version of our code, and
 for a bus timed on two trips at once. For the last three days, it counts the
-on-time figures again from the stop times themselves. Our programs write
+on-time figures again from the stop times themselves. It also checks that the
+comparisons page explains the gap between our two figures exactly (section
+6). Our programs write
 their new figures to a holding branch first, and the public `data` branch,
 which the site and every reader use, moves forward to them only when every
 rule passes. If any rule fails, the `data` branch and the site keep the last
@@ -583,12 +585,13 @@ inferred wrong. Checks 1, 2 and 3 are there for that.
 `reference/field-observations.csv` into `ontime/field-check.json`, and the
 observer's guide is `docs/field-check.md`. Checks 2 and 3 run in
 `pipeline/events/validate.py` and are written to `validation` in
-`ontime/days/<date>.json`. The publishing rules are I1 to I12 in
+`ontime/days/<date>.json`. The publishing rules are I1 to I13 in
 `pipeline/invariants.py`; the nightly job runs them over `data-staging` and
 `scripts/promote_data.sh` fast-forwards `data` to the checked commit only
 when they pass, with their report in `checks/gate.json`. The comparison and
-validator jobs run the first eight (`scripts/light_gate_promote.sh`,
-`checks/gate-light.json`), and the site job runs them again before it copies
+validator jobs run the nine that read only the data branch, I1 to I8 and
+I13 (`scripts/light_gate_promote.sh`, `checks/gate-light.json`), with the
+code of `main` as it is when they publish, and the site job runs them again before it copies
 the data in. Parsed and stop-event files are named by `pipeline/release.py`
 (`stop-events-<date>-<first 8 characters of the SHA-256>.parquet`, recorded
 as `asset` in the manifests; raw files keep plain names), and
@@ -602,51 +605,89 @@ comes with a new version, so every day is rebuilt with it.)
 ## 6. Comparisons
 
 Bus agencies define "on time" in different ways, so their published
-figures can't be set side by side as they are. We keep each agency's
-published rule and figure, with its source, in a reference file, and put
-each on the same footing as ours in one of two ways.
+figures can't be set side by side as they are. Since November 28, 2026, we
+compare Island Transit with two other Washington agencies, Skagit Transit
+and Intercity Transit. We chose them because they are our neighbors and
+because, like Island Transit, they publish their buses' live locations
+openly, so we can time their buses with our own method. A longer list from
+November 27, with agencies in other states and other countries, could only
+set published figures side by side, and most of those agencies publish no
+rule or no figure we could use.
 
-The first, which we mark R, recounts our own departures at timepoints over
-the last 28 days with service under the other agency's window, for example
-up to 3 minutes late instead of 5. In this recount every timed moment counts
-alike, so an early arrival at a last stop counts as early, which our own
-published figure does not. That makes the recount under our own rule a
-little lower than our published figure, and it is the number the recounts
-under other rules should be read against.
+### One rule, two figures
 
-The second, which we mark B, turns the other agency's published figure into
-a figure under our window, 1 minute early to 5 minutes late. We don't have
-that agency's departure times, so we assume they spread out like ours, but
-wider or narrower by a factor of 0.4, 0.5, 0.6, 0.8, 1, 1.25 or 1.6. For each factor
-we shift the whole spread later or earlier until it gives the agency's own
-figure under its own rule, then count how much of it falls inside our
-window. We report the lowest and highest of those results. When no shift
-can reproduce the agency's figure for a factor, that factor is left out,
-and the page says how many were used. A figure that only the narrow
-factors can reproduce means that agency's buses keep closer to their
-schedule than ours do. A rule without a window, such as the
-excess wait time some cities use for frequent buses, can't be converted
-this way, and its figure is listed as published only.
+Our published figure counts a bus that reaches the last stop of its trip
+more than a minute early as on time, because nobody waits for a bus at the
+end of its trip. Most agencies count such a bus as early. So when we set
+our buses beside another agency's, we count them the way most agencies do:
+every timed moment counts alike, and an early arrival at a last stop is
+early. Over the 28 days with service behind the home page, the two figures
+cover the same departures and differ by exactly the number of those early
+arrivals, which each day's on-time file counts. Over November 19 to 25,
+2026, that was 556 arrivals of 13,095 timed departures: 74.2% on time on
+the home page and 70.0% under the stricter count. A check in the publishing
+gate makes sure the difference is explained to the last departure.
 
-Neither way adjusts for what each agency times (a departure or an
-arrival), at which stops, how it treats a trip that never ran, or the
-period its figure covers.
+### Their buses, our method
 
-A third way does (marked A). Some agencies publish their buses' live
-locations openly, as Island Transit does. Once a week, at a busy hour in
-that part of the world, we read two hours of each such feed every 20
-seconds and run it through the same method we use here: the same stop
-radius of 40 meters (about 130 feet), the agency's own timepoints (or every
-stop if its schedule marks none) and our on-time rule. We report the share
-on time with a 95% range from resampling whole trips, and the same share
-with a stop radius of 30 and 50 meters (about 100 and 160 feet), to show
-how much the radius matters. We keep only that summary, not the agency's
-data. Two hours on one day is a small slice of a week of service, so it is
-a spot check. On November 27, 2026, four agencies had open feeds: Skagit
-Transit, Intercity Transit, BC Transit in Victoria and Halifax Transit.
+On Tuesdays and Thursdays around midday (from about 11:15 in the morning
+to 1:15 in the afternoon, Pacific time), we read each agency's live bus
+locations every 20 seconds for two hours and run them through the same
+method we use here: the same stop radius of 40 meters (about 130 feet), the
+timepoints the agency's own schedule marks (or every stop if it marks
+none), and our on-time rule, with an early arrival at a last stop counted
+as early. We keep only a small summary of each sample: the counts for each
+trip, the weekday and the hours it covered, and the same share with a stop
+radius of 30 and 50 meters (about 100 and 160 feet), to show how much the
+radius matters. We keep none of the agency's raw data.
+
+We pool every sample from the last eight weeks before the latest one and
+report the share on time with a 95% range. The range comes from resampling
+whole trips of all the pooled samples together, 2,000 times, because
+departures on one trip are not independent of each other. A sample taken
+on a US federal holiday, or on the day before or after one, is left out of
+the pool and listed with the reason, because service and traffic on those
+days are unlike other weekdays. The first two samples of each agency, on
+November 27, 2026, the day after Thanksgiving, were left out this way.
+
+Beside each agency we recount Island Transit over the same weekdays and
+the same hours of the day, from the departures scheduled in those hours on
+our service days in the same eight weeks, with holidays and the days next
+to them left out the same way.
+
+### Their own figures
+
+We also keep each agency's published rule and figure, with its source, and
+recount our own departures over the last 28 days with service under that
+agency's window (marked R). Intercity Transit counts a bus from on
+schedule to 5 minutes late, at published timepoints, and publishes figures
+only for single routes. Skagit Transit publishes a figure for all its
+routes but does not say what window it uses, so we can't recount under its
+rule. When an agency publishes both a window and a figure, we can also turn
+its figure into a range under our window (marked B): we assume its buses'
+deviations spread out like ours, wider or narrower by a factor of 0.4, 0.5,
+0.6, 0.8, 1, 1.25 or 1.6, shift the spread until it gives the agency's own
+figure under its own rule, and count how much of it falls inside our
+window. Neither of the two Washington agencies publishes both today, so no
+row is converted.
+
+These recounts use deviations rounded to the whole second, as the day
+files keep them. Rounding can move a departure that was a fraction of a
+second outside a limit to just inside it: under our own rule, 15 of 13,095
+departures over November 19 to 25, 2026. The recount under our own rule is
+therefore made from the counts, not from the rounded deviations.
+
+These comparisons have limits. Two hours on two weekdays a week is a slice
+of each agency's service, and the samples miss early mornings, evenings
+and weekends. Each agency picks its own timepoints, and a bus on a small
+island runs under different conditions than one in a city.
 
 (Code and files: `pipeline/compare.py` writes `compare/summary.json`; the
 rules and figures, with sources, are in `reference/peers/definitions.csv`;
 the samples are taken by `pipeline/compare_sample.py`, run by
 `.github/workflows/compare.yml` from `reference/peers/feeds.csv`, and kept
-as `compare/<agency>/<date>.json`.)
+as `compare/<agency>/<date>.json`; the holidays are in
+`reference/peers/no-service-days.csv`; each day's early arrivals at last
+stops are `last_stop_early_arrivals` in `ontime/days/<date>.json`; gate rule
+I13 in `pipeline/invariants.py` checks the difference between the two
+figures.)

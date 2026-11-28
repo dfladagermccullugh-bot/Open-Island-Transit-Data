@@ -72,6 +72,16 @@ jobs:
           args=(--data data-branch --static-jar gtfs-validator.jar --work "$RUNNER_TEMP/validator-work")
           if [ "$DUE" = "true" ]; then args+=(--rt-jar gtfs-rt-validator.jar); fi
           python -m pipeline.feed_validation "${args[@]}"
+      # The gate and the publishing scripts run with the code of main as it is
+      # now: a stage version bumped while the validators ran would otherwise
+      # make the gate refuse data that the nightly job has already rebuilt.
+      # The validators' summaries are in data-branch/, which this leaves alone.
+      - name: Use the current code of main
+        if: ${{ !cancelled() }}
+        run: |
+          git fetch -q --depth 1 origin main
+          git checkout -q FETCH_HEAD
+          pip install -q -e . -c constraints.txt
       # A summary is written whole once its validator has finished, so what
       # one validator found is kept even if the other fails.
       - name: Publish to data-staging
