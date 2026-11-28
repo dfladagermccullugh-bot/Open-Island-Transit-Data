@@ -49,4 +49,4 @@ If a bus comes that is not on the sheet, add a row with the route and time in
 Send the filled sheet (a photo is fine) or the CSV. The rows go into
 `reference/field-observations.csv`. The nightly job scores them once their
 day has been processed and writes `ontime/field-check.json`; results appear
-on the site's on-time page under "Field check".
+on the site's Trends page (`ontime.html`) under "Field check".

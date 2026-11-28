@@ -47,7 +47,7 @@ it as late.
 ```mermaid
 flowchart LR
   B[The bus<br/>GPS reports its location] --> F[Island Transit's live feed<br/>each update replaces the last]
-  F -->|every 20 s| C[Collector<br/>saves every update]
+  F -->|every 20 s, day and night| C[Collector<br/>saves what the feed says]
   C -->|each night| N[Nightly checks<br/>stop times, on-time figures,<br/>data quality grades]
   N --> S[Site and free downloads]
 ```

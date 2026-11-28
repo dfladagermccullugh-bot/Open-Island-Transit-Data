@@ -9,6 +9,16 @@ main :is(p, li, dd, dt, blockquote) { max-width: var(--measure); }
 // A visible ring on whatever has the keyboard focus, in both themes.
 :focus-visible { outline: 2px solid var(--focus); outline-offset: 2px; border-radius: var(--radius-sm); }
 .navbar :focus-visible { outline-offset: -2px; }
+// A navbar link under the pointer takes the full highlight color; the theme's
+// faded one (80% opacity) fell below 4.5:1 against the navbar.
+.navbar .nav-link:hover, .navbar .nav-link:focus { color: $navbar-hl; }
+// The "Data & methods" menu takes the site's own colors, so its text passes
+// contrast in both themes; the page that is open is bold and in the link
+// color (Bootstrap would put white text on a light blue in the dark theme).
+.navbar .dropdown-menu { background: var(--card); border: 1px solid var(--border); }
+.navbar .dropdown-item { color: var(--text-primary); }
+.navbar .dropdown-item:hover, .navbar .dropdown-item:focus { background: var(--panel); color: var(--text-primary); }
+.navbar .dropdown-item.active, .navbar .dropdown-item:active { background: var(--panel); color: var(--link); font-weight: 600; }
 
 // Code inside a sentence or a heading, in both themes.
 main :not(pre) > code { background-color: var(--panel); color: var(--text-primary); border-radius: var(--radius-sm); padding: .1em .3em; }
@@ -29,9 +39,30 @@ h3 { margin-top: var(--sp-6); }
 .quarto-title-block .description, #title-block-header .description { display: none; }
 
 // --- home page hero -----------------------------------------------------------
-.hero { padding: var(--sp-2) 0 var(--sp-5); }
+// The page reads: the question, the figures, then what the site does
+// (.hero-about). On a phone it is shown in that order, so the number, the
+// split bar and the stats come first. At a desk "what the site does" is shown
+// above the figures, as before; it holds no link or button, so the order of
+// focus is the same either way.
+.hero { padding: var(--sp-2) 0 0; display: flex; flex-direction: column; }
 .hero h1 { font-size: var(--fs-title); font-weight: 700; line-height: 1.15; margin: 0 0 var(--sp-3); }
 .hero .lede { font-size: var(--fs-lg); color: var(--text-secondary); max-width: 44rem; margin: 0; display: block; }
+.hero .hero-about { padding: var(--sp-5) 0; }
+@media (min-width: $bp-narrow + 1) {
+  .hero > h1 { order: -2; }
+  .hero .hero-about { order: -1; padding-top: 0; }
+}
+// On a phone, the counts and the trend line follow the split bar and the
+// stats; "How sure are we?" and the links come after them. None of the moved
+// lines holds a link, so focus still follows what is seen.
+@media (max-width: $bp-narrow) {
+  .headline-block { display: flex; flex-direction: column; }
+  .headline-block .headline, .headline-block .big-text { display: contents; }
+  .headline-block .big { margin-top: var(--sp-3); }
+  .headline-block .big-label { padding-bottom: 0; margin-top: var(--sp-2); }
+  .headline-block .counts, .headline-block .change { order: 1; }
+  .headline-block > details, .headline-block > .trust, .headline-block > .how-measured { order: 2; }
+}
 .headline { display: flex; flex-wrap: wrap; align-items: flex-end; gap: var(--sp-2) var(--sp-5); margin: var(--sp-5) 0 var(--sp-2); }
 .headline .big { font-size: var(--fs-hero); font-weight: 700; line-height: 1; letter-spacing: -.02em; font-variant-numeric: tabular-nums; }
 .headline .big-label { font-size: var(--fs-lg); max-width: 26rem; padding-bottom: var(--sp-2); margin: 0; }

@@ -155,7 +155,42 @@ function setUpCopying() {
   }
 }
 
+// --- the "Data & methods" menu ----------------------------------------------
+
+// Quarto draws a navbar menu's opener as a link to "#" with the role "link",
+// so a screen reader calls it a link and the space bar does nothing. It opens
+// a list, so it is a button: it says which list it controls and opens with
+// Enter or the space bar. Bootstrap's dropdown keeps aria-expanded up to date,
+// moves through the list with the arrow keys and closes it with Escape or when
+// focus leaves it.
+function setUpMenus() {
+  document.querySelectorAll(".navbar .dropdown-toggle").forEach((toggle, i) => {
+    const menu = toggle.parentElement?.querySelector(".dropdown-menu");
+    if (!menu) return;
+    if (!menu.id) menu.id = `nav-menu-list-${i + 1}`;
+    toggle.setAttribute("role", "button");
+    toggle.setAttribute("aria-controls", menu.id);
+    toggle.addEventListener("keydown", event => {
+      if (event.key !== " ") return;
+      event.preventDefault();
+      toggle.click();
+    });
+    // The open page's link in the menu says so to screen readers, as Quarto
+    // does for the links outside it, and the menu's button is highlighted, so
+    // the navbar shows which group the page belongs to.
+    const here = location.pathname;
+    for (const item of menu.querySelectorAll("a.dropdown-item[href]")) {
+      const page = new URL(item.getAttribute("href"), location.href).pathname;
+      if (page !== here && !(here.endsWith("/") && page === `${here}index.html`)) continue;
+      item.setAttribute("aria-current", "page");
+      item.classList.add("active");
+      toggle.classList.add("active");
+    }
+  });
+}
+
 function start() {
+  setUpMenus();
   showDataThrough();
   setUpTerms();
   setUpPrinting();

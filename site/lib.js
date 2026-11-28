@@ -419,7 +419,7 @@ export const SERIES = "var(--series-1)";
 
 // --- period switch --------------------------------------------------------------
 
-// The periods the On time and Data quality pages can show, in order.
+// The periods the Trends and Data quality pages can show, in order.
 export const PERIODS = [["hour", "Hour"], ["day", "Day"], ["week", "Week"], ["month", "Month"]];
 const PERIOD_KEY = "oitd-period";
 

@@ -1,6 +1,6 @@
 ---
 description: "How often Island Transit's buses left on time, day by day and hour by hour, and how the figures are checked."
-title: "On time"
+title: "Trends"
 subtitle: "The whole system, by hour, day, week or month"
 ---
 

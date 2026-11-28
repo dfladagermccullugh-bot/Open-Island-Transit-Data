@@ -37,8 +37,8 @@ Every Island Transit bus sends its location to a live feed, and the feed
 also says which trip the bus is on and when it expects to reach each stop.
 Trip planning apps read this feed. Island Transit does not keep it, and each
 update replaces the one before. Our collector, a small program on a free
-database service, saves every update every 20 seconds, day and night, and
-has done so since November 19, 2026. The schedule comes from the same
+database service, checks the feed every 20 seconds, day and night, and saves
+what it says. It has done so since November 19, 2026. The schedule comes from the same
 company that runs the feed, Passio, and is saved twice a day.
 
 ```{ojs}

@@ -35,16 +35,25 @@ website:
         text: Routes
       - href: stops.qmd
         text: Stops
+      # The On time page, renamed; its address stays ontime.html.
       - href: ontime.qmd
-        text: On time
-      - href: quality.qmd
-        text: Data quality
+        text: Trends
       - href: compare.qmd
         text: Compare
-      - href: data.qmd
-        text: Download
-      - href: methods.qmd
-        text: Methods
+      - text: Data & methods
+        menu:
+          - href: quality.qmd
+            text: Data quality
+          - href: data.qmd
+            text: Download
+          - href: methods.qmd
+            text: Methods
+          - href: limits.qmd
+            text: Limits
+          - href: codebook.qmd
+            text: Codebook
+          - href: glossary.qmd
+            text: Plain words
     right:
       # An inline mark instead of `icon: github`, which loads a whole icon
       # font (about 176 KB) for one glyph. GitHub's mark, from Octicons (MIT).

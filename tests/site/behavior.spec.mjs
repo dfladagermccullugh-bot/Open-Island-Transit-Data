@@ -46,6 +46,96 @@ test.describe("picking a route", () => {
   });
 });
 
+test.describe("the Data & methods menu", () => {
+  const ITEMS = ["Data quality", "Download", "Methods", "Limits", "Codebook", "Plain words"];
+
+  test("is a button that says what it opens, and works from the keyboard", async ({page, problems}, info) => {
+    desktopOnly({}, info);
+    await open(page, "index");
+    // The navbar reads, in order: five pages, then the menu.
+    const top = page.locator("#navbarCollapse > ul.navbar-nav").first().locator(":scope > li > a");
+    await expect(top).toHaveText(["Home", "Routes", "Stops", "Trends", "Compare", "Data & methods"]);
+    const toggle = page.getByRole("button", {name: "Data & methods"});
+    await expect(toggle).toHaveAttribute("aria-expanded", "false");
+    const menu = page.locator(`#${await toggle.getAttribute("aria-controls")}`);
+    await expect(menu).toHaveClass(/dropdown-menu/);
+    await expect(menu).toBeHidden();
+    // Tab reaches it straight after Compare.
+    await page.getByRole("link", {name: "Compare", exact: true}).focus();
+    await page.keyboard.press("Tab");
+    await expect(toggle).toBeFocused();
+    // Enter opens it; the arrow keys move through its links; Escape closes
+    // it and puts the focus back on the button.
+    await page.keyboard.press("Enter");
+    await expect(toggle).toHaveAttribute("aria-expanded", "true");
+    await expect(menu).toBeVisible();
+    await expect(menu.getByRole("link")).toHaveText(ITEMS);
+    await page.keyboard.press("ArrowDown");
+    await expect(menu.getByRole("link", {name: "Data quality"})).toBeFocused();
+    await page.keyboard.press("ArrowDown");
+    await expect(menu.getByRole("link", {name: "Download"})).toBeFocused();
+    await page.keyboard.press("Escape");
+    await expect(menu).toBeHidden();
+    await expect(toggle).toBeFocused();
+    await expect(toggle).toHaveAttribute("aria-expanded", "false");
+    // The space bar opens it too, as it opens any button, without scrolling.
+    const y = await page.evaluate(() => window.scrollY);
+    await page.keyboard.press(" ");
+    await expect(menu).toBeVisible();
+    expect(await page.evaluate(() => window.scrollY)).toBe(y);
+    // Enter on a link follows it.
+    await page.keyboard.press("ArrowDown");
+    await page.keyboard.press("ArrowDown");
+    await page.keyboard.press("ArrowDown");
+    await expect(menu.getByRole("link", {name: "Methods"})).toBeFocused();
+    await page.keyboard.press("Enter");
+    await expect(page).toHaveURL(/methods\.html$/);
+    await expectClean(page, problems);
+  });
+
+  test("closes when the focus leaves it", async ({page}, info) => {
+    desktopOnly({}, info);
+    await open(page, "index");
+    const toggle = page.getByRole("button", {name: "Data & methods"});
+    const menu = page.locator(`#${await toggle.getAttribute("aria-controls")}`);
+    await toggle.focus();
+    await page.keyboard.press("Enter");
+    await expect(menu).toBeVisible();
+    for (let i = 0; i <= ITEMS.length; i++) await page.keyboard.press("Tab");
+    await expect(menu).toBeHidden();
+    await expect(toggle).toHaveAttribute("aria-expanded", "false");
+  });
+
+  test("marks the page that is open, and the menu that holds it", async ({page}) => {
+    // On a phone the navbar is folded until its menu button is tapped, so
+    // these look at the markup, seen or not.
+    await open(page, "limits");
+    const toggle = page.getByRole("button", {name: "Data & methods", includeHidden: true});
+    await expect(toggle).toHaveClass(/\bactive\b/);
+    const menu = page.locator(`#${await toggle.getAttribute("aria-controls")}`);
+    await expect(menu.locator('[aria-current="page"]')).toHaveText("Limits");
+    await open(page, "ontime");
+    await expect(page.getByRole("button", {name: "Data & methods", includeHidden: true})).not.toHaveClass(/\bactive\b/);
+    await expect(page.locator('.navbar [aria-current="page"]')).toHaveText("Trends");
+  });
+
+  test("opens with a tap from the navbar's menu button on a phone", async ({page, problems}, info) => {
+    phoneOnly({}, info);
+    await open(page, "index");
+    await page.locator(".navbar-toggler").tap();
+    // Bootstrap adds "show" once the navbar has finished unfolding.
+    await expect(page.locator("#navbarCollapse")).toHaveClass(/\bshow\b/);
+    const toggle = page.getByRole("button", {name: "Data & methods"});
+    await toggle.tap();
+    await expect(toggle).toHaveAttribute("aria-expanded", "true");
+    const menu = page.locator(`#${await toggle.getAttribute("aria-controls")}`);
+    await expect(menu.getByRole("link")).toHaveText(ITEMS);
+    await menu.getByRole("link", {name: "Plain words"}).tap();
+    await expect(page).toHaveURL(/glossary\.html$/);
+    await expectClean(page, problems);
+  });
+});
+
 test.describe("resizing and turning the screen", () => {
   test.beforeEach(desktopOnly);
 

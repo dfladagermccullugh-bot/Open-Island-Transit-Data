@@ -18,11 +18,34 @@ PAGE = """<!DOCTYPE html><html lang="en-US"><head>
 DATASET = '<script type="application/ld+json">{"@type": "Dataset"}</script>'
 
 
+def nav_html(top=None, menu=None) -> str:
+    """A navbar as Quarto 1.11 renders it, with a few links and one menu."""
+    top = check_site.NAVBAR if top is None else top
+    name, items = check_site.MENU if menu is None else menu
+    links = "".join(
+        f'<li class="nav-item"><a class="nav-link" href="./{p}.html"> \n'
+        f'<span class="menu-text">{t}</span></a></li>'
+        for p, t in top
+    )
+    entries = "".join(
+        f'<li><a class="dropdown-item" href="./{p}.html">\n'
+        f'<span class="dropdown-text">{t}</span></a></li>'
+        for p, t in items
+    )
+    return (
+        '<nav><div class="collapse navbar-collapse" id="navbarCollapse"><ul>'
+        f"{links}"
+        '<li class="nav-item dropdown"><a class="nav-link dropdown-toggle" href="#" role="link">\n'
+        f'<span class="menu-text">{name.replace("&", "&amp;")}</span></a>'
+        f'<ul class="dropdown-menu">{entries}</ul></li></ul></div></nav>'
+    )
+
+
 @pytest.fixture
 def site(tmp_path):
     """A rendered site with everything the check asks for."""
     for page in check_site.PAGES:
-        extra = DATASET if page == "index" else ""
+        extra = DATASET + nav_html() if page == "index" else ""
         if page == "methods":
             extra = "".join(f'<h2 id="{a}">x</h2>' for a in check_site.METHOD_ANCHORS)
         (tmp_path / f"{page}.html").write_text(PAGE.format(name=page, extra=extra))
@@ -166,3 +189,26 @@ def test_a_plot_function_the_bundle_leaves_out_is_caught(site):
 def test_the_bundle_holds_what_its_entry_file_lists():
     have = check_site.bundled()
     assert {"plot", "dot", "tip", "lineY"} <= have["Plot"] and have["d3"] == {"csv", "autoType"}
+
+
+def test_the_rendered_navbar_is_read_in_order():
+    top, name, items = check_site.navbar(nav_html())
+    assert top == list(check_site.NAVBAR)
+    assert (name, items) == ("Data & methods", list(check_site.MENU[1]))
+
+
+def test_a_page_moved_out_of_the_menu_or_renamed_is_caught(site):
+    top = [*check_site.NAVBAR[:3], ("ontime", "On time"), check_site.NAVBAR[4]]
+    items = check_site.MENU[1][:-1]
+    html = (site / "index.html").read_text()
+    moved = nav_html(top, ("Data & methods", items))
+    (site / "index.html").write_text(html.replace(nav_html(), moved))
+    found = check_site.problems(site)
+    assert any(p.startswith("index.html: navbar links are") for p in found)
+    assert any(p.startswith("index.html: navbar menu is") for p in found)
+    assert "glossary.html is not in the navbar" in found
+
+
+def test_every_page_is_reached_from_the_navbar_or_named_as_off_it():
+    reached = {p for p, _ in check_site.NAVBAR} | {p for p, _ in check_site.MENU[1]}
+    assert set(check_site.PAGES) == reached | set(check_site.OFF_NAVBAR)

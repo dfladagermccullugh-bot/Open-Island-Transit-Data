@@ -47,3 +47,19 @@ for (const [name, hash] of VIEWS) {
     expect(await scan(page)).toEqual([]);
   });
 }
+
+// The navbar's menu, open: its links are only drawn when it is.
+test("the open Data & methods menu has no accessibility violations", async ({page}, info) => {
+  await open(page, "quality");
+  if (info.project.name.startsWith("phone")) {
+    await page.locator(".navbar-toggler").tap();
+    // Bootstrap adds "show" once the navbar has finished unfolding.
+    await expect(page.locator("#navbarCollapse")).toHaveClass(/\bshow\b/);
+  }
+  const toggle = page.getByRole("button", {name: "Data & methods"});
+  await toggle.click();
+  await expect(toggle).toHaveAttribute("aria-expanded", "true");
+  // Let the navbar finish unfolding and its links finish changing color.
+  await page.waitForTimeout(500);
+  expect(await scan(page)).toEqual([]);
+});

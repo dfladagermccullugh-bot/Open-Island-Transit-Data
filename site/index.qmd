@@ -10,13 +10,59 @@ include-in-header:
 ::: {.hero}
 # How on time are Island Transit's buses?
 
+::::: {.slot-headline}
+```{ojs}
+//| echo: false
+guard(() => {
+  if (o == null || !o.observed) return emptyNote("unavailable", "The on-time figures");
+  const change = !useHead ? null
+    : head.change_points != null
+      ? `${Math.abs(head.change_points).toFixed(1)} points ${head.change_points >= 0 ? "higher" : "lower"} than the ${head.previous?.days ?? 28} service days before`
+      : `Not enough days yet to compare with the ${head.window_service_days ?? 28} days before.`;
+  const spark = useHead ? sparkline((head.spark ?? []).map(d => d.on_time_share_of_observed)) : null;
+  // A schedule change stays beside the number for a week, then moves into
+  // the fold below.
+  const sc = recent?.schedule_change;
+  const scNote = sc ? `Island Transit changed its schedule on ${longDate(sc.effective)}; the route tables below start over from that day.` : null;
+  const scRecent = sc && lastDay && (new Date(`${lastDay}T12:00:00Z`) - new Date(`${sc.effective}T12:00:00Z`)) / 864e5 < 7;
+  const counts = o.scheduled > 0
+    ? html`<p class="counts">That is ${count(o.on_time)} of the ${count(o.observed)} departures we could time, out of ${count(o.scheduled)} scheduled.</p>` : "";
+  const status = notes?.status;
+  const trust = status == null ? null
+    : status === "ok" || status === "note"
+      ? html`<p class="trust">Our automatic checks found nothing wrong with the figures for ${longDate(notes.latest_service_date)}. <a href="limits.html">What this data can and can't tell you</a></p>`
+      : html`<p class="trust">Our automatic checks flagged ${status === "problem" ? "a problem" : "something to look at"} in the figures for ${longDate(notes.latest_service_date)}. <a href="quality.html">See the data quality page</a>, or <a href="limits.html">what this data can and can't tell you</a>.</p>`;
+  return html`<div class="headline-block"><div class="headline">
+      <div class="big">${pct(o.on_time_share_of_observed)}</div>
+      <div class="big-text"><p class="big-label">of departures left on time ${period}.
+        <span class="note">A bus counts as on time if it leaves from 1 minute early to 5 minutes late.${scRecent ? ` ${scNote}` : ""}</span></p>
+        ${counts}
+        ${change ? html`<p class="change">${spark}<span>${change}</span></p>` : ""}
+      </div>
+    </div>
+    ${splitBar(o)}
+    ${stats([
+      {label: "Typical departure", value: lateness(o.deviation_s_median)},
+      {label: "More than 5 minutes late", value: fmtShare(o.late_share_of_observed)},
+      {label: "Departures checked", value: count(o.observed)},
+    ])}
+    ${howSure(useHead ? head.current : null, nDays, scRecent ? null : scNote)}
+    ${trust}
+    <p class="how-measured"><a href="methods.html#on-time-performance">How we measured this</a> · <a href="limits.html">What these figures can't tell you</a></p></div>`;
+}, "The on-time figures")
+```
+:::::
+
+::::: {.hero-about}
 [Every few seconds, each Island Transit bus reports where it is, and each
-report vanishes as soon as the next one arrives. This site saves all of them
-and uses them to figure out how often the buses leave on time.]{.lede}
+report vanishes as soon as the next one arrives. Our collector checks the
+feed every 20 seconds, day and night, and saves what it says. This site uses
+those saved reports to figure out how often the buses leave on time.]{.lede}
 
 ```{=html}
 <p class="live unknown" id="live"><span class="dot" aria-hidden="true"></span><span><span class="live-state" role="status">Checking the collector…</span><span class="live-age"></span></span></p>
 ```
+:::::
 :::
 
 ```{ojs}
@@ -67,48 +113,6 @@ howSure = (c, days, extra) => {
 }
 ```
 
-::: {.slot-headline}
-```{ojs}
-//| echo: false
-guard(() => {
-  if (o == null || !o.observed) return emptyNote("unavailable", "The on-time figures");
-  const change = !useHead ? null
-    : head.change_points != null
-      ? `${Math.abs(head.change_points).toFixed(1)} points ${head.change_points >= 0 ? "higher" : "lower"} than the ${head.previous?.days ?? 28} service days before`
-      : `Not enough days yet to compare with the ${head.window_service_days ?? 28} days before.`;
-  const spark = useHead ? sparkline((head.spark ?? []).map(d => d.on_time_share_of_observed)) : null;
-  // A schedule change stays beside the number for a week, then moves into
-  // the fold below.
-  const sc = recent?.schedule_change;
-  const scNote = sc ? `Island Transit changed its schedule on ${longDate(sc.effective)}; the route tables below start over from that day.` : null;
-  const scRecent = sc && lastDay && (new Date(`${lastDay}T12:00:00Z`) - new Date(`${sc.effective}T12:00:00Z`)) / 864e5 < 7;
-  const counts = o.scheduled > 0
-    ? html`<p class="counts">That is ${count(o.on_time)} of the ${count(o.observed)} departures we could time, out of ${count(o.scheduled)} scheduled.</p>` : "";
-  const status = notes?.status;
-  const trust = status == null ? null
-    : status === "ok" || status === "note"
-      ? html`<p class="trust">Our automatic checks found nothing wrong with the figures for ${longDate(notes.latest_service_date)}. <a href="limits.html">What this data can and can't tell you</a></p>`
-      : html`<p class="trust">Our automatic checks flagged ${status === "problem" ? "a problem" : "something to look at"} in the figures for ${longDate(notes.latest_service_date)}. <a href="quality.html">See the data quality page</a>, or <a href="limits.html">what this data can and can't tell you</a>.</p>`;
-  return html`<div class="headline">
-      <div class="big">${pct(o.on_time_share_of_observed)}</div>
-      <div class="big-text"><p class="big-label">of departures left on time ${period}.
-        <span class="note">A bus counts as on time if it leaves from 1 minute early to 5 minutes late.${scRecent ? ` ${scNote}` : ""}</span></p>
-        ${counts}
-        ${change ? html`<p class="change">${spark}<span>${change}</span></p>` : ""}
-      </div>
-    </div>
-    ${splitBar(o)}
-    ${stats([
-      {label: "Typical departure", value: lateness(o.deviation_s_median)},
-      {label: "More than 5 minutes late", value: fmtShare(o.late_share_of_observed)},
-      {label: "Departures checked", value: count(o.observed)},
-    ])}
-    ${howSure(useHead ? head.current : null, nDays, scRecent ? null : scNote)}
-    ${trust}
-    <p class="how-measured"><a href="methods.html#on-time-performance">How we measured this</a> · <a href="limits.html">What these figures can't tell you</a></p>`;
-}, "The on-time figures")
-```
-:::
 
 ## Every route at a glance
 
@@ -160,7 +164,7 @@ guard(() => {
 <ol class="how-flow">
   <li><span class="who">Island Transit</span><span class="what">The bus</span><span class="does">GPS on board reports where it is</span></li>
   <li><span class="who">Island Transit</span><span class="what">The live feed</span><span class="does">what trip apps read; each update replaces the last one</span></li>
-  <li class="ours"><span class="who">This project</span><span class="what">Our collector</span><span class="does">saves every update, every 20 seconds, day and night</span></li>
+  <li class="ours"><span class="who">This project</span><span class="what">Our collector</span><span class="does">checks the feed every 20 seconds, day and night, and saves what it says</span></li>
   <li class="ours"><span class="who">This project</span><span class="what">Nightly checks</span><span class="does">figure out when buses left each stop; grade the tracking data</span></li>
   <li class="ours"><span class="who">This project</span><span class="what">You</span><span class="does">this site's charts and map, plus every file to download</span></li>
 </ol>

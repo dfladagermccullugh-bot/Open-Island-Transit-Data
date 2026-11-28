@@ -19,6 +19,7 @@ import hashlib
 import json
 import re
 import sys
+from html import unescape
 from pathlib import Path
 
 # Headings of the Methods page that figures link to ("How we measured this").
@@ -42,6 +43,16 @@ PAGES = (
     "replay",
     "404",
 )
+# The navbar, in order (site/_quarto.yml): a few links, then one menu. Every
+# page in PAGES is reached from it, except the 404 page and the replay page
+# (linked from Routes and Stops). "Trends" is the On time page, renamed in
+# S6; its address stays ontime.html so that old links keep working.
+NAVBAR = (("index", "Home"), ("routes", "Routes"), ("stops", "Stops"),
+          ("ontime", "Trends"), ("compare", "Compare"))  # fmt: skip
+MENU = ("Data & methods", (("quality", "Data quality"), ("data", "Download"),
+        ("methods", "Methods"), ("limits", "Limits"), ("codebook", "Codebook"),
+        ("glossary", "Plain words")))  # fmt: skip
+OFF_NAVBAR = ("404", "replay")
 FILES = (
     "lib.js",
     "charts.js",
@@ -155,6 +166,33 @@ def page_problems(site: Path, page: str) -> list[str]:
     return out
 
 
+def navbar(html: str) -> tuple[list[tuple[str, str]], str | None, list[tuple[str, str]]]:
+    """The navbar's links, its menu's name and the menu's links, as
+    (page, text) pairs in order, read from a page Quarto rendered."""
+    start = html.find('id="navbarCollapse"')
+    nav = html[start : html.find("</nav>", start)] if start >= 0 else ""
+    link = r'href="(?:\./)?([a-z0-9-]+)\.html"[^>]*>\s*<span class="{}">([^<]*)</span>'
+    top = re.findall(link.format("menu-text"), nav)
+    name = re.search(r'dropdown-toggle[^>]*>\s*<span class="menu-text">([^<]*)</span>', nav)
+    items = re.findall(link.format("dropdown-text"), nav)
+    return top, (unescape(name.group(1)) if name else None), items
+
+
+def navbar_problems(site: Path) -> list[str]:
+    home = site / "index.html"
+    if not home.exists():
+        return []
+    top, name, items = navbar(home.read_text(encoding="utf-8"))
+    out = []
+    if top != list(NAVBAR):
+        out.append(f"index.html: navbar links are {top}, expected {list(NAVBAR)}")
+    if (name, items) != (MENU[0], list(MENU[1])):
+        out.append(f"index.html: navbar menu is {name} {items}, expected {MENU[0]} {list(MENU[1])}")
+    reached = {p for p, _ in (*top, *items)} | set(OFF_NAVBAR)
+    out += [f"{p}.html is not in the navbar" for p in PAGES if p not in reached]
+    return out
+
+
 def data_problems(site: Path) -> list[str]:
     """The files the pages ask for by a name they work out from other files."""
     out = []
@@ -189,7 +227,7 @@ def problems(site: Path) -> list[str]:
         for a in METHOD_ANCHORS:
             if f'id="{a}"' not in text and f'data-anchor-id="{a}"' not in text:
                 out.append(f"methods.html: no heading #{a}, which the Methods links point to")
-    return out + chart_problems(site) + data_problems(site)
+    return out + chart_problems(site) + data_problems(site) + navbar_problems(site)
 
 
 def main() -> int:
