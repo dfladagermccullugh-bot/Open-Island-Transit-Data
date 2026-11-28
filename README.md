@@ -6,9 +6,10 @@
 
 How on time are Island Transit's buses? Every few seconds, each bus on
 Whidbey and Camano Islands in Washington reports where it is, and each
-report vanishes as soon as the next one arrives. This project saves every
-one of them, figures out how often each bus left its stops on time, and checks
-how trustworthy the tracking data is. Everything is free to download.
+report vanishes as soon as the next one arrives. This project checks the
+feed every 20 seconds, day and night, and saves what it says. From that it
+figures out how often each bus left its stops on time, and checks how
+trustworthy the tracking data is. Everything is free to download.
 
 You can see the results at
 <https://islandtransitdata.org/>.
@@ -17,7 +18,8 @@ You can see the results at
 
 If you came for the data, the [Download](https://islandtransitdata.org/data.html)
 page links straight to every file, and [Use the data](#use-the-data) below
-shows how to read them.
+shows how to read them. If you have five minutes and want to see how the
+project holds up, [`DEMO.md`](DEMO.md) is a short guided tour.
 
 We have been collecting since November 19, 2026, every 20 seconds, around
 the clock. The site's [Methods](https://islandtransitdata.org/methods.html) page gives the exact
@@ -28,7 +30,7 @@ describes every file.
 
 The site has four main pages. Routes shows a map of every route, colored by
 how often its buses left on time, and lets you open any route to see the
-stops where its buses fall behind. On time follows the whole system day by
+stops where its buses fall behind. Trends follows the whole system day by
 day and hour by hour. Data quality asks whether the tracking data can be
 trusted, showing how often it misses buses, drops out, goes stale, puts
 buses off their route, or predicts arrivals wrongly. Download holds every
@@ -188,6 +190,18 @@ and dark themes; it needs Quarto 1.11.9 (`pip install quarto-cli==1.11.9`)
 and Node. `watchdog.py` asks the live collector whether it is healthy. Run `verify_feed.py` between about 6 AM and
 7 PM Pacific, when buses are sure to be on the road for it to check (weekday
 service itself runs from about 3:35 AM to 8:25 PM).
+
+## How this was built
+
+Davin Fladager-McCullough designed this project. He chose the question,
+the on-time rule and the stops it is measured at, made or approved every decision
+recorded in the [decisions log](docs/decisions.md), and timed buses in
+person for the field check. Claude, an AI model made by Anthropic, wrote
+the code and the documentation under his direction, which is why the
+commits carry Claude as their author. Nothing is published on trust in
+either of us: the tests, the publishing gate and the weekly rebuild check
+every figure before it reaches the site, and anyone can run the same checks
+(see [Run the checks yourself](#run-the-checks-yourself)).
 
 ## How to cite
 

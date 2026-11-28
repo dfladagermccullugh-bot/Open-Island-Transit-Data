@@ -7,7 +7,9 @@ Two companies publish Island Transit's data. Passio hosts the live feed and
 the current schedule, and Trillium publishes an older copy of the schedule
 that is out of date but still lists holiday cancellations. Both use GTFS, the
 standard file format transit agencies use to share their timetables, and the
-live feed uses its real-time version, GTFS-Realtime.
+live feed uses its real-time version, GTFS-Realtime. MobilityData, the
+nonprofit that looks after both standards, publishes their rules (GTFS
+Schedule Reference; GTFS Realtime Reference).
 
 We store all times in UTC. A service day is a calendar date in Pacific time
 (`America/Los_Angeles`), which works neatly because Island Transit runs no
@@ -51,8 +53,12 @@ once more before giving up on that tick.
 
 We compute these measures for each service day, and also by route and by
 hour where that makes sense. Survey researchers sort the ways a source of
-data can go wrong into five groups, and we use the same groups below, each
-with a plain name beside the researchers' term.
+data can go wrong into a few kinds of error: coverage, nonresponse,
+measurement and processing (Groves and others, 2009; Biemer, 2010). They
+also keep paradata, which are records of how the data were collected, such
+as when each attempt was made and whether it worked. We use the same four
+kinds of error below, and paradata as a fifth group, each with a plain name
+beside the researchers' term.
 
 ### Trips that show up (coverage)
 
@@ -99,7 +105,7 @@ quality file, so it is empty on the first day.
 | Stale feed | Successful fetches that list vehicles but whose newest vehicle timestamp is more than 120 s old, while service is scheduled, divided by the same successful fetches |
 | Trip gaps | For each observed trip: the longest interval with no new position, and the share of the trip spent in gaps over 90 s |
 | Item nonresponse | Share of positions missing each field |
-| Randomness of gaps | Checks whether missed trips happen at random or cluster around certain routes, times of day or busy hours. Rates: the share of scheduled trips with no position report within 30 minutes of their schedule, by hour, route, day type and number of trips in service, over all days. Model: a logistic regression of "trip not observed" on hour band (before 7, 7 to 9, 9 to 15 as the reference, 15 to 18, and 18 on), route (routes with under 30 trips pooled), day type and the number of scheduled trips in service at the trip's start. Firth's penalized likelihood keeps estimates finite when a route has no unobserved trips. The likelihood-ratio test of all predictors together tests whether gaps are missing completely at random. Fitted from 14 days and 30 unobserved trips |
+| Randomness of gaps | Checks whether missed trips happen at random or cluster around certain routes, times of day or busy hours. Rates: the share of scheduled trips with no position report within 30 minutes of their schedule, by hour, route, day type and number of trips in service, over all days. Model: a logistic regression of "trip not observed" on hour band (before 7, 7 to 9, 9 to 15 as the reference, 15 to 18, and 18 on), route (routes with under 30 trips pooled), day type and the number of scheduled trips in service at the trip's start. Firth's penalized likelihood (Firth, 1993) keeps estimates finite when a route has no unobserved trips. The likelihood-ratio test of all predictors together tests whether gaps are missing completely at random, meaning unrelated to anything about the trip (Little and Rubin, 2019). Fitted from 14 days and 30 unobserved trips |
 
 We publish the randomness-of-gaps rates from the first day, but the model
 behind them waits until there are 14 days and 30 trips that never showed up.
@@ -199,7 +205,8 @@ an even number of values is the average of the middle two.
 ### What the official validators say
 
 Besides our own measures, we run the two checkers that MobilityData, the
-nonprofit that looks after the GTFS standards, publishes for anyone to use.
+nonprofit that looks after the GTFS standards, publishes for anyone to use
+(MobilityData, GTFS Validator; MobilityData, GTFS Realtime Validator).
 Its schedule validator reads each new version of Passio's schedule files
 once, the first time we use that version, and lists every rule of the
 standard the files break, from errors (a rule that must hold) to warnings
@@ -396,7 +403,10 @@ was from the scheduled departure. At the last stop of a trip we use the
 arrival instead.
 
 A departure counts as on time if it falls anywhere from 1 minute early to
-5 minutes late, with both ends included. An early arrival at the last stop
+5 minutes late, with both ends included. This is the window the *Transit
+Capacity and Quality of Service Manual*, the standard American handbook on
+how good a bus service is, uses for on-time performance (Kittelson &
+Associates and others, 2013), though agencies set their own (section 6). An early arrival at the last stop
 also counts as on time, because a bus that reaches the end of its line early
 has not made anyone miss it. Anything outside that window is early or late.
 
@@ -425,7 +435,9 @@ are not independent of each other, because a bus that falls behind tends to
 stay behind, so we draw whole trips. We make 2,000 new sets of trips, each
 as large as the real set and drawn from it at random with repeats allowed,
 compute the on-time share of each, and report the middle 95% of those
-shares. This is called a bootstrap. The range says how much the share could
+shares. This is called a bootstrap (Efron and Tibshirani, 1993), and
+drawing whole trips rather than single departures is one of the ways
+studied for data that come in groups like this (Field and Welsh, 2007). The range says how much the share could
 move by chance in which trips happened to run late; it does not cover the
 departures we could not time.
 
@@ -477,15 +489,6 @@ The true share of scheduled departures that left on time lies somewhere in
 that range, whatever the missed buses did. The headline and the weighted
 share both fall inside it.
 
-References: Little, R. J. A., and Rubin, D. B. (2019), *Statistical
-Analysis with Missing Data*, 3rd edition, Wiley. Kalton, G., and
-Flores-Cervantes, I. (2003), "Weighting methods", *Journal of Official
-Statistics* 19(2), 81 to 97. Manski, C. F. (2003), *Partial Identification
-of Probability Distributions*, Springer. Efron, B., and Tibshirani, R. J.
-(1993), *An Introduction to the Bootstrap*, Chapman and Hall, for the
-resampling; Field, C. A., and Welsh, A. H. (2007), "Bootstrapping clustered
-data", *Journal of the Royal Statistical Society B* 69(3), 369 to 390, for
-drawing whole trips.
 
 (Code: `pipeline/events/ontime.py`; the 28-day route tables are built by
 `pipeline/events/routes.py`; the headline and its range by
@@ -724,3 +727,22 @@ as `compare/<agency>/<date>.json`; the holidays are in
 stops are `last_stop_early_arrivals` in `ontime/days/<date>.json`; gate rule
 I13 in `pipeline/invariants.py` checks the difference between the two
 figures.)
+
+## References
+
+Each source is cited where we use it above. We checked every entry
+against its publisher or its official page on November 28, 2026.
+
+- Biemer, P. P. (2010). Total survey error: Design, implementation, and evaluation. *Public Opinion Quarterly* 74(5), 817 to 848. <https://doi.org/10.1093/poq/nfq058>
+- Efron, B., and Tibshirani, R. J. (1993). *An Introduction to the Bootstrap*. Monographs on Statistics and Applied Probability 57. New York: Chapman and Hall.
+- Field, C. A., and Welsh, A. H. (2007). Bootstrapping clustered data. *Journal of the Royal Statistical Society, Series B* 69(3), 369 to 390. <https://doi.org/10.1111/j.1467-9868.2007.00593.x>
+- Firth, D. (1993). Bias reduction of maximum likelihood estimates. *Biometrika* 80(1), 27 to 38. <https://doi.org/10.1093/biomet/80.1.27>
+- Groves, R. M., Fowler, F. J., Jr., Couper, M. P., Lepkowski, J. M., Singer, E., and Tourangeau, R. (2009). *Survey Methodology*, 2nd edition. Hoboken, New Jersey: Wiley.
+- Kalton, G., and Flores-Cervantes, I. (2003). Weighting methods. *Journal of Official Statistics* 19(2), 81 to 97.
+- Kittelson & Associates, Parsons Brinckerhoff, KFH Group, Texas A&M Transportation Institute, and Arup (2013). *Transit Capacity and Quality of Service Manual*, 3rd edition. TCRP Report 165. Washington, D.C.: Transportation Research Board. <https://doi.org/10.17226/24766>
+- Little, R. J. A., and Rubin, D. B. (2019). *Statistical Analysis with Missing Data*, 3rd edition. Hoboken, New Jersey: Wiley. <https://doi.org/10.1002/9781119482260>
+- Manski, C. F. (2003). *Partial Identification of Probability Distributions*. Springer Series in Statistics. New York: Springer. <https://doi.org/10.1007/b97478>
+- MobilityData. GTFS Realtime Reference. <https://gtfs.org/documentation/realtime/reference/>
+- MobilityData. GTFS Realtime Validator. <https://github.com/MobilityData/gtfs-realtime-validator>
+- MobilityData. GTFS Schedule Reference. <https://gtfs.org/documentation/schedule/reference/>
+- MobilityData. GTFS Validator. <https://github.com/MobilityData/gtfs-validator>
