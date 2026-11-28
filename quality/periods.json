@@ -103,50 +103,50 @@
       },
       {
        "hour": 13,
-       "value": 0.906103,
-       "numerator": 965,
+       "value": 0.907981,
+       "numerator": 967,
        "denominator": 1065
       },
       {
        "hour": 14,
-       "value": 0.889078,
-       "numerator": 1042,
+       "value": 0.895051,
+       "numerator": 1049,
        "denominator": 1172
       },
       {
        "hour": 15,
-       "value": 0.875451,
-       "numerator": 970,
+       "value": 0.879964,
+       "numerator": 975,
        "denominator": 1108
       },
       {
        "hour": 16,
-       "value": 0.864532,
-       "numerator": 1053,
+       "value": 0.874384,
+       "numerator": 1065,
        "denominator": 1218
       },
       {
        "hour": 17,
-       "value": 0.893617,
-       "numerator": 1050,
+       "value": 0.897872,
+       "numerator": 1055,
        "denominator": 1175
       },
       {
        "hour": 18,
-       "value": 0.867532,
-       "numerator": 1002,
+       "value": 0.874459,
+       "numerator": 1010,
        "denominator": 1155
       },
       {
        "hour": 19,
-       "value": 0.778333,
-       "numerator": 467,
+       "value": 0.786667,
+       "numerator": 472,
        "denominator": 600
       },
       {
        "hour": 20,
-       "value": 0.125,
-       "numerator": 10,
+       "value": 0.1375,
+       "numerator": 11,
        "denominator": 80
       }
      ],
@@ -508,8 +508,8 @@
       "days": 1
      },
      "timepoint_coverage": {
-      "value": 0.840532,
-      "numerator": 1012,
+      "value": 0.877907,
+      "numerator": 1057,
       "denominator": 1204,
       "days": 1
      },
@@ -520,9 +520,9 @@
       "days": 1
      },
      "off_shape_share": {
-      "value": 0.063541,
+      "value": 0.063526,
       "numerator": 1041,
-      "denominator": 16383,
+      "denominator": 16387,
       "days": 1
      },
      "feed_agreement_share": {
@@ -911,8 +911,8 @@
       "days": 4
      },
      "timepoint_coverage": {
-      "value": 0.890738,
-      "numerator": 5780,
+      "value": 0.897673,
+      "numerator": 5825,
       "denominator": 6489,
       "days": 4
      },
@@ -923,9 +923,9 @@
       "days": 4
      },
      "off_shape_share": {
-      "value": 0.045295,
+      "value": 0.045293,
       "numerator": 3974,
-      "denominator": 87736,
+      "denominator": 87740,
       "days": 4
      },
      "feed_agreement_share": {
@@ -1015,8 +1015,8 @@
       "days": 7
      },
      "timepoint_coverage": {
-      "value": 0.889935,
-      "numerator": 13050,
+      "value": 0.893003,
+      "numerator": 13095,
       "denominator": 14664,
       "days": 7
      },
@@ -1027,9 +1027,9 @@
       "days": 7
      },
      "off_shape_share": {
-      "value": 0.045282,
+      "value": 0.045281,
       "numerator": 8961,
-      "denominator": 197892,
+      "denominator": 197896,
       "days": 7
      },
      "feed_agreement_share": {

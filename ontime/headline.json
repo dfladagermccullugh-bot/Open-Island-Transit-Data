@@ -10,18 +10,18 @@
  "current": {
   "days": 7,
   "scheduled": 14664,
-  "observed": 13050,
-  "on_time": 9686,
-  "early": 244,
-  "late": 3120,
-  "observed_share": 0.8899,
+  "observed": 13095,
+  "on_time": 9719,
+  "early": 245,
+  "late": 3131,
+  "observed_share": 0.893,
   "on_time_share_of_observed": 0.7422,
   "early_share_of_observed": 0.0187,
   "late_share_of_observed": 0.2391,
-  "deviation_s_median": 150.5,
-  "deviations_counted": 13050,
+  "deviation_s_median": 150.0,
+  "deviations_counted": 13095,
   "on_time_share_interval95": {
-   "low": 0.7266,
+   "low": 0.7264,
    "high": 0.7577,
    "trips": 1780,
    "resamples": 2000,
@@ -34,8 +34,8 @@
  "spark": [
   {
    "service_date": "2026-11-19",
-   "on_time_share_of_observed": 0.6087,
-   "observed_share": 0.8405
+   "on_time_share_of_observed": 0.614,
+   "observed_share": 0.8779
   },
   {
    "service_date": "2026-11-20",
