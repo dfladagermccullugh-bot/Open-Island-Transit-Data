@@ -1,6 +1,6 @@
 {
  "gate_version": "gate/0.1.0",
- "passed": true,
+ "passed": false,
  "mode": "light",
  "rules": [
   "I1",
@@ -13,11 +13,16 @@
   "I8"
  ],
  "rules_count": 8,
- "problems": [],
+ "problems": [
+  "I4 quality/daily.csv: header differs from the code's",
+  "I6 events: newest day 2026-11-26 is events/0.6.0, the code events/0.5.0",
+  "I6 ontime: newest day 2026-11-26 is ontime/0.6.0, the code ontime/0.5.0",
+  "I6 quality: newest day 2026-11-26 is quality/0.8.0, the code quality/0.7.0"
+ ],
  "notes": [],
  "latest_service_date": "2026-11-26",
- "checked_commit": "84080ccb3d8da8c9799ed85bbf43064861af5876",
- "ran_at": "2026-11-28T01:25:38+00:00",
- "workflow": "Reproduce",
- "run_url": "https://github.com/dfladagermccullugh-bot/Open-Island-Transit-Data/actions/runs/46092900494"
+ "checked_commit": "ab9ebf3055728fc08cc6b2a4d8b47d35efb3b772",
+ "ran_at": "2026-11-28T02:56:14+00:00",
+ "workflow": "Compare",
+ "run_url": "https://github.com/dfladagermccullugh-bot/Open-Island-Transit-Data/actions/runs/46090385409"
 }
