@@ -11,7 +11,7 @@ as the feed itself. That's why we grade the feed every day.
 ```{ojs}
 //| echo: false
 //| output: false
-import {csv, json, pct, num, count, unit, routeLabel, longDate, pacificClock, plural, isFalse, isoDate, serviceDays, recentDays, withDates, showAllToggle, emptyNote, guard, stats, h, DATA_URL, DATA_RAW_URL, periodInput, periodName, fmtShare, hourLabel} from "./lib.js"
+import {csv, json, pct, num, count, unit, routeLabel, longDate, pacificClock, plural, isFalse, isoDate, serviceDays, recentDays, withDates, showAllToggle, emptyNote, guard, stats, h, DATA_URL, DATA_RAW_URL, periodInput, periodName, fmtShare, hourLabel, UNTIMED_REASONS, REASON_WORDS} from "./lib.js"
 import {makeCharts} from "./charts.js"
 import {Plot, d3} from "./vendor/plot-0.6.11/plot.js"
 ch = makeCharts({Plot})
@@ -151,6 +151,48 @@ guard(() => {
     }),
   }))}</div>${howMeasured}`;
 }, "The charts over time")
+```
+:::
+
+## Why departures weren't timed {#untimed}
+
+When we can't put a time on a departure, our script records why. Each small
+chart follows one reason, as a share of the scheduled departures at
+timetable stops, grouped the same way as the charts above.
+
+::: {.slot-untimed}
+```{ojs}
+//| echo: false
+guard(() => {
+  if (days.length === 0) return noData();
+  if (period === "hour") return html`<p class="note">The reasons are not counted by hour yet. Pick day, week or month to see them.</p>`;
+  const key = r => `untimed_${r}`;
+  const rowsOf = reason => (period === "day"
+      ? recentDays((qperiods?.grains?.day ?? []).filter(r => r.service_expected !== false), showAll)
+      : (qperiods?.grains?.[period] ?? []))
+    .filter(r => r.metrics?.[key(reason)]?.value != null)
+    .map(r => {
+      const m = r.metrics[key(reason)];
+      const day = period === "month" ? `${r.period}-01` : r.period;
+      return {day, date: new Date(`${day}T12:00:00Z`), label: period === "day" ? longDate(r.period) : periodName(period, r.period),
+              partial: r.partial, value: m.value, n: m.numerator, of: m.denominator};
+    });
+  const drawn = UNTIMED_REASONS.map(reason => ({reason, rows: rowsOf(reason)})).filter(s => s.rows.length);
+  if (drawn.length === 0) return emptyNote("unavailable", "The reasons departures weren't timed");
+  return html`<div class="chart-grid small">${drawn.map(({reason, rows}) => {
+    const title = REASON_WORDS[reason];
+    const last = rows.at(-1);
+    return rows.length < 2
+      ? ch.figure({title, value: fmtShare(last.value), chart: html`<p class="empty">${last.label}: ${count(last.n)} of ${count(last.of)} scheduled departures. A line appears once a second ${period} comes in.</p>`})
+      : ch.figure({
+          title, value: fmtShare(last.value),
+          chart: ch.trend(rows, {y: "value", share: true, height: 150, maxTicks: 4,
+            ariaLabel: `${title}: share of scheduled departures, by ${period}`,
+            describe: `Latest ${period}: ${fmtShare(last.value)}, ${count(last.n)} of ${count(last.of)} scheduled departures.`,
+            tip: d => `${d.label}${d.partial ? " (part)" : ""}\n${fmtShare(d.value)}\n${count(d.n)} of ${count(d.of)}`}),
+        });
+  })}</div><p class="how-measured"><a href="methods.html#how-sure-we-are">How we use these</a></p>`;
+}, "The reasons departures weren't timed")
 ```
 :::
 

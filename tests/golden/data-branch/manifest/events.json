@@ -5,7 +5,7 @@
   "2026-11-24": {
    "service_date": "2026-11-24",
    "events_version": "events/0.6.0",
-   "ontime_version": "ontime/0.6.0",
+   "ontime_version": "ontime/0.7.0",
    "validate_version": "validate/0.3.0",
    "service_expected": true,
    "passio_version": "passio-20af7aa7267e",
@@ -34,7 +34,7 @@
   "2026-11-25": {
    "service_date": "2026-11-25",
    "events_version": "events/0.6.0",
-   "ontime_version": "ontime/0.6.0",
+   "ontime_version": "ontime/0.7.0",
    "validate_version": "validate/0.3.0",
    "service_expected": true,
    "passio_version": "passio-20af7aa7267e",
@@ -63,7 +63,7 @@
   "2026-11-26": {
    "service_date": "2026-11-26",
    "events_version": "events/0.6.0",
-   "ontime_version": "ontime/0.6.0",
+   "ontime_version": "ontime/0.7.0",
    "validate_version": "validate/0.3.0",
    "service_expected": false,
    "passio_version": "passio-20af7aa7267e",

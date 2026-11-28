@@ -11,7 +11,7 @@ toc-location: right
 ```{ojs}
 //| echo: false
 //| output: false
-import {csv, json, pct, num, count, unit, longDate, isoDate, plural, h} from "./lib.js"
+import {csv, json, pct, num, count, unit, longDate, isoDate, plural, h, reasonBars} from "./lib.js"
 head = json("data/ontime/headline.json")
 fc = json("data/ontime/field-check.json")
 import {d3} from "./vendor/plot-0.6.11/plot.js"
@@ -58,6 +58,68 @@ could not time is never counted as late; it is left out and counted apart.
 ```{ojs}
 //| echo: false
 html`<p>Over the last ${say(hc?.days, count)} days with service, we put a time on ${say(hc?.observed_share, x => pct(x, 1))} of the departures at timepoints. The rest are the main gap in these figures: we can't say whether those buses were on time.</p>`
+```
+
+## How sure are we? {#how-sure}
+
+A figure can be off for three different reasons, so the home page gives
+three ranges under "How sure are we?".
+
+The first is chance. The days we have are a sample of how the buses run,
+and a different handful of days would give a slightly different share. To
+see how much, our script makes 2,000 new sets of trips by drawing at random
+from the real ones, works out the on-time share of each, and keeps the
+middle 95% of those shares.
+
+```{ojs}
+//| echo: false
+iv = hc?.on_time_share_interval95
+```
+
+```{ojs}
+//| echo: false
+iv?.low != null ? html`<p>Over the last ${say(hc?.days, count)} days with service, the share was ${pct(hc.on_time_share_of_observed, 1)}, and allowing for chance it is very likely between ${pct(iv.low, 1)} and ${pct(iv.high, 1)}.</p>` : html``
+```
+
+The second is the departures we could not time. Our share counts only the
+departures we timed. If the buses we missed ran differently, for example
+because tracking breaks down more often in the evening, the share leans one
+way. So our script also works out a weighted share, the way surveys adjust
+for people who didn't answer. It sorts every scheduled departure by its
+route, the time of day and its place along the trip, and lets each timed
+departure stand in for the missed ones like it. The weighted share is shown
+only while no timed departure has to stand in for ten or more.
+
+```{ojs}
+//| echo: false
+adj = hc?.adjusted
+```
+
+```{ojs}
+//| echo: false
+adj?.value != null ? html`<p>${adj.shown ? `Weighted this way, about ${pct(adj.value, 1)} of all scheduled departures left on time${adj.interval95 ? `, very likely between ${pct(adj.interval95.low, 1)} and ${pct(adj.interval95.high, 1)}` : ""}.` : "Some groups of departures have too few timed ones to stand in for the rest, so the weighted share is not shown yet."} It still assumes that the buses we missed ran like the ones we timed on the same route, at the same time of day and at the same place along the trip.</p>` : html``
+```
+
+The third is the worst case, which assumes nothing at all about the
+departures we missed. If every one had been late, the share of scheduled
+departures that left on time would be at its lowest; if every one had been
+on time, at its highest. The true share lies somewhere in between, whatever
+those buses did.
+
+```{ojs}
+//| echo: false
+hc?.bounds?.low != null ? html`<p>Over the same days, that range runs from ${pct(hc.bounds.low, 1)} to ${pct(hc.bounds.high, 1)} of the ${say(hc.scheduled, count)} scheduled departures.</p>` : html``
+```
+
+Our script also records why each missed departure has no time: the feed
+went quiet near the stop, the bus left out a part of the route that the
+schedule includes, the bus stopped reporting before it got there, the trip
+sent nothing at all, or the bus was already past the stop when it first
+reported. The Data quality page follows each reason over time.
+
+```{ojs}
+//| echo: false
+hc?.untimed ? html`<p>Why ${count(hc.untimed.departures)} departures weren't timed over the last ${say(hc?.days, count)} days with service:</p>${reasonBars(hc.untimed)}` : html``
 ```
 
 ## What we can't see

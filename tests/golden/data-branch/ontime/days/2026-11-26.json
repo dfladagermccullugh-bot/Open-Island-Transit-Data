@@ -1,5 +1,5 @@
 {
- "ontime_version": "ontime/0.6.0",
+ "ontime_version": "ontime/0.7.0",
  "definition": {
   "window_s": [-60,300],
   "measured": "departure at timepoints; arrival at the last stop",
@@ -83,6 +83,69 @@
    "late": 0,
    "on_time_share_of_observed": null,
    "deviation_s_median": null
+  }
+ },
+ "untimed": {
+  "departures": 12,
+  "by_reason": {
+   "gap": 0,
+   "skipped": 0,
+   "not_reached": 0,
+   "no_reports": 12,
+   "past_when_first_seen": 0
+  },
+  "by_position": {
+   "first": {
+    "gap": 0,
+    "skipped": 0,
+    "not_reached": 0,
+    "no_reports": 4,
+    "past_when_first_seen": 0
+   },
+   "middle": {
+    "gap": 0,
+    "skipped": 0,
+    "not_reached": 0,
+    "no_reports": 4,
+    "past_when_first_seen": 0
+   },
+   "last": {
+    "gap": 0,
+    "skipped": 0,
+    "not_reached": 0,
+    "no_reports": 4,
+    "past_when_first_seen": 0
+   }
+  }
+ },
+ "by_cell": {
+  "R1|early|first": [3,0,0],
+  "R1|early|last": [3,0,0],
+  "R1|early|middle": [3,0,0],
+  "R1|morning|first": [1,0,0],
+  "R1|morning|last": [1,0,0],
+  "R1|morning|middle": [1,0,0]
+ },
+ "by_trip_cell": {
+  "T1": {
+   "R1|early|first": [1,0,0],
+   "R1|early|last": [1,0,0],
+   "R1|early|middle": [1,0,0]
+  },
+  "T2": {
+   "R1|early|first": [1,0,0],
+   "R1|early|last": [1,0,0],
+   "R1|early|middle": [1,0,0]
+  },
+  "T3": {
+   "R1|early|first": [1,0,0],
+   "R1|early|last": [1,0,0],
+   "R1|early|middle": [1,0,0]
+  },
+  "T4": {
+   "R1|morning|first": [1,0,0],
+   "R1|morning|last": [1,0,0],
+   "R1|morning|middle": [1,0,0]
   }
  },
  "by_route_stop": {

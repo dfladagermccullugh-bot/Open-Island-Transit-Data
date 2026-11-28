@@ -1,6 +1,6 @@
 {
  "service_date": "2026-11-24",
- "quality_version": "quality/0.8.0",
+ "quality_version": "quality/0.8.1",
  "computed_at": "2026-12-08T09:00:00+00:00",
  "scheduled_service": {
   "trips": 4,
@@ -328,7 +328,11 @@
     "observed": 9,
     "coverage": 0.75,
     "not_observed_by_reason": {
-     "no_reports": 3
+     "gap": 0,
+     "skipped": 0,
+     "not_reached": 0,
+     "no_reports": 3,
+     "past_when_first_seen": 0
     },
     "by_route": {
      "R1": {
@@ -360,7 +364,11 @@
     "observed": 12,
     "coverage": 0.75,
     "not_observed_by_reason": {
-     "no_reports": 4
+     "gap": 0,
+     "skipped": 0,
+     "not_reached": 0,
+     "no_reports": 4,
+     "past_when_first_seen": 0
     },
     "by_route": {
      "R1": {

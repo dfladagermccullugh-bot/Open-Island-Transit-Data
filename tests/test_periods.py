@@ -95,3 +95,102 @@ def test_no_interval_when_a_day_has_no_counts_per_trip():
     days[1].pop("by_trip")
     assert periods.trip_interval(days) is None
     assert periods.headline(days)["current"]["on_time_share_interval95"] is None
+
+
+# --- how sure the headline is (periods/0.3.0) --------------------------------------
+
+
+def test_the_worst_case_range_counts_every_untimed_departure_late_then_on_time():
+    b = periods.bounds({"scheduled": 12, "observed": 10, "on_time": 8})
+    assert (b["low"], b["high"], b["untimed"]) == (round(8 / 12, 4), round(10 / 12, 4), 2)
+
+
+def test_small_cells_merge_into_their_route_and_band_then_route_then_all():
+    cells = {"R|midday|middle": [20, 15, 12], "R|midday|first": [5, 4, 4],
+             "R|midday|last": [8, 7, 7], "R|early|middle": [3, 2, 2],
+             "S|midday|middle": [3, 0, 0]}  # fmt: skip
+    t = periods.merge_cells(cells)
+    assert t["R|midday|middle"] == "R|midday|middle"
+    # 4 + 7 timed: enough together for their route and band.
+    assert t["R|midday|first"] == t["R|midday|last"] == "R|midday|*"
+    # 2 timed on route R in the early band and nothing on route S: all left over.
+    assert t["R|early|middle"] == t["S|midday|middle"] == "*|*|*"
+
+
+def test_the_weighted_share_counts_a_cell_by_what_was_scheduled():
+    # 90% on time where everything was timed, 50% where one in ten was:
+    # unweighted 70%, weighted (10 * 0.9 + 100 * 0.5) / 110.
+    value, top, left_out = periods.weighted_share({"A": [10, 10, 9], "B": [100, 10, 5]})
+    assert round(value, 4) == round(59 / 110, 4) and top == 10 and left_out == 0
+
+
+def test_a_cell_with_nothing_timed_is_left_out_and_counted():
+    value, top, left_out = periods.weighted_share({"A": [10, 0, 0], "B": [20, 10, 5]})
+    assert (value, top, left_out) == (0.5, 2.0, 10)
+    assert periods.weighted_share({"A": [10, 0, 0]}) == (None, None, 10)
+
+
+def _with_cells(d, trips):
+    """A day whose departures fall in cells: ``trips`` maps a trip to its
+    cells' [scheduled, observed, on_time]."""
+    by_cell: dict = {}
+    for cells in trips.values():
+        for c, v in cells.items():
+            by_cell[c] = [a + b for a, b in zip(by_cell.get(c, [0, 0, 0]), v, strict=True)]
+    sched, seen, on_time = (sum(v[i] for v in by_cell.values()) for i in range(3))
+    untimed = sched - seen
+    return {**d, "scheduled": sched, "observed": seen, "on_time": on_time, "late": seen - on_time,
+            "early": 0, "by_cell": by_cell, "by_trip_cell": trips,
+            "by_trip": {t: [sum(v[1] for v in c.values()), sum(v[2] for v in c.values())]
+                        for t, c in trips.items() if any(v[1] for v in c.values())},
+            "by_position": {"first": {"scheduled": 0, "observed": 0},
+                            "middle": {"scheduled": sched, "observed": seen},
+                            "last": {"scheduled": 0, "observed": 0}},
+            "untimed": {"departures": untimed, "by_reason": {"gap": untimed},
+                        "by_position": {"first": {}, "middle": {"gap": untimed},
+                                        "last": {}}}}  # fmt: skip
+
+
+def test_the_headline_says_how_sure_it_is_three_ways_and_repeats_exactly():
+    trips = {f"T{k}": {"R|midday|middle": [4, 4, 3]} for k in range(20)}
+    trips |= {f"U{k}": {"R|evening|middle": [4, 2, 1]} for k in range(20)}
+    days = [_with_cells(x, trips) for x in run_of(5)]
+    cur = periods.headline(days)["current"]
+    assert cur["untimed"]["departures"] == 5 * 40 and cur["untimed"]["by_reason"]["gap"] == 200
+    assert (cur["bounds"]["low"], cur["bounds"]["high"]) == (0.5, 0.75)
+    # Midday 75% on time, evening 50%, half the schedule each: 62.5% weighted,
+    # where the timed departures alone give 400 / 600 = 66.7%.
+    a = cur["adjusted"]
+    assert a["value"] == 0.625 and cur["on_time_share_of_observed"] == 0.6667
+    assert a["max_weight"] == 2 and a["shown"] is True
+    assert a["interval95"]["low"] <= 0.625 <= a["interval95"]["high"]
+    assert periods.headline(days)["current"]["adjusted"] == a
+    res = inv.Result()
+    inv.check_headline_ranges(res, cur, days)
+    assert res.problems == []
+    cur["adjusted"]["value"] = 0.4
+    inv.check_headline_ranges(res, cur, days)
+    assert any("weighted share" in p for p in res.problems)
+
+
+def test_the_weighted_share_is_hidden_when_a_weight_reaches_ten():
+    trips = {f"T{k}": {"R|midday|middle": [1, 1, 1]} for k in range(20)}
+    trips |= {f"U{k}": {"R|evening|middle": [10, 1, 0]} for k in range(10)}
+    cur = periods.headline([_with_cells(x, trips) for x in run_of(1)])["current"]
+    assert cur["adjusted"]["max_weight"] == 10 and cur["adjusted"]["shown"] is False
+
+
+def test_reasons_and_cells_need_the_new_day_files():
+    days = run_of(3)
+    cur = periods.headline(days)["current"]
+    assert cur["untimed"] is None and cur["adjusted"] is None
+    assert cur["bounds"]["low"] == round(24 / 36, 4)
+
+
+def test_one_list_of_untimed_reasons():
+    from pipeline.columns import QUALITY_HEADLINE
+    from pipeline.events.ontime import UNTIMED_REASONS
+
+    cols = [n.removeprefix("untimed_") for n, _ in QUALITY_HEADLINE if n.startswith("untimed_")]
+    assert tuple(cols) == UNTIMED_REASONS == periods.UNTIMED_REASONS
+    assert set(UNTIMED_REASONS) < set(periods.REASON_NAMES)

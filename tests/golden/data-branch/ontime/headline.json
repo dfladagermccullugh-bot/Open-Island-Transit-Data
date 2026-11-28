@@ -1,5 +1,5 @@
 {
- "periods_version": "periods/0.2.0",
+ "periods_version": "periods/0.3.0",
  "window_service_days": 28,
  "first_service_date": "2026-11-24",
  "last_service_date": "2026-11-25",
@@ -26,6 +26,111 @@
    "trips": 7,
    "resamples": 2000,
    "method": "bootstrap over trips"
+  },
+  "untimed": {
+   "departures": 3,
+   "by_reason": {
+    "gap": 0,
+    "skipped": 0,
+    "not_reached": 0,
+    "no_reports": 3,
+    "past_when_first_seen": 0
+   },
+   "by_position": {
+    "first": {
+     "scheduled": 8,
+     "observed": 7,
+     "untimed": 1,
+     "observed_share": 0.875,
+     "by_reason": {
+      "gap": 0,
+      "skipped": 0,
+      "not_reached": 0,
+      "no_reports": 1,
+      "past_when_first_seen": 0
+     }
+    },
+    "middle": {
+     "scheduled": 8,
+     "observed": 7,
+     "untimed": 1,
+     "observed_share": 0.875,
+     "by_reason": {
+      "gap": 0,
+      "skipped": 0,
+      "not_reached": 0,
+      "no_reports": 1,
+      "past_when_first_seen": 0
+     }
+    },
+    "last": {
+     "scheduled": 8,
+     "observed": 7,
+     "untimed": 1,
+     "observed_share": 0.875,
+     "by_reason": {
+      "gap": 0,
+      "skipped": 0,
+      "not_reached": 0,
+      "no_reports": 1,
+      "past_when_first_seen": 0
+     }
+    }
+   },
+   "reason_names": {
+    "gap": "the feed went quiet",
+    "skipped": "the bus left out that part of the route",
+    "not_reached": "the bus stopped reporting before it got there",
+    "no_reports": "the trip sent nothing",
+    "past_when_first_seen": "the bus was already past when it first reported",
+    "unknown": "no reason recorded"
+   }
+  },
+  "bounds": {
+   "low": 0.6667,
+   "high": 0.7917,
+   "untimed": 3,
+   "method": "no-assumption bounds"
+  },
+  "adjusted": {
+   "value": 0.7917,
+   "interval95": {
+    "low": 0.4583,
+    "high": 1.0,
+    "trips": 8,
+    "resamples": 2000,
+    "method": "bootstrap over trips"
+   },
+   "max_weight": 2.0,
+   "shown": true,
+   "scheduled_left_out": 0,
+   "min_timed_per_cell": 10,
+   "max_weight_shown": 10,
+   "method": "weighting cells of route, hour band and position; bootstrap over trips",
+   "cells": [
+    {
+     "cell": "*|*|*",
+     "scheduled": 6,
+     "observed": 3,
+     "on_time": 3,
+     "members": [
+      "R1|morning|first",
+      "R1|morning|last",
+      "R1|morning|middle"
+     ]
+    },
+    {
+     "cell": "R1|early|*",
+     "scheduled": 18,
+     "observed": 18,
+     "on_time": 13,
+     "members": [
+      "R1|early|first",
+      "R1|early|last",
+      "R1|early|middle"
+     ]
+    }
+   ]
   }
  },
  "previous": null,

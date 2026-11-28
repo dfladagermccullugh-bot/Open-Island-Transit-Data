@@ -1,5 +1,5 @@
 {
- "periods_version": "periods/0.2.0",
+ "periods_version": "periods/0.3.0",
  "grains": {
   "hour": {
    "pooled": {

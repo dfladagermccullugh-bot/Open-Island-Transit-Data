@@ -311,7 +311,20 @@ timepoint departures we timed and the number on time, as a pair
 that serve it (`first`, `middle` or `last`, whichever most of its events are;
 `middle` on a tie), and `by_position` gives the same counts as the day's
 totals for the events at a trip's first stop, its middle stops and its last
-stop, so the gap between them can be seen. The `validation` section holds
+stop, so the gap between them can be seen. Since `ontime/0.7.0`, `untimed`
+says why departures have no time: `departures` (scheduled minus observed),
+`by_reason` (every reason, zero or not) and `by_position` (the same for a
+trip's first, middle and last stops). The reasons come from the event's
+status in the stop-event file: `gap` (the feed went quiet around the stop),
+`skipped` (the bus left out that part of the route), `not_reached` (the bus
+stopped reporting before it got there), `no_reports` (the trip sent
+nothing) and `past_when_first_seen` (the bus was already past the stop when
+it first reported). `by_cell` counts the day's events in cells of route,
+hour band of the scheduled time (Pacific: `early` before 7 AM, `morning`
+7 to 9, `midday` 9 to 3 PM, `afternoon` 3 to 6, `evening` from 6) and
+position, keyed `route|band|position`, each as `[scheduled, observed,
+on_time]`, and `by_trip_cell` gives the same for each trip, so the headline
+can weight timed departures and resample whole trips. The `validation` section holds
 the automatic checks of the method (`pipeline/events/validate.py`,
 `docs/methods.md`, section 5). It shows how often our departures agree with
 the feed's `current_stop_sequence`, overall and by route, and how many
@@ -405,7 +418,33 @@ share in percentage points; until then both are empty. Since
 `periods/0.2.0`, `current.on_time_share_interval95` gives a 95% range for
 the on-time share (`low`, `high`) from 2,000 resamples of whole trips
 (`trips`, `resamples`, `method`; `docs/methods.md`, section 4), or nothing
-when a day in the window was made before `ontime/0.5.0`. `spark` has one
+when a day in the window was made before `ontime/0.5.0`. Since
+`periods/0.3.0` (November 28, 2026), `current` also says how sure the
+figure is (`docs/methods.md`, section 4, "How sure we are"):
+
+- `untimed`: the scheduled departures we could not time, pooled over the
+  window: `departures`, `by_reason`, `by_position` (for each of `first`,
+  `middle` and `last`: `scheduled`, `observed`, `untimed`,
+  `observed_share` and `by_reason`) and `reason_names`, a plain name for
+  each reason.
+- `bounds`: the worst-case range of the on-time share of scheduled
+  departures. `low` counts every untimed departure as late (on time over
+  scheduled), `high` counts every one as on time ((on time plus untimed)
+  over scheduled).
+- `adjusted`: the on-time share of scheduled departures with each timed
+  departure weighted by scheduled over timed departures in its cell
+  (`value`), its 95% range from 2,000 resamples of whole trips
+  (`interval95`), the largest weight (`max_weight`), and `shown`, true while
+  every weight stays under `max_weight_shown` (10). Cells with fewer than
+  `min_timed_per_cell` (10) timed departures are merged, first with the
+  other small cells of their route and hour band (`route|band|*`), then of
+  their route (`route|*|*`), then all that is left (`*|*|*`). `cells` lists
+  each cell with its counts and the day files' cells it holds (`members`);
+  `scheduled_left_out` counts departures in cells with nothing timed, which
+  are left out. Empty when a day in the window was made before
+  `ontime/0.7.0`.
+
+`spark` has one
 point per day of the window. `periods.json` has the same figures by
 `hour` of the day (pooled over the 28 service days, and for the latest day
 alone), by `day`, by `week` (Monday to Sunday, Pacific time) and by `month`.
@@ -544,6 +583,7 @@ is named `hour_band: <band>`, `route: <route id>`, `day_type: <type>` or
 | `first_stop_timepoint_coverage`, `middle_stop_timepoint_coverage`, `last_stop_timepoint_coverage` | `timepoint_coverage` for the events at a trip's first stop, at its middle stops and at its last stop. Since `quality/0.8.0` |
 | `between_trips_share` | Positions that no trip used, divided by positions (`events.between_trips`). Since `quality/0.8.0` |
 | `between_trips_unassigned_share` | The part of those positions with no likely reason: the bus ran no trip before and after, was more than an hour from its first or last trip, and was not between Greenbank and Coupeville. Since `quality/0.8.0` |
+| `untimed_gap`, `untimed_skipped`, `untimed_not_reached`, `untimed_no_reports`, `untimed_past_when_first_seen` | Scheduled timepoint departures with no time, by reason (`events.stop_coverage.timepoints.not_observed_by_reason`; the reasons are explained under `ontime/`). They count the departures of a trip the feed marked as canceled, which the on-time counts leave out; the feed has marked none so far. Since `quality/0.8.1` |
 | `quality_version` | Version of the quality code |
 
 Counts of positions (`over_coverage_share`, `trip_id_match_rate`, the share
@@ -560,7 +600,11 @@ trips, so a day with more trips counts for more; the `numerator` and
 `denominator` are given), a `sum`, or the `median of daily values` with
 their range (`low`, `high`). Trip coverage and timepoint coverage are also
 given by hour of the day; the other figures are listed under
-`not_measured_by_hour`, because the day files have no hourly detail for them.
+`not_measured_by_hour`, because the day files have no hourly detail for them. Since `periods/0.3.0`, `untimed_gap`, `untimed_skipped`,
+`untimed_not_reached`, `untimed_no_reports` and
+`untimed_past_when_first_seen` give the scheduled timepoint departures with
+no time for each reason, over scheduled timepoint departures, from the
+on-time day files.
 
 `notes.json` (since `notes/0.1.0`) holds what the tiered data checks
 (`scripts/anomaly.py`) found for the latest service day: `status` (`ok`,

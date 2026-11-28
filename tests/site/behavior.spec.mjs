@@ -221,6 +221,14 @@ test.describe("days that need special handling", () => {
     await open(page, "index");
     await expect(page.locator(".headline")).toContainText("changed its schedule on December 27, 2026");
   });
+
+  test("a schedule change more than a week old moves into the fold", async ({page}) => {
+    await useScenario(page, "old-schedule-change");
+    await open(page, "index");
+    await expect(page.locator(".headline")).not.toContainText("changed its schedule");
+    await page.locator("details.sure > summary").click();
+    await expect(page.locator("details.sure")).toContainText("changed its schedule on November 1, 2026");
+  });
 });
 
 test.describe("the collector badge", () => {
@@ -420,6 +428,49 @@ test.describe("the home page headline", () => {
     await expect(head.locator(".split-words")).toContainText("on time");
     await expect(head.locator(".trust")).toContainText("found nothing wrong");
     await expect(head.locator("a", {hasText: "How we measured this"})).toHaveAttribute("href", "methods.html#on-time-performance");
+    await expect(head.locator(".counts")).toHaveText("That is 2,390 of the 3,492 departures we could time, out of 3,929 scheduled.");
+  });
+
+  test("folds how sure it is: chance, the missed departures, the worst case and why", async ({page}) => {
+    await open(page, "index");
+    const fold = page.locator(".slot-headline details.sure");
+    await expect(fold).not.toHaveAttribute("open", "");
+    await expect(fold.locator(".reason-bars")).toBeHidden();
+    await fold.locator("summary").click();
+    await expect(fold).toContainText("very likely between 65% and 72%");
+    await expect(fold).toContainText("We could not time 437 of the 3,929 scheduled departures (11%)");
+    await expect(fold).toContainText("about 68% of all scheduled departures left on time, very likely between 65% and 71%");
+    await expect(fold).toContainText("only 61% of all scheduled departures would have left on time");
+    await expect(fold).toContainText("72% would have");
+    await expect(fold.locator(".reasons-title")).toHaveText("Why 437 departures weren't timed");
+    const bars = fold.locator(".reason-bars li");
+    await expect(bars).toHaveCount(5);
+    await expect(bars.first()).toContainText("The feed went quiet");
+    await expect(bars.first()).toContainText("156 (36%)");
+    await expect(fold.locator("a", {hasText: "More on how sure these figures are"})).toHaveAttribute("href", "limits.html#how-sure");
+  });
+
+  test("says it can't weigh the missed departures yet when a weight is too large", async ({page}) => {
+    await useScenario(page, "heavy-weights");
+    await open(page, "index");
+    const fold = page.locator(".slot-headline details.sure");
+    await fold.locator("summary").click();
+    await expect(fold).toContainText("so we don't adjust the figure for them yet");
+    await expect(fold).not.toContainText("of all scheduled departures left on time, very likely");
+  });
+});
+
+test.describe("why departures weren't timed", () => {
+  test("follows each reason over the days, weeks and months", async ({page}) => {
+    await open(page, "quality");
+    const slot = page.locator(".slot-untimed");
+    await expect(slot.locator("figure")).toHaveCount(5);
+    await expect(slot.locator("figure").first()).toContainText("The feed went quiet");
+    const group = page.getByRole("radiogroup", {name: "Show the figures by"});
+    await group.getByRole("radio", {name: "Hour"}).click();
+    await expect(slot).toContainText("not counted by hour");
+    await group.getByRole("radio", {name: "Week"}).click();
+    await expect(slot.locator("figure")).toHaveCount(5);
   });
 });
 
@@ -462,7 +513,14 @@ test.describe("what this data can and can't tell you", () => {
   test("fills every figure from the published files and lists the corrections", async ({page}) => {
     await open(page, "limits");
     const main = page.locator("main");
-    await expect(main).toContainText("we put a time on 85.3% of the departures");
+    await expect(main).toContainText("we put a time on 88.9% of the departures");
+    // The three ranges of "How sure are we?", from ontime/headline.json.
+    const sure = page.locator("#how-sure");
+    await expect(sure).toBeVisible();
+    await expect(main).toContainText("very likely between 65.2% and 71.7%");
+    await expect(main).toContainText("about 67.9% of all scheduled departures left on time");
+    await expect(main).toContainText("runs from 60.8% to 72.0% of the 3,929 scheduled departures");
+    await expect(main.locator(".reason-bars li")).toHaveCount(5);
     await expect(main).toContainText("ran two or more routes");
     // The visible text: the hidden source of each cell also holds the words.
     expect(await main.innerText()).not.toContain("not yet known");
@@ -509,9 +567,10 @@ test.describe("replay a day", () => {
 });
 
 test.describe("statistics", () => {
-  test("the headline gives its range, and predictions are drawn as 20 dots", async ({page}) => {
+  test("the headline gives its range in the fold, and predictions are drawn as 20 dots", async ({page}) => {
     await open(page, "index");
-    await expect(page.locator(".headline")).toContainText("very likely between 65% and 71%");
+    await page.locator("details.sure > summary").click();
+    await expect(page.locator("details.sure")).toContainText("very likely between 65% and 72%");
     await open(page, "quality");
     await page.locator("summary", {hasText: "Arrival predictions"}).click();
     const fig = page.locator("figure", {hasText: "Arrival predictions made 5 minutes ahead"});

@@ -15,7 +15,9 @@ Each rule has a number, used in the messages and in ``docs/methods.md``:
   files in their window, by route and by stop, and the pooled medians and
   quartiles equal those of the pooled deviations.
 - I2: in each on-time day file, the day's totals equal the sum over routes,
-  over hours, and over route and stop.
+  over hours, and over route and stop; since ``ontime/0.7.0`` the untimed
+  departures add up by reason and by position, and the weighting cells and
+  each trip's cells add up to the day's totals and to ``by_trip``.
 - I3: in every block of counts, ``on_time + early + late = observed`` and
   ``observed <= scheduled``; every share equals its counts divided and
   rounded as published; a stop keeps one deviation for each observed event.
@@ -34,7 +36,11 @@ Each rule has a number, used in the messages and in ``docs/methods.md``:
   a quality day file, and a quality day file of a service day has its
   stop-event metrics.
 - I8: the period files (``ontime/headline.json``, ``ontime/periods.json``,
-  ``quality/periods.json``) reconcile with the day files.
+  ``quality/periods.json``) reconcile with the day files. Since
+  ``periods/0.3.0`` the headline's untimed reasons are the sum of its days,
+  its worst-case range follows its counts, and its weighted share is
+  recomputed from its cells, each the sum of its members in the day files;
+  a day's untimed reasons match its quality file when no trip was canceled.
 - I9: every scheduled stop of every tracked trip has one stop event, in stop
   order, with statuses from the known set; a relay (``events/0.6.0``) names
   a second vehicle, not the first, with reports inside the trip's window.
@@ -177,6 +183,52 @@ def check_ontime_day(res: Result, d: dict[str, Any]) -> None:
                 res.problem("I2", f"ontime {day}: stops of route {route} do not sum to the route")
         if dict(summed) != totals and (d["by_route_stop"] or any(totals.values())):
             res.problem("I2", f"ontime {day}: sum of by_route_stop != totals")
+    check_untimed_day(res, d)
+
+
+def _vsum(vectors: Iterable[list[int]]) -> list[int]:
+    out = [0, 0, 0]
+    for v in vectors:
+        for i in range(3):
+            out[i] += v[i]
+    return out
+
+
+def check_untimed_day(res: Result, d: dict[str, Any]) -> None:
+    """I2, since ``ontime/0.7.0``: the untimed departures add up by reason and
+    by position, and the weighting cells and their per-trip counts add up to
+    the day's totals."""
+    day = d["service_date"]
+    u = d.get("untimed")
+    if u is not None:
+        gap = d["scheduled"] - d["observed"]
+        if not (u["departures"] == gap == sum(u["by_reason"].values())):
+            res.problem("I2", f"ontime {day}: untimed reasons do not add up to the untimed")
+        for p, reasons in u["by_position"].items():
+            b = d["by_position"][p]
+            if sum(reasons.values()) != b["scheduled"] - b["observed"]:
+                res.problem("I2", f"ontime {day}: untimed reasons at {p} stops do not add up")
+        pooled: Counter = Counter()
+        for reasons in u["by_position"].values():
+            pooled.update(reasons)
+        if any(pooled[k] != v for k, v in u["by_reason"].items()):
+            res.problem("I2", f"ontime {day}: untimed reasons by position != overall")
+    cells = d.get("by_cell")
+    if cells is not None:
+        if _vsum(cells.values()) != [d["scheduled"], d["observed"], d["on_time"]]:
+            res.problem("I2", f"ontime {day}: by_cell does not add up to the day's totals")
+        per_trip: dict[str, list[int]] = defaultdict(lambda: [0, 0, 0])
+        for trip_cells in d.get("by_trip_cell", {}).values():
+            for c, v in trip_cells.items():
+                for i in range(3):
+                    per_trip[c][i] += v[i]
+        if dict(per_trip) != cells:
+            res.problem("I2", f"ontime {day}: by_trip_cell does not add up to by_cell")
+        for trip, (seen, on_time) in d.get("by_trip", {}).items():
+            v = _vsum(d.get("by_trip_cell", {}).get(trip, {}).values())
+            if [v[1], v[2]] != [seen, on_time]:
+                res.problem("I2", f"ontime {day}: trip {trip}: by_trip != its cells")
+                break
 
 
 def _quartiles_match(res: Result, where: str, b: dict[str, Any], devs: list[int]) -> None:
@@ -442,6 +494,7 @@ def check_periods(
         if _counts(head["current"]) != _sums(want):
             res.problem("I8", "headline.json: counts are not the sum of its days")
         check_block(res, "headline.json current", head["current"], extra_shares=True)
+        check_headline_ranges(res, head["current"], want)
     if periods is not None:
         grains = periods["grains"]
         for row in grains.get("day", []):
@@ -475,6 +528,90 @@ def check_periods(
                     if "numerator" in m and m["value"] != share(m["numerator"], m["denominator"]):
                         res.problem("I8", f"quality periods {grain} {row['period']} {name}: "
                                     "value does not follow its counts")  # fmt: skip
+
+
+def _reason_sum(blocks: Iterable[dict[str, int]]) -> dict[str, int]:
+    total: Counter = Counter()
+    for b in blocks:
+        total.update(b)
+    return {k: v for k, v in total.items() if v}
+
+
+def check_headline_ranges(res: Result, cur: dict[str, Any], window: list[dict[str, Any]]) -> None:
+    """I8, since ``periods/0.3.0``: the untimed reasons are the sum of the
+    window's day files, and each untimed day agrees with its quality day
+    file; the worst-case range follows the counts; the weighted share is
+    recomputed from its cells, and each cell is the sum of its members over
+    the window's day files."""
+    sched, seen, on_time = cur["scheduled"], cur["observed"], cur["on_time"]
+    b = cur.get("bounds")
+    if b is not None and (
+        b["low"] != share(on_time, sched, 4) or b["high"] != share(on_time + sched - seen, sched, 4)
+    ):
+        res.problem("I8", "headline.json: the worst-case range does not follow its counts")
+    u = cur.get("untimed")
+    if u is not None:
+        if _reason_sum([u["by_reason"]]) != _reason_sum(d["untimed"]["by_reason"] for d in window):
+            res.problem("I8", "headline.json: untimed reasons are not the sum of its days")
+        if u["departures"] != sched - seen or sum(u["by_reason"].values()) != sched - seen:
+            res.problem("I8", "headline.json: untimed reasons do not add up to the untimed")
+        for p, block in u["by_position"].items():
+            got = _reason_sum([block["by_reason"]])
+            if (
+                got != _reason_sum(d["untimed"]["by_position"][p] for d in window)
+                or sum(got.values()) != block["scheduled"] - block["observed"]
+            ):
+                res.problem("I8", f"headline.json: untimed reasons at {p} stops do not add up")
+    a = cur.get("adjusted")
+    if a is None:
+        return
+    fine: dict[str, list[int]] = defaultdict(lambda: [0, 0, 0])
+    for d in window:
+        for c, v in d["by_cell"].items():
+            for i in range(3):
+                fine[c][i] += v[i]
+    seen_members: list[str] = []
+    num = den = 0.0
+    top = 0.0
+    left_out = 0
+    for cell in sorted(a["cells"], key=lambda c: c["cell"]):
+        v = [cell["scheduled"], cell["observed"], cell["on_time"]]
+        seen_members += cell["members"]
+        if _vsum(fine[m] for m in cell["members"]) != v:
+            res.problem("I8", f"headline.json: weighting cell {cell['cell']} is not its days")
+        if "*" not in cell["cell"] and v[1] < a["min_timed_per_cell"]:
+            res.problem("I8", f"headline.json: weighting cell {cell['cell']} is too small")
+        if v[1] == 0:
+            left_out += v[0]
+            continue
+        num += v[0] * v[2] / v[1]
+        den += v[0]
+        top = max(top, v[0] / v[1])
+    if sorted(seen_members) != sorted(fine):
+        res.problem("I8", "headline.json: the weighting cells do not cover each cell once")
+    value = round(num / den, 4) if den else None
+    if (a["value"], a["max_weight"], a["scheduled_left_out"]) != (
+        value,
+        round(top, 4) if den else None,
+        left_out,
+    ) or a["shown"] != (value is not None and top < a["max_weight_shown"]):
+        res.problem("I8", "headline.json: the weighted share does not follow its cells")
+
+
+def check_untimed_sources(
+    res: Result, ontime: list[dict[str, Any]], quality: list[dict[str, Any]]
+) -> None:
+    """I8: a day's untimed reasons in the on-time file match the quality
+    file's when the feed canceled no trip (the quality file counts a
+    canceled trip's departures; the on-time file leaves them out)."""
+    by_date = {q["service_date"]: q for q in quality}
+    for d in ontime:
+        q = by_date.get(d["service_date"])
+        tp = (((q or {}).get("events") or {}).get("stop_coverage") or {}).get("timepoints")
+        if "untimed" not in d or tp is None or (d.get("canceled") or {}).get("trip_ids"):
+            continue
+        if _reason_sum([d["untimed"]["by_reason"]]) != _reason_sum([tp["not_observed_by_reason"]]):
+            res.problem("I8", f"{d['service_date']}: untimed reasons differ from the quality file")
 
 
 def _period_of(day: str, grain: str) -> str:
@@ -511,6 +648,7 @@ def light(res: Result, data: Path, versions: dict[str, str], allow_old: bool = F
     check_versions(res, data, versions, ontime, quality, allow_old)
     check_complete(res, data, ontime_dir, quality_dir)
     check_periods(res, data, ontime, quality)
+    check_untimed_sources(res, ontime, quality)
     res.ran += ["I1", "I2", "I3", "I4", "I5", "I6", "I7", "I8"]
 
 

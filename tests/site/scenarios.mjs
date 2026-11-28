@@ -129,6 +129,21 @@ export const SCENARIOS = {
     });
   },
 
+  // A new printed timetable took effect more than a week before the latest day.
+  "old-schedule-change": (rel, text) => {
+    if (rel !== "ontime/recent.json") return text;
+    const r = JSON.parse(text);
+    return JSON.stringify({...r, schedule_change: {effective: "2026-11-01", previous_reference: "2026-05-31"}});
+  },
+
+  // A timed departure stands in for ten or more missed ones, so the
+  // weighted share is not shown.
+  "heavy-weights": (rel, text) => {
+    if (rel !== "ontime/headline.json") return text;
+    const h = JSON.parse(text);
+    return JSON.stringify({...h, current: {...h.current, adjusted: {...h.current.adjusted, max_weight: 12, shown: false}}});
+  },
+
   // Files present, numbers missing.
   nulls: (rel, text) => (isJson(rel) && !rel.startsWith("maps/") ? JSON.stringify(nullLeaves(JSON.parse(text))) : text),
 

@@ -27,7 +27,7 @@ from pipeline.geo import meters_between
 from pipeline.gtfs.schedule import ServiceWindows, Trip
 from pipeline.stats import mean, quantile, rounded, share
 
-QUALITY_VERSION = "quality/0.8.0"  # 0.8.0: reports between trips, coverage by position
+QUALITY_VERSION = "quality/0.8.1"  # 0.8.1: untimed reasons in quality/daily.csv
 
 
 SLOT_SECONDS = {"vehiclePositions": 20, "tripUpdates": 20, "serviceAlerts": 300}

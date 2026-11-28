@@ -45,6 +45,8 @@ h3 { margin-top: var(--sp-6); }
 .slot-stats:not(:has(.stat-row, .empty)) { min-height: 15rem; }
 .slot-trends:not(:has(.chart-grid, .empty)) { min-height: 122rem; }
 @media (min-width: 1000px) { .slot-trends:not(:has(.chart-grid, .empty)) { min-height: 70rem; } }
+.slot-untimed:not(:has(.chart-grid, .empty, .note)) { min-height: 87rem; }
+@media (min-width: 1000px) { .slot-untimed:not(:has(.chart-grid, .empty, .note)) { min-height: 46rem; } }
 .slot-chart:not(:has(figure, .empty)) { min-height: 20rem; }
 
 // --- live collector badge -----------------------------------------------------
@@ -301,3 +303,18 @@ svg text.row-on { font-weight: 700; fill: var(--text-primary); text-decoration: 
 // The corrections log wraps rather than scrolls sideways on a phone.
 .corrections table { display: table !important; width: 100%; table-layout: fixed; overflow: visible !important; }
 .corrections td, .corrections th { overflow-wrap: anywhere; vertical-align: top; }
+
+// "How sure are we?" under the home headline (periods/0.3.0).
+.headline .counts { font-size: var(--fs-sm); color: var(--text-secondary); margin: var(--sp-1) 0 0; font-variant-numeric: tabular-nums; }
+details.more.sure { max-width: 40rem; margin-top: var(--sp-3); }
+details.more.sure p { max-width: 38rem; }
+.reasons-title { font-weight: 600; margin: var(--sp-3) 0 var(--sp-1); }
+.reason-bars { list-style: none; padding: 0; margin: 0 0 var(--sp-3); display: grid; grid-template-columns: minmax(10rem, 18rem) minmax(4rem, 1fr) auto; gap: var(--sp-1) var(--sp-3); align-items: center; font-size: var(--fs-sm); }
+.reason-bars li { display: contents; }
+.reason-track { display: block; height: .75rem; }
+.reason-bar { display: block; height: 100%; min-width: 2px; background: var(--series-1); border-radius: 2px; }
+.reason-count { font-variant-numeric: tabular-nums; color: var(--text-secondary); text-align: right; white-space: nowrap; }
+@media (max-width: 640px) {
+  .reason-bars { grid-template-columns: 1fr auto; }
+  .reason-name { grid-column: 1 / -1; margin-top: var(--sp-1); }
+}

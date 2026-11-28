@@ -47,7 +47,9 @@ def test_stop_coverage_counts_measured_time_and_reasons():
     assert out["timepoints"]["coverage"] == 1.0
     assert out["all_stops"]["scheduled"] == 3
     assert out["all_stops"]["observed"] == 2
-    assert out["all_stops"]["not_observed_by_reason"] == {"not_reached": 1}
+    assert out["all_stops"]["not_observed_by_reason"] == {
+        "gap": 0, "skipped": 0, "not_reached": 1, "no_reports": 0, "past_when_first_seen": 0
+    }  # fmt: skip
 
 
 def track(route, reports, off, wrong, used=None, vehicles=1, skips=0, before=0, after=0):

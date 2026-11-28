@@ -573,3 +573,33 @@ export function parseCsv(text) {
     : /^-?\d+(\.\d+)?$/.test(v) ? +v : v;
   return body.map(r => Object.fromEntries(header.map((k, i) => [k, type(r[i] ?? "")])));
 }
+
+// Why departures went untimed (ontime/headline.json current.untimed), in
+// plain words: the reasons as the period stage names them, for the home
+// page's fold and the Data quality page.
+export const UNTIMED_REASONS = ["gap", "skipped", "not_reached", "no_reports", "past_when_first_seen"];
+export const REASON_WORDS = {
+  gap: "The feed went quiet",
+  skipped: "The bus left out that part of the route",
+  not_reached: "The bus stopped reporting before it got there",
+  no_reports: "The trip sent nothing",
+  past_when_first_seen: "The bus was already past when it first reported",
+  unknown: "No reason recorded",
+};
+
+// One bar per reason, longest first, drawn without the chart library: the
+// count and its share of the untimed departures are written beside each bar.
+export function reasonBars(untimed) {
+  const rows = Object.entries(untimed?.by_reason ?? {}).filter(([, n]) => n > 0).sort((a, b) => b[1] - a[1]);
+  const total = rows.reduce((s, [, n]) => s + n, 0);
+  if (!total) return null;
+  const top = rows[0][1];
+  return h("ul", {class: "reason-bars"}, ...rows.map(([key, n]) => {
+    const bar = h("span", {class: "reason-bar", "aria-hidden": "true"});
+    bar.style.width = `${((n / top) * 100).toFixed(1)}%`;
+    return h("li", {},
+      h("span", {class: "reason-name"}, REASON_WORDS[key] ?? key),
+      h("span", {class: "reason-track"}, bar),
+      h("span", {class: "reason-count"}, `${count(n)} (${fmtShare(n / total)})`));
+  }));
+}

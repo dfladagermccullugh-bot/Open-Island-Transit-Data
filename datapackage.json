@@ -285,6 +285,31 @@
       "unit": "fraction from 0 to 1"
      },
      {
+      "name": "untimed_gap",
+      "type": "number",
+      "description": "Scheduled timepoint departures with no time, by reason (`events.stop_coverage.timepoints.not_observed_by_reason`; the reasons are explained under `ontime/`). They count the departures of a trip the feed marked as canceled, which the on-time counts leave out; the feed has marked none so far. Since `quality/0.8.1`"
+     },
+     {
+      "name": "untimed_skipped",
+      "type": "number",
+      "description": "Scheduled timepoint departures with no time, by reason (`events.stop_coverage.timepoints.not_observed_by_reason`; the reasons are explained under `ontime/`). They count the departures of a trip the feed marked as canceled, which the on-time counts leave out; the feed has marked none so far. Since `quality/0.8.1`"
+     },
+     {
+      "name": "untimed_not_reached",
+      "type": "number",
+      "description": "Scheduled timepoint departures with no time, by reason (`events.stop_coverage.timepoints.not_observed_by_reason`; the reasons are explained under `ontime/`). They count the departures of a trip the feed marked as canceled, which the on-time counts leave out; the feed has marked none so far. Since `quality/0.8.1`"
+     },
+     {
+      "name": "untimed_no_reports",
+      "type": "number",
+      "description": "Scheduled timepoint departures with no time, by reason (`events.stop_coverage.timepoints.not_observed_by_reason`; the reasons are explained under `ontime/`). They count the departures of a trip the feed marked as canceled, which the on-time counts leave out; the feed has marked none so far. Since `quality/0.8.1`"
+     },
+     {
+      "name": "untimed_past_when_first_seen",
+      "type": "number",
+      "description": "Scheduled timepoint departures with no time, by reason (`events.stop_coverage.timepoints.not_observed_by_reason`; the reasons are explained under `ontime/`). They count the departures of a trip the feed marked as canceled, which the on-time counts leave out; the feed has marked none so far. Since `quality/0.8.1`"
+     },
+     {
       "name": "quality_version",
       "type": "string",
       "description": "Version of the quality code"

@@ -21,7 +21,7 @@ from typing import Any
 from pipeline.common import Row
 from pipeline.config import PACIFIC
 from pipeline.events.geometry import drop_retraced
-from pipeline.events.ontime import POSITIONS, classify, position
+from pipeline.events.ontime import POSITIONS, classify, position, reason_counts, untimed_reason
 from pipeline.geo import meters_between
 from pipeline.stats import mean, quantile, rounded, share
 
@@ -37,11 +37,6 @@ RETRACED_REPORT_M = 100  # smaller retracing (a few metres at a stop) is not rep
 
 
 # --- stop-level coverage ----------------------------------------------------------
-
-
-def _not_observed_reason(e: Row) -> str:
-    status = e["arrival_status"] if e["is_last_stop"] else e["departure_status"]
-    return status or "unknown"
 
 
 def stop_coverage(events: list[Row], collection_start: datetime) -> dict[str, Any]:
@@ -63,12 +58,13 @@ def stop_coverage(events: list[Row], collection_start: datetime) -> dict[str, An
                 c["scheduled"] += 1
                 c["observed"] += seen
             if not seen:
-                reasons[_not_observed_reason(e)] += 1
+                reasons[untimed_reason(e)] += 1
         return {
             "scheduled": counts["scheduled"],
             "observed": counts["observed"],
             "coverage": share(counts["observed"], counts["scheduled"]),
-            "not_observed_by_reason": dict(sorted(reasons.items())),
+            # Since quality/0.8.1 every known reason, zero or not.
+            "not_observed_by_reason": reason_counts(reasons),
             "by_route": {
                 r: {**c, "coverage": share(c["observed"], c["scheduled"])}
                 for r, c in sorted(by_route.items())

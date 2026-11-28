@@ -21,6 +21,16 @@ Writes, from the day files on the data branch:
   the median of the daily values with their range. Figures with no hourly
   detail say so instead of showing one.
 
+Since ``periods/0.3.0`` the headline also says how sure it is, three ways
+(``current.untimed``, ``current.bounds``, ``current.adjusted``): why the
+departures we could not time went untimed, pooled over the window and split
+by position in the trip; the worst-case range, if every untimed departure
+had been late or every one on time (no-assumption bounds); and the on-time
+share with each timed departure weighted for the untimed ones like it (same
+route, hour band and position in the trip), with an interval from the same
+resampling of whole trips. ``quality/periods.json`` carries the share of
+scheduled departures untimed for each reason.
+
 Counts are summed and shares recomputed from the sums; medians come from
 every pooled deviation. Days without service (holidays) appear in the day
 view, marked, and are left out of everything that pools days. Standard
@@ -42,13 +52,25 @@ from typing import Any
 from pipeline.common import DayFiles
 from pipeline.stats import median, share
 
-PERIODS_VERSION = "periods/0.2.0"  # 0.2.0: interval on the headline share
+PERIODS_VERSION = "periods/0.3.0"  # 0.3.0: untimed reasons, worst-case range, weighted share
 WINDOW = 28  # service days
 MIN_PREVIOUS = 14  # service days before a "previous window" is shown
 COUNTS = ("scheduled", "observed", "on_time", "early", "late")
 GRAINS = ("hour", "day", "week", "month")
 RESAMPLES = 2000
 SEED = 20261127  # fixed, so the interval is the same each time it is computed
+MIN_CELL = 10  # timed departures a weighting cell needs before it stands alone
+MAX_WEIGHT = 10  # the weighted share is shown only while every weight stays under this
+UNTIMED_REASONS = ("gap", "skipped", "not_reached", "no_reports", "past_when_first_seen")
+REASON_NAMES = {
+    "gap": "the feed went quiet",
+    "skipped": "the bus left out that part of the route",
+    "not_reached": "the bus stopped reporting before it got there",
+    "no_reports": "the trip sent nothing",
+    "past_when_first_seen": "the bus was already past when it first reported",
+    "unknown": "no reason recorded",
+}
+POSITIONS = ("first", "middle", "last")
 
 _share = partial(share, digits=4)
 
@@ -166,6 +188,9 @@ def headline(days: list[dict[str, Any]]) -> dict[str, Any] | None:
     window, before = service[-WINDOW:], service[:-WINDOW][-WINDOW:]
     now = ontime_block(window, _day_devs)
     now["on_time_share_interval95"] = trip_interval(window)
+    now["untimed"] = untimed_block(window)
+    now["bounds"] = bounds(now)
+    now["adjusted"] = adjusted(window)
     prev = ontime_block(before, _day_devs) if len(before) >= MIN_PREVIOUS else None
     change = None
     if prev and now["on_time_share_of_observed"] is not None and prev["on_time_share_of_observed"]:
@@ -204,6 +229,177 @@ def headline(days: list[dict[str, Any]]) -> dict[str, Any] | None:
         "previous_needs_service_days": MIN_PREVIOUS,
         "change_points": change,
         "spark": spark,
+    }
+
+
+def _reasons(blocks: Iterable[dict[str, int] | None]) -> dict[str, int]:
+    total: dict[str, int] = defaultdict(int)
+    for b in blocks:
+        for k, v in (b or {}).items():
+            total[k] += v
+    return {**{r: total[r] for r in UNTIMED_REASONS},
+            **{r: total[r] for r in sorted(set(total) - set(UNTIMED_REASONS))}}  # fmt: skip
+
+
+def untimed_block(days: list[dict[str, Any]]) -> dict[str, Any] | None:
+    """Why the window's departures went untimed: counts by reason, overall and
+    by position in the trip (with that position's scheduled and timed counts).
+    None when a day lacks the reasons (made before ``ontime/0.7.0``)."""
+    if not days or any("untimed" not in d for d in days):
+        return None
+    by_position = {}
+    for p in POSITIONS:
+        sched = sum(d["by_position"][p]["scheduled"] for d in days)
+        seen = sum(d["by_position"][p]["observed"] for d in days)
+        by_position[p] = {
+            "scheduled": sched,
+            "observed": seen,
+            "untimed": sched - seen,
+            "observed_share": _share(seen, sched),
+            "by_reason": _reasons(d["untimed"]["by_position"][p] for d in days),
+        }
+    return {
+        "departures": sum(d["untimed"]["departures"] for d in days),
+        "by_reason": _reasons(d["untimed"]["by_reason"] for d in days),
+        "by_position": by_position,
+        "reason_names": REASON_NAMES,
+    }
+
+
+def bounds(b: dict[str, Any]) -> dict[str, Any]:
+    """The worst-case range of the on-time share of scheduled departures: low
+    if every untimed departure was late, high if every one was on time
+    (Manski's no-assumption bounds)."""
+    untimed = b["scheduled"] - b["observed"]
+    return {
+        "low": _share(b["on_time"], b["scheduled"]),
+        "high": _share(b["on_time"] + untimed, b["scheduled"]),
+        "untimed": untimed,
+        "method": "no-assumption bounds",
+    }
+
+
+def _parent(cell: str, level: int) -> str:
+    route, band, _ = cell.rsplit("|", 2)
+    return (f"{route}|{band}|*", f"{route}|*|*", "*|*|*")[level - 1]
+
+
+def merge_cells(by_cell: dict[str, list[int]]) -> dict[str, str]:
+    """Each fine cell (``route|band|position``) -> the cell it is weighted in.
+    A cell with fewer than ``MIN_CELL`` timed departures joins the other small
+    cells of its route and hour band (``route|band|*``); a group still that
+    small joins its route's (``route|*|*``), then everything left over
+    (``*|*|*``), which stands however small it is."""
+    target = {c: c for c in sorted(by_cell)}
+    for level in (1, 2, 3):
+        timed: dict[str, int] = defaultdict(int)
+        for c, t in target.items():
+            timed[t] += by_cell[c][1]
+        for c, t in target.items():
+            if timed[t] < MIN_CELL:
+                target[c] = _parent(c, level)
+    return target
+
+
+def weighted_share(cells: dict[str, list[int]]) -> tuple[float | None, float | None, int]:
+    """(on-time share with each timed departure weighted by scheduled over
+    timed in its cell, the largest weight, scheduled departures in cells with
+    nothing timed). Those cells are left out, which assumes their departures
+    ran like the rest."""
+    num = den = 0.0
+    top: float | None = None
+    left_out = 0
+    for key in sorted(cells):
+        sched, timed, on_time = cells[key]
+        if timed == 0:
+            left_out += sched
+            continue
+        num += sched * on_time / timed
+        den += sched
+        top = max(top or 0.0, sched / timed)
+    return (num / den if den else None), top, left_out
+
+
+def adjusted(days: list[dict[str, Any]]) -> dict[str, Any] | None:
+    """The on-time share of scheduled departures, with each timed departure
+    weighted for the untimed departures of its cell (a weighting-class
+    adjustment for nonresponse), and a 95% interval from resampling whole
+    (day, trip) pairs, the cells kept and their weights recomputed in each
+    resample. None when a day lacks cell counts (before ``ontime/0.7.0``)."""
+    if not days or any("by_cell" not in d for d in days):
+        return None
+    fine: dict[str, list[int]] = defaultdict(lambda: [0, 0, 0])
+    for d in days:
+        for c, v in d["by_cell"].items():
+            for i in range(3):
+                fine[c][i] += v[i]
+    if not fine:
+        return None
+    target = merge_cells(fine)
+    merged: dict[str, list[int]] = defaultdict(lambda: [0, 0, 0])
+    members: dict[str, list[str]] = defaultdict(list)
+    for c, t in target.items():
+        members[t].append(c)
+        for i in range(3):
+            merged[t][i] += fine[c][i]
+    value, top, left_out = weighted_share(merged)
+    shown = value is not None and top is not None and top < MAX_WEIGHT
+    interval = _weighted_interval(days, target, sorted(merged)) if value is not None else None
+    return {
+        "value": round(value, 4) if value is not None else None,
+        "interval95": interval,
+        "max_weight": round(top, 4) if top is not None else None,
+        "shown": shown,
+        "scheduled_left_out": left_out,
+        "min_timed_per_cell": MIN_CELL,
+        "max_weight_shown": MAX_WEIGHT,
+        "method": "weighting cells of route, hour band and position; bootstrap over trips",
+        "cells": [
+            {"cell": k, "scheduled": merged[k][0], "observed": merged[k][1],
+             "on_time": merged[k][2], "members": members[k]}
+            for k in sorted(merged)
+        ],
+    }  # fmt: skip
+
+
+def _weighted_interval(
+    days: list[dict[str, Any]], target: dict[str, str], keys: list[str]
+) -> dict[str, Any] | None:
+    import numpy as np
+
+    col = {k: i for i, k in enumerate(keys)}
+    rows = []
+    for d in days:
+        for cells in d["by_trip_cell"].values():
+            row = np.zeros(3 * len(keys))
+            for c, v in cells.items():
+                j = 3 * col[target[c]]
+                row[j : j + 3] += v
+            rows.append(row)
+    if len(rows) < 2:
+        return None
+    m = np.array(rows)
+    n = len(m)
+    rng = np.random.default_rng(SEED)
+    shares = np.empty(RESAMPLES)
+    for start in range(0, RESAMPLES, 200):
+        k = min(200, RESAMPLES - start)
+        pick = rng.integers(0, n, size=(k, n))
+        times = np.zeros((k, n))
+        np.add.at(times, (np.arange(k)[:, None], pick), 1)
+        total = (times @ m).reshape(k, len(keys), 3)
+        sched, timed, on_time = total[..., 0], total[..., 1], total[..., 2]
+        ok = timed > 0
+        rate = np.divide(on_time, timed, out=np.zeros_like(on_time), where=ok)
+        den = (sched * ok).sum(axis=1)
+        shares[start : start + k] = (sched * rate).sum(axis=1) / den
+    low, high = np.quantile(shares, [0.025, 0.975])
+    return {
+        "low": round(float(low), 4),
+        "high": round(float(high), 4),
+        "trips": n,
+        "resamples": RESAMPLES,
+        "method": "bootstrap over trips",
     }
 
 
@@ -327,6 +523,26 @@ QUALITY_METRICS: dict[str, tuple[str, Callable[..., Any], str]] = {
         "95th percentile of position age, seconds",
     ),
 }  # fmt: skip
+
+
+def _untimed_share(reason: str) -> Callable[..., Any]:
+    """Since periods/0.3.0: scheduled timepoint departures untimed for one
+    reason, over scheduled timepoint departures (from the on-time day file)."""
+
+    def pair(q: dict[str, Any], o: dict[str, Any] | None) -> tuple[int, int] | None:
+        if o is None or "untimed" not in o:
+            return None
+        return o["untimed"]["by_reason"].get(reason, 0), o["scheduled"]
+
+    return pair
+
+
+for _r in UNTIMED_REASONS:
+    QUALITY_METRICS[f"untimed_{_r}"] = (
+        RATIO,
+        _untimed_share(_r),
+        f"timepoint departures with no time because {REASON_NAMES[_r]}, over scheduled ones",
+    )
 HOURLY = {"trip_coverage", "timepoint_coverage"}
 
 

@@ -429,9 +429,71 @@ shares. This is called a bootstrap. The range says how much the share could
 move by chance in which trips happened to run late; it does not cover the
 departures we could not time.
 
+### How sure we are
+
+The headline share counts only the departures we could time. Since November
+28, 2026, the home page also says how far that share could be off, three
+ways, because a figure can be wrong for different reasons.
+
+The first is chance, which the range above covers: the days we have are a
+sample of how the buses run, and a different set of days would give a
+slightly different share.
+
+The second is the departures we missed. When our script can't time a
+departure, it records why: the feed went quiet around the stop (`gap`), the
+bus left out that part of the route (`skipped`), the bus stopped reporting
+before it got there (`not_reached`), the trip sent nothing at all
+(`no_reports`), or the bus was already past the stop when it first
+reported (`past_when_first_seen`). The home page shows these counts, and
+the Data quality page follows each one over time. A missed departure is
+like a person who didn't answer a survey. If the buses we missed ran just
+like the ones we timed, the headline is fair. If they ran differently, for
+example because tracking fails more often on late evening trips, it is not.
+So we also give a weighted share, the way surveys adjust for people who
+didn't answer (Little and Rubin, 2019; Kalton and Flores-Cervantes, 2003).
+We sort every scheduled departure into a group by its route, the time of
+day it was due (before 7 AM, 7 to 9 AM, 9 AM to 3 PM, 3 to 6 PM, and from
+6 PM) and its place in the trip (first stop, last stop, or one in between).
+Within each group, each timed departure stands in for the ones we missed,
+so it counts as many times as the group's scheduled departures divided by
+its timed ones. The weighted share is the sum over groups of scheduled
+departures times the group's on-time share among timed departures, divided
+by all scheduled departures. A group with fewer than 10 timed departures is
+too small to stand in for anything, so it is merged with the other small
+groups of its route and time of day, then of its route, then with
+everything left over. We show the weighted share only while every weight
+stays under 10, meaning no timed departure stands in for ten or more. Its
+range comes from the same resampling of whole trips as the headline's,
+with the weights worked out again in each new set. This share still
+assumes that, within a group, the buses we missed ran like the ones we
+timed.
+
+The third is the worst case, which assumes nothing about the departures we
+missed (Manski, 2003). If every one of them had been late, the on-time share
+of all scheduled departures would be the on-time departures divided by
+scheduled departures. If every one had been on time, it would be the
+on-time departures plus the missed ones, divided by scheduled departures.
+The true share of scheduled departures that left on time lies somewhere in
+that range, whatever the missed buses did. The headline and the weighted
+share both fall inside it.
+
+References: Little, R. J. A., and Rubin, D. B. (2019), *Statistical
+Analysis with Missing Data*, 3rd edition, Wiley. Kalton, G., and
+Flores-Cervantes, I. (2003), "Weighting methods", *Journal of Official
+Statistics* 19(2), 81 to 97. Manski, C. F. (2003), *Partial Identification
+of Probability Distributions*, Springer. Efron, B., and Tibshirani, R. J.
+(1993), *An Introduction to the Bootstrap*, Chapman and Hall, for the
+resampling; Field, C. A., and Welsh, A. H. (2007), "Bootstrapping clustered
+data", *Journal of the Royal Statistical Society B* 69(3), 369 to 390, for
+drawing whole trips.
+
 (Code: `pipeline/events/ontime.py`; the 28-day route tables are built by
 `pipeline/events/routes.py`; the headline and its range by
-`pipeline/periods.py`, `trip_interval`.)
+`pipeline/periods.py`, `trip_interval`; the reasons, the worst-case range
+and the weighted share by `untimed_block`, `bounds` and `adjusted` in the
+same file, from `untimed`, `by_cell` and `by_trip_cell` in the on-time day
+files. The publishing rule I8 recomputes the worst-case range and the
+weighted share from the day files.)
 
 ## 5. Validation
 

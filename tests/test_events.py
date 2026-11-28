@@ -392,3 +392,21 @@ def test_summarize_counts_each_trips_observed_and_on_time_departures():
     # T2 was never timed, so it has nothing to resample.
     assert s["by_trip"] == {"T1": [2, 1], "T3": [1, 1]}
     assert sum(c[0] for c in s["by_trip"].values()) == s["observed"]
+
+
+def test_summarize_says_why_departures_went_untimed_and_fills_the_cells():
+    gap = {**event(30, None), "trip_id": "T2", "departure_status": "gap"}
+    last = {**event(50, None, last=True, stop="Z", seq=9), "trip_id": "T2",
+            "arrival_status": "not_reached"}  # fmt: skip
+    events = [{**event(10, 11), "trip_id": "T1", "is_first_stop": True},
+              {**event(20, 30), "trip_id": "T1"}, gap, last]  # fmt: skip
+    s = summarize(events, collection_start=ORIGIN)
+    u = s["untimed"]
+    assert u["departures"] == 2 == s["scheduled"] - s["observed"]
+    assert u["by_reason"] == {"gap": 1, "skipped": 0, "not_reached": 1, "no_reports": 0,
+                              "past_when_first_seen": 0}  # fmt: skip
+    assert u["by_position"]["middle"]["gap"] == 1 and u["by_position"]["last"]["not_reached"] == 1
+    # 06:10 to 06:50 Pacific: the early band.
+    assert s["by_cell"] == {"R1|early|first": [1, 1, 1], "R1|early|last": [1, 0, 0],
+                            "R1|early|middle": [2, 1, 0]}  # fmt: skip
+    assert s["by_trip_cell"]["T2"] == {"R1|early|last": [1, 0, 0], "R1|early|middle": [1, 0, 0]}

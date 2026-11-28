@@ -1,5 +1,5 @@
 {
- "periods_version": "periods/0.1.0",
+ "periods_version": "periods/0.3.0",
  "metrics": {
   "trip_coverage": {
    "pooled_as": "ratio of sums",
@@ -32,6 +32,26 @@
   "position_age_s_p95": {
    "pooled_as": "median of daily values",
    "definition": "95th percentile of position age, seconds"
+  },
+  "untimed_gap": {
+   "pooled_as": "ratio of sums",
+   "definition": "timepoint departures with no time because the feed went quiet, over scheduled ones"
+  },
+  "untimed_skipped": {
+   "pooled_as": "ratio of sums",
+   "definition": "timepoint departures with no time because the bus left out that part of the route, over scheduled ones"
+  },
+  "untimed_not_reached": {
+   "pooled_as": "ratio of sums",
+   "definition": "timepoint departures with no time because the bus stopped reporting before it got there, over scheduled ones"
+  },
+  "untimed_no_reports": {
+   "pooled_as": "ratio of sums",
+   "definition": "timepoint departures with no time because the trip sent nothing, over scheduled ones"
+  },
+  "untimed_past_when_first_seen": {
+   "pooled_as": "ratio of sums",
+   "definition": "timepoint departures with no time because the bus was already past when it first reported, over scheduled ones"
   }
  },
  "grains": {
@@ -55,98 +75,98 @@
       },
       {
        "hour": 5,
-       "value": 0.940678,
-       "numerator": 111,
+       "value": 0.957627,
+       "numerator": 113,
        "denominator": 118
       },
       {
        "hour": 6,
-       "value": 0.900585,
-       "numerator": 154,
+       "value": 0.947368,
+       "numerator": 162,
        "denominator": 171
       },
       {
        "hour": 7,
-       "value": 0.90625,
-       "numerator": 174,
+       "value": 0.932292,
+       "numerator": 179,
        "denominator": 192
       },
       {
        "hour": 8,
-       "value": 0.902062,
-       "numerator": 175,
+       "value": 0.938144,
+       "numerator": 182,
        "denominator": 194
       },
       {
        "hour": 9,
-       "value": 0.88,
-       "numerator": 154,
+       "value": 0.914286,
+       "numerator": 160,
        "denominator": 175
       },
       {
        "hour": 10,
-       "value": 0.893855,
-       "numerator": 160,
+       "value": 0.932961,
+       "numerator": 167,
        "denominator": 179
       },
       {
        "hour": 11,
-       "value": 0.912088,
-       "numerator": 166,
+       "value": 0.945055,
+       "numerator": 172,
        "denominator": 182
       },
       {
        "hour": 12,
-       "value": 0.808743,
-       "numerator": 148,
+       "value": 0.846995,
+       "numerator": 155,
        "denominator": 183
       },
       {
        "hour": 13,
-       "value": 0.857143,
-       "numerator": 252,
+       "value": 0.897959,
+       "numerator": 264,
        "denominator": 294
       },
       {
        "hour": 14,
-       "value": 0.803191,
-       "numerator": 302,
+       "value": 0.837766,
+       "numerator": 315,
        "denominator": 376
       },
       {
        "hour": 15,
-       "value": 0.851955,
-       "numerator": 305,
+       "value": 0.879888,
+       "numerator": 315,
        "denominator": 358
       },
       {
        "hour": 16,
-       "value": 0.828205,
-       "numerator": 323,
+       "value": 0.882051,
+       "numerator": 344,
        "denominator": 390
       },
       {
        "hour": 17,
-       "value": 0.89196,
-       "numerator": 355,
+       "value": 0.922111,
+       "numerator": 367,
        "denominator": 398
       },
       {
        "hour": 18,
-       "value": 0.855721,
-       "numerator": 344,
+       "value": 0.885572,
+       "numerator": 356,
        "denominator": 402
       },
       {
        "hour": 19,
-       "value": 0.754237,
-       "numerator": 178,
+       "value": 0.792373,
+       "numerator": 187,
        "denominator": 236
       },
       {
        "hour": 20,
-       "value": 0.09375,
-       "numerator": 3,
+       "value": 0.15625,
+       "numerator": 5,
        "denominator": 32
       }
      ],
@@ -280,98 +300,98 @@
       },
       {
        "hour": 5,
-       "value": 0.940678,
-       "numerator": 111,
+       "value": 0.957627,
+       "numerator": 113,
        "denominator": 118
       },
       {
        "hour": 6,
-       "value": 0.900585,
-       "numerator": 154,
+       "value": 0.947368,
+       "numerator": 162,
        "denominator": 171
       },
       {
        "hour": 7,
-       "value": 0.90625,
-       "numerator": 174,
+       "value": 0.932292,
+       "numerator": 179,
        "denominator": 192
       },
       {
        "hour": 8,
-       "value": 0.902062,
-       "numerator": 175,
+       "value": 0.938144,
+       "numerator": 182,
        "denominator": 194
       },
       {
        "hour": 9,
-       "value": 0.88,
-       "numerator": 154,
+       "value": 0.914286,
+       "numerator": 160,
        "denominator": 175
       },
       {
        "hour": 10,
-       "value": 0.893855,
-       "numerator": 160,
+       "value": 0.932961,
+       "numerator": 167,
        "denominator": 179
       },
       {
        "hour": 11,
-       "value": 0.912088,
-       "numerator": 166,
+       "value": 0.945055,
+       "numerator": 172,
        "denominator": 182
       },
       {
        "hour": 12,
-       "value": 0.808743,
-       "numerator": 148,
+       "value": 0.846995,
+       "numerator": 155,
        "denominator": 183
       },
       {
        "hour": 13,
-       "value": 0.892473,
-       "numerator": 166,
+       "value": 0.946237,
+       "numerator": 176,
        "denominator": 186
       },
       {
        "hour": 14,
-       "value": 0.824468,
-       "numerator": 155,
+       "value": 0.856383,
+       "numerator": 161,
        "denominator": 188
       },
       {
        "hour": 15,
-       "value": 0.793296,
-       "numerator": 142,
+       "value": 0.821229,
+       "numerator": 147,
        "denominator": 179
       },
       {
        "hour": 16,
-       "value": 0.820513,
-       "numerator": 160,
+       "value": 0.866667,
+       "numerator": 169,
        "denominator": 195
       },
       {
        "hour": 17,
-       "value": 0.884422,
-       "numerator": 176,
+       "value": 0.919598,
+       "numerator": 183,
        "denominator": 199
       },
       {
        "hour": 18,
-       "value": 0.810945,
-       "numerator": 163,
+       "value": 0.830846,
+       "numerator": 167,
        "denominator": 201
       },
       {
        "hour": 19,
-       "value": 0.737288,
-       "numerator": 87,
+       "value": 0.771186,
+       "numerator": 91,
        "denominator": 118
       },
       {
        "hour": 20,
-       "value": 0.0625,
-       "numerator": 1,
+       "value": 0.125,
+       "numerator": 2,
        "denominator": 16
       }
      ],
@@ -493,6 +513,11 @@
     "impossible_jumps",
     "off_shape_share",
     "position_age_s_p95",
+    "untimed_gap",
+    "untimed_no_reports",
+    "untimed_not_reached",
+    "untimed_past_when_first_seen",
+    "untimed_skipped",
     "vehicle_uptime"
    ]
   },
@@ -508,8 +533,8 @@
       "days": 1
      },
      "timepoint_coverage": {
-      "value": 0.840532,
-      "numerator": 1012,
+      "value": 0.877907,
+      "numerator": 1057,
       "denominator": 1204,
       "days": 1
      },
@@ -520,9 +545,9 @@
       "days": 1
      },
      "off_shape_share": {
-      "value": 0.063541,
+      "value": 0.063526,
       "numerator": 1041,
-      "denominator": 16383,
+      "denominator": 16387,
       "days": 1
      },
      "feed_agreement_share": {
@@ -544,6 +569,36 @@
       "low": 8.0,
       "high": 8.0,
       "days": 1
+     },
+     "untimed_gap": {
+      "value": 0.043189,
+      "numerator": 52,
+      "denominator": 1204,
+      "days": 1
+     },
+     "untimed_skipped": {
+      "value": 0.02907,
+      "numerator": 35,
+      "denominator": 1204,
+      "days": 1
+     },
+     "untimed_not_reached": {
+      "value": 0.025748,
+      "numerator": 31,
+      "denominator": 1204,
+      "days": 1
+     },
+     "untimed_no_reports": {
+      "value": 0.021595,
+      "numerator": 26,
+      "denominator": 1204,
+      "days": 1
+     },
+     "untimed_past_when_first_seen": {
+      "value": 0.002492,
+      "numerator": 3,
+      "denominator": 1204,
+      "days": 1
      }
     }
    },
@@ -558,8 +613,8 @@
       "days": 1
      },
      "timepoint_coverage": {
-      "value": 0.859083,
-      "numerator": 2341,
+      "value": 0.893578,
+      "numerator": 2435,
       "denominator": 2725,
       "days": 1
      },
@@ -570,9 +625,9 @@
       "days": 1
      },
      "off_shape_share": {
-      "value": 0.043597,
+      "value": 0.043587,
       "numerator": 1615,
-      "denominator": 37044,
+      "denominator": 37052,
       "days": 1
      },
      "feed_agreement_share": {
@@ -594,6 +649,36 @@
       "low": 8.1,
       "high": 8.1,
       "days": 1
+     },
+     "untimed_gap": {
+      "value": 0.038165,
+      "numerator": 104,
+      "denominator": 2725,
+      "days": 1
+     },
+     "untimed_skipped": {
+      "value": 0.028991,
+      "numerator": 79,
+      "denominator": 2725,
+      "days": 1
+     },
+     "untimed_not_reached": {
+      "value": 0.01211,
+      "numerator": 33,
+      "denominator": 2725,
+      "days": 1
+     },
+     "untimed_no_reports": {
+      "value": 0.022385,
+      "numerator": 61,
+      "denominator": 2725,
+      "days": 1
+     },
+     "untimed_past_when_first_seen": {
+      "value": 0.004771,
+      "numerator": 13,
+      "denominator": 2725,
+      "days": 1
      }
     }
    }
@@ -611,8 +696,8 @@
       "days": 2
      },
      "timepoint_coverage": {
-      "value": 0.853398,
-      "numerator": 3353,
+      "value": 0.888776,
+      "numerator": 3492,
       "denominator": 3929,
       "days": 2
      },
@@ -623,9 +708,9 @@
       "days": 2
      },
      "off_shape_share": {
-      "value": 0.049713,
+      "value": 0.049702,
       "numerator": 2656,
-      "denominator": 53427,
+      "denominator": 53439,
       "days": 2
      },
      "feed_agreement_share": {
@@ -646,6 +731,36 @@
       "value": 8.1,
       "low": 8.0,
       "high": 8.1,
+      "days": 2
+     },
+     "untimed_gap": {
+      "value": 0.039705,
+      "numerator": 156,
+      "denominator": 3929,
+      "days": 2
+     },
+     "untimed_skipped": {
+      "value": 0.029015,
+      "numerator": 114,
+      "denominator": 3929,
+      "days": 2
+     },
+     "untimed_not_reached": {
+      "value": 0.016289,
+      "numerator": 64,
+      "denominator": 3929,
+      "days": 2
+     },
+     "untimed_no_reports": {
+      "value": 0.022143,
+      "numerator": 87,
+      "denominator": 3929,
+      "days": 2
+     },
+     "untimed_past_when_first_seen": {
+      "value": 0.004072,
+      "numerator": 16,
+      "denominator": 3929,
       "days": 2
      }
     }
@@ -664,8 +779,8 @@
       "days": 2
      },
      "timepoint_coverage": {
-      "value": 0.853398,
-      "numerator": 3353,
+      "value": 0.888776,
+      "numerator": 3492,
       "denominator": 3929,
       "days": 2
      },
@@ -676,9 +791,9 @@
       "days": 2
      },
      "off_shape_share": {
-      "value": 0.049713,
+      "value": 0.049702,
       "numerator": 2656,
-      "denominator": 53427,
+      "denominator": 53439,
       "days": 2
      },
      "feed_agreement_share": {
@@ -699,6 +814,36 @@
       "value": 8.1,
       "low": 8.0,
       "high": 8.1,
+      "days": 2
+     },
+     "untimed_gap": {
+      "value": 0.039705,
+      "numerator": 156,
+      "denominator": 3929,
+      "days": 2
+     },
+     "untimed_skipped": {
+      "value": 0.029015,
+      "numerator": 114,
+      "denominator": 3929,
+      "days": 2
+     },
+     "untimed_not_reached": {
+      "value": 0.016289,
+      "numerator": 64,
+      "denominator": 3929,
+      "days": 2
+     },
+     "untimed_no_reports": {
+      "value": 0.022143,
+      "numerator": 87,
+      "denominator": 3929,
+      "days": 2
+     },
+     "untimed_past_when_first_seen": {
+      "value": 0.004072,
+      "numerator": 16,
+      "denominator": 3929,
       "days": 2
      }
     }

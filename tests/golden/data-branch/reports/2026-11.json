@@ -430,6 +430,46 @@
    "median": 0.0,
    "max": 0.0,
    "max_date": "2026-11-24"
+  },
+  "untimed_gap": {
+   "days": 2,
+   "min": 0.0,
+   "min_date": "2026-11-24",
+   "median": 0.0,
+   "max": 0.0,
+   "max_date": "2026-11-24"
+  },
+  "untimed_skipped": {
+   "days": 2,
+   "min": 0.0,
+   "min_date": "2026-11-24",
+   "median": 0.0,
+   "max": 0.0,
+   "max_date": "2026-11-24"
+  },
+  "untimed_not_reached": {
+   "days": 2,
+   "min": 0.0,
+   "min_date": "2026-11-24",
+   "median": 0.0,
+   "max": 0.0,
+   "max_date": "2026-11-24"
+  },
+  "untimed_no_reports": {
+   "days": 2,
+   "min": 0.0,
+   "min_date": "2026-11-25",
+   "median": 1.5,
+   "max": 3.0,
+   "max_date": "2026-11-24"
+  },
+  "untimed_past_when_first_seen": {
+   "days": 2,
+   "min": 0.0,
+   "min_date": "2026-11-24",
+   "median": 0.0,
+   "max": 0.0,
+   "max_date": "2026-11-24"
   }
  },
  "releases": {
@@ -459,10 +499,10 @@
    "events/0.6.0"
   ],
   "quality": [
-   "quality/0.8.0"
+   "quality/0.8.1"
   ],
   "ontime": [
-   "ontime/0.6.0"
+   "ontime/0.7.0"
   ]
  }
 }

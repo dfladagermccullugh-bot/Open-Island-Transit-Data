@@ -22,7 +22,7 @@ and uses them to figure out how often the buses leave on time.]{.lede}
 ```{ojs}
 //| echo: false
 //| output: false
-import {json, pct, count, lateness, longDate, routeMap, routeSlug, routeOrder, routeTitle, band, bandIcon, bandLegend, emptyNote, guard, stats, h, sparkline, splitBar, fmtShare, longName} from "./lib.js"
+import {json, pct, count, lateness, longDate, routeMap, routeSlug, routeOrder, routeTitle, band, bandIcon, bandLegend, emptyNote, guard, stats, h, sparkline, splitBar, fmtShare, longName, reasonBars} from "./lib.js"
 import {drawRouteMap, routeSummary} from "./map.js"
 recent = json("data/ontime/recent.json")
 head = json("data/ontime/headline.json")
@@ -39,6 +39,34 @@ period = o == null ? "" : nDays === 1
   : useHead ? `over the last ${nDays} days with service, to ${longDate(lastDay)}` : `over the ${nDays} days to ${longDate(lastDay)}`
 ```
 
+```{ojs}
+//| echo: false
+//| output: false
+// "How sure are we?": the three ranges of ontime/headline.json
+// (pipeline/periods.py, periods/0.3.0), folded under the headline.
+howSure = (c, days, extra) => {
+  if (c == null || !c.observed) return extra ? html`<p class="note">${extra}</p>` : "";
+  const iv = c.on_time_share_interval95;
+  const chance = iv?.low != null && days > 1
+    ? html`<p>Part of any figure is luck, since these days are only a sample of how the buses run. Allowing for chance, the share above is very likely between ${pct(iv.low)} and ${pct(iv.high)}.</p>` : "";
+  const a = c.adjusted, u = c.untimed;
+  const missed = c.scheduled - c.observed;
+  const adjusted = a?.shown && a.value != null
+    ? html`<p>We could not time ${count(missed)} of the ${count(c.scheduled)} scheduled departures (${fmtShare(missed / c.scheduled)}). If those buses ran like the ones we timed on the same route, at the same time of day and at the same place along the trip, about ${pct(a.value)} of all scheduled departures left on time${a.interval95 ? `, very likely between ${pct(a.interval95.low)} and ${pct(a.interval95.high)}` : ""}.</p>`
+    : a ? html`<p>We could not time ${count(missed)} of the ${count(c.scheduled)} scheduled departures (${fmtShare(missed / c.scheduled)}). Some groups of departures have too few timed ones to stand in for the rest, so we don't adjust the figure for them yet.</p>` : "";
+  const b = c.bounds;
+  const worst = b?.low != null && missed > 0
+    ? html`<p>If every departure we missed had been late, only ${pct(b.low)} of all scheduled departures would have left on time. If every one had been on time, ${pct(b.high)} would have. Whatever those buses did, the true share lies somewhere in that range.</p>` : "";
+  const bars = reasonBars(u);
+  const reasons = bars ? html`<p class="reasons-title">Why ${count(u.departures)} departures weren't timed</p>${bars}` : "";
+  return html`<details class="more sure"><summary>How sure are we?</summary>
+    ${chance}${adjusted}${worst}${reasons}
+    ${extra ? html`<p class="note">${extra}</p>` : ""}
+    <p class="how-measured"><a href="limits.html#how-sure">More on how sure these figures are</a></p>
+  </details>`;
+}
+```
+
 ::: {.slot-headline}
 ```{ojs}
 //| echo: false
@@ -49,10 +77,13 @@ guard(() => {
       ? `${Math.abs(head.change_points).toFixed(1)} points ${head.change_points >= 0 ? "higher" : "lower"} than the ${head.previous?.days ?? 28} service days before`
       : `Not enough days yet to compare with the ${head.window_service_days ?? 28} days before.`;
   const spark = useHead ? sparkline((head.spark ?? []).map(d => d.on_time_share_of_observed)) : null;
-  // A 95% interval from resampling whole trips (pipeline/periods.py).
-  const iv = useHead ? head.current?.on_time_share_interval95 : null;
-  const range = iv?.low != null && iv?.high != null && nDays > 1
-    ? ` Allowing for chance, the share for these days is very likely between ${pct(iv.low)} and ${pct(iv.high)}.` : "";
+  // A schedule change stays beside the number for a week, then moves into
+  // the fold below.
+  const sc = recent?.schedule_change;
+  const scNote = sc ? `Island Transit changed its schedule on ${longDate(sc.effective)}; the route tables below start over from that day.` : null;
+  const scRecent = sc && lastDay && (new Date(`${lastDay}T12:00:00Z`) - new Date(`${sc.effective}T12:00:00Z`)) / 864e5 < 7;
+  const counts = o.scheduled > 0
+    ? html`<p class="counts">That is ${count(o.on_time)} of the ${count(o.observed)} departures we could time, out of ${count(o.scheduled)} scheduled.</p>` : "";
   const status = notes?.status;
   const trust = status == null ? null
     : status === "ok" || status === "note"
@@ -61,7 +92,8 @@ guard(() => {
   return html`<div class="headline">
       <div class="big">${pct(o.on_time_share_of_observed)}</div>
       <div class="big-text"><p class="big-label">of departures left on time ${period}.
-        <span class="note">A bus counts as on time if it leaves from 1 minute early to 5 minutes late.${range}${recent?.schedule_change ? ` Island Transit changed its schedule on ${longDate(recent.schedule_change.effective)}; the route tables below start over from that day.` : ""}</span></p>
+        <span class="note">A bus counts as on time if it leaves from 1 minute early to 5 minutes late.${scRecent ? ` ${scNote}` : ""}</span></p>
+        ${counts}
         ${change ? html`<p class="change">${spark}<span>${change}</span></p>` : ""}
       </div>
     </div>
@@ -71,6 +103,7 @@ guard(() => {
       {label: "More than 5 minutes late", value: fmtShare(o.late_share_of_observed)},
       {label: "Departures checked", value: count(o.observed)},
     ])}
+    ${howSure(useHead ? head.current : null, nDays, scRecent ? null : scNote)}
     ${trust}
     <p class="how-measured"><a href="methods.html#on-time-performance">How we measured this</a> · <a href="limits.html">What these figures can't tell you</a></p>`;
 }, "The on-time figures")

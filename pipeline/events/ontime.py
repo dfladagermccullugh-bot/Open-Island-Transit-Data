@@ -38,7 +38,7 @@ from pipeline.common import Row
 from pipeline.config import PACIFIC
 from pipeline.stats import median
 
-ONTIME_VERSION = "ontime/0.6.0"  # 0.6.0: position (first, middle, last) of each stop
+ONTIME_VERSION = "ontime/0.7.0"  # 0.7.0: untimed reasons, cells of route, hour band, position
 EARLY_S = -60
 LATE_S = 300
 
@@ -64,6 +64,42 @@ POSITIONS = ("first", "middle", "last")
 def position(event: Row) -> str:
     """Where in its trip a stop event lies: ``first``, ``middle`` or ``last``."""
     return "first" if event.get("is_first_stop") else "last" if event["is_last_stop"] else "middle"
+
+
+# Why a departure has no time: the event's status (``pipeline/events/infer.py``),
+# the arrival's at a trip's last stop, the departure's elsewhere.
+UNTIMED_REASONS = ("gap", "skipped", "not_reached", "no_reports", "past_when_first_seen")
+
+
+def untimed_reason(event: Row) -> str:
+    status = event.get("arrival_status" if event["is_last_stop"] else "departure_status")
+    return status or "unknown"
+
+
+def reason_counts(c: Counter) -> dict[str, int]:
+    """Every known reason, zero or not, then any other in name order."""
+    return {**{r: c[r] for r in UNTIMED_REASONS},
+            **{r: c[r] for r in sorted(set(c) - set(UNTIMED_REASONS))}}  # fmt: skip
+
+
+# Hour bands of the scheduled time, Pacific, [start, end): the same edges as
+# the bands of the gaps model (``pipeline/quality/gaps.py``).
+HOUR_BANDS = (
+    ("early", 0, 7),
+    ("morning", 7, 9),
+    ("midday", 9, 15),
+    ("afternoon", 15, 18),
+    ("evening", 18, 24),
+)
+
+
+def hour_band(hour: int) -> str:
+    return next(name for name, lo, hi in HOUR_BANDS if lo <= hour < hi)
+
+
+def cell_of(route_id: str, hour: int, pos: str) -> str:
+    """The weighting cell of a timepoint event: ``route|band|position``."""
+    return f"{route_id}|{hour_band(hour)}|{pos}"
 
 
 def _mode(c: Counter) -> str:
@@ -111,6 +147,12 @@ def summarize(
     by_position: dict[str, Counter] = {p: Counter() for p in POSITIONS}
     position_devs: dict[str, list[float]] = {p: [] for p in POSITIONS}
     by_trip: dict[str, list[int]] = defaultdict(lambda: [0, 0])
+    untimed: Counter = Counter()
+    untimed_pos: dict[str, Counter] = {p: Counter() for p in POSITIONS}
+    by_cell: dict[str, list[int]] = defaultdict(lambda: [0, 0, 0])
+    by_trip_cell: dict[str, dict[str, list[int]]] = defaultdict(
+        lambda: defaultdict(lambda: [0, 0, 0])
+    )
     for e in events:
         if not e["is_timepoint"]:
             continue
@@ -127,6 +169,18 @@ def summarize(
             c[cat] += 1
         stop_seq[key].append(e["stop_sequence"])
         stop_pos[key][pos] += 1
+        cell = cell_of(e["route_id"], hour, pos)
+        counts = [1, cat != "not_observed", cat == "on_time"]
+        cells = [by_cell[cell]]
+        if e.get("trip_id") is not None:
+            cells.append(by_trip_cell[e["trip_id"]][cell])
+        for c3 in cells:
+            for i, x in enumerate(counts):
+                c3[i] += x
+        if cat == "not_observed":
+            reason = untimed_reason(e)
+            untimed[reason] += 1
+            untimed_pos[pos][reason] += 1
         if cat != "not_observed" and e.get("trip_id") is not None:
             by_trip[e["trip_id"]][0] += 1
             by_trip[e["trip_id"]][1] += cat == "on_time"
@@ -167,6 +221,16 @@ def summarize(
             for h, c in sorted(by_hour.items())
         },
         "by_position": {p: _block(by_position[p], position_devs[p]) for p in POSITIONS},
+        # Since ontime/0.7.0: why departures have no time.
+        "untimed": {
+            "departures": sum(untimed.values()),
+            "by_reason": reason_counts(untimed),
+            "by_position": {p: reason_counts(untimed_pos[p]) for p in POSITIONS},
+        },
+        # Since ontime/0.7.0: [scheduled, observed, on time] by cell of route,
+        # hour band and position, for the whole day and for each trip.
+        "by_cell": dict(sorted(by_cell.items())),
+        "by_trip_cell": {t: dict(sorted(c.items())) for t, c in sorted(by_trip_cell.items())},
         "by_route_stop": dict(route_stop),
         # [observed, on time] timepoint departures of each trip with any
         # observed, so that an interval can resample whole trips.

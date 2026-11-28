@@ -86,5 +86,13 @@ QUALITY_HEADLINE: list[tuple[str, tuple[str, ...]]] = [
     ),
     ("between_trips_share", ("events", "between_trips", "between_trips_share")),
     ("between_trips_unassigned_share", ("events", "between_trips", "unassigned_share")),
+    # Since quality/0.8.1: timepoint departures with no time, by reason.
+    *(
+        (
+            f"untimed_{reason}",
+            ("events", "stop_coverage", "timepoints", "not_observed_by_reason", reason),
+        )
+        for reason in ("gap", "skipped", "not_reached", "no_reports", "past_when_first_seen")
+    ),
     ("quality_version", ("quality_version",)),
 ]
