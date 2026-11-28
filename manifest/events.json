@@ -249,6 +249,37 @@
    "release_tag": "parsed-2026-11",
    "built_at": "2026-11-28T04:24:12+00:00",
    "code_sha": "437ba905e303ef065394a26cae53af7269ff5851"
+  },
+  "2026-11-27": {
+   "service_date": "2026-11-27",
+   "events_version": "events/0.6.0",
+   "ontime_version": "ontime/0.8.0",
+   "validate_version": "validate/0.3.0",
+   "service_expected": true,
+   "passio_version": "passio-9b1efa882037",
+   "timepoints": "passio-9b1efa882037__timetable-2026-09-27-d7e09c5d",
+   "vehicles_sha256": "cffef390a1f0642d799674f39895852937e82e6303572edf37a1c198a352f3a5",
+   "rows": {
+    "stop-events": 10393,
+    "trip-tracks": 341
+   },
+   "files": [
+    {
+     "name": "stop-events-2026-11-27.parquet",
+     "bytes": 180342,
+     "sha256": "9c18316db7fb6cd6f277b3916ea02a441c11b57b2f9d4b4f0562c681a080f1fa",
+     "asset": "stop-events-2026-11-27-9c18316d.parquet"
+    },
+    {
+     "name": "trip-tracks-2026-11-27.parquet",
+     "bytes": 22140,
+     "sha256": "753667e00698eafb34f791cb21c1337a1d9b90378d9a2cd5513d04c922513153",
+     "asset": "trip-tracks-2026-11-27-753667e0.parquet"
+    }
+   ],
+   "release_tag": "parsed-2026-11",
+   "built_at": "2026-11-28T08:41:19+00:00",
+   "code_sha": "a9f84f1361de21e74235dfaa7feccf506add2377"
   }
  }
 }
