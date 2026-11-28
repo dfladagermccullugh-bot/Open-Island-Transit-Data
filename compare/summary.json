@@ -6,18 +6,18 @@
  ],
  "island_transit": {
   "first_service_date": "2026-11-19",
-  "last_service_date": "2026-11-25",
-  "service_days": 7,
-  "departures": 13095,
-  "observed": 13095,
-  "on_time": 9719,
-  "headline_on_time_share": 0.7422,
-  "last_stop_early_arrivals": 556,
-  "recount_on_time": 9163,
-  "recount_under_our_rule": 0.6997,
-  "deviation_s_p25": 52.0,
-  "deviation_s_median": 150.0,
-  "deviation_s_p75": 292.0
+  "last_service_date": "2026-11-27",
+  "service_days": 8,
+  "departures": 15490,
+  "observed": 15490,
+  "on_time": 11647,
+  "headline_on_time_share": 0.7519,
+  "last_stop_early_arrivals": 678,
+  "recount_on_time": 10969,
+  "recount_under_our_rule": 0.7081,
+  "deviation_s_p25": 49.0,
+  "deviation_s_median": 144.0,
+  "deviation_s_p75": 283.0
  },
  "assumed_scales": [
   0.4,
@@ -97,7 +97,7 @@
    "classes": [
     "R"
    ],
-   "island_under_their_rule": 0.6649,
+   "island_under_their_rule": 0.6695,
    "our_method_on_their_feed": {
     "pool_first_date": "2026-10-03",
     "pool_last_date": "2026-11-27",
