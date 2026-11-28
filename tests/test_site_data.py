@@ -67,10 +67,16 @@ def test_the_rebuild_summary_needs_a_compared_day(tmp_path):
     path = root / "checks" / "reproduce.json"
     path.write_text(json.dumps({"days_compared": 0, "days": []}))
     assert site_data.reproduce_summary(root) is None
-    path.write_text(json.dumps({
-        "days_compared": 2, "all_identical": True, "ran_at": "2026-11-29T13:31:00+00:00",
-        "days": [{"service_date": "2026-11-20"}, {"service_date": "2026-11-24"}],
-        "command": "python scripts/reproduce.py --date 2026-11-20 --date 2026-11-24",
-    }))
+    path.write_text(
+        json.dumps(
+            {
+                "days_compared": 2,
+                "all_identical": True,
+                "ran_at": "2026-11-29T13:31:00+00:00",
+                "days": [{"service_date": "2026-11-20"}, {"service_date": "2026-11-24"}],
+                "command": "python scripts/reproduce.py --date 2026-11-20 --date 2026-11-24",
+            }
+        )
+    )
     got = site_data.reproduce_summary(root)
     assert got["days"] == ["2026-11-20", "2026-11-24"] and got["all_identical"] is True
