@@ -255,6 +255,36 @@
       "description": "False when the day's quality file was written before its stop events existed; the nightly catch-up and the watchdog then treat the day as not processed, and the next run rebuilds it. Since `quality/0.6.1`"
      },
      {
+      "name": "first_stop_timepoint_coverage",
+      "type": "number",
+      "description": "`timepoint_coverage` for the events at a trip's first stop, at its middle stops and at its last stop. Since `quality/0.8.0`",
+      "unit": "fraction from 0 to 1"
+     },
+     {
+      "name": "middle_stop_timepoint_coverage",
+      "type": "number",
+      "description": "`timepoint_coverage` for the events at a trip's first stop, at its middle stops and at its last stop. Since `quality/0.8.0`",
+      "unit": "fraction from 0 to 1"
+     },
+     {
+      "name": "last_stop_timepoint_coverage",
+      "type": "number",
+      "description": "`timepoint_coverage` for the events at a trip's first stop, at its middle stops and at its last stop. Since `quality/0.8.0`",
+      "unit": "fraction from 0 to 1"
+     },
+     {
+      "name": "between_trips_share",
+      "type": "number",
+      "description": "Positions that no trip used, divided by positions (`events.between_trips`). Since `quality/0.8.0`",
+      "unit": "fraction from 0 to 1"
+     },
+     {
+      "name": "between_trips_unassigned_share",
+      "type": "number",
+      "description": "The part of those positions with no likely reason: the bus ran no trip before and after, was more than an hour from its first or last trip, and was not between Greenbank and Coupeville. Since `quality/0.8.0`",
+      "unit": "fraction from 0 to 1"
+     },
+     {
       "name": "quality_version",
       "type": "string",
       "description": "Version of the quality code"
@@ -1317,7 +1347,7 @@
      {
       "name": "arrival_time",
       "type": "datetime",
-      "description": "When the bus first came within 40 meters (about 130 feet) of the stop along the shape",
+      "description": "When the bus first came within 40 meters (about 130 feet) of the stop along the shape. At a trip's last stop, if that was not seen, since `events/0.6.0`: when the bus came inside a circle of 100 meters (about 330 feet) around the stop, after the trip's other timed stops (`report_source` starts with `terminal_`)",
       "timezone": "UTC"
      },
      {
@@ -1334,7 +1364,7 @@
      {
       "name": "departure_time",
       "type": "datetime",
-      "description": "When it moved more than 40 meters past the stop",
+      "description": "When it moved more than 40 meters past the stop. At a trip's first stop, if that was not seen, since `events/0.6.0`: when the bus last left the 100-meter circle around the stop before its other timed stops (`report_source` starts with `terminal_`)",
       "timezone": "UTC"
      },
      {
@@ -1351,7 +1381,7 @@
      {
       "name": "report_source",
       "type": "string",
-      "description": "Where the two position reports that timed this stop came from (the least direct of them if the arrival and departure differ): `own` (the trip's own id), `borrowed_before` (the same bus before its first report under this trip's id, often still showing the previous trip's id at the first stop), `borrowed_after` (the same bus after its last report under this trip's id, often already showing the next trip's id), `borrowed_within` (the same bus between them, with no trip id or another one). Empty when the stop was not observed. Since `events/0.5.0` (`docs/methods.md`, section 3)"
+      "description": "Where the two position reports that timed this stop came from (the least direct of them if the arrival and departure differ): `own` (the trip's own id), `borrowed_before` (the same bus before its first report under this trip's id, often still showing the previous trip's id at the first stop), `borrowed_after` (the same bus after its last report under this trip's id, often already showing the next trip's id), `borrowed_within` (the same bus between them, with no trip id or another one); since `events/0.6.0` also `relay` (a second bus that took the trip over, or handed it over, on the way) and, at a first or last stop timed by the 100-meter circle, `terminal_` followed by one of the others (`terminal_borrowed_after`: the bus already showed its next trip). Empty when the stop was not observed. Since `events/0.5.0` (`docs/methods.md`, section 3)"
      }
     ],
     "missingValues": [
@@ -1433,9 +1463,43 @@
       "description": "Reports of the same bus under another trip id or none that the trip also used: before its first own report (from 30 minutes before its start, or the end of the bus's previous trip if later), after its last own report (up to 30 minutes after its end, but not past the moment the bus left its next trip's first stop), and in between. `position_reports` counts only its own. Since `events/0.5.0`"
      },
      {
+      "name": "relay_vehicle_key",
+      "type": "string",
+      "description": "A second vehicle that ran part of the trip under its id, right before or right after the chosen one: its reports end at most 5 minutes before the other's begin and within 300 meters (about 1,000 feet) of that place. Empty if none. Since `events/0.6.0`"
+     },
+     {
+      "name": "reports_relay",
+      "type": "integer",
+      "description": "The relay vehicle's reports the trip used; 0 if none"
+     },
+     {
+      "name": "relay_from",
+      "type": "datetime",
+      "description": "The relay vehicle's first and last report used, UTC; empty if none",
+      "timezone": "UTC"
+     },
+     {
+      "name": "relay_to",
+      "type": "datetime",
+      "description": "The relay vehicle's first and last report used, UTC; empty if none",
+      "timezone": "UTC"
+     },
+     {
       "name": "reports_used",
       "type": "integer",
       "description": "Reports placed on the shape"
+     },
+     {
+      "name": "first_report_used",
+      "type": "datetime",
+      "description": "The first and last report the trip used, on the shape or for the 100-meter circle at its first and last stop, UTC. The quality stage counts the reports outside every trip's span (`between_trips`). Since `events/0.6.0`",
+      "timezone": "UTC"
+     },
+     {
+      "name": "last_report_used",
+      "type": "datetime",
+      "description": "The first and last report the trip used, on the shape or for the 100-meter circle at its first and last stop, UTC. The quality stage counts the reports outside every trip's span (`between_trips`). Since `events/0.6.0`",
+      "timezone": "UTC"
      },
      {
       "name": "reports_before_start",
