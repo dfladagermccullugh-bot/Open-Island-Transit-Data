@@ -1,7 +1,7 @@
 {
  "service_date": "2026-11-24",
- "quality_version": "quality/0.8.0",
- "computed_at": "2026-11-28T02:28:02+00:00",
+ "quality_version": "quality/0.8.1",
+ "computed_at": "2026-11-28T03:19:21+00:00",
  "scheduled_service": {
   "trips": 341,
   "trips_ended_before_collection": 0,
@@ -3222,10 +3222,10 @@
     "coverage": 0.878165,
     "not_observed_by_reason": {
      "gap": 95,
-     "no_reports": 115,
+     "skipped": 75,
      "not_reached": 35,
-     "past_when_first_seen": 12,
-     "skipped": 75
+     "no_reports": 115,
+     "past_when_first_seen": 12
     },
     "by_route": {
      "6737": {
@@ -3328,10 +3328,10 @@
     "coverage": 0.896373,
     "not_observed_by_reason": {
      "gap": 345,
-     "no_reports": 315,
-     "not_reached": 89,
-     "past_when_first_seen": 16,
      "skipped": 311,
+     "not_reached": 89,
+     "no_reports": 315,
+     "past_when_first_seen": 16,
      "unplaced": 1
     },
     "by_route": {
@@ -3949,6 +3949,6 @@
   "vehicles_sha256": "a3f54ab6eb39ed871142082b15d235e14309dea07c71b3eb587d7772646064d9",
   "tables_version": "tables/0.1.0",
   "stop_events_sha256": "3ca28597e0602eb71ed6a3cd88a840d97150a8753a01556cbfe9021dee1414c5",
-  "code_sha": "01f05c793737cec71edd6ae7c3f9609f40149ece"
+  "code_sha": "21a2c711005a5c5a90912f374228bebec2e4cbb2"
  }
 }
