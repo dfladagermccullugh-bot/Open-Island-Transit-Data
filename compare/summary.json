@@ -8,11 +8,11 @@
   "first_service_date": "2026-11-19",
   "last_service_date": "2026-11-25",
   "service_days": 7,
-  "departures": 12602,
-  "recount_under_our_rule": 0.7034,
-  "deviation_s_p25": 55.0,
-  "deviation_s_median": 154.0,
-  "deviation_s_p75": 295.0
+  "departures": 13050,
+  "recount_under_our_rule": 0.7014,
+  "deviation_s_p25": 52.0,
+  "deviation_s_median": 150.5,
+  "deviation_s_p75": 292.0
  },
  "assumed_scales": [
   0.4,
@@ -81,7 +81,7 @@
     "R",
     "A"
    ],
-   "island_under_their_rule": 0.6683,
+   "island_under_their_rule": 0.6654,
    "our_method_on_their_feed": {
     "service_date": "2026-11-27",
     "sample_start": "2026-11-27T15:29:44+00:00",
@@ -137,7 +137,7 @@
    "classes": [
     "R"
    ],
-   "island_under_their_rule": 0.7034
+   "island_under_their_rule": 0.7014
   },
   {
    "agency": "Cache Valley Transit District",
@@ -176,9 +176,9 @@
     "B",
     "A"
    ],
-   "island_under_their_rule": 0.499,
+   "island_under_their_rule": 0.5007,
    "converted_to_our_window": {
-    "low": 0.8612,
+    "low": 0.8582,
     "high": 0.9195,
     "assumptions_used": 3,
     "assumptions_tried": 7
@@ -224,10 +224,10 @@
     "B",
     "A"
    ],
-   "island_under_their_rule": 0.499,
+   "island_under_their_rule": 0.5007,
    "converted_to_our_window": {
-    "low": 0.8638,
-    "high": 0.9218,
+    "low": 0.8603,
+    "high": 0.9203,
     "assumptions_used": 3,
     "assumptions_tried": 7
    },
@@ -317,10 +317,10 @@
     "R",
     "B"
    ],
-   "island_under_their_rule": 0.7693,
+   "island_under_their_rule": 0.7661,
    "converted_to_our_window": {
-    "low": 0.6312,
-    "high": 0.7691,
+    "low": 0.6333,
+    "high": 0.7749,
     "assumptions_used": 4,
     "assumptions_tried": 7
    }
@@ -378,7 +378,7 @@
    "classes": [
     "R"
    ],
-   "island_under_their_rule": 0.7203
+   "island_under_their_rule": 0.7195
   },
   {
    "agency": "Israel buses",
