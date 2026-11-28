@@ -5,9 +5,10 @@ under a content-addressed name, its plain name with the first 8 characters
 of its SHA-256 before the extension (``stop-events-2026-11-20-1a2b3c4d.parquet``),
 and the manifest entry records it as ``asset``. The raw archive keeps plain
 names: a day's raw files are uploaded before the manifest lists the day and
-never rebuilt after, and the collector's prune confirms them by plain name. A rebuild therefore adds a new file instead
-of overwriting the one a published manifest names, and a run that fails
-halfway cannot break a published file. Files uploaded before then keep
+never rebuilt after, and the collector's prune confirms them by plain name.
+A rebuild therefore adds a new file instead of overwriting the one a
+published manifest names, and a run that fails halfway cannot break a
+published file. Files uploaded before then keep
 their plain names. ``fetch`` finds either form.
 
 Files that no published manifest names any more are deleted only after the
