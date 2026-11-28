@@ -1,0 +1,23 @@
+{
+ "gate_version": "gate/0.1.0",
+ "passed": true,
+ "mode": "light",
+ "rules": [
+  "I1",
+  "I2",
+  "I3",
+  "I4",
+  "I5",
+  "I6",
+  "I7",
+  "I8"
+ ],
+ "rules_count": 8,
+ "problems": [],
+ "notes": [],
+ "latest_service_date": "2026-11-26",
+ "checked_commit": "7b3b833dd35d9a9b1e704fccf59811031b3e5473",
+ "ran_at": "2026-11-28T00:54:54+00:00",
+ "workflow": "Validators",
+ "run_url": "https://github.com/dfladagermccullugh-bot/Open-Island-Transit-Data/actions/runs/46090383421"
+}
