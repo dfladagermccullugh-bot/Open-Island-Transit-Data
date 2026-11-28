@@ -1,18 +1,18 @@
 {
- "ontime_version": "ontime/0.5.0",
+ "ontime_version": "ontime/0.6.0",
  "definition": {
   "window_s": [-60,300],
   "measured": "departure at timepoints; arrival at the last stop",
   "timepoints": "stops printed in Island Transit's timetables"
  },
  "scheduled": 1204,
- "observed": 1012,
- "observed_share": 0.8405,
- "on_time": 616,
- "early": 22,
- "late": 374,
- "on_time_share_of_observed": 0.6087,
- "deviation_s_median": 208.0,
+ "observed": 1057,
+ "observed_share": 0.8779,
+ "on_time": 649,
+ "early": 23,
+ "late": 385,
+ "on_time_share_of_observed": 0.614,
+ "deviation_s_median": 203.8,
  "canceled": {
   "trip_ids": [],
   "timepoint_events_left_out": 0
@@ -30,33 +30,33 @@
   },
   "6743": {
    "scheduled": 70,
-   "observed": 34,
-   "observed_share": 0.4857,
-   "on_time": 12,
+   "observed": 37,
+   "observed_share": 0.5286,
+   "on_time": 13,
    "early": 0,
-   "late": 22,
-   "on_time_share_of_observed": 0.3529,
+   "late": 24,
+   "on_time_share_of_observed": 0.3514,
    "deviation_s_median": 403.5
   },
   "6744": {
    "scheduled": 131,
-   "observed": 126,
-   "observed_share": 0.9618,
-   "on_time": 104,
+   "observed": 127,
+   "observed_share": 0.9695,
+   "on_time": 105,
    "early": 0,
    "late": 22,
-   "on_time_share_of_observed": 0.8254,
+   "on_time_share_of_observed": 0.8268,
    "deviation_s_median": 165.1
   },
   "7913": {
    "scheduled": 43,
-   "observed": 38,
-   "observed_share": 0.8837,
-   "on_time": 30,
+   "observed": 41,
+   "observed_share": 0.9535,
+   "on_time": 33,
    "early": 0,
    "late": 8,
-   "on_time_share_of_observed": 0.7895,
-   "deviation_s_median": 183.1
+   "on_time_share_of_observed": 0.8049,
+   "deviation_s_median": 168.7
   },
   "7914": {
    "scheduled": 71,
@@ -70,82 +70,82 @@
   },
   "7915": {
    "scheduled": 44,
-   "observed": 40,
-   "observed_share": 0.9091,
-   "on_time": 20,
+   "observed": 43,
+   "observed_share": 0.9773,
+   "on_time": 23,
    "early": 1,
    "late": 19,
-   "on_time_share_of_observed": 0.5,
-   "deviation_s_median": 226.0
+   "on_time_share_of_observed": 0.5349,
+   "deviation_s_median": 164.2
   },
   "7916": {
    "scheduled": 32,
-   "observed": 18,
-   "observed_share": 0.5625,
-   "on_time": 8,
-   "early": 0,
+   "observed": 21,
+   "observed_share": 0.6562,
+   "on_time": 10,
+   "early": 1,
    "late": 10,
-   "on_time_share_of_observed": 0.4444,
-   "deviation_s_median": 322.2
+   "on_time_share_of_observed": 0.4762,
+   "deviation_s_median": 299.6
   },
   "7918": {
    "scheduled": 87,
-   "observed": 73,
-   "observed_share": 0.8391,
-   "on_time": 42,
+   "observed": 79,
+   "observed_share": 0.908,
+   "on_time": 48,
    "early": 4,
    "late": 27,
-   "on_time_share_of_observed": 0.5753,
-   "deviation_s_median": 195.7
+   "on_time_share_of_observed": 0.6076,
+   "deviation_s_median": 180.4
   },
   "7919": {
    "scheduled": 72,
-   "observed": 59,
-   "observed_share": 0.8194,
-   "on_time": 28,
+   "observed": 65,
+   "observed_share": 0.9028,
+   "on_time": 34,
    "early": 0,
    "late": 31,
-   "on_time_share_of_observed": 0.4746,
-   "deviation_s_median": 306.1
+   "on_time_share_of_observed": 0.5231,
+   "deviation_s_median": 280.8
   },
   "7920": {
    "scheduled": 60,
-   "observed": 52,
-   "observed_share": 0.8667,
-   "on_time": 33,
+   "observed": 58,
+   "observed_share": 0.9667,
+   "on_time": 38,
    "early": 0,
-   "late": 19,
-   "on_time_share_of_observed": 0.6346,
-   "deviation_s_median": 156.0
+   "late": 20,
+   "on_time_share_of_observed": 0.6552,
+   "deviation_s_median": 151.9
   },
   "7922": {
    "scheduled": 189,
-   "observed": 173,
-   "observed_share": 0.9153,
-   "on_time": 63,
+   "observed": 180,
+   "observed_share": 0.9524,
+   "on_time": 66,
    "early": 3,
-   "late": 107,
-   "on_time_share_of_observed": 0.3642,
-   "deviation_s_median": 399.6
+   "late": 111,
+   "on_time_share_of_observed": 0.3667,
+   "deviation_s_median": 395.0
   },
   "7923": {
    "scheduled": 60,
-   "observed": 47,
-   "observed_share": 0.7833,
+   "observed": 48,
+   "observed_share": 0.8,
    "on_time": 23,
    "early": 0,
-   "late": 24,
-   "on_time_share_of_observed": 0.4894,
-   "deviation_s_median": 300.9
+   "late": 25,
+   "on_time_share_of_observed": 0.4792,
+   "deviation_s_median": 307.4
   },
   "9404": {
    "scheduled": 248,
-   "observed": 239,
-   "observed_share": 0.9637,
-   "on_time": 171,
+   "observed": 245,
+   "observed_share": 0.9879,
+   "on_time": 174,
    "early": 13,
-   "late": 55,
-   "on_time_share_of_observed": 0.7155,
+   "late": 58,
+   "on_time_share_of_observed": 0.7102,
    "deviation_s_median": 140.1
   },
   "9432": {
@@ -162,91 +162,123 @@
  "by_hour": {
   "13": {
    "scheduled": 108,
-   "observed": 86,
-   "observed_share": 0.7963,
-   "on_time": 62,
+   "observed": 88,
+   "observed_share": 0.8148,
+   "on_time": 63,
    "early": 2,
-   "late": 22,
-   "on_time_share_of_observed": 0.7209,
+   "late": 23,
+   "on_time_share_of_observed": 0.7159,
    "deviation_s_median": 152.0,
-   "deviations_s": [-526,-188,-140,-108,-90,-47,-24,-10,-1,0,7,14,17,20,20,20,23,26,27,39,43,45,59,67,77,80,92,92,98,101,112,116,118,122,130,132,133,134,145,147,148,151,151,153,157,160,162,162,169,169,174,178,181,196,198,202,203,225,229,248,263,279,286,286,327,327,364,377,388,394,396,421,426,437,444,467,485,521,525,541,596,613,653,673,918,1017]
+   "deviations_s": [-526,-229,-188,-140,-108,-90,-47,-24,-10,-1,0,7,14,17,20,20,20,23,26,27,39,43,45,59,67,77,80,92,92,98,101,112,116,118,122,130,132,133,134,145,147,148,151,151,153,157,160,162,162,169,169,174,178,181,196,198,202,203,225,229,248,263,279,286,286,327,327,364,377,388,394,396,421,426,437,444,467,485,521,525,541,596,613,653,673,831,918,1017]
   },
   "14": {
    "scheduled": 188,
-   "observed": 147,
-   "observed_share": 0.7819,
-   "on_time": 98,
-   "early": 3,
-   "late": 46,
-   "on_time_share_of_observed": 0.6667,
-   "deviation_s_median": 166.4,
-   "deviations_s": [-450,-221,-183,-167,-121,-99,-83,-68,-57,-28,1,2,5,14,14,15,20,20,23,30,33,36,36,37,38,41,43,48,49,63,65,68,69,70,74,82,83,85,88,93,95,96,101,101,101,102,103,103,106,108,109,111,111,113,116,117,120,122,125,129,131,132,133,135,136,137,145,148,158,162,163,163,165,166,168,180,183,185,185,186,191,192,202,207,208,208,211,215,220,223,226,228,245,246,247,250,259,270,273,283,285,307,319,320,328,330,351,363,368,390,394,398,398,405,433,433,439,447,456,460,468,468,472,478,484,484,486,488,492,493,497,499,499,501,505,506,510,513,517,521,610,695,703,741,863,910,1104]
+   "observed": 154,
+   "observed_share": 0.8191,
+   "on_time": 102,
+   "early": 4,
+   "late": 48,
+   "on_time_share_of_observed": 0.6623,
+   "deviation_s_median": 165.4,
+   "deviations_s": [-1113,-450,-221,-183,-178,-167,-121,-99,-83,-68,-57,-28,1,2,5,14,14,15,20,20,23,30,33,36,36,37,38,41,43,48,49,63,65,68,69,70,74,82,83,83,83,85,88,93,95,96,101,101,101,102,103,103,106,108,109,111,111,113,116,117,120,122,125,129,131,132,133,135,136,137,145,148,158,162,163,163,165,166,168,180,183,185,185,186,190,191,192,202,207,208,208,211,215,220,223,226,228,245,246,247,250,259,270,273,283,285,307,319,320,328,330,351,363,368,386,390,394,398,398,405,414,433,433,439,447,456,460,468,468,472,478,484,484,486,488,492,493,497,499,499,501,505,506,510,513,517,521,610,695,703,741,863,910,1104]
   },
   "15": {
    "scheduled": 179,
-   "observed": 163,
-   "observed_share": 0.9106,
-   "on_time": 103,
+   "observed": 168,
+   "observed_share": 0.9385,
+   "on_time": 108,
    "early": 4,
    "late": 56,
-   "on_time_share_of_observed": 0.6319,
-   "deviation_s_median": 193.8,
-   "deviations_s": [-740,-366,-195,-189,-142,-142,-129,-95,-86,-59,-29,-18,-2,-1,4,8,13,15,17,17,19,24,25,26,26,27,30,30,34,34,34,44,46,47,47,52,52,56,57,60,65,69,73,75,81,83,87,89,90,91,94,95,96,99,100,101,102,105,111,115,117,118,125,130,135,138,157,159,163,164,165,170,174,175,179,180,186,189,190,192,193,194,195,203,211,213,214,216,222,223,223,223,228,233,237,243,247,247,259,261,264,279,280,291,298,300,300,301,303,307,315,318,319,325,330,335,339,354,373,386,400,412,414,415,417,421,433,444,447,448,449,451,452,452,457,459,474,485,491,494,511,512,513,515,523,527,551,553,564,581,590,600,694,720,761,771,796,1144,1177,1228,1230,1260,1363]
+   "on_time_share_of_observed": 0.6429,
+   "deviation_s_median": 191.2,
+   "deviations_s": [-740,-366,-302,-195,-189,-142,-142,-129,-95,-86,-61,-59,-29,-18,-2,-1,0,4,8,13,15,17,17,19,24,25,26,26,27,30,30,34,34,34,44,46,47,47,49,52,52,52,56,57,60,65,69,73,75,81,83,87,89,90,91,94,95,96,99,100,101,102,105,111,115,117,118,125,130,135,138,157,159,163,164,165,170,174,175,179,180,186,189,190,192,193,194,195,203,211,213,214,216,222,223,223,223,228,233,237,243,247,247,259,261,264,279,280,291,298,300,300,301,303,307,315,318,319,325,330,335,339,354,373,386,400,412,414,415,417,421,433,444,447,448,449,451,452,452,457,459,474,485,491,494,511,512,513,515,523,527,551,553,564,581,590,600,694,720,761,771,796,1144,1177,1228,1230,1260,1363]
   },
   "16": {
    "scheduled": 195,
-   "observed": 163,
-   "observed_share": 0.8359,
-   "on_time": 74,
+   "observed": 175,
+   "observed_share": 0.8974,
+   "on_time": 81,
    "early": 2,
-   "late": 87,
-   "on_time_share_of_observed": 0.454,
-   "deviation_s_median": 313.8,
-   "deviations_s": [-333,-200,-190,-136,-133,-78,-73,-64,-58,-16,-9,-6,-3,-1,-1,0,3,4,6,19,21,21,27,28,33,34,42,45,48,52,56,57,63,66,81,84,87,90,91,93,94,97,115,123,132,135,136,142,153,160,161,168,173,175,185,191,203,204,209,210,210,215,217,221,223,232,240,243,243,252,254,256,282,284,284,295,300,304,307,308,314,314,329,329,330,332,332,338,341,344,345,347,348,358,367,367,383,383,386,399,402,403,403,418,419,420,420,422,426,430,450,454,457,479,493,507,517,518,531,532,536,537,542,544,552,552,553,558,560,561,566,569,571,590,596,598,607,610,615,616,623,636,649,657,662,676,684,693,726,737,742,748,750,752,755,778,797,820,837,843,900,923,972]
+   "late": 92,
+   "on_time_share_of_observed": 0.4629,
+   "deviation_s_median": 313.7,
+   "deviations_s": [-333,-200,-190,-136,-133,-78,-73,-64,-58,-16,-9,-6,-3,-1,-1,0,3,4,6,19,21,21,27,28,28,33,34,42,44,45,46,48,52,52,56,57,58,63,66,81,84,87,90,91,93,94,97,115,123,132,135,136,142,153,160,161,168,173,175,185,191,202,203,204,209,210,210,215,217,221,223,232,240,243,243,252,254,256,280,282,284,284,295,300,304,307,308,314,314,329,329,330,332,332,338,341,344,345,347,348,357,358,367,367,383,383,386,399,402,403,403,418,419,420,420,422,426,426,430,438,450,454,457,479,488,493,507,517,518,531,532,536,537,542,544,552,552,553,558,560,561,566,569,571,590,596,598,606,607,610,615,616,623,636,649,657,662,676,684,693,726,737,742,748,750,752,755,778,797,820,837,843,900,923,972]
   },
   "17": {
    "scheduled": 199,
-   "observed": 179,
-   "observed_share": 0.8995,
-   "on_time": 89,
+   "observed": 184,
+   "observed_share": 0.9246,
+   "on_time": 93,
    "early": 1,
-   "late": 89,
-   "on_time_share_of_observed": 0.4972,
-   "deviation_s_median": 292.3,
-   "deviations_s": [-232,-208,-190,-105,-87,-30,-8,1,1,6,9,13,22,25,28,29,38,41,44,49,50,50,57,66,100,102,112,118,122,125,128,130,133,138,139,142,144,150,150,152,156,158,162,164,165,165,166,169,170,173,175,176,179,180,182,183,185,185,186,196,196,199,200,200,204,204,205,206,207,211,212,219,222,224,226,230,233,239,239,242,246,246,253,256,258,262,279,281,282,292,302,314,322,324,326,326,341,341,344,349,358,361,363,367,378,391,392,392,399,402,404,415,416,417,417,419,421,422,443,447,455,461,483,484,489,491,499,500,507,529,530,541,548,559,564,565,572,588,602,611,617,618,622,642,644,646,658,669,684,684,697,711,716,724,732,743,755,758,857,872,898,917,918,930,946,962,967,1001,1003,1015,1026,1033,1083,1125,1140,1175,1177,1237,1386]
+   "late": 90,
+   "on_time_share_of_observed": 0.5054,
+   "deviation_s_median": 281.4,
+   "deviations_s": [-232,-208,-190,-105,-87,-30,-8,1,1,6,9,13,22,25,28,29,37,38,41,44,48,49,50,50,57,58,66,100,102,112,118,122,125,128,130,131,133,138,139,142,144,150,150,152,156,158,162,164,165,165,166,169,170,173,175,176,179,180,182,183,185,185,186,196,196,199,200,200,204,204,205,206,207,211,212,219,222,224,226,230,233,239,239,242,246,246,253,256,258,262,279,281,282,292,302,314,322,324,326,326,341,341,344,349,358,361,363,367,378,391,392,392,399,402,404,415,416,417,417,419,421,422,443,447,455,461,481,483,484,489,491,499,500,507,529,530,541,548,559,564,565,572,588,602,611,617,618,622,642,644,646,658,669,684,684,697,711,716,724,732,743,755,758,857,872,898,917,918,930,946,962,967,1001,1003,1015,1026,1033,1083,1125,1140,1175,1177,1237,1386]
   },
   "18": {
    "scheduled": 201,
-   "observed": 181,
-   "observed_share": 0.9005,
-   "on_time": 114,
+   "observed": 189,
+   "observed_share": 0.9403,
+   "on_time": 120,
    "early": 6,
-   "late": 61,
-   "on_time_share_of_observed": 0.6298,
+   "late": 63,
+   "on_time_share_of_observed": 0.6349,
    "deviation_s_median": 239.8,
-   "deviations_s": [-376,-313,-239,-217,-214,-165,-144,-110,-90,-90,-81,-45,-42,-32,-26,-11,-4,-3,-2,-2,0,2,4,7,9,10,14,27,38,39,40,46,48,50,51,58,64,78,78,80,80,90,93,98,100,101,104,105,105,112,118,118,123,128,132,133,135,139,144,146,147,150,151,155,155,164,166,172,172,181,186,189,191,197,197,200,203,203,204,205,206,216,217,220,222,222,225,226,228,229,240,240,242,246,247,249,253,254,258,259,259,261,261,262,262,269,271,273,275,280,284,284,286,288,292,294,296,296,298,299,301,306,310,311,314,316,316,317,318,325,329,330,330,332,335,342,343,343,344,351,353,357,359,359,364,369,375,378,381,381,383,386,391,392,392,395,432,435,438,439,443,443,449,470,480,494,501,503,512,519,559,574,585,586,602,621,666,717,1158,1188,1200]
+   "deviations_s": [-376,-313,-249,-239,-217,-214,-165,-144,-110,-90,-90,-81,-45,-42,-32,-26,-11,-4,-3,-2,-2,0,2,4,7,9,10,14,27,38,39,40,46,48,50,51,58,64,78,78,80,80,86,90,93,98,100,101,104,105,105,112,118,118,123,128,132,133,135,139,144,144,146,147,150,151,155,155,164,166,172,172,173,181,186,189,191,197,197,200,203,203,204,205,206,216,217,220,222,222,225,226,228,229,240,240,242,246,247,249,250,253,254,258,259,259,261,261,262,262,266,269,271,273,275,280,284,284,286,288,292,294,296,296,298,299,301,306,310,311,314,316,316,317,318,320,325,329,330,330,332,335,342,343,343,344,351,353,357,359,359,364,369,375,378,381,381,383,386,391,392,392,395,432,435,438,439,443,443,449,470,480,494,501,503,504,512,519,559,574,585,586,602,621,666,717,1158,1188,1200]
   },
   "19": {
    "scheduled": 118,
-   "observed": 91,
-   "observed_share": 0.7712,
-   "on_time": 74,
+   "observed": 96,
+   "observed_share": 0.8136,
+   "on_time": 79,
    "early": 4,
    "late": 13,
-   "on_time_share_of_observed": 0.8132,
-   "deviation_s_median": 126.6,
-   "deviations_s": [-394,-326,-277,-256,-197,-122,-117,-101,-96,-85,-50,-36,-29,-26,-14,-8,0,3,7,16,28,44,49,54,62,65,66,67,68,77,79,87,94,95,95,101,105,107,107,107,114,116,117,119,119,127,140,141,142,147,150,155,157,160,163,163,165,166,173,174,175,183,183,183,183,187,189,197,199,203,221,223,226,235,240,268,273,283,358,375,421,458,465,483,491,524,524,531,551,604,709]
+   "on_time_share_of_observed": 0.8229,
+   "deviation_s_median": 117.7,
+   "deviations_s": [-394,-326,-298,-277,-256,-235,-197,-122,-117,-101,-96,-85,-50,-36,-35,-29,-26,-14,-8,0,3,7,16,28,34,44,47,49,54,62,65,66,67,68,77,79,87,94,95,95,101,105,107,107,107,114,116,117,119,119,127,140,141,142,147,150,155,157,160,163,163,165,166,173,174,175,183,183,183,183,187,189,197,199,203,221,223,226,235,240,268,273,283,358,375,421,458,465,483,491,524,524,531,551,604,709]
   },
   "20": {
    "scheduled": 16,
-   "observed": 2,
-   "observed_share": 0.125,
-   "on_time": 2,
+   "observed": 3,
+   "observed_share": 0.1875,
+   "on_time": 3,
    "early": 0,
    "late": 0,
    "on_time_share_of_observed": 1.0,
-   "deviation_s_median": 135.0,
-   "deviations_s": [68,202]
+   "deviation_s_median": 68.1,
+   "deviations_s": [-97,68,202]
+  }
+ },
+ "by_position": {
+  "first": {
+   "scheduled": 139,
+   "observed": 113,
+   "observed_share": 0.8129,
+   "on_time": 85,
+   "early": 7,
+   "late": 21,
+   "on_time_share_of_observed": 0.7522,
+   "deviation_s_median": 52.4
+  },
+  "middle": {
+   "scheduled": 906,
+   "observed": 806,
+   "observed_share": 0.8896,
+   "on_time": 469,
+   "early": 16,
+   "late": 321,
+   "on_time_share_of_observed": 0.5819,
+   "deviation_s_median": 228.0
+  },
+  "last": {
+   "scheduled": 159,
+   "observed": 138,
+   "observed_share": 0.8679,
+   "on_time": 95,
+   "early": 0,
+   "late": 43,
+   "on_time_share_of_observed": 0.6884,
+   "deviation_s_median": 130.6
   }
  },
  "by_route_stop": {
@@ -254,6 +286,7 @@
    "178124": {
     "name": "Cama Beach",
     "stop_sequence_median": 22,
+    "position": "middle",
     "scheduled": 7,
     "observed": 0,
     "observed_share": 0.0,
@@ -267,6 +300,7 @@
    "178215": {
     "name": "Arrowhead Rd at Chick Rd (Baker View Ln)",
     "stop_sequence_median": 36,
+    "position": "middle",
     "scheduled": 7,
     "observed": 0,
     "observed_share": 0.0,
@@ -280,6 +314,7 @@
    "178228": {
     "name": "Lost Lake",
     "stop_sequence_median": 26,
+    "position": "middle",
     "scheduled": 7,
     "observed": 6,
     "observed_share": 0.8571,
@@ -293,6 +328,7 @@
    "178232": {
     "name": "Chapman and Rowe",
     "stop_sequence_median": 18,
+    "position": "middle",
     "scheduled": 7,
     "observed": 6,
     "observed_share": 0.8571,
@@ -306,6 +342,7 @@
    "178240": {
     "name": "Camano Plaza at E Camano Dr",
     "stop_sequence_median": 34,
+    "position": "middle",
     "scheduled": 7,
     "observed": 5,
     "observed_share": 0.7143,
@@ -319,6 +356,7 @@
    "178280": {
     "name": "Huntington Store",
     "stop_sequence_median": 7,
+    "position": "middle",
     "scheduled": 7,
     "observed": 6,
     "observed_share": 0.8571,
@@ -332,6 +370,7 @@
    "178376": {
     "name": "Terry's Corner",
     "stop_sequence_median": 39,
+    "position": "last",
     "scheduled": 15,
     "observed": 12,
     "observed_share": 0.8,
@@ -345,6 +384,7 @@
    "218433": {
     "name": "Russell Rd at Sunrise Blvd",
     "stop_sequence_median": 33,
+    "position": "middle",
     "scheduled": 7,
     "observed": 0,
     "observed_share": 0.0,
@@ -360,6 +400,7 @@
    "178148": {
     "name": "Heller St at Hillcrest Elementary School",
     "stop_sequence_median": 16,
+    "position": "middle",
     "scheduled": 5,
     "observed": 3,
     "observed_share": 0.6,
@@ -373,6 +414,7 @@
    "178159": {
     "name": "Barrington Dr at Walmart",
     "stop_sequence_median": 19,
+    "position": "middle",
     "scheduled": 5,
     "observed": 3,
     "observed_share": 0.6,
@@ -386,6 +428,7 @@
    "178196": {
     "name": "Walmart at Erie St",
     "stop_sequence_median": 22,
+    "position": "middle",
     "scheduled": 5,
     "observed": 3,
     "observed_share": 0.6,
@@ -399,6 +442,7 @@
    "178241": {
     "name": "Barrington Dr at Post Office",
     "stop_sequence_median": 23,
+    "position": "middle",
     "scheduled": 5,
     "observed": 0,
     "observed_share": 0.0,
@@ -412,6 +456,7 @@
    "178310": {
     "name": "Fort Nugent at Stremler Dr",
     "stop_sequence_median": 8,
+    "position": "middle",
     "scheduled": 4,
     "observed": 3,
     "observed_share": 0.75,
@@ -425,6 +470,7 @@
    "178323": {
     "name": "Walmart at Erie St",
     "stop_sequence_median": 4,
+    "position": "middle",
     "scheduled": 4,
     "observed": 3,
     "observed_share": 0.75,
@@ -438,19 +484,21 @@
    "178398": {
     "name": "Harbor Station Transfer Center Bayshore Dr",
     "stop_sequence_median": 26,
+    "position": "last",
     "scheduled": 9,
-    "observed": 1,
-    "observed_share": 0.1111,
-    "on_time": 1,
+    "observed": 4,
+    "observed_share": 0.4444,
+    "on_time": 2,
     "early": 0,
-    "late": 0,
-    "on_time_share_of_observed": 1.0,
-    "deviation_s_median": 37.5,
-    "deviations_s": [38]
+    "late": 2,
+    "on_time_share_of_observed": 0.5,
+    "deviation_s_median": 231.6,
+    "deviations_s": [0,38,426,481]
    },
    "178489": {
     "name": "SW 24th Ave at Ridgeway Dr",
     "stop_sequence_median": 6,
+    "position": "middle",
     "scheduled": 4,
     "observed": 3,
     "observed_share": 0.75,
@@ -464,6 +512,7 @@
    "178490": {
     "name": "Swantown Rd at Fairway Ln",
     "stop_sequence_median": 11,
+    "position": "middle",
     "scheduled": 4,
     "observed": 3,
     "observed_share": 0.75,
@@ -477,6 +526,7 @@
    "178491": {
     "name": "Monticello Way at Orchard Loop",
     "stop_sequence_median": 13,
+    "position": "middle",
     "scheduled": 5,
     "observed": 3,
     "observed_share": 0.6,
@@ -490,6 +540,7 @@
    "178492": {
     "name": "NW Crosby Rd at NW Scenic Vista St",
     "stop_sequence_median": 15,
+    "position": "middle",
     "scheduled": 5,
     "observed": 3,
     "observed_share": 0.6,
@@ -503,6 +554,7 @@
    "178493": {
     "name": "SW Barrington Dr at Kaleeton Loop",
     "stop_sequence_median": 18,
+    "position": "middle",
     "scheduled": 5,
     "observed": 3,
     "observed_share": 0.6,
@@ -516,6 +568,7 @@
    "178494": {
     "name": "Bayshore Dr at Grocery Outlet",
     "stop_sequence_median": 21,
+    "position": "middle",
     "scheduled": 5,
     "observed": 3,
     "observed_share": 0.6,
@@ -529,6 +582,7 @@
    "178495": {
     "name": "SE Ireland St at SE 8th Ave",
     "stop_sequence_median": 24,
+    "position": "middle",
     "scheduled": 5,
     "observed": 0,
     "observed_share": 0.0,
@@ -544,6 +598,7 @@
    "178148": {
     "name": "Heller St at Hillcrest Elementary School",
     "stop_sequence_median": 15,
+    "position": "middle",
     "scheduled": 13,
     "observed": 13,
     "observed_share": 1.0,
@@ -557,6 +612,7 @@
    "178149": {
     "name": "Whidbey Ave at Saars Super Saver Foods",
     "stop_sequence_median": 17,
+    "position": "middle",
     "scheduled": 13,
     "observed": 13,
     "observed_share": 1.0,
@@ -570,6 +626,7 @@
    "178150": {
     "name": "Crosby Ave at Parkwood Manor",
     "stop_sequence_median": 14,
+    "position": "middle",
     "scheduled": 13,
     "observed": 13,
     "observed_share": 1.0,
@@ -583,6 +640,7 @@
    "178157": {
     "name": "NE 7th Ave at Lexy Manor",
     "stop_sequence_median": 11,
+    "position": "middle",
     "scheduled": 13,
     "observed": 13,
     "observed_share": 1.0,
@@ -596,6 +654,7 @@
    "178159": {
     "name": "Barrington Dr at Walmart",
     "stop_sequence_median": 20,
+    "position": "middle",
     "scheduled": 13,
     "observed": 13,
     "observed_share": 1.0,
@@ -609,6 +668,7 @@
    "178297": {
     "name": "SW 6th Ave at Oak Harbor Intermediate School",
     "stop_sequence_median": 19,
+    "position": "middle",
     "scheduled": 13,
     "observed": 13,
     "observed_share": 1.0,
@@ -622,6 +682,7 @@
    "178351": {
     "name": "Midway Blvd at NE 4th Ave",
     "stop_sequence_median": 8,
+    "position": "middle",
     "scheduled": 13,
     "observed": 13,
     "observed_share": 1.0,
@@ -635,19 +696,21 @@
    "178398": {
     "name": "Harbor Station Transfer Center Bayshore Dr",
     "stop_sequence_median": 22,
+    "position": "last",
     "scheduled": 27,
-    "observed": 22,
-    "observed_share": 0.8148,
-    "on_time": 20,
+    "observed": 23,
+    "observed_share": 0.8519,
+    "on_time": 21,
     "early": 0,
     "late": 2,
-    "on_time_share_of_observed": 0.9091,
-    "deviation_s_median": 10.8,
-    "deviations_s": [-394,-200,-183,-129,-121,-117,-110,-87,-10,-3,6,15,21,23,25,50,102,116,128,269,329,417]
+    "on_time_share_of_observed": 0.913,
+    "deviation_s_median": 15.2,
+    "deviations_s": [-394,-200,-183,-129,-121,-117,-110,-87,-10,-3,6,15,21,23,25,50,102,116,128,266,269,329,417]
    },
    "197268": {
     "name": "Skagit Valley College/Library",
     "stop_sequence_median": 4,
+    "position": "middle",
     "scheduled": 13,
     "observed": 13,
     "observed_share": 1.0,
@@ -663,6 +726,7 @@
    "178136": {
     "name": "Stanwood Library",
     "stop_sequence_median": 9,
+    "position": "middle",
     "scheduled": 6,
     "observed": 6,
     "observed_share": 1.0,
@@ -676,6 +740,7 @@
    "178271": {
     "name": "Haggen Grocery",
     "stop_sequence_median": 12,
+    "position": "last",
     "scheduled": 6,
     "observed": 6,
     "observed_share": 1.0,
@@ -689,6 +754,7 @@
    "178272": {
     "name": "Viking Village",
     "stop_sequence_median": 10,
+    "position": "middle",
     "scheduled": 6,
     "observed": 6,
     "observed_share": 1.0,
@@ -702,6 +768,7 @@
    "178275": {
     "name": "Camano St",
     "stop_sequence_median": 6,
+    "position": "middle",
     "scheduled": 6,
     "observed": 6,
     "observed_share": 1.0,
@@ -715,6 +782,7 @@
    "178283": {
     "name": "Rite-Aid Stanwood",
     "stop_sequence_median": 5,
+    "position": "middle",
     "scheduled": 6,
     "observed": 6,
     "observed_share": 1.0,
@@ -728,21 +796,23 @@
    "178376": {
     "name": "Terry's Corner",
     "stop_sequence_median": 15,
+    "position": "last",
     "scheduled": 13,
-    "observed": 8,
-    "observed_share": 0.6154,
-    "on_time": 8,
+    "observed": 11,
+    "observed_share": 0.8462,
+    "on_time": 11,
     "early": 0,
     "late": 0,
     "on_time_share_of_observed": 1.0,
-    "deviation_s_median": -214.1,
-    "deviations_s": [-376,-366,-326,-221,-208,48,66,222]
+    "deviation_s_median": 45.5,
+    "deviations_s": [-376,-366,-326,-221,-208,46,48,48,52,66,222]
    }
   },
   "7914": {
    "178215": {
     "name": "Arrowhead Rd at Chick Rd (Baker View Ln)",
     "stop_sequence_median": 38,
+    "position": "middle",
     "scheduled": 7,
     "observed": 1,
     "observed_share": 0.1429,
@@ -756,6 +826,7 @@
    "178240": {
     "name": "Camano Plaza at E Camano Dr",
     "stop_sequence_median": 36,
+    "position": "middle",
     "scheduled": 14,
     "observed": 12,
     "observed_share": 0.8571,
@@ -769,6 +840,7 @@
    "178276": {
     "name": "Camano Island Health System",
     "stop_sequence_median": 30,
+    "position": "middle",
     "scheduled": 14,
     "observed": 13,
     "observed_share": 0.9286,
@@ -782,6 +854,7 @@
    "178376": {
     "name": "Terry's Corner",
     "stop_sequence_median": 41,
+    "position": "last",
     "scheduled": 15,
     "observed": 11,
     "observed_share": 0.7333,
@@ -795,6 +868,7 @@
    "188843": {
     "name": "Elger Bay Rd at Elger Bay Grocery",
     "stop_sequence_median": 28,
+    "position": "middle",
     "scheduled": 7,
     "observed": 6,
     "observed_share": 0.8571,
@@ -808,6 +882,7 @@
    "197213": {
     "name": "E Camano Dr at Shuksan Dr",
     "stop_sequence_median": 15,
+    "position": "middle",
     "scheduled": 7,
     "observed": 6,
     "observed_share": 0.8571,
@@ -821,6 +896,7 @@
    "218433": {
     "name": "Russell Rd at Sunrise Blvd",
     "stop_sequence_median": 34,
+    "position": "middle",
     "scheduled": 7,
     "observed": 0,
     "observed_share": 0.0,
@@ -836,6 +912,7 @@
    "178160": {
     "name": "Stanwood P&R II",
     "stop_sequence_median": 7,
+    "position": "middle",
     "scheduled": 4,
     "observed": 4,
     "observed_share": 1.0,
@@ -849,6 +926,7 @@
    "178267": {
     "name": "Pioneer Hwy at North Star Cold Storage",
     "stop_sequence_median": 5,
+    "position": "middle",
     "scheduled": 4,
     "observed": 4,
     "observed_share": 1.0,
@@ -862,6 +940,7 @@
    "178283": {
     "name": "Rite-Aid Stanwood",
     "stop_sequence_median": 6,
+    "position": "middle",
     "scheduled": 8,
     "observed": 8,
     "observed_share": 1.0,
@@ -875,6 +954,7 @@
    "178286": {
     "name": "Conway",
     "stop_sequence_median": 2,
+    "position": "middle",
     "scheduled": 4,
     "observed": 4,
     "observed_share": 1.0,
@@ -888,6 +968,7 @@
    "178287": {
     "name": "Conway",
     "stop_sequence_median": 11,
+    "position": "middle",
     "scheduled": 4,
     "observed": 4,
     "observed_share": 1.0,
@@ -901,6 +982,7 @@
    "178307": {
     "name": "Pioneer Hwy at Les Schwab",
     "stop_sequence_median": 8,
+    "position": "middle",
     "scheduled": 4,
     "observed": 4,
     "observed_share": 1.0,
@@ -914,19 +996,21 @@
    "178371": {
     "name": "Skagit Station",
     "stop_sequence_median": 12,
+    "position": "middle",
     "scheduled": 8,
-    "observed": 4,
-    "observed_share": 0.5,
-    "on_time": 2,
+    "observed": 7,
+    "observed_share": 0.875,
+    "on_time": 5,
     "early": 0,
     "late": 2,
-    "on_time_share_of_observed": 0.5,
-    "deviation_s_median": 122.4,
-    "deviations_s": [-256,-136,381,394]
+    "on_time_share_of_observed": 0.7143,
+    "deviation_s_median": 33.5,
+    "deviations_s": [-256,-136,28,34,173,381,394]
    },
    "178376": {
     "name": "Terry's Corner",
     "stop_sequence_median": 12,
+    "position": "middle",
     "scheduled": 8,
     "observed": 8,
     "observed_share": 1.0,
@@ -942,6 +1026,7 @@
    "178160": {
     "name": "Stanwood P&R II",
     "stop_sequence_median": 17,
+    "position": "middle",
     "scheduled": 5,
     "observed": 3,
     "observed_share": 0.6,
@@ -955,19 +1040,21 @@
    "178258": {
     "name": "Everett Station",
     "stop_sequence_median": 20,
+    "position": "middle",
     "scheduled": 6,
-    "observed": 2,
-    "observed_share": 0.3333,
-    "on_time": 2,
-    "early": 0,
+    "observed": 4,
+    "observed_share": 0.6667,
+    "on_time": 3,
+    "early": 1,
     "late": 0,
-    "on_time_share_of_observed": 1.0,
+    "on_time_share_of_observed": 0.75,
     "deviation_s_median": -357.9,
-    "deviations_s": [-526,-190]
+    "deviations_s": [-1113,-526,-190,58]
    },
    "178259": {
     "name": "EVCC Tower & Broadway",
     "stop_sequence_median": 14,
+    "position": "middle",
     "scheduled": 3,
     "observed": 2,
     "observed_share": 0.6667,
@@ -981,6 +1068,7 @@
    "178260": {
     "name": "EVCC Tower & Broadway",
     "stop_sequence_median": 5,
+    "position": "middle",
     "scheduled": 3,
     "observed": 1,
     "observed_share": 0.3333,
@@ -994,6 +1082,7 @@
    "178261": {
     "name": "I-5 P&R",
     "stop_sequence_median": 4,
+    "position": "middle",
     "scheduled": 2,
     "observed": 2,
     "observed_share": 1.0,
@@ -1007,6 +1096,7 @@
    "178283": {
     "name": "Rite-Aid Stanwood",
     "stop_sequence_median": 16,
+    "position": "middle",
     "scheduled": 5,
     "observed": 3,
     "observed_share": 0.6,
@@ -1020,6 +1110,7 @@
    "178296": {
     "name": "I-5 P&R",
     "stop_sequence_median": 15,
+    "position": "middle",
     "scheduled": 3,
     "observed": 2,
     "observed_share": 0.6667,
@@ -1033,34 +1124,37 @@
    "178376": {
     "name": "Terry's Corner",
     "stop_sequence_median": 19,
+    "position": "last",
     "scheduled": 5,
-    "observed": 3,
-    "observed_share": 0.6,
-    "on_time": 3,
+    "observed": 4,
+    "observed_share": 0.8,
+    "on_time": 4,
     "early": 0,
     "late": 0,
     "on_time_share_of_observed": 1.0,
-    "deviation_s_median": -104.7,
-    "deviations_s": [-740,-105,17]
+    "deviation_s_median": -43.8,
+    "deviations_s": [-740,-105,17,44]
    }
   },
   "7918": {
    "178134": {
     "name": "Engle Rd at Coupeville Ferry Terminal",
     "stop_sequence_median": 28,
+    "position": "middle",
     "scheduled": 12,
-    "observed": 3,
-    "observed_share": 0.25,
-    "on_time": 0,
+    "observed": 9,
+    "observed_share": 0.75,
+    "on_time": 6,
     "early": 2,
     "late": 1,
-    "on_time_share_of_observed": 0.0,
-    "deviation_s_median": -99.4,
-    "deviations_s": [-232,-99,571]
+    "on_time_share_of_observed": 0.6667,
+    "deviation_s_median": -96.6,
+    "deviations_s": [-298,-235,-232,-99,-97,58,190,280,571]
    },
    "178140": {
     "name": "Libbey Rd at SR 20",
     "stop_sequence_median": 23,
+    "position": "middle",
     "scheduled": 4,
     "observed": 4,
     "observed_share": 1.0,
@@ -1074,6 +1168,7 @@
    "178311": {
     "name": "Fort Nugent/West Beach",
     "stop_sequence_median": 29,
+    "position": "middle",
     "scheduled": 4,
     "observed": 4,
     "observed_share": 1.0,
@@ -1087,6 +1182,7 @@
    "178316": {
     "name": "Coupeville Park & Ride",
     "stop_sequence_median": 15,
+    "position": "middle",
     "scheduled": 7,
     "observed": 4,
     "observed_share": 0.5714,
@@ -1100,6 +1196,7 @@
    "178319": {
     "name": "Coupeville Library",
     "stop_sequence_median": 21,
+    "position": "middle",
     "scheduled": 6,
     "observed": 6,
     "observed_share": 1.0,
@@ -1113,6 +1210,7 @@
    "178321": {
     "name": "Fort Nugent/West Beach",
     "stop_sequence_median": 9,
+    "position": "middle",
     "scheduled": 6,
     "observed": 6,
     "observed_share": 1.0,
@@ -1126,6 +1224,7 @@
    "178398": {
     "name": "Harbor Station Transfer Center Bayshore Dr",
     "stop_sequence_median": 1,
+    "position": "first",
     "scheduled": 10,
     "observed": 8,
     "observed_share": 0.8,
@@ -1139,6 +1238,7 @@
    "178399": {
     "name": "Main St at Coupeville Elementary School",
     "stop_sequence_median": 24,
+    "position": "middle",
     "scheduled": 6,
     "observed": 6,
     "observed_share": 1.0,
@@ -1152,6 +1252,7 @@
    "178449": {
     "name": "SR 20 at Sherman St",
     "stop_sequence_median": 18,
+    "position": "middle",
     "scheduled": 6,
     "observed": 6,
     "observed_share": 1.0,
@@ -1165,6 +1266,7 @@
    "178450": {
     "name": "SR 20 at Libbey Rd",
     "stop_sequence_median": 17,
+    "position": "middle",
     "scheduled": 6,
     "observed": 6,
     "observed_share": 1.0,
@@ -1178,6 +1280,7 @@
    "197226": {
     "name": "Main St at Whidbey Health Medical Center",
     "stop_sequence_median": 16,
+    "position": "middle",
     "scheduled": 4,
     "observed": 4,
     "observed_share": 1.0,
@@ -1191,6 +1294,7 @@
    "197231": {
     "name": "Walmart at Erie St",
     "stop_sequence_median": 33,
+    "position": "middle",
     "scheduled": 4,
     "observed": 4,
     "observed_share": 1.0,
@@ -1204,6 +1308,7 @@
    "197232": {
     "name": "Walmart at Erie St",
     "stop_sequence_median": 4,
+    "position": "middle",
     "scheduled": 6,
     "observed": 6,
     "observed_share": 1.0,
@@ -1217,6 +1322,7 @@
    "197248": {
     "name": "SR 20 at Race Rd",
     "stop_sequence_median": 2,
+    "position": "middle",
     "scheduled": 3,
     "observed": 3,
     "observed_share": 1.0,
@@ -1230,6 +1336,7 @@
    "218437": {
     "name": "Koenig Ln at SR 20",
     "stop_sequence_median": 6,
+    "position": "middle",
     "scheduled": 3,
     "observed": 3,
     "observed_share": 1.0,
@@ -1245,6 +1352,7 @@
    "178201": {
     "name": "SR 20 at Ducken Rd",
     "stop_sequence_median": 18,
+    "position": "middle",
     "scheduled": 5,
     "observed": 3,
     "observed_share": 0.6,
@@ -1258,6 +1366,7 @@
    "178331": {
     "name": "SR 20 at Deception Pass State Park",
     "stop_sequence_median": 3,
+    "position": "middle",
     "scheduled": 6,
     "observed": 6,
     "observed_share": 1.0,
@@ -1271,6 +1380,7 @@
    "178343": {
     "name": "SR 20 at Liberty Market",
     "stop_sequence_median": 11,
+    "position": "middle",
     "scheduled": 6,
     "observed": 6,
     "observed_share": 1.0,
@@ -1284,6 +1394,7 @@
    "178344": {
     "name": "SR 20 at Banta Rd",
     "stop_sequence_median": 6,
+    "position": "middle",
     "scheduled": 6,
     "observed": 6,
     "observed_share": 1.0,
@@ -1297,6 +1408,7 @@
    "178346": {
     "name": "Troxell at Monkey Hill Rd (on request)",
     "stop_sequence_median": 16,
+    "position": "middle",
     "scheduled": 5,
     "observed": 1,
     "observed_share": 0.2,
@@ -1310,6 +1422,7 @@
    "178347": {
     "name": "SR 20 at Northgate Dr",
     "stop_sequence_median": 15,
+    "position": "middle",
     "scheduled": 5,
     "observed": 5,
     "observed_share": 1.0,
@@ -1323,6 +1436,7 @@
    "178349": {
     "name": "SR 20 at Whispering Pines",
     "stop_sequence_median": 11,
+    "position": "middle",
     "scheduled": 5,
     "observed": 5,
     "observed_share": 1.0,
@@ -1336,19 +1450,21 @@
    "178398": {
     "name": "Harbor Station Transfer Center Bayshore Dr",
     "stop_sequence_median": 18,
+    "position": "last",
     "scheduled": 11,
-    "observed": 5,
-    "observed_share": 0.4545,
-    "on_time": 3,
+    "observed": 11,
+    "observed_share": 1.0,
+    "on_time": 9,
     "early": 0,
     "late": 2,
-    "on_time_share_of_observed": 0.6,
-    "deviation_s_median": 223.2,
-    "deviations_s": [78,166,223,392,581]
+    "on_time_share_of_observed": 0.8182,
+    "deviation_s_median": 85.9,
+    "deviations_s": [37,49,52,78,83,86,166,202,223,392,581]
    },
    "197260": {
     "name": "Goldie Rd at Whidbey-Health",
     "stop_sequence_median": 7,
+    "position": "middle",
     "scheduled": 5,
     "observed": 5,
     "observed_share": 1.0,
@@ -1362,6 +1478,7 @@
    "197263": {
     "name": "March Point",
     "stop_sequence_median": 20,
+    "position": "middle",
     "scheduled": 12,
     "observed": 11,
     "observed_share": 0.9167,
@@ -1375,6 +1492,7 @@
    "197264": {
     "name": "Goldie Rd at Whidbey Health",
     "stop_sequence_median": 13,
+    "position": "middle",
     "scheduled": 6,
     "observed": 6,
     "observed_share": 1.0,
@@ -1390,6 +1508,7 @@
    "178143": {
     "name": "Oak Harbor St at Columbia Dr",
     "stop_sequence_median": 17,
+    "position": "middle",
     "scheduled": 6,
     "observed": 6,
     "observed_share": 1.0,
@@ -1403,6 +1522,7 @@
    "178144": {
     "name": "Oak Harbor Rd at Oak Hallow",
     "stop_sequence_median": 15,
+    "position": "middle",
     "scheduled": 6,
     "observed": 6,
     "observed_share": 1.0,
@@ -1416,6 +1536,7 @@
    "178149": {
     "name": "Whidbey Ave at Saars Super Saver Foods",
     "stop_sequence_median": 19,
+    "position": "middle",
     "scheduled": 6,
     "observed": 6,
     "observed_share": 1.0,
@@ -1429,6 +1550,7 @@
    "178373": {
     "name": "Heller St at Oak Harbor High School",
     "stop_sequence_median": 8,
+    "position": "middle",
     "scheduled": 6,
     "observed": 6,
     "observed_share": 1.0,
@@ -1442,19 +1564,21 @@
    "178398": {
     "name": "Harbor Station Transfer Center Bayshore Dr",
     "stop_sequence_median": 23,
+    "position": "middle",
     "scheduled": 12,
-    "observed": 4,
-    "observed_share": 0.3333,
-    "on_time": 3,
+    "observed": 10,
+    "observed_share": 0.8333,
+    "on_time": 8,
     "early": 0,
-    "late": 1,
-    "on_time_share_of_observed": 0.75,
-    "deviation_s_median": 104.4,
-    "deviations_s": [14,45,164,341]
+    "late": 2,
+    "on_time_share_of_observed": 0.8,
+    "deviation_s_median": 64.1,
+    "deviations_s": [-302,-249,-229,14,45,83,131,164,341,488]
    },
    "178401": {
     "name": "Barrington Dr at Haggens",
     "stop_sequence_median": 3,
+    "position": "middle",
     "scheduled": 6,
     "observed": 6,
     "observed_share": 1.0,
@@ -1468,6 +1592,7 @@
    "178481": {
     "name": "Ault Field Rd at Langley Blvd",
     "stop_sequence_median": 11,
+    "position": "middle",
     "scheduled": 6,
     "observed": 6,
     "observed_share": 1.0,
@@ -1481,6 +1606,7 @@
    "197232": {
     "name": "Walmart at Erie St",
     "stop_sequence_median": 4,
+    "position": "middle",
     "scheduled": 6,
     "observed": 6,
     "observed_share": 1.0,
@@ -1494,6 +1620,7 @@
    "197267": {
     "name": "Jerome St at Senior Ctr/Pool",
     "stop_sequence_median": 20,
+    "position": "middle",
     "scheduled": 6,
     "observed": 6,
     "observed_share": 1.0,
@@ -1509,6 +1636,7 @@
    "178171": {
     "name": "Camano Ave at Langley P&R",
     "stop_sequence_median": 12,
+    "position": "middle",
     "scheduled": 24,
     "observed": 24,
     "observed_share": 1.0,
@@ -1522,6 +1650,7 @@
    "178194": {
     "name": "Bayview P&R",
     "stop_sequence_median": 5,
+    "position": "middle",
     "scheduled": 11,
     "observed": 11,
     "observed_share": 1.0,
@@ -1535,6 +1664,7 @@
    "178203": {
     "name": "Maxwelton Rd at SW High School",
     "stop_sequence_median": 11,
+    "position": "middle",
     "scheduled": 11,
     "observed": 11,
     "observed_share": 1.0,
@@ -1548,19 +1678,21 @@
    "178249": {
     "name": "Freeland at Main St",
     "stop_sequence_median": 31,
+    "position": "last",
     "scheduled": 23,
-    "observed": 20,
-    "observed_share": 0.8696,
-    "on_time": 9,
+    "observed": 22,
+    "observed_share": 0.9565,
+    "on_time": 11,
     "early": 0,
     "late": 11,
-    "on_time_share_of_observed": 0.45,
-    "deviation_s_median": 338.8,
-    "deviations_s": [44,52,132,162,180,206,232,243,286,327,351,421,451,458,724,743,797,843,863,910]
+    "on_time_share_of_observed": 0.5,
+    "deviation_s_median": 306.4,
+    "deviations_s": [44,47,52,132,144,162,180,206,232,243,286,327,351,421,451,458,724,743,797,843,863,910]
    },
    "178385": {
     "name": "South Whidbey High School",
     "stop_sequence_median": 22,
+    "position": "middle",
     "scheduled": 13,
     "observed": 9,
     "observed_share": 0.6923,
@@ -1574,6 +1706,7 @@
    "178388": {
     "name": "Anthes Ave at Third St",
     "stop_sequence_median": 16,
+    "position": "middle",
     "scheduled": 24,
     "observed": 24,
     "observed_share": 1.0,
@@ -1587,6 +1720,7 @@
    "178406": {
     "name": "SR 525 at Clinton Park & Ride",
     "stop_sequence_median": 26,
+    "position": "middle",
     "scheduled": 11,
     "observed": 11,
     "observed_share": 1.0,
@@ -1600,19 +1734,21 @@
    "178409": {
     "name": "Clinton Ferry Terminal",
     "stop_sequence_median": 1,
+    "position": "first",
     "scheduled": 23,
-    "observed": 14,
-    "observed_share": 0.6087,
-    "on_time": 4,
+    "observed": 19,
+    "observed_share": 0.8261,
+    "on_time": 5,
     "early": 2,
-    "late": 8,
-    "on_time_share_of_observed": 0.2857,
-    "deviation_s_median": 358.6,
-    "deviations_s": [-140,-95,9,185,197,205,325,392,426,447,558,917,1033,1260]
+    "late": 12,
+    "on_time_share_of_observed": 0.2632,
+    "deviation_s_median": 386.4,
+    "deviations_s": [-140,-95,9,185,197,205,250,325,357,386,392,414,426,447,558,606,917,1033,1260]
    },
    "178413": {
     "name": "Bayview P&R",
     "stop_sequence_median": 27,
+    "position": "middle",
     "scheduled": 13,
     "observed": 13,
     "observed_share": 1.0,
@@ -1626,6 +1762,7 @@
    "197273": {
     "name": "Langley Rd at Ken's Korner",
     "stop_sequence_median": 23,
+    "position": "middle",
     "scheduled": 11,
     "observed": 11,
     "observed_share": 1.0,
@@ -1639,6 +1776,7 @@
    "197274": {
     "name": "Clinton Park & Ride at Deer Lake Rd",
     "stop_sequence_median": 2,
+    "position": "middle",
     "scheduled": 12,
     "observed": 12,
     "observed_share": 1.0,
@@ -1652,6 +1790,7 @@
    "197275": {
     "name": "Langley Rd at Ken's Korner",
     "stop_sequence_median": 9,
+    "position": "middle",
     "scheduled": 13,
     "observed": 13,
     "observed_share": 1.0,
@@ -1667,6 +1806,7 @@
    "178120": {
     "name": "Deer Lake Road at Haven Way",
     "stop_sequence_median": 4,
+    "position": "middle",
     "scheduled": 5,
     "observed": 5,
     "observed_share": 1.0,
@@ -1680,6 +1820,7 @@
    "178176": {
     "name": "Cultus Bay Rd at E Deer Lake Rd",
     "stop_sequence_median": 6,
+    "position": "middle",
     "scheduled": 5,
     "observed": 3,
     "observed_share": 0.6,
@@ -1693,6 +1834,7 @@
    "178406": {
     "name": "SR 525 at Clinton Park & Ride",
     "stop_sequence_median": 9,
+    "position": "middle",
     "scheduled": 5,
     "observed": 3,
     "observed_share": 0.6,
@@ -1706,6 +1848,7 @@
    "178409": {
     "name": "Clinton Ferry Terminal",
     "stop_sequence_median": 10,
+    "position": "middle",
     "scheduled": 10,
     "observed": 8,
     "observed_share": 0.8,
@@ -1719,6 +1862,7 @@
    "197274": {
     "name": "Clinton Park & Ride at Deer Lake Rd",
     "stop_sequence_median": 2,
+    "position": "middle",
     "scheduled": 5,
     "observed": 5,
     "observed_share": 1.0,
@@ -1732,6 +1876,7 @@
    "197279": {
     "name": "Jewett Rd at Bailey's Store",
     "stop_sequence_median": 11,
+    "position": "middle",
     "scheduled": 5,
     "observed": 5,
     "observed_share": 1.0,
@@ -1745,6 +1890,7 @@
    "197281": {
     "name": "Scatchet Head Rd at Bailey Rd",
     "stop_sequence_median": 13,
+    "position": "middle",
     "scheduled": 10,
     "observed": 8,
     "observed_share": 0.8,
@@ -1758,6 +1904,7 @@
    "197283": {
     "name": "Cultus Bay Rd at French Rd",
     "stop_sequence_median": 5,
+    "position": "middle",
     "scheduled": 5,
     "observed": 3,
     "observed_share": 0.6,
@@ -1771,21 +1918,23 @@
    "197717": {
     "name": "Blakely at Swede Hill Rd",
     "stop_sequence_median": 16,
+    "position": "middle",
     "scheduled": 10,
-    "observed": 7,
-    "observed_share": 0.7,
+    "observed": 8,
+    "observed_share": 0.8,
     "on_time": 0,
     "early": 0,
-    "late": 7,
+    "late": 8,
     "on_time_share_of_observed": 0.0,
-    "deviation_s_median": 498.7,
-    "deviations_s": [443,449,491,499,519,703,837]
+    "deviation_s_median": 501.1,
+    "deviations_s": [443,449,491,499,504,519,703,837]
    }
   },
   "9404": {
    "178194": {
     "name": "Bayview P&R",
     "stop_sequence_median": 57,
+    "position": "middle",
     "scheduled": 12,
     "observed": 12,
     "observed_share": 1.0,
@@ -1799,6 +1948,7 @@
    "178197": {
     "name": "Arnold Rd at Monroe Landing Rd",
     "stop_sequence_median": 54,
+    "position": "middle",
     "scheduled": 13,
     "observed": 13,
     "observed_share": 1.0,
@@ -1812,6 +1962,7 @@
    "178249": {
     "name": "Freeland at Main St",
     "stop_sequence_median": 20,
+    "position": "middle",
     "scheduled": 13,
     "observed": 13,
     "observed_share": 1.0,
@@ -1825,19 +1976,21 @@
    "178316": {
     "name": "Coupeville Park & Ride",
     "stop_sequence_median": 44,
+    "position": "middle",
     "scheduled": 14,
-    "observed": 13,
-    "observed_share": 0.9286,
-    "on_time": 7,
+    "observed": 14,
+    "observed_share": 1.0,
+    "on_time": 8,
     "early": 1,
     "late": 5,
-    "on_time_share_of_observed": 0.5385,
-    "deviation_s_median": 193.8,
-    "deviations_s": [-68,2,22,68,95,164,194,196,386,418,480,565,923]
+    "on_time_share_of_observed": 0.5714,
+    "deviation_s_median": 179.0,
+    "deviations_s": [-68,-35,2,22,68,95,164,194,196,386,418,480,565,923]
    },
    "178369": {
     "name": "SR 525 at Classic Rd",
     "stop_sequence_median": 26,
+    "position": "middle",
     "scheduled": 10,
     "observed": 10,
     "observed_share": 1.0,
@@ -1851,6 +2004,7 @@
    "178384": {
     "name": "SR 525 at Greenbank",
     "stop_sequence_median": 36,
+    "position": "middle",
     "scheduled": 6,
     "observed": 6,
     "observed_share": 1.0,
@@ -1864,6 +2018,7 @@
    "178397": {
     "name": "SR 525 at Classic Rd",
     "stop_sequence_median": 37,
+    "position": "middle",
     "scheduled": 6,
     "observed": 6,
     "observed_share": 1.0,
@@ -1877,19 +2032,21 @@
    "178398": {
     "name": "Harbor Station Transfer Center Bayshore Dr",
     "stop_sequence_median": 65,
+    "position": "last",
     "scheduled": 25,
-    "observed": 19,
-    "observed_share": 0.76,
-    "on_time": 17,
+    "observed": 24,
+    "observed_share": 0.96,
+    "on_time": 19,
     "early": 0,
-    "late": 2,
-    "on_time_share_of_observed": 0.8947,
-    "deviation_s_median": 67.1,
-    "deviations_s": [-313,-26,10,14,26,30,45,46,52,67,68,80,93,122,168,239,300,548,1177]
+    "late": 5,
+    "on_time_share_of_observed": 0.7917,
+    "deviation_s_median": 67.7,
+    "deviations_s": [-313,-178,-61,-26,10,14,26,30,45,46,52,67,68,80,93,122,168,239,300,320,438,548,831,1177]
    },
    "178399": {
     "name": "Main St at Coupeville Elementary School",
     "stop_sequence_median": 19,
+    "position": "middle",
     "scheduled": 13,
     "observed": 13,
     "observed_share": 1.0,
@@ -1903,6 +2060,7 @@
    "178406": {
     "name": "SR 525 at Clinton Park & Ride",
     "stop_sequence_median": 66,
+    "position": "middle",
     "scheduled": 12,
     "observed": 12,
     "observed_share": 1.0,
@@ -1916,6 +2074,7 @@
    "178409": {
     "name": "Clinton Ferry Terminal",
     "stop_sequence_median": 48,
+    "position": "middle",
     "scheduled": 26,
     "observed": 24,
     "observed_share": 0.9231,
@@ -1929,6 +2088,7 @@
    "178413": {
     "name": "Bayview P&R",
     "stop_sequence_median": 14,
+    "position": "middle",
     "scheduled": 13,
     "observed": 13,
     "observed_share": 1.0,
@@ -1942,6 +2102,7 @@
    "178422": {
     "name": "S Smugglers Cove Rd at S.W. State Park",
     "stop_sequence_median": 31,
+    "position": "middle",
     "scheduled": 4,
     "observed": 4,
     "observed_share": 1.0,
@@ -1955,6 +2116,7 @@
    "178434": {
     "name": "Smugglers Cove Rd at SW State Park",
     "stop_sequence_median": 38,
+    "position": "middle",
     "scheduled": 6,
     "observed": 6,
     "observed_share": 1.0,
@@ -1968,6 +2130,7 @@
    "197231": {
     "name": "Walmart at Erie St",
     "stop_sequence_median": 60,
+    "position": "middle",
     "scheduled": 13,
     "observed": 13,
     "observed_share": 1.0,
@@ -1981,6 +2144,7 @@
    "197232": {
     "name": "Walmart at Erie St",
     "stop_sequence_median": 4,
+    "position": "middle",
     "scheduled": 12,
     "observed": 12,
     "observed_share": 1.0,
@@ -1994,6 +2158,7 @@
    "197237": {
     "name": "Main St at Freeland",
     "stop_sequence_median": 50,
+    "position": "middle",
     "scheduled": 12,
     "observed": 12,
     "observed_share": 1.0,
@@ -2007,6 +2172,7 @@
    "197239": {
     "name": "SR 525 at Cultus Bay Rd",
     "stop_sequence_median": 63,
+    "position": "middle",
     "scheduled": 12,
     "observed": 12,
     "observed_share": 1.0,
@@ -2020,6 +2186,7 @@
    "197242": {
     "name": "Clinton Park & Ride at Deer Lake Rd",
     "stop_sequence_median": 2,
+    "position": "middle",
     "scheduled": 13,
     "observed": 13,
     "observed_share": 1.0,
@@ -2033,6 +2200,7 @@
    "197245": {
     "name": "SR 525 at Langley Rd",
     "stop_sequence_median": 9,
+    "position": "middle",
     "scheduled": 13,
     "observed": 13,
     "observed_share": 1.0,
@@ -2048,6 +2216,7 @@
    "178398": {
     "name": "Harbor Station Transfer Center Bayshore Dr",
     "stop_sequence_median": 27,
+    "position": "last",
     "scheduled": 7,
     "observed": 5,
     "observed_share": 0.7143,
@@ -2061,6 +2230,7 @@
    "197260": {
     "name": "Goldie Rd at Whidbey-Health",
     "stop_sequence_median": 7,
+    "position": "middle",
     "scheduled": 3,
     "observed": 3,
     "observed_share": 1.0,
@@ -2074,6 +2244,7 @@
    "218443": {
     "name": "Intruder St at Barracks",
     "stop_sequence_median": 16,
+    "position": "middle",
     "scheduled": 3,
     "observed": 3,
     "observed_share": 1.0,
@@ -2087,6 +2258,7 @@
    "218472": {
     "name": "Guam Ave at Community",
     "stop_sequence_median": 23,
+    "position": "middle",
     "scheduled": 4,
     "observed": 3,
     "observed_share": 0.75,
@@ -2100,6 +2272,7 @@
    "218475": {
     "name": "Guam Ave at Raven Dr",
     "stop_sequence_median": 26,
+    "position": "middle",
     "scheduled": 4,
     "observed": 3,
     "observed_share": 0.75,
@@ -2113,6 +2286,7 @@
    "218476": {
     "name": "Eastern Dr at Larch Dr",
     "stop_sequence_median": 19,
+    "position": "middle",
     "scheduled": 3,
     "observed": 3,
     "observed_share": 1.0,
@@ -2126,6 +2300,7 @@
    "218479": {
     "name": "Cresent Harbor Rd at Western Dr",
     "stop_sequence_median": 22,
+    "position": "middle",
     "scheduled": 3,
     "observed": 3,
     "observed_share": 1.0,
@@ -2139,6 +2314,7 @@
    "218480": {
     "name": "Midway St at Hangar 6",
     "stop_sequence_median": 8,
+    "position": "middle",
     "scheduled": 3,
     "observed": 3,
     "observed_share": 1.0,
@@ -2152,6 +2328,7 @@
    "218486": {
     "name": "Saratoga St at Medical",
     "stop_sequence_median": 14,
+    "position": "middle",
     "scheduled": 3,
     "observed": 3,
     "observed_share": 1.0,
@@ -2172,12 +2349,12 @@
   "1155004": [6,6],
   "1155005": [6,6],
   "1155006": [1,0],
-  "1155014": [3,3],
+  "1155014": [4,4],
   "1155015": [4,2],
   "1155017": [4,4],
   "1155029": [3,0],
-  "1155030": [3,2],
-  "1155031": [3,3],
+  "1155030": [4,3],
+  "1155031": [4,4],
   "1155039": [3,3],
   "1155040": [3,3],
   "1155042": [3,3],
@@ -2196,9 +2373,9 @@
   "1155104": [6,6],
   "1155105": [6,6],
   "1155108": [4,0],
-  "1155109": [4,2],
-  "1155111": [4,2],
-  "1155112": [4,4],
+  "1155109": [5,3],
+  "1155111": [5,3],
+  "1155112": [5,5],
   "1155126": [10,10],
   "1155128": [10,4],
   "1155131": [10,2],
@@ -2208,15 +2385,15 @@
   "1155153": [10,9],
   "1155154": [10,6],
   "1155155": [10,3],
-  "1155171": [9,8],
+  "1155171": [10,9],
   "1155172": [10,3],
   "1155180": [10,8],
-  "1155181": [9,3],
-  "1155187": [2,0],
-  "1155188": [9,5],
+  "1155181": [10,3],
+  "1155187": [3,0],
+  "1155188": [10,5],
   "1155189": [10,10],
   "1155191": [5,4],
-  "1155194": [9,9],
+  "1155194": [10,10],
   "1155195": [10,10],
   "1155205": [6,6],
   "1155206": [9,9],
@@ -2224,20 +2401,20 @@
   "1155208": [9,7],
   "1155209": [9,6],
   "1155210": [8,1],
-  "1155227": [5,5],
+  "1155227": [6,6],
   "1155232": [7,7],
   "1155241": [3,3],
   "1155242": [3,3],
-  "1155255": [9,0],
-  "1155256": [9,9],
-  "1155266": [8,6],
-  "1155271": [9,1],
-  "1155276": [9,9],
-  "1155277": [8,8],
+  "1155255": [10,0],
+  "1155256": [10,10],
+  "1155266": [9,7],
+  "1155271": [10,2],
+  "1155276": [10,10],
+  "1155277": [9,9],
   "1155287": [10,10],
   "1155288": [10,9],
   "1155289": [10,6],
-  "1155290": [9,7],
+  "1155290": [10,8],
   "1155299": [9,9],
   "1155300": [9,9],
   "1155320": [10,10],
@@ -2247,43 +2424,43 @@
   "1155356": [10,10],
   "1155358": [9,9],
   "1155359": [10,10],
-  "1155404": [4,3],
-  "1155407": [6,2],
-  "1155412": [5,1],
+  "1155404": [5,4],
+  "1155407": [7,3],
+  "1155412": [6,2],
   "1155413": [1,1],
-  "1155414": [4,3],
-  "1155417": [5,3],
+  "1155414": [5,4],
+  "1155417": [6,4],
   "1155422": [5,0],
-  "1155425": [5,3],
+  "1155425": [6,4],
   "1155430": [6,1],
   "1155431": [6,4],
   "1155432": [6,5],
   "1155435": [6,2],
-  "1155449": [8,0],
+  "1155449": [9,1],
   "1155455": [6,6],
   "1155456": [9,4],
   "1155459": [9,8],
-  "1155461": [7,5],
+  "1155461": [8,6],
   "1155468": [8,0],
-  "1155475": [6,3],
-  "1155476": [6,6],
-  "1155483": [7,3],
-  "1155484": [7,7],
+  "1155475": [7,4],
+  "1155476": [7,7],
+  "1155483": [8,4],
+  "1155484": [8,8],
   "1155499": [7,0],
   "1155500": [8,0],
-  "1155501": [7,1],
+  "1155501": [8,1],
   "1155502": [8,5],
-  "1155509": [7,0],
+  "1155509": [8,0],
   "1155510": [8,0],
   "1155511": [8,0],
-  "1155537": [7,1],
-  "1155538": [7,4],
+  "1155537": [8,1],
+  "1155538": [8,4],
   "1155539": [8,0],
-  "1155540": [7,0],
+  "1155540": [8,1],
   "1155565": [6,6],
   "1155566": [8,4],
   "1155567": [7,0],
-  "1155568": [5,5],
+  "1155568": [6,6],
   "1155573": [8,6],
   "1155574": [8,7],
   "1155575": [7,3],
@@ -2292,22 +2469,22 @@
   "1155582": [8,0],
   "1155583": [6,6],
   "1155584": [8,8],
-  "1155585": [7,7],
+  "1155585": [8,8],
   "1155592": [1,1],
   "1155593": [4,2],
-  "1155594": [5,2],
-  "1155597": [3,2],
-  "1155598": [5,1],
-  "1155607": [12,3],
-  "1155613": [11,9],
-  "1155615": [11,0],
+  "1155594": [6,3],
+  "1155597": [4,2],
+  "1155598": [6,2],
+  "1155607": [13,3],
+  "1155613": [12,10],
+  "1155615": [12,0],
   "1155617": [9,9],
   "1155618": [10,0],
   "1155619": [10,8],
   "1155630": [6,0],
   "1155631": [6,0],
   "1155632": [6,4],
-  "1155633": [5,3],
+  "1155633": [6,3],
   "1155634": [6,5],
   "1155637": [6,3],
   "1155638": [6,4],
@@ -2318,7 +2495,7 @@
  "no_service_day": null,
  "passio_version": "passio-9b1efa882037",
  "timepoints": "passio-9b1efa882037__timetable-2026-09-27-d7e09c5d",
- "events_version": "events/0.5.0",
+ "events_version": "events/0.6.0",
  "routes": {
   "7920": {
    "short_name": "2",
@@ -2476,10 +2653,10 @@
    }
   },
   "travel_times": {
-   "segments": 7792,
+   "segments": 7837,
    "negative": 0,
    "over_max_speed": 38,
-   "across_skipped_stretch": 41,
+   "across_skipped_stretch": 42,
    "max_speed_ms": 38.1,
    "max_allowed_ms": 35.0,
    "fastest": [
@@ -2587,7 +2764,7 @@
   },
   "trip_offsets": {
    "trips_measured": 144,
-   "shifted_trips": 8,
+   "shifted_trips": 7,
    "flagged_routes": [],
    "rule": {
     "min_stops": 4,
@@ -2634,7 +2811,7 @@
     },
     "7920": {
      "trips": 6,
-     "shifted": 1
+     "shifted": 0
     },
     "7922": {
      "trips": 24,
@@ -2670,25 +2847,19 @@
      "trip_id": "1155509",
      "route_id": "7922",
      "median_s": 518.0,
-     "iqr_s": 43.6
+     "iqr_s": 52.8
     },
     {
      "trip_id": "1155537",
      "route_id": "7922",
-     "median_s": 513.6,
-     "iqr_s": 42.4
+     "median_s": 510.1,
+     "iqr_s": 43.8
     },
     {
      "trip_id": "1155630",
      "route_id": "7923",
      "median_s": 451.3,
      "iqr_s": 56.6
-    },
-    {
-     "trip_id": "1155271",
-     "route_id": "7920",
-     "median_s": 405.1,
-     "iqr_s": 56.0
     },
     {
      "trip_id": "1155015",
@@ -2699,8 +2870,8 @@
     {
      "trip_id": "1155483",
      "route_id": "7918",
-     "median_s": 341.8,
-     "iqr_s": 53.5
+     "median_s": 341.0,
+     "iqr_s": 53.9
     }
    ]
   }
@@ -2710,7 +2881,8 @@
   "vehicles_on_two_or_more_routes": 13,
   "consecutive_trip_pairs": 136,
   "block_disagreements": 0,
-  "trips_with_borrowed_reports": 144
+  "relays": 0,
+  "trips_with_borrowed_reports": 143
  },
  "feed_agreement_share": 0.9547
 }

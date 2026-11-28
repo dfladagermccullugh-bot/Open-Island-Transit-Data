@@ -4,8 +4,8 @@
  "days": {
   "2026-11-19": {
    "service_date": "2026-11-19",
-   "events_version": "events/0.5.0",
-   "ontime_version": "ontime/0.5.0",
+   "events_version": "events/0.6.0",
+   "ontime_version": "ontime/0.6.0",
    "validate_version": "validate/0.3.0",
    "service_expected": true,
    "passio_version": "passio-9b1efa882037",
@@ -18,18 +18,20 @@
    "files": [
     {
      "name": "stop-events-2026-11-19.parquet",
-     "bytes": 113285,
-     "sha256": "bb3e6d875acce680182c1d30158473fb943faff06be34de684c52d59d18d85e7"
+     "bytes": 113470,
+     "sha256": "41295c139cc6607fa3e47ed29437893296b0101bed93ac7bb1b984b509c2411b",
+     "asset": "stop-events-2026-11-19-41295c13.parquet"
     },
     {
      "name": "trip-tracks-2026-11-19.parquet",
-     "bytes": 14199,
-     "sha256": "4f0ddaba22e3c293f89da9af91288c93b5632b8ae1d6b9d8265953e12f5a77a8"
+     "bytes": 17676,
+     "sha256": "1ee0ab3567ef416842b8a4027d88fafae23420494cc3f0df68941f252519eea4",
+     "asset": "trip-tracks-2026-11-19-1ee0ab35.parquet"
     }
    ],
    "release_tag": "parsed-2026-11",
-   "built_at": "2026-11-27T07:27:52+00:00",
-   "code_sha": "88b5ad8ac6898147eaf8d4610e70ef70dccefd4a"
+   "built_at": "2026-11-28T02:57:09+00:00",
+   "code_sha": "9391670124a6deb5872b16265817af23716155b3"
   },
   "2026-11-20": {
    "service_date": "2026-11-20",
