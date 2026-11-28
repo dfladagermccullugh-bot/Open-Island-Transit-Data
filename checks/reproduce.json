@@ -1,0 +1,265 @@
+{
+ "reproduce_version": "reproduce/0.1.0",
+ "ran_at": "2026-11-28T01:24:14+00:00",
+ "days": [
+  {
+   "service_date": "2026-11-23",
+   "identical": true,
+   "files": [
+    {
+     "name": "vehicles-2026-11-23.parquet",
+     "published": "7cba57f5aa829fe6319236e35fef824920a3c1079ce688adcf7ca0f0b7bf428b",
+     "rebuilt": "7cba57f5aa829fe6319236e35fef824920a3c1079ce688adcf7ca0f0b7bf428b",
+     "same": true
+    },
+    {
+     "name": "trip-updates-2026-11-23.parquet",
+     "published": "7e8925fea51923c94d8863c3fbdfcd9e7b9f4d79f1d85181b5dfded840b81cf5",
+     "rebuilt": "7e8925fea51923c94d8863c3fbdfcd9e7b9f4d79f1d85181b5dfded840b81cf5",
+     "same": true
+    },
+    {
+     "name": "trip-update-stops-2026-11-23.parquet",
+     "published": "5e189bb4e766fef304fc238cee9c52c5078e1bd826810b7c594f20a83dd23f46",
+     "rebuilt": "5e189bb4e766fef304fc238cee9c52c5078e1bd826810b7c594f20a83dd23f46",
+     "same": true
+    },
+    {
+     "name": "alerts-2026-11-23.parquet",
+     "published": "c577814332178bc8f6e5df03bbbd50d92cfa74bb423a1c652b5f9ee774336401",
+     "rebuilt": "c577814332178bc8f6e5df03bbbd50d92cfa74bb423a1c652b5f9ee774336401",
+     "same": true
+    },
+    {
+     "name": "stop-events-2026-11-23.parquet",
+     "published": "a64846afdd2b11674962d9834647759859fbc7fa4adad8841e2b5a0b0598c00b",
+     "rebuilt": "a64846afdd2b11674962d9834647759859fbc7fa4adad8841e2b5a0b0598c00b",
+     "same": true
+    },
+    {
+     "name": "trip-tracks-2026-11-23.parquet",
+     "published": "097ccb796893e465f79407fe20ff63d6099b0a9a05a9843881203fba8539019f",
+     "rebuilt": "097ccb796893e465f79407fe20ff63d6099b0a9a05a9843881203fba8539019f",
+     "same": true
+    }
+   ],
+   "day_files": [
+    {
+     "name": "ontime/days/2026-11-23.json",
+     "same": true
+    },
+    {
+     "name": "quality/days/2026-11-23.json",
+     "same": true
+    }
+   ],
+   "figures": [
+    {
+     "figure": "quality: coverage.trip_coverage",
+     "published": 0.967742,
+     "rebuilt": 0.967742
+    },
+    {
+     "figure": "quality: events.stop_coverage.timepoints.coverage",
+     "published": 0.860183,
+     "rebuilt": 0.860183
+    },
+    {
+     "figure": "ontime: scheduled",
+     "published": 2725,
+     "rebuilt": 2725
+    },
+    {
+     "figure": "ontime: observed",
+     "published": 2344,
+     "rebuilt": 2344
+    },
+    {
+     "figure": "ontime: on_time",
+     "published": 1793,
+     "rebuilt": 1793
+    },
+    {
+     "figure": "ontime: on_time_share_of_observed",
+     "published": 0.7649,
+     "rebuilt": 0.7649
+    }
+   ]
+  },
+  {
+   "service_date": "2026-11-24",
+   "identical": true,
+   "files": [
+    {
+     "name": "vehicles-2026-11-24.parquet",
+     "published": "a3f54ab6eb39ed871142082b15d235e14309dea07c71b3eb587d7772646064d9",
+     "rebuilt": "a3f54ab6eb39ed871142082b15d235e14309dea07c71b3eb587d7772646064d9",
+     "same": true
+    },
+    {
+     "name": "trip-updates-2026-11-24.parquet",
+     "published": "f68d5443ba158331026c125d5be10b3312bee0d332c58815f7ddd5b82eac85de",
+     "rebuilt": "f68d5443ba158331026c125d5be10b3312bee0d332c58815f7ddd5b82eac85de",
+     "same": true
+    },
+    {
+     "name": "trip-update-stops-2026-11-24.parquet",
+     "published": "12d515303072fe024ae3e9d5f332e09c58eec92becb69a69f7260f668ff8317e",
+     "rebuilt": "12d515303072fe024ae3e9d5f332e09c58eec92becb69a69f7260f668ff8317e",
+     "same": true
+    },
+    {
+     "name": "alerts-2026-11-24.parquet",
+     "published": "44b56eb964a1916a69a4029f8cee647a56dffb5390dbf9c6455b79cc916bd393",
+     "rebuilt": "44b56eb964a1916a69a4029f8cee647a56dffb5390dbf9c6455b79cc916bd393",
+     "same": true
+    },
+    {
+     "name": "stop-events-2026-11-24.parquet",
+     "published": "817d065c41939f8d7f97edf6e14619fb31e540b81991227cacbb935a8bfca3c0",
+     "rebuilt": "817d065c41939f8d7f97edf6e14619fb31e540b81991227cacbb935a8bfca3c0",
+     "same": true
+    },
+    {
+     "name": "trip-tracks-2026-11-24.parquet",
+     "published": "46d46db28e4f9259c20e15a3f093317cd2f3fca3678a589815c6fda7e6014aef",
+     "rebuilt": "46d46db28e4f9259c20e15a3f093317cd2f3fca3678a589815c6fda7e6014aef",
+     "same": true
+    }
+   ],
+   "day_files": [
+    {
+     "name": "ontime/days/2026-11-24.json",
+     "same": true
+    },
+    {
+     "name": "quality/days/2026-11-24.json",
+     "same": true
+    }
+   ],
+   "figures": [
+    {
+     "figure": "quality: coverage.trip_coverage",
+     "published": 0.947214,
+     "rebuilt": 0.947214
+    },
+    {
+     "figure": "quality: events.stop_coverage.timepoints.coverage",
+     "published": 0.846239,
+     "rebuilt": 0.846239
+    },
+    {
+     "figure": "ontime: scheduled",
+     "published": 2725,
+     "rebuilt": 2725
+    },
+    {
+     "figure": "ontime: observed",
+     "published": 2306,
+     "rebuilt": 2306
+    },
+    {
+     "figure": "ontime: on_time",
+     "published": 1670,
+     "rebuilt": 1670
+    },
+    {
+     "figure": "ontime: on_time_share_of_observed",
+     "published": 0.7242,
+     "rebuilt": 0.7242
+    }
+   ]
+  },
+  {
+   "service_date": "2026-11-26",
+   "identical": true,
+   "files": [
+    {
+     "name": "vehicles-2026-11-26.parquet",
+     "published": "4aa8bc28988fe0ef303ce466e0a63286d17336902696397cc80e72a304ddbcda",
+     "rebuilt": "4aa8bc28988fe0ef303ce466e0a63286d17336902696397cc80e72a304ddbcda",
+     "same": true
+    },
+    {
+     "name": "trip-updates-2026-11-26.parquet",
+     "published": "df9297105c97b9b563be870155a3184f3e1038ee6456dd8ca39fb5d42071203f",
+     "rebuilt": "df9297105c97b9b563be870155a3184f3e1038ee6456dd8ca39fb5d42071203f",
+     "same": true
+    },
+    {
+     "name": "trip-update-stops-2026-11-26.parquet",
+     "published": "3979ce37661b39f2a4d9f4cf1e9bb36350efe08fc43c625308711d284dce4d54",
+     "rebuilt": "3979ce37661b39f2a4d9f4cf1e9bb36350efe08fc43c625308711d284dce4d54",
+     "same": true
+    },
+    {
+     "name": "alerts-2026-11-26.parquet",
+     "published": "a16b02911024964533c2267cbef80e4cfa1e89413eba90b909cc2ec564711cd5",
+     "rebuilt": "a16b02911024964533c2267cbef80e4cfa1e89413eba90b909cc2ec564711cd5",
+     "same": true
+    },
+    {
+     "name": "stop-events-2026-11-26.parquet",
+     "published": "f73c69d0b99c8687192f0c447e782deceec93165038d31c569e2210d1e25d139",
+     "rebuilt": "f73c69d0b99c8687192f0c447e782deceec93165038d31c569e2210d1e25d139",
+     "same": true
+    },
+    {
+     "name": "trip-tracks-2026-11-26.parquet",
+     "published": "ad3b0c3318540a5cabf67471fdebe6434f156ed2bab25469e03be7fe546b0cd3",
+     "rebuilt": "ad3b0c3318540a5cabf67471fdebe6434f156ed2bab25469e03be7fe546b0cd3",
+     "same": true
+    }
+   ],
+   "day_files": [
+    {
+     "name": "ontime/days/2026-11-26.json",
+     "same": true
+    },
+    {
+     "name": "quality/days/2026-11-26.json",
+     "same": true
+    }
+   ],
+   "figures": [
+    {
+     "figure": "quality: coverage.trip_coverage",
+     "published": 0.0,
+     "rebuilt": 0.0
+    },
+    {
+     "figure": "quality: events.stop_coverage.timepoints.coverage",
+     "published": 0.0,
+     "rebuilt": 0.0
+    },
+    {
+     "figure": "ontime: scheduled",
+     "published": 2725,
+     "rebuilt": 2725
+    },
+    {
+     "figure": "ontime: observed",
+     "published": 0,
+     "rebuilt": 0
+    },
+    {
+     "figure": "ontime: on_time",
+     "published": 0,
+     "rebuilt": 0
+    },
+    {
+     "figure": "ontime: on_time_share_of_observed",
+     "published": null,
+     "rebuilt": null
+    }
+   ]
+  }
+ ],
+ "skipped": [],
+ "days_compared": 3,
+ "all_identical": true,
+ "machine": "Linux x86_64, Python 3.13.18",
+ "code_commit": "76188b0c46be8b3499642f111ceb683e3394c52e",
+ "run_url": "https://github.com/dfladagermccullugh-bot/Open-Island-Transit-Data/actions/runs/46092900494",
+ "command": "python scripts/reproduce.py --date 2026-11-23 --date 2026-11-24 --date 2026-11-26"
+}
