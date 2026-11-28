@@ -1,7 +1,7 @@
 {
  "service_date": "2026-11-23",
- "quality_version": "quality/0.7.0",
- "computed_at": "2026-11-27T07:28:11+00:00",
+ "quality_version": "quality/0.8.0",
+ "computed_at": "2026-11-28T02:28:08+00:00",
  "scheduled_service": {
   "trips": 341,
   "trips_ended_before_collection": 0,
@@ -3228,39 +3228,39 @@
   }
  },
  "events": {
-  "events_version": "events/0.5.0",
+  "events_version": "events/0.6.0",
   "stop_coverage": {
    "timepoints": {
     "scheduled": 2725,
-    "observed": 2344,
-    "coverage": 0.860183,
+    "observed": 2439,
+    "coverage": 0.895046,
     "not_observed_by_reason": {
-     "gap": 135,
+     "gap": 84,
      "no_reports": 84,
-     "not_reached": 55,
-     "past_when_first_seen": 39,
+     "not_reached": 32,
+     "past_when_first_seen": 18,
      "skipped": 68
     },
     "by_route": {
      "6737": {
       "scheduled": 144,
-      "observed": 81,
-      "coverage": 0.5625
+      "observed": 84,
+      "coverage": 0.583333
      },
      "6743": {
       "scheduled": 165,
-      "observed": 128,
-      "coverage": 0.775758
+      "observed": 134,
+      "coverage": 0.812121
      },
      "6744": {
       "scheduled": 280,
-      "observed": 266,
-      "coverage": 0.95
+      "observed": 268,
+      "coverage": 0.957143
      },
      "7913": {
       "scheduled": 105,
-      "observed": 95,
-      "coverage": 0.904762
+      "observed": 103,
+      "coverage": 0.980952
      },
      "7914": {
       "scheduled": 160,
@@ -3269,43 +3269,43 @@
      },
      "7915": {
       "scheduled": 77,
-      "observed": 71,
-      "coverage": 0.922078
+      "observed": 73,
+      "coverage": 0.948052
      },
      "7916": {
       "scheduled": 60,
-      "observed": 39,
-      "coverage": 0.65
+      "observed": 46,
+      "coverage": 0.766667
      },
      "7918": {
       "scheduled": 172,
-      "observed": 146,
-      "coverage": 0.848837
+      "observed": 158,
+      "coverage": 0.918605
      },
      "7919": {
       "scheduled": 169,
-      "observed": 128,
-      "coverage": 0.757396
+      "observed": 133,
+      "coverage": 0.786982
      },
      "7920": {
       "scheduled": 130,
-      "observed": 116,
-      "coverage": 0.892308
+      "observed": 128,
+      "coverage": 0.984615
      },
      "7922": {
       "scheduled": 456,
-      "observed": 400,
-      "coverage": 0.877193
+      "observed": 424,
+      "coverage": 0.929825
      },
      "7923": {
       "scheduled": 120,
-      "observed": 95,
-      "coverage": 0.791667
+      "observed": 96,
+      "coverage": 0.8
      },
      "9404": {
       "scheduled": 597,
-      "observed": 575,
-      "coverage": 0.963149
+      "observed": 586,
+      "coverage": 0.981575
      },
      "9431": {
       "scheduled": 50,
@@ -3314,43 +3314,60 @@
      },
      "9432": {
       "scheduled": 40,
-      "observed": 38,
-      "coverage": 0.95
+      "observed": 40,
+      "coverage": 1.0
+     }
+    },
+    "by_position": {
+     "first": {
+      "scheduled": 326,
+      "observed": 279,
+      "coverage": 0.855828
+     },
+     "middle": {
+      "scheduled": 2060,
+      "observed": 1852,
+      "coverage": 0.899029
+     },
+     "last": {
+      "scheduled": 339,
+      "observed": 308,
+      "coverage": 0.908555
      }
     }
    },
    "all_stops": {
     "scheduled": 10393,
-    "observed": 9372,
-    "coverage": 0.901761,
+    "observed": 9467,
+    "coverage": 0.910902,
     "not_observed_by_reason": {
-     "gap": 348,
+     "gap": 297,
      "no_reports": 248,
-     "not_reached": 91,
-     "past_when_first_seen": 67,
+     "not_reached": 68,
+     "past_when_first_seen": 46,
      "skipped": 266,
      "unplaced": 1
     },
     "by_route": {
      "6737": {
       "scheduled": 624,
-      "observed": 450,
-      "coverage": 0.721154
+      "observed": 453,
+      "coverage": 0.725962
      },
      "6743": {
       "scheduled": 286,
-      "observed": 230,
-      "coverage": 0.804196
+      "observed": 236,
+      "coverage": 0.825175
      },
      "6744": {
       "scheduled": 616,
-      "observed": 583,
-      "coverage": 0.946429
+      "observed": 585,
+      "coverage": 0.949675
      },
      "7913": {
       "scheduled": 405,
-      "observed": 395,
-      "coverage": 0.975309
+      "observed": 403,
+      "coverage": 0.995062
      },
      "7914": {
       "scheduled": 656,
@@ -3359,43 +3376,43 @@
      },
      "7915": {
       "scheduled": 168,
-      "observed": 162,
-      "coverage": 0.964286
+      "observed": 164,
+      "coverage": 0.97619
      },
      "7916": {
       "scheduled": 195,
-      "observed": 103,
-      "coverage": 0.528205
+      "observed": 110,
+      "coverage": 0.564103
      },
      "7918": {
       "scheduled": 627,
-      "observed": 566,
-      "coverage": 0.902711
+      "observed": 578,
+      "coverage": 0.92185
      },
      "7919": {
       "scheduled": 494,
-      "observed": 398,
-      "coverage": 0.805668
+      "observed": 403,
+      "coverage": 0.815789
      },
      "7920": {
       "scheduled": 299,
-      "observed": 284,
-      "coverage": 0.949833
+      "observed": 296,
+      "coverage": 0.989967
      },
      "7922": {
       "scheduled": 1643,
-      "observed": 1512,
-      "coverage": 0.920268
+      "observed": 1536,
+      "coverage": 0.934875
      },
      "7923": {
       "scheduled": 255,
-      "observed": 216,
-      "coverage": 0.847059
+      "observed": 217,
+      "coverage": 0.85098
      },
      "9404": {
       "scheduled": 3897,
-      "observed": 3805,
-      "coverage": 0.976392
+      "observed": 3816,
+      "coverage": 0.979215
      },
      "9431": {
       "scheduled": 120,
@@ -3404,19 +3421,36 @@
      },
      "9432": {
       "scheduled": 108,
-      "observed": 106,
-      "coverage": 0.981481
+      "observed": 108,
+      "coverage": 1.0
+     }
+    },
+    "by_position": {
+     "first": {
+      "scheduled": 341,
+      "observed": 294,
+      "coverage": 0.86217
+     },
+     "middle": {
+      "scheduled": 9711,
+      "observed": 8863,
+      "coverage": 0.912676
+     },
+     "last": {
+      "scheduled": 341,
+      "observed": 310,
+      "coverage": 0.909091
      }
     }
    }
   },
   "shape_fit": {
    "position_reports": 44420,
-   "tracked_reports": 36778,
+   "tracked_reports": 36772,
    "off_shape": 1476,
-   "off_shape_share": 0.040133,
+   "off_shape_share": 0.040139,
    "wrong_direction": 158,
-   "wrong_direction_share": 0.004296,
+   "wrong_direction_share": 0.004297,
    "threshold_m": 100,
    "trips_skipping_part_of_shape": 64,
    "skipped_km": 627.2,
@@ -3488,11 +3522,11 @@
     },
     "7918": {
      "position_reports": 2728,
-     "tracked_reports": 2481,
+     "tracked_reports": 2489,
      "off_shape": 266,
-     "off_shape_share": 0.107215,
+     "off_shape_share": 0.10687,
      "wrong_direction": 20,
-     "wrong_direction_share": 0.008061
+     "wrong_direction_share": 0.008035
     },
     "7919": {
      "position_reports": 2661,
@@ -3512,11 +3546,11 @@
     },
     "7922": {
      "position_reports": 6040,
-     "tracked_reports": 5397,
+     "tracked_reports": 5383,
      "off_shape": 15,
-     "off_shape_share": 0.002779,
+     "off_shape_share": 0.002787,
      "wrong_direction": 21,
-     "wrong_direction_share": 0.003891
+     "wrong_direction_share": 0.003901
     },
     "7923": {
      "position_reports": 885,
@@ -3570,212 +3604,232 @@
    "trips_with_no_usable_report": 2,
    "trips_with_more_than_one_vehicle": 7
   },
+  "between_trips": {
+   "position_reports": 45764,
+   "in_trips": 42176,
+   "between_trips": 3588,
+   "between_trips_share": 0.078402,
+   "deadhead": 3339,
+   "deadhead_by": {
+    "between_two_trips": 2180,
+    "to_or_from_the_depot": 1110,
+    "depot_area": 49
+   },
+   "unassigned": 249,
+   "unassigned_share": 0.005441,
+   "depot_area": [
+    48.08,
+    48.23,
+    -122.72,
+    -122.55
+   ]
+  },
   "prediction_error": {
-   "observed_events_with_predictions": 8195,
+   "observed_events_with_predictions": 8282,
    "definition": "predicted minus inferred time; arrival, or departure at a trip's first stop",
    "by_horizon_min": {
     "1": {
-     "n": 5735,
+     "n": 5800,
      "other_day": 127,
-     "other_day_share": 0.021665,
-     "bias_s": 451.7,
-     "median_s": -3.4,
-     "mae_s": 509.3,
-     "median_abs_s": 75.5,
-     "within_60s_share": 0.414473,
-     "over_30min": 94,
-     "over_30min_share": 0.016391,
+     "other_day_share": 0.021427,
+     "bias_s": 450.0,
+     "median_s": -3.8,
+     "mae_s": 507.8,
+     "median_abs_s": 75.1,
+     "within_60s_share": 0.416724,
+     "over_30min": 96,
+     "over_30min_share": 0.016552,
      "quantiles_20_s": [
       -124.2,
       -93.0,
       -77.0,
-      -64.9,
+      -64.8,
       -55.3,
-      -46.5,
-      -37.4,
-      -29.0,
+      -46.6,
+      -37.5,
+      -29.2,
       -20.3,
-      -9.9,
-      5.9,
-      31.1,
-      69.3,
-      121.0,
-      177.7,
-      245.0,
-      318.5,
+      -10.1,
+      5.6,
+      29.2,
+      68.1,
+      118.4,
+      175.9,
+      244.0,
+      318.1,
       415.4,
-      512.7,
-      956.4
+      513.1,
+      964.1
      ]
     },
     "2": {
-     "n": 5721,
+     "n": 5788,
      "other_day": 126,
-     "other_day_share": 0.02155,
-     "bias_s": 519.8,
-     "median_s": -18.5,
-     "mae_s": 605.7,
-     "median_abs_s": 95.2,
-     "within_60s_share": 0.302395,
-     "over_30min": 115,
-     "over_30min_share": 0.020101,
+     "other_day_share": 0.021305,
+     "bias_s": 517.0,
+     "median_s": -19.4,
+     "mae_s": 603.4,
+     "median_abs_s": 95.0,
+     "within_60s_share": 0.303214,
+     "over_30min": 116,
+     "over_30min_share": 0.020041,
      "quantiles_20_s": [
       -164.3,
       -129.4,
-      -108.0,
+      -108.1,
       -93.6,
-      -80.3,
-      -69.6,
-      -60.3,
-      -50.3,
-      -39.0,
-      -25.8,
-      -9.8,
-      19.0,
-      56.7,
-      101.5,
-      155.6,
-      228.5,
-      307.7,
-      397.5,
-      501.4,
-      1120.4
+      -80.4,
+      -69.7,
+      -60.6,
+      -50.5,
+      -39.4,
+      -26.4,
+      -10.2,
+      17.4,
+      55.3,
+      100.6,
+      153.5,
+      227.0,
+      307.8,
+      398.3,
+      504.0,
+      1119.5
      ]
     },
     "5": {
-     "n": 5563,
+     "n": 5634,
      "other_day": 95,
-     "other_day_share": 0.01679,
-     "bias_s": 455.8,
-     "median_s": -50.5,
-     "mae_s": 617.7,
-     "median_abs_s": 142.9,
-     "within_60s_share": 0.193421,
-     "over_30min": 129,
-     "over_30min_share": 0.023189,
+     "other_day_share": 0.016582,
+     "bias_s": 452.2,
+     "median_s": -51.9,
+     "mae_s": 615.4,
+     "median_abs_s": 143.1,
+     "within_60s_share": 0.193113,
+     "over_30min": 130,
+     "over_30min_share": 0.023074,
      "quantiles_20_s": [
-      -283.2,
-      -219.8,
-      -188.1,
-      -167.3,
-      -150.4,
-      -135.3,
-      -117.3,
-      -100.6,
-      -81.9,
-      -62.2,
-      -39.1,
-      -12.8,
-      21.3,
-      62.3,
-      120.6,
-      182.2,
-      255.1,
+      -285.2,
+      -220.6,
+      -188.8,
+      -168.0,
+      -151.1,
+      -136.1,
+      -118.0,
+      -101.3,
+      -82.7,
+      -62.9,
+      -40.6,
+      -14.2,
+      19.7,
+      60.9,
+      118.3,
+      181.4,
+      254.6,
       333.0,
-      459.6,
-      1342.9
+      462.1,
+      1329.2
      ]
     },
     "10": {
-     "n": 5098,
+     "n": 5155,
      "other_day": 40,
-     "other_day_share": 0.007785,
-     "bias_s": 331.8,
-     "median_s": -75.7,
-     "mae_s": 579.0,
+     "other_day_share": 0.0077,
+     "bias_s": 331.3,
+     "median_s": -76.1,
+     "mae_s": 578.8,
      "median_abs_s": 178.0,
-     "within_60s_share": 0.188701,
-     "over_30min": 152,
-     "over_30min_share": 0.029816,
+     "within_60s_share": 0.188361,
+     "over_30min": 154,
+     "over_30min_share": 0.029874,
      "quantiles_20_s": [
-      -451.0,
+      -446.5,
       -337.8,
-      -299.0,
-      -265.7,
-      -229.9,
-      -197.0,
-      -168.9,
-      -139.7,
-      -113.1,
-      -86.4,
-      -63.5,
-      -38.8,
-      -13.6,
-      22.1,
-      64.6,
-      126.3,
-      202.1,
-      302.9,
-      572.2,
-      2177.4
+      -299.1,
+      -266.1,
+      -229.8,
+      -197.1,
+      -169.1,
+      -139.9,
+      -113.6,
+      -87.4,
+      -63.7,
+      -40.2,
+      -15.1,
+      19.8,
+      63.8,
+      125.4,
+      200.0,
+      302.8,
+      575.1,
+      2178.2
      ]
     },
     "15": {
-     "n": 4389,
+     "n": 4440,
      "other_day": 55,
-     "other_day_share": 0.012376,
-     "bias_s": 356.1,
-     "median_s": -80.7,
-     "mae_s": 647.4,
-     "median_abs_s": 195.4,
-     "within_60s_share": 0.179312,
-     "over_30min": 175,
-     "over_30min_share": 0.039872,
+     "other_day_share": 0.012236,
+     "bias_s": 355.0,
+     "median_s": -81.1,
+     "mae_s": 646.9,
+     "median_abs_s": 196.0,
+     "within_60s_share": 0.179279,
+     "over_30min": 176,
+     "over_30min_share": 0.03964,
      "quantiles_20_s": [
-      -592.0,
-      -434.3,
-      -357.5,
-      -301.9,
-      -255.3,
-      -221.9,
-      -188.7,
-      -154.6,
-      -125.0,
-      -94.4,
-      -66.5,
-      -40.6,
-      -13.4,
-      25.4,
-      70.1,
-      133.8,
-      216.2,
-      335.9,
-      638.4,
-      2867.9
+      -587.1,
+      -434.4,
+      -357.6,
+      -302.7,
+      -256.1,
+      -222.6,
+      -190.4,
+      -155.7,
+      -125.3,
+      -94.8,
+      -66.8,
+      -41.5,
+      -13.6,
+      24.9,
+      69.2,
+      133.0,
+      216.3,
+      336.3,
+      646.0,
+      2843.3
      ]
     },
     "30": {
-     "n": 2756,
+     "n": 2780,
      "other_day": 26,
-     "other_day_share": 0.009346,
-     "bias_s": 233.2,
+     "other_day_share": 0.009266,
+     "bias_s": 232.1,
      "median_s": -81.5,
-     "mae_s": 554.2,
-     "median_abs_s": 199.8,
-     "within_60s_share": 0.170537,
-     "over_30min": 162,
-     "over_30min_share": 0.058781,
+     "mae_s": 554.0,
+     "median_abs_s": 200.8,
+     "within_60s_share": 0.169424,
+     "over_30min": 163,
+     "over_30min_share": 0.058633,
      "quantiles_20_s": [
-      -732.2,
-      -490.8,
-      -366.8,
+      -733.8,
+      -490.7,
+      -366.7,
       -308.8,
-      -261.0,
-      -225.9,
-      -191.5,
-      -159.9,
-      -129.1,
-      -97.6,
-      -66.8,
-      -38.0,
-      -11.6,
-      32.4,
-      77.0,
-      135.8,
-      223.4,
-      360.4,
-      1100.6,
-      3556.2
+      -260.2,
+      -225.8,
+      -191.6,
+      -159.7,
+      -128.4,
+      -97.5,
+      -67.0,
+      -37.9,
+      -11.2,
+      32.8,
+      78.3,
+      138.7,
+      228.7,
+      369.1,
+      1000.1,
+      3545.0
      ]
     }
    }
@@ -3900,7 +3954,7 @@
   "raw_sha256": "dedf9ce126ef78ea6ec224c346f1c5972b9296870022414e9badd8d76818c4ee",
   "vehicles_sha256": "7cba57f5aa829fe6319236e35fef824920a3c1079ce688adcf7ca0f0b7bf428b",
   "tables_version": "tables/0.1.0",
-  "stop_events_sha256": "a64846afdd2b11674962d9834647759859fbc7fa4adad8841e2b5a0b0598c00b",
-  "code_sha": "88b5ad8ac6898147eaf8d4610e70ef70dccefd4a"
+  "stop_events_sha256": "df88f1f3d08a81c8f8fe82605aceea8c9be4fb8bc3ffaf86d1b40d587889899d",
+  "code_sha": "01f05c793737cec71edd6ae7c3f9609f40149ece"
  }
 }

@@ -1,7 +1,7 @@
 {
  "service_date": "2026-11-22",
- "quality_version": "quality/0.7.0",
- "computed_at": "2026-11-27T07:28:15+00:00",
+ "quality_version": "quality/0.8.0",
+ "computed_at": "2026-11-28T02:28:12+00:00",
  "scheduled_service": {
   "trips": 168,
   "trips_ended_before_collection": 0,
@@ -1785,17 +1785,17 @@
   }
  },
  "events": {
-  "events_version": "events/0.5.0",
+  "events_version": "events/0.6.0",
   "stop_coverage": {
    "timepoints": {
     "scheduled": 1278,
-    "observed": 1118,
-    "coverage": 0.874804,
+    "observed": 1155,
+    "coverage": 0.903756,
     "not_observed_by_reason": {
-     "gap": 63,
+     "gap": 49,
      "no_reports": 18,
-     "not_reached": 39,
-     "past_when_first_seen": 13,
+     "not_reached": 25,
+     "past_when_first_seen": 4,
      "skipped": 27
     },
     "by_route": {
@@ -1811,8 +1811,8 @@
      },
      "7913": {
       "scheduled": 35,
-      "observed": 26,
-      "coverage": 0.742857
+      "observed": 27,
+      "coverage": 0.771429
      },
      "7914": {
       "scheduled": 70,
@@ -1826,45 +1826,62 @@
      },
      "7918": {
       "scheduled": 129,
-      "observed": 113,
-      "coverage": 0.875969
+      "observed": 123,
+      "coverage": 0.953488
      },
      "7920": {
       "scheduled": 130,
-      "observed": 119,
-      "coverage": 0.915385
+      "observed": 126,
+      "coverage": 0.969231
      },
      "7922": {
       "scheduled": 160,
-      "observed": 138,
-      "coverage": 0.8625
+      "observed": 142,
+      "coverage": 0.8875
      },
      "7924": {
       "scheduled": 55,
-      "observed": 43,
-      "coverage": 0.781818
+      "observed": 47,
+      "coverage": 0.854545
      },
      "9404": {
       "scheduled": 250,
-      "observed": 239,
-      "coverage": 0.956
+      "observed": 246,
+      "coverage": 0.984
      },
      "9430": {
       "scheduled": 70,
-      "observed": 63,
-      "coverage": 0.9
+      "observed": 67,
+      "coverage": 0.957143
+     }
+    },
+    "by_position": {
+     "first": {
+      "scheduled": 153,
+      "observed": 127,
+      "coverage": 0.830065
+     },
+     "middle": {
+      "scheduled": 957,
+      "observed": 878,
+      "coverage": 0.91745
+     },
+     "last": {
+      "scheduled": 168,
+      "observed": 150,
+      "coverage": 0.892857
      }
     }
    },
    "all_stops": {
     "scheduled": 4789,
-    "observed": 4370,
-    "coverage": 0.912508,
+    "observed": 4407,
+    "coverage": 0.920234,
     "not_observed_by_reason": {
-     "gap": 153,
+     "gap": 139,
      "no_reports": 71,
-     "not_reached": 70,
-     "past_when_first_seen": 14,
+     "not_reached": 56,
+     "past_when_first_seen": 5,
      "skipped": 110,
      "unplaced": 1
     },
@@ -1881,8 +1898,8 @@
      },
      "7913": {
       "scheduled": 135,
-      "observed": 106,
-      "coverage": 0.785185
+      "observed": 107,
+      "coverage": 0.792593
      },
      "7914": {
       "scheduled": 287,
@@ -1896,44 +1913,61 @@
      },
      "7918": {
       "scheduled": 478,
-      "observed": 447,
-      "coverage": 0.935146
+      "observed": 457,
+      "coverage": 0.956067
      },
      "7920": {
       "scheduled": 299,
-      "observed": 287,
-      "coverage": 0.959866
+      "observed": 294,
+      "coverage": 0.983278
      },
      "7922": {
       "scheduled": 580,
-      "observed": 530,
-      "coverage": 0.913793
+      "observed": 534,
+      "coverage": 0.92069
      },
      "7924": {
       "scheduled": 170,
-      "observed": 158,
-      "coverage": 0.929412
+      "observed": 162,
+      "coverage": 0.952941
      },
      "9404": {
       "scheduled": 1628,
-      "observed": 1585,
-      "coverage": 0.973587
+      "observed": 1592,
+      "coverage": 0.977887
      },
      "9430": {
       "scheduled": 170,
-      "observed": 160,
-      "coverage": 0.941176
+      "observed": 164,
+      "coverage": 0.964706
+     }
+    },
+    "by_position": {
+     "first": {
+      "scheduled": 168,
+      "observed": 138,
+      "coverage": 0.821429
+     },
+     "middle": {
+      "scheduled": 4453,
+      "observed": 4119,
+      "coverage": 0.924994
+     },
+     "last": {
+      "scheduled": 168,
+      "observed": 150,
+      "coverage": 0.892857
      }
     }
    }
   },
   "shape_fit": {
    "position_reports": 19860,
-   "tracked_reports": 17051,
+   "tracked_reports": 17058,
    "off_shape": 636,
-   "off_shape_share": 0.0373,
+   "off_shape_share": 0.037285,
    "wrong_direction": 70,
-   "wrong_direction_share": 0.004105,
+   "wrong_direction_share": 0.004104,
    "threshold_m": 100,
    "trips_skipping_part_of_shape": 30,
    "skipped_km": 192.7,
@@ -1987,11 +2021,11 @@
     },
     "7918": {
      "position_reports": 1859,
-     "tracked_reports": 1814,
+     "tracked_reports": 1821,
      "off_shape": 142,
-     "off_shape_share": 0.07828,
+     "off_shape_share": 0.077979,
      "wrong_direction": 13,
-     "wrong_direction_share": 0.007166
+     "wrong_direction_share": 0.007139
     },
     "7920": {
      "position_reports": 1072,
@@ -2055,212 +2089,232 @@
    "trips_with_no_usable_report": 1,
    "trips_with_more_than_one_vehicle": 1
   },
+  "between_trips": {
+   "position_reports": 20092,
+   "in_trips": 19254,
+   "between_trips": 838,
+   "between_trips_share": 0.041708,
+   "deadhead": 820,
+   "deadhead_by": {
+    "between_two_trips": 572,
+    "to_or_from_the_depot": 248,
+    "depot_area": 0
+   },
+   "unassigned": 18,
+   "unassigned_share": 0.000896,
+   "depot_area": [
+    48.08,
+    48.23,
+    -122.72,
+    -122.55
+   ]
+  },
   "prediction_error": {
-   "observed_events_with_predictions": 3707,
+   "observed_events_with_predictions": 3741,
    "definition": "predicted minus inferred time; arrival, or departure at a trip's first stop",
    "by_horizon_min": {
     "1": {
-     "n": 2671,
+     "n": 2689,
      "other_day": 39,
-     "other_day_share": 0.014391,
-     "bias_s": 656.5,
-     "median_s": -6.5,
-     "mae_s": 714.0,
-     "median_abs_s": 66.2,
-     "within_60s_share": 0.467241,
+     "other_day_share": 0.014296,
+     "bias_s": 652.7,
+     "median_s": -6.4,
+     "mae_s": 710.2,
+     "median_abs_s": 66.0,
+     "within_60s_share": 0.468204,
      "over_30min": 49,
-     "over_30min_share": 0.018345,
+     "over_30min_share": 0.018222,
      "quantiles_20_s": [
-      -115.0,
-      -90.1,
-      -74.3,
-      -60.7,
-      -50.8,
-      -42.9,
+      -115.3,
+      -90.3,
+      -74.4,
+      -60.6,
+      -50.7,
+      -42.8,
       -35.2,
       -28.3,
       -20.6,
       -11.4,
-      -1.2,
-      17.1,
+      -1.0,
+      17.2,
       44.7,
-      92.3,
-      151.4,
-      220.2,
-      289.9,
+      91.9,
+      151.2,
+      218.8,
+      289.0,
       382.8,
-      487.2,
-      863.5
+      488.0,
+      859.8
      ]
     },
     "2": {
-     "n": 2682,
+     "n": 2702,
      "other_day": 40,
-     "other_day_share": 0.014695,
-     "bias_s": 697.6,
-     "median_s": -14.6,
-     "mae_s": 777.8,
+     "other_day_share": 0.014588,
+     "bias_s": 694.3,
+     "median_s": -14.0,
+     "mae_s": 774.3,
      "median_abs_s": 88.1,
-     "within_60s_share": 0.368382,
+     "within_60s_share": 0.368616,
      "over_30min": 59,
-     "over_30min_share": 0.021999,
+     "over_30min_share": 0.021836,
      "quantiles_20_s": [
-      -155.7,
-      -123.8,
-      -103.8,
-      -86.0,
+      -155.6,
+      -123.9,
+      -103.7,
+      -85.4,
       -72.6,
-      -61.5,
-      -50.1,
-      -41.6,
-      -32.9,
-      -21.3,
-      -7.9,
-      12.1,
+      -61.2,
+      -50.0,
+      -41.4,
+      -32.8,
+      -20.7,
+      -7.6,
+      12.5,
       42.3,
-      90.2,
-      142.8,
-      214.7,
-      287.7,
-      374.1,
-      486.7,
-      990.6
+      90.5,
+      143.0,
+      216.1,
+      289.3,
+      376.1,
+      491.7,
+      983.5
      ]
     },
     "5": {
-     "n": 2559,
+     "n": 2577,
      "other_day": 45,
-     "other_day_share": 0.017281,
-     "bias_s": 690.7,
+     "other_day_share": 0.017162,
+     "bias_s": 686.5,
      "median_s": -26.2,
-     "mae_s": 832.3,
+     "mae_s": 828.1,
      "median_abs_s": 126.2,
-     "within_60s_share": 0.254787,
+     "within_60s_share": 0.256112,
      "over_30min": 54,
-     "over_30min_share": 0.021102,
+     "over_30min_share": 0.020955,
      "quantiles_20_s": [
-      -286.4,
-      -214.6,
+      -286.6,
+      -215.3,
       -178.3,
-      -149.6,
+      -149.8,
       -125.7,
-      -107.2,
-      -90.0,
-      -73.0,
-      -54.9,
-      -35.4,
+      -106.9,
+      -89.8,
+      -72.8,
+      -54.4,
+      -35.5,
       -18.1,
       1.4,
-      28.5,
-      67.7,
-      129.1,
-      189.0,
-      256.1,
-      323.0,
-      453.4,
-      1195.6
+      28.6,
+      67.4,
+      128.6,
+      188.8,
+      256.0,
+      324.7,
+      456.1,
+      1193.8
      ]
     },
     "10": {
-     "n": 2364,
-     "other_day": 22,
-     "other_day_share": 0.00922,
-     "bias_s": 424.7,
+     "n": 2375,
+     "other_day": 23,
+     "other_day_share": 0.009591,
+     "bias_s": 423.5,
      "median_s": -38.4,
-     "mae_s": 624.3,
-     "median_abs_s": 139.8,
-     "within_60s_share": 0.257191,
+     "mae_s": 623.0,
+     "median_abs_s": 140.0,
+     "within_60s_share": 0.257263,
      "over_30min": 46,
-     "over_30min_share": 0.019459,
+     "over_30min_share": 0.019368,
      "quantiles_20_s": [
-      -496.3,
-      -320.0,
-      -251.3,
+      -494.8,
+      -320.1,
+      -251.5,
       -205.6,
-      -169.6,
+      -169.3,
       -139.7,
-      -114.7,
-      -93.2,
-      -73.7,
-      -50.2,
+      -114.6,
+      -93.0,
+      -73.5,
+      -49.8,
       -28.9,
-      -10.7,
-      11.5,
-      38.4,
-      77.9,
-      140.6,
-      203.1,
-      292.1,
-      516.3,
-      1310.1
+      -10.6,
+      11.6,
+      38.5,
+      78.1,
+      141.6,
+      203.4,
+      293.0,
+      518.8,
+      1307.4
      ]
     },
     "15": {
-     "n": 2009,
+     "n": 2026,
      "other_day": 14,
-     "other_day_share": 0.00692,
-     "bias_s": 318.9,
-     "median_s": -42.3,
-     "mae_s": 546.6,
-     "median_abs_s": 150.5,
-     "within_60s_share": 0.234943,
+     "other_day_share": 0.006863,
+     "bias_s": 318.6,
+     "median_s": -41.8,
+     "mae_s": 545.7,
+     "median_abs_s": 150.7,
+     "within_60s_share": 0.235439,
      "over_30min": 47,
-     "over_30min_share": 0.023395,
+     "over_30min_share": 0.023198,
      "quantiles_20_s": [
-      -586.8,
-      -380.4,
+      -586.6,
+      -380.5,
       -280.0,
       -225.8,
-      -192.3,
-      -153.0,
-      -124.6,
-      -102.2,
-      -79.0,
-      -55.1,
-      -31.9,
-      -12.7,
-      11.6,
-      44.0,
-      87.3,
-      143.7,
-      212.2,
-      327.4,
-      536.1,
-      1761.0
+      -192.1,
+      -152.9,
+      -124.0,
+      -102.1,
+      -78.4,
+      -53.5,
+      -31.7,
+      -11.7,
+      12.3,
+      45.7,
+      88.6,
+      146.0,
+      219.9,
+      338.8,
+      589.4,
+      1759.3
      ]
     },
     "30": {
-     "n": 1210,
+     "n": 1222,
      "other_day": 3,
-     "other_day_share": 0.002473,
-     "bias_s": 373.0,
-     "median_s": -52.5,
-     "mae_s": 719.1,
-     "median_abs_s": 185.4,
-     "within_60s_share": 0.179339,
-     "over_30min": 115,
-     "over_30min_share": 0.095041,
+     "other_day_share": 0.002449,
+     "bias_s": 371.7,
+     "median_s": -50.8,
+     "mae_s": 719.0,
+     "median_abs_s": 186.4,
+     "within_60s_share": 0.180033,
+     "over_30min": 116,
+     "over_30min_share": 0.094926,
      "quantiles_20_s": [
-      -804.7,
-      -566.6,
-      -381.2,
+      -849.1,
+      -567.3,
+      -382.1,
       -288.0,
-      -226.7,
-      -186.4,
-      -148.3,
-      -123.3,
-      -98.5,
-      -68.9,
-      -34.3,
-      -13.1,
-      21.2,
-      66.9,
-      120.7,
-      183.5,
-      278.8,
-      566.8,
-      1915.8,
-      7450.1
+      -225.8,
+      -185.1,
+      -148.0,
+      -122.1,
+      -97.5,
+      -67.5,
+      -33.3,
+      -12.7,
+      23.2,
+      68.1,
+      124.6,
+      188.6,
+      288.2,
+      612.2,
+      1888.7,
+      7437.0
      ]
     }
    }
@@ -2398,7 +2452,7 @@
   "raw_sha256": "8d7cce1c8240712d7b15c1cc2563a1032c8a1e10e3594e2001a0461b75239753",
   "vehicles_sha256": "bb4e77c652d2b1ab23723efaff90cd8aea7266bfeafd1498dcaeb73c16ef935d",
   "tables_version": "tables/0.1.0",
-  "stop_events_sha256": "238d471bf0cb800dca612ba966fa255bc58b45ef611f6aeae7e3017e7d49f062",
-  "code_sha": "88b5ad8ac6898147eaf8d4610e70ef70dccefd4a"
+  "stop_events_sha256": "e6f2f0556eed05086797cbde35d3a09cc4352025f154869bf6e6b8a142d071d4",
+  "code_sha": "01f05c793737cec71edd6ae7c3f9609f40149ece"
  }
 }

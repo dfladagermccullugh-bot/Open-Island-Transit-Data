@@ -1,7 +1,7 @@
 {
  "service_date": "2026-11-21",
- "quality_version": "quality/0.7.0",
- "computed_at": "2026-11-27T07:28:19+00:00",
+ "quality_version": "quality/0.8.0",
+ "computed_at": "2026-11-28T02:28:16+00:00",
  "scheduled_service": {
   "trips": 168,
   "trips_ended_before_collection": 0,
@@ -1789,34 +1789,34 @@
   }
  },
  "events": {
-  "events_version": "events/0.5.0",
+  "events_version": "events/0.6.0",
   "stop_coverage": {
    "timepoints": {
     "scheduled": 1282,
-    "observed": 1128,
-    "coverage": 0.879875,
+    "observed": 1178,
+    "coverage": 0.918877,
     "not_observed_by_reason": {
-     "gap": 62,
+     "gap": 38,
      "no_reports": 21,
-     "not_reached": 34,
-     "past_when_first_seen": 17,
+     "not_reached": 21,
+     "past_when_first_seen": 4,
      "skipped": 20
     },
     "by_route": {
      "6737": {
       "scheduled": 81,
-      "observed": 29,
-      "coverage": 0.358025
+      "observed": 30,
+      "coverage": 0.37037
      },
      "6744": {
       "scheduled": 250,
-      "observed": 249,
-      "coverage": 0.996
+      "observed": 250,
+      "coverage": 1.0
      },
      "7913": {
       "scheduled": 35,
-      "observed": 31,
-      "coverage": 0.885714
+      "observed": 33,
+      "coverage": 0.942857
      },
      "7914": {
       "scheduled": 70,
@@ -1825,68 +1825,85 @@
      },
      "7915": {
       "scheduled": 42,
-      "observed": 40,
-      "coverage": 0.952381
+      "observed": 41,
+      "coverage": 0.97619
      },
      "7918": {
       "scheduled": 129,
-      "observed": 112,
-      "coverage": 0.868217
+      "observed": 121,
+      "coverage": 0.937984
      },
      "7919": {
       "scheduled": 65,
-      "observed": 56,
-      "coverage": 0.861538
+      "observed": 61,
+      "coverage": 0.938462
      },
      "7920": {
       "scheduled": 130,
-      "observed": 118,
-      "coverage": 0.907692
+      "observed": 129,
+      "coverage": 0.992308
      },
      "7922": {
       "scheduled": 160,
-      "observed": 149,
-      "coverage": 0.93125
+      "observed": 152,
+      "coverage": 0.95
      },
      "9404": {
       "scheduled": 250,
-      "observed": 233,
-      "coverage": 0.932
+      "observed": 246,
+      "coverage": 0.984
      },
      "9430": {
       "scheduled": 70,
-      "observed": 65,
-      "coverage": 0.928571
+      "observed": 69,
+      "coverage": 0.985714
+     }
+    },
+    "by_position": {
+     "first": {
+      "scheduled": 153,
+      "observed": 141,
+      "coverage": 0.921569
+     },
+     "middle": {
+      "scheduled": 961,
+      "observed": 886,
+      "coverage": 0.921956
+     },
+     "last": {
+      "scheduled": 168,
+      "observed": 151,
+      "coverage": 0.89881
      }
     }
    },
    "all_stops": {
     "scheduled": 4809,
-    "observed": 4371,
-    "coverage": 0.908921,
+    "observed": 4421,
+    "coverage": 0.919318,
     "not_observed_by_reason": {
-     "gap": 178,
+     "gap": 154,
      "no_reports": 85,
-     "not_reached": 64,
-     "past_when_first_seen": 17,
+     "not_reached": 51,
+     "past_when_first_seen": 4,
      "skipped": 93,
      "unplaced": 1
     },
     "by_route": {
      "6737": {
       "scheduled": 369,
-      "observed": 218,
-      "coverage": 0.590786
+      "observed": 219,
+      "coverage": 0.593496
      },
      "6744": {
       "scheduled": 550,
-      "observed": 538,
-      "coverage": 0.978182
+      "observed": 539,
+      "coverage": 0.98
      },
      "7913": {
       "scheduled": 135,
-      "observed": 131,
-      "coverage": 0.97037
+      "observed": 133,
+      "coverage": 0.985185
      },
      "7914": {
       "scheduled": 287,
@@ -1895,49 +1912,66 @@
      },
      "7915": {
       "scheduled": 123,
-      "observed": 121,
-      "coverage": 0.98374
+      "observed": 122,
+      "coverage": 0.99187
      },
      "7918": {
       "scheduled": 478,
-      "observed": 441,
-      "coverage": 0.922594
+      "observed": 450,
+      "coverage": 0.941423
      },
      "7919": {
       "scheduled": 190,
-      "observed": 179,
-      "coverage": 0.942105
+      "observed": 184,
+      "coverage": 0.968421
      },
      "7920": {
       "scheduled": 299,
-      "observed": 285,
-      "coverage": 0.953177
+      "observed": 296,
+      "coverage": 0.989967
      },
      "7922": {
       "scheduled": 580,
-      "observed": 541,
-      "coverage": 0.932759
+      "observed": 544,
+      "coverage": 0.937931
      },
      "9404": {
       "scheduled": 1628,
-      "observed": 1582,
-      "coverage": 0.971744
+      "observed": 1595,
+      "coverage": 0.97973
      },
      "9430": {
       "scheduled": 170,
-      "observed": 165,
-      "coverage": 0.970588
+      "observed": 169,
+      "coverage": 0.994118
+     }
+    },
+    "by_position": {
+     "first": {
+      "scheduled": 168,
+      "observed": 156,
+      "coverage": 0.928571
+     },
+     "middle": {
+      "scheduled": 4473,
+      "observed": 4114,
+      "coverage": 0.919741
+     },
+     "last": {
+      "scheduled": 168,
+      "observed": 151,
+      "coverage": 0.89881
      }
     }
    }
   },
   "shape_fit": {
    "position_reports": 21572,
-   "tracked_reports": 17227,
+   "tracked_reports": 17243,
    "off_shape": 682,
-   "off_shape_share": 0.039589,
+   "off_shape_share": 0.039552,
    "wrong_direction": 78,
-   "wrong_direction_share": 0.004528,
+   "wrong_direction_share": 0.004524,
    "threshold_m": 100,
    "trips_skipping_part_of_shape": 25,
    "skipped_km": 158.6,
@@ -1991,19 +2025,19 @@
     },
     "7918": {
      "position_reports": 1939,
-     "tracked_reports": 1817,
+     "tracked_reports": 1826,
      "off_shape": 89,
-     "off_shape_share": 0.048982,
+     "off_shape_share": 0.04874,
      "wrong_direction": 11,
-     "wrong_direction_share": 0.006054
+     "wrong_direction_share": 0.006024
     },
     "7919": {
      "position_reports": 1187,
-     "tracked_reports": 893,
+     "tracked_reports": 900,
      "off_shape": 9,
-     "off_shape_share": 0.010078,
+     "off_shape_share": 0.01,
      "wrong_direction": 5,
-     "wrong_direction_share": 0.005599
+     "wrong_direction_share": 0.005556
     },
     "7920": {
      "position_reports": 1132,
@@ -2059,212 +2093,232 @@
    "trips_with_no_usable_report": 0,
    "trips_with_more_than_one_vehicle": 3
   },
+  "between_trips": {
+   "position_reports": 21994,
+   "in_trips": 20559,
+   "between_trips": 1435,
+   "between_trips_share": 0.065245,
+   "deadhead": 1435,
+   "deadhead_by": {
+    "between_two_trips": 1184,
+    "to_or_from_the_depot": 251,
+    "depot_area": 0
+   },
+   "unassigned": 0,
+   "unassigned_share": 0.0,
+   "depot_area": [
+    48.08,
+    48.23,
+    -122.72,
+    -122.55
+   ]
+  },
   "prediction_error": {
-   "observed_events_with_predictions": 3668,
+   "observed_events_with_predictions": 3714,
    "definition": "predicted minus inferred time; arrival, or departure at a trip's first stop",
    "by_horizon_min": {
     "1": {
-     "n": 2599,
+     "n": 2630,
      "other_day": 58,
-     "other_day_share": 0.021829,
-     "bias_s": 499.7,
-     "median_s": -8.1,
-     "mae_s": 560.0,
-     "median_abs_s": 67.8,
-     "within_60s_share": 0.459023,
+     "other_day_share": 0.021577,
+     "bias_s": 493.9,
+     "median_s": -8.4,
+     "mae_s": 554.4,
+     "median_abs_s": 67.5,
+     "within_60s_share": 0.460456,
      "over_30min": 44,
-     "over_30min_share": 0.01693,
+     "over_30min_share": 0.01673,
      "quantiles_20_s": [
       -130.2,
-      -95.8,
+      -96.0,
       -77.3,
-      -65.5,
-      -55.3,
-      -47.9,
-      -38.9,
-      -31.5,
-      -22.9,
-      -12.8,
-      -2.3,
-      10.3,
-      31.4,
-      73.2,
-      133.7,
-      191.2,
-      256.8,
-      346.0,
-      449.8,
-      766.8
+      -65.8,
+      -55.5,
+      -48.0,
+      -39.1,
+      -31.8,
+      -23.3,
+      -13.1,
+      -2.7,
+      9.9,
+      29.2,
+      70.3,
+      130.3,
+      189.2,
+      252.4,
+      341.6,
+      449.2,
+      765.5
      ]
     },
     "2": {
-     "n": 2599,
+     "n": 2629,
      "other_day": 58,
-     "other_day_share": 0.021829,
-     "bias_s": 551.4,
-     "median_s": -23.7,
-     "mae_s": 641.3,
-     "median_abs_s": 87.9,
-     "within_60s_share": 0.342055,
+     "other_day_share": 0.021585,
+     "bias_s": 546.3,
+     "median_s": -23.9,
+     "mae_s": 636.4,
+     "median_abs_s": 87.5,
+     "within_60s_share": 0.342335,
      "over_30min": 51,
-     "over_30min_share": 0.019623,
+     "over_30min_share": 0.019399,
      "quantiles_20_s": [
-      -174.0,
-      -130.0,
+      -174.2,
+      -130.1,
       -109.0,
-      -93.4,
-      -81.2,
-      -69.0,
-      -60.2,
-      -51.6,
-      -40.9,
-      -29.7,
-      -15.7,
-      0.7,
-      23.3,
-      65.7,
-      120.4,
-      186.5,
-      250.4,
-      336.0,
-      432.4,
-      935.4
+      -93.3,
+      -81.1,
+      -69.3,
+      -60.3,
+      -51.9,
+      -41.2,
+      -29.8,
+      -16.1,
+      -0.3,
+      23.0,
+      63.7,
+      119.8,
+      186.7,
+      250.2,
+      337.3,
+      434.2,
+      938.9
      ]
     },
     "5": {
-     "n": 2525,
+     "n": 2555,
      "other_day": 67,
-     "other_day_share": 0.025849,
-     "bias_s": 473.1,
-     "median_s": -54.1,
-     "mae_s": 639.1,
-     "median_abs_s": 137.1,
-     "within_60s_share": 0.21505,
+     "other_day_share": 0.025553,
+     "bias_s": 467.5,
+     "median_s": -55.5,
+     "mae_s": 634.2,
+     "median_abs_s": 137.2,
+     "within_60s_share": 0.21409,
      "over_30min": 46,
-     "over_30min_share": 0.018218,
+     "over_30min_share": 0.018004,
      "quantiles_20_s": [
-      -312.6,
-      -224.8,
-      -192.4,
-      -168.8,
-      -149.5,
-      -132.3,
-      -116.0,
-      -97.8,
-      -80.4,
-      -63.4,
-      -40.2,
-      -16.6,
-      7.6,
-      40.4,
-      89.3,
-      159.4,
-      233.1,
-      303.5,
-      400.8,
-      1108.8
+      -312.2,
+      -225.7,
+      -192.7,
+      -169.2,
+      -150.0,
+      -132.7,
+      -116.1,
+      -98.0,
+      -81.2,
+      -64.0,
+      -43.8,
+      -18.5,
+      6.8,
+      38.3,
+      88.2,
+      158.8,
+      231.7,
+      303.9,
+      407.0,
+      1083.8
      ]
     },
     "10": {
-     "n": 2297,
-     "other_day": 38,
-     "other_day_share": 0.016274,
-     "bias_s": 259.8,
-     "median_s": -74.4,
-     "mae_s": 511.4,
-     "median_abs_s": 168.8,
-     "within_60s_share": 0.205921,
+     "n": 2318,
+     "other_day": 40,
+     "other_day_share": 0.016964,
+     "bias_s": 257.7,
+     "median_s": -74.9,
+     "mae_s": 509.5,
+     "median_abs_s": 169.5,
+     "within_60s_share": 0.205349,
      "over_30min": 39,
-     "over_30min_share": 0.016979,
+     "over_30min_share": 0.016825,
      "quantiles_20_s": [
-      -451.8,
-      -359.1,
-      -309.4,
-      -268.3,
-      -231.5,
-      -195.4,
-      -166.8,
-      -136.8,
-      -111.7,
-      -86.6,
-      -63.7,
-      -42.5,
-      -17.7,
-      6.9,
-      44.3,
-      99.8,
+      -449.1,
+      -358.2,
+      -309.0,
+      -268.2,
+      -232.4,
+      -197.4,
+      -167.3,
+      -137.6,
+      -111.8,
+      -86.8,
+      -64.5,
+      -43.2,
+      -18.0,
+      6.6,
+      43.8,
+      99.2,
       175.6,
-      264.8,
-      397.3,
-      1074.8
+      265.4,
+      401.3,
+      1069.7
      ]
     },
     "15": {
-     "n": 1949,
+     "n": 1967,
      "other_day": 28,
-     "other_day_share": 0.014163,
-     "bias_s": 329.5,
-     "median_s": -95.6,
-     "mae_s": 638.5,
-     "median_abs_s": 187.0,
-     "within_60s_share": 0.169831,
+     "other_day_share": 0.014035,
+     "bias_s": 326.2,
+     "median_s": -97.1,
+     "mae_s": 637.4,
+     "median_abs_s": 188.3,
+     "within_60s_share": 0.169293,
      "over_30min": 54,
-     "over_30min_share": 0.027707,
+     "over_30min_share": 0.027453,
      "quantiles_20_s": [
-      -565.2,
-      -454.5,
-      -376.7,
-      -316.3,
-      -268.0,
-      -224.5,
-      -191.1,
-      -164.4,
-      -137.0,
-      -109.7,
-      -84.2,
-      -59.8,
-      -32.2,
-      3.4,
+      -567.1,
+      -456.3,
+      -382.0,
+      -318.9,
+      -269.6,
+      -227.2,
+      -193.6,
+      -166.4,
+      -138.0,
+      -110.5,
+      -85.0,
+      -60.0,
+      -32.4,
+      2.6,
       34.6,
-      98.1,
-      177.4,
-      277.6,
-      432.6,
-      1979.1
+      98.5,
+      178.1,
+      280.0,
+      446.4,
+      1953.6
      ]
     },
     "30": {
-     "n": 1174,
+     "n": 1191,
      "other_day": 9,
-     "other_day_share": 0.007608,
-     "bias_s": 150.5,
-     "median_s": -125.0,
-     "mae_s": 646.8,
-     "median_abs_s": 229.9,
-     "within_60s_share": 0.135434,
+     "other_day_share": 0.0075,
+     "bias_s": 148.2,
+     "median_s": -124.9,
+     "mae_s": 645.4,
+     "median_abs_s": 230.9,
+     "within_60s_share": 0.13602,
      "over_30min": 97,
-     "over_30min_share": 0.082624,
+     "over_30min_share": 0.081444,
      "quantiles_20_s": [
-      -1883.4,
-      -580.9,
-      -493.3,
-      -426.7,
-      -357.5,
-      -287.9,
-      -242.5,
-      -205.1,
-      -169.1,
-      -141.0,
-      -107.1,
-      -74.8,
-      -47.3,
-      -6.5,
-      32.4,
-      96.8,
-      194.4,
-      326.4,
-      751.9,
-      4452.5
+      -1874.6,
+      -583.0,
+      -495.4,
+      -427.4,
+      -357.6,
+      -288.5,
+      -243.4,
+      -204.8,
+      -169.4,
+      -140.9,
+      -106.5,
+      -74.0,
+      -46.0,
+      -6.0,
+      34.7,
+      100.5,
+      197.7,
+      344.5,
+      785.4,
+      4429.4
      ]
     }
    }
@@ -2399,7 +2453,7 @@
   "raw_sha256": "252a12d179f5480b8c19ee898e77a2661fb79e1d26f62f3ddf2461991917f3d3",
   "vehicles_sha256": "5ccdae03d48a7340abc944f06e7af039530641cc4c817f4d33b6ff5996736325",
   "tables_version": "tables/0.1.0",
-  "stop_events_sha256": "87badca315cb3ea52354511780e324b9510372f427aa253d86827a29350ac136",
-  "code_sha": "88b5ad8ac6898147eaf8d4610e70ef70dccefd4a"
+  "stop_events_sha256": "b25534f6e1c4c90f4f118d599458adeb6148f2628ae1948f4b6a3d75e563f242",
+  "code_sha": "01f05c793737cec71edd6ae7c3f9609f40149ece"
  }
 }

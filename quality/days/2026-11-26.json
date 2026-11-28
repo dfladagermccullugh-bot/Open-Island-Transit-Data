@@ -1,7 +1,7 @@
 {
  "service_date": "2026-11-26",
- "quality_version": "quality/0.7.0",
- "computed_at": "2026-11-27T08:40:48+00:00",
+ "quality_version": "quality/0.8.0",
+ "computed_at": "2026-11-28T02:27:50+00:00",
  "scheduled_service": {
   "trips": 341,
   "trips_ended_before_collection": 0,
@@ -3225,7 +3225,7 @@
   }
  },
  "events": {
-  "events_version": "events/0.5.0",
+  "events_version": "events/0.6.0",
   "stop_coverage": {
    "timepoints": {
     "scheduled": 2725,
@@ -3307,6 +3307,23 @@
      },
      "9432": {
       "scheduled": 40,
+      "observed": 0,
+      "coverage": 0.0
+     }
+    },
+    "by_position": {
+     "first": {
+      "scheduled": 326,
+      "observed": 0,
+      "coverage": 0.0
+     },
+     "middle": {
+      "scheduled": 2060,
+      "observed": 0,
+      "coverage": 0.0
+     },
+     "last": {
+      "scheduled": 339,
       "observed": 0,
       "coverage": 0.0
      }
@@ -3393,6 +3410,23 @@
      },
      "9432": {
       "scheduled": 108,
+      "observed": 0,
+      "coverage": 0.0
+     }
+    },
+    "by_position": {
+     "first": {
+      "scheduled": 341,
+      "observed": 0,
+      "coverage": 0.0
+     },
+     "middle": {
+      "scheduled": 9711,
+      "observed": 0,
+      "coverage": 0.0
+     },
+     "last": {
+      "scheduled": 341,
       "observed": 0,
       "coverage": 0.0
      }
@@ -3551,6 +3585,26 @@
    "scheduled_trips_with_reports": 0,
    "trips_with_no_usable_report": 0,
    "trips_with_more_than_one_vehicle": 0
+  },
+  "between_trips": {
+   "position_reports": 0,
+   "in_trips": 0,
+   "between_trips": 0,
+   "between_trips_share": null,
+   "deadhead": 0,
+   "deadhead_by": {
+    "between_two_trips": 0,
+    "to_or_from_the_depot": 0,
+    "depot_area": 0
+   },
+   "unassigned": 0,
+   "unassigned_share": null,
+   "depot_area": [
+    48.08,
+    48.23,
+    -122.72,
+    -122.55
+   ]
   },
   "prediction_error": {
    "observed_events_with_predictions": 0,
@@ -3790,7 +3844,7 @@
   "raw_sha256": "059bafa48b8e58a6b340cc3ea11851d3ad7945faab711e56c53e0f28e5bcf01b",
   "vehicles_sha256": "4aa8bc28988fe0ef303ce466e0a63286d17336902696397cc80e72a304ddbcda",
   "tables_version": "tables/0.1.0",
-  "stop_events_sha256": "f73c69d0b99c8687192f0c447e782deceec93165038d31c569e2210d1e25d139",
-  "code_sha": "2e522d686805e1282b2c5525a52330bfc4ff22c3"
+  "stop_events_sha256": "cf92041717f71b599b5a99778421e9f99da501e833438a99fd62c35c050809b2",
+  "code_sha": "01f05c793737cec71edd6ae7c3f9609f40149ece"
  }
 }
