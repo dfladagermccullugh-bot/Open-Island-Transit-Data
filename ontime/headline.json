@@ -2,77 +2,79 @@
  "periods_version": "periods/0.3.0",
  "window_service_days": 28,
  "first_service_date": "2026-11-19",
- "last_service_date": "2026-11-25",
- "days_without_service": [],
+ "last_service_date": "2026-11-27",
+ "days_without_service": [
+  "2026-11-26"
+ ],
  "timetables": [
   "2026-09-27"
  ],
  "current": {
-  "days": 7,
-  "scheduled": 14664,
-  "observed": 13095,
-  "on_time": 9719,
-  "early": 245,
-  "late": 3131,
-  "observed_share": 0.893,
-  "on_time_share_of_observed": 0.7422,
-  "early_share_of_observed": 0.0187,
-  "late_share_of_observed": 0.2391,
-  "deviation_s_median": 150.0,
-  "deviations_counted": 13095,
+  "days": 8,
+  "scheduled": 17389,
+  "observed": 15490,
+  "on_time": 11647,
+  "early": 308,
+  "late": 3535,
+  "observed_share": 0.8908,
+  "on_time_share_of_observed": 0.7519,
+  "early_share_of_observed": 0.0199,
+  "late_share_of_observed": 0.2282,
+  "deviation_s_median": 144.0,
+  "deviations_counted": 15490,
   "on_time_share_interval95": {
-   "low": 0.7264,
-   "high": 0.7577,
-   "trips": 1780,
+   "low": 0.7368,
+   "high": 0.7663,
+   "trips": 2107,
    "resamples": 2000,
    "method": "bootstrap over trips"
   },
   "untimed": {
-   "departures": 1569,
+   "departures": 1899,
    "by_reason": {
-    "gap": 506,
-    "skipped": 393,
-    "not_reached": 224,
-    "no_reports": 385,
-    "past_when_first_seen": 61
+    "gap": 636,
+    "skipped": 492,
+    "not_reached": 252,
+    "no_reports": 434,
+    "past_when_first_seen": 85
    },
    "by_position": {
     "first": {
-     "scheduled": 1749,
-     "observed": 1529,
-     "untimed": 220,
-     "observed_share": 0.8742,
+     "scheduled": 2075,
+     "observed": 1821,
+     "untimed": 254,
+     "observed_share": 0.8776,
      "by_reason": {
-      "gap": 119,
+      "gap": 135,
       "skipped": 0,
       "not_reached": 1,
-      "no_reports": 62,
-      "past_when_first_seen": 38
+      "no_reports": 71,
+      "past_when_first_seen": 47
      }
     },
     "middle": {
-     "scheduled": 11064,
-     "observed": 9905,
-     "untimed": 1159,
-     "observed_share": 0.8952,
+     "scheduled": 13124,
+     "observed": 11700,
+     "untimed": 1424,
+     "observed_share": 0.8915,
      "by_reason": {
-      "gap": 366,
-      "skipped": 393,
-      "not_reached": 124,
-      "no_reports": 254,
-      "past_when_first_seen": 22
+      "gap": 475,
+      "skipped": 492,
+      "not_reached": 135,
+      "no_reports": 285,
+      "past_when_first_seen": 37
      }
     },
     "last": {
-     "scheduled": 1851,
-     "observed": 1661,
-     "untimed": 190,
-     "observed_share": 0.8974,
+     "scheduled": 2190,
+     "observed": 1969,
+     "untimed": 221,
+     "observed_share": 0.8991,
      "by_reason": {
-      "gap": 21,
+      "gap": 26,
       "skipped": 0,
-      "not_reached": 99,
-      "no_reports": 69,
+      "not_reached": 116,
+      "no_reports": 78,
       "past_when_first_seen": 1
      }
     }
@@ -87,21 +89,21 @@
    }
   },
   "bounds": {
-   "low": 0.6628,
-   "high": 0.7698,
-   "untimed": 1569,
+   "low": 0.6698,
+   "high": 0.779,
+   "untimed": 1899,
    "method": "no-assumption bounds"
   },
   "adjusted": {
-   "value": 0.7368,
+   "value": 0.7456,
    "interval95": {
-    "low": 0.7204,
-    "high": 0.7521,
-    "trips": 1861,
+    "low": 0.7315,
+    "high": 0.76,
+    "trips": 2202,
     "resamples": 2000,
     "method": "bootstrap over trips"
    },
-   "max_weight": 3.2258,
+   "max_weight": 3.1579,
    "shown": true,
    "scheduled_left_out": 0,
    "min_timed_per_cell": 10,
@@ -110,178 +112,203 @@
    "cells": [
     {
      "cell": "*|*|*",
-     "scheduled": 45,
-     "observed": 33,
-     "on_time": 29,
+     "scheduled": 64,
+     "observed": 36,
+     "on_time": 33,
      "members": [
-      "6737|early|last",
-      "6743|afternoon|first",
-      "7916|early|last",
-      "7919|evening|first",
+      "6737|evening|last",
+      "7914|evening|last",
+      "7915|early|first",
+      "7923|morning|last",
       "7924|afternoon|first",
       "7924|afternoon|last"
      ]
     },
     {
      "cell": "6737|afternoon|first",
-     "scheduled": 19,
-     "observed": 17,
-     "on_time": 16,
+     "scheduled": 22,
+     "observed": 20,
+     "on_time": 19,
      "members": [
       "6737|afternoon|first"
      ]
     },
     {
      "cell": "6737|afternoon|last",
-     "scheduled": 21,
-     "observed": 14,
-     "on_time": 13,
+     "scheduled": 24,
+     "observed": 16,
+     "on_time": 15,
      "members": [
       "6737|afternoon|last"
      ]
     },
     {
      "cell": "6737|afternoon|middle",
-     "scheduled": 145,
-     "observed": 66,
-     "on_time": 52,
+     "scheduled": 166,
+     "observed": 75,
+     "on_time": 61,
      "members": [
       "6737|afternoon|middle"
      ]
     },
     {
      "cell": "6737|early|first",
-     "scheduled": 12,
-     "observed": 12,
-     "on_time": 11,
+     "scheduled": 15,
+     "observed": 15,
+     "on_time": 13,
      "members": [
       "6737|early|first"
      ]
     },
     {
+     "cell": "6737|early|last",
+     "scheduled": 10,
+     "observed": 10,
+     "on_time": 10,
+     "members": [
+      "6737|early|last"
+     ]
+    },
+    {
      "cell": "6737|early|middle",
-     "scheduled": 60,
-     "observed": 37,
-     "on_time": 37,
+     "scheduled": 75,
+     "observed": 47,
+     "on_time": 47,
      "members": [
       "6737|early|middle"
      ]
     },
     {
-     "cell": "6737|evening|*",
-     "scheduled": 25,
-     "observed": 14,
-     "on_time": 13,
+     "cell": "6737|evening|first",
+     "scheduled": 12,
+     "observed": 10,
+     "on_time": 9,
      "members": [
-      "6737|evening|first",
-      "6737|evening|last"
+      "6737|evening|first"
      ]
     },
     {
      "cell": "6737|evening|middle",
-     "scheduled": 100,
-     "observed": 31,
-     "on_time": 26,
+     "scheduled": 120,
+     "observed": 38,
+     "on_time": 32,
      "members": [
       "6737|evening|middle"
      ]
     },
     {
      "cell": "6737|midday|first",
-     "scheduled": 36,
-     "observed": 35,
-     "on_time": 34,
+     "scheduled": 42,
+     "observed": 40,
+     "on_time": 38,
      "members": [
       "6737|midday|first"
      ]
     },
     {
      "cell": "6737|midday|last",
-     "scheduled": 36,
-     "observed": 25,
-     "on_time": 24,
+     "scheduled": 42,
+     "observed": 31,
+     "on_time": 30,
      "members": [
       "6737|midday|last"
      ]
     },
     {
      "cell": "6737|midday|middle",
-     "scheduled": 246,
-     "observed": 132,
-     "on_time": 119,
+     "scheduled": 288,
+     "observed": 155,
+     "on_time": 141,
      "members": [
       "6737|midday|middle"
      ]
     },
     {
-     "cell": "6737|morning|*",
-     "scheduled": 22,
-     "observed": 17,
-     "on_time": 17,
+     "cell": "6737|morning|first",
+     "scheduled": 14,
+     "observed": 11,
+     "on_time": 11,
      "members": [
-      "6737|morning|first",
+      "6737|morning|first"
+     ]
+    },
+    {
+     "cell": "6737|morning|last",
+     "scheduled": 12,
+     "observed": 10,
+     "on_time": 10,
+     "members": [
       "6737|morning|last"
      ]
     },
     {
      "cell": "6737|morning|middle",
-     "scheduled": 72,
-     "observed": 34,
-     "on_time": 34,
+     "scheduled": 86,
+     "observed": 42,
+     "on_time": 42,
      "members": [
       "6737|morning|middle"
      ]
     },
     {
+     "cell": "6743|afternoon|first",
+     "scheduled": 18,
+     "observed": 11,
+     "on_time": 10,
+     "members": [
+      "6743|afternoon|first"
+     ]
+    },
+    {
      "cell": "6743|afternoon|last",
-     "scheduled": 15,
-     "observed": 13,
-     "on_time": 6,
+     "scheduled": 18,
+     "observed": 16,
+     "on_time": 7,
      "members": [
       "6743|afternoon|last"
      ]
     },
     {
      "cell": "6743|afternoon|middle",
-     "scheduled": 195,
-     "observed": 149,
-     "on_time": 40,
+     "scheduled": 234,
+     "observed": 184,
+     "on_time": 47,
      "members": [
       "6743|afternoon|middle"
      ]
     },
     {
      "cell": "6743|midday|first",
-     "scheduled": 25,
-     "observed": 13,
-     "on_time": 13,
+     "scheduled": 31,
+     "observed": 16,
+     "on_time": 15,
      "members": [
       "6743|midday|first"
      ]
     },
     {
      "cell": "6743|midday|last",
-     "scheduled": 26,
-     "observed": 21,
-     "on_time": 19,
+     "scheduled": 32,
+     "observed": 24,
+     "on_time": 22,
      "members": [
       "6743|midday|last"
      ]
     },
     {
      "cell": "6743|midday|middle",
-     "scheduled": 334,
-     "observed": 221,
-     "on_time": 109,
+     "scheduled": 412,
+     "observed": 243,
+     "on_time": 127,
      "members": [
       "6743|midday|middle"
      ]
     },
     {
      "cell": "6743|morning|*",
-     "scheduled": 16,
-     "observed": 12,
-     "on_time": 12,
+     "scheduled": 20,
+     "observed": 15,
+     "on_time": 15,
      "members": [
       "6743|morning|first",
       "6743|morning|last"
@@ -289,145 +316,153 @@
     },
     {
      "cell": "6743|morning|middle",
-     "scheduled": 104,
-     "observed": 70,
-     "on_time": 47,
+     "scheduled": 130,
+     "observed": 92,
+     "on_time": 64,
      "members": [
       "6743|morning|middle"
      ]
     },
     {
      "cell": "6744|afternoon|first",
-     "scheduled": 42,
-     "observed": 36,
-     "on_time": 35,
+     "scheduled": 48,
+     "observed": 42,
+     "on_time": 41,
      "members": [
       "6744|afternoon|first"
      ]
     },
     {
      "cell": "6744|afternoon|last",
-     "scheduled": 42,
-     "observed": 41,
-     "on_time": 36,
+     "scheduled": 48,
+     "observed": 47,
+     "on_time": 42,
      "members": [
       "6744|afternoon|last"
      ]
     },
     {
      "cell": "6744|afternoon|middle",
-     "scheduled": 336,
-     "observed": 328,
-     "on_time": 271,
+     "scheduled": 384,
+     "observed": 376,
+     "on_time": 318,
      "members": [
       "6744|afternoon|middle"
      ]
     },
     {
-     "cell": "6744|early|*",
-     "scheduled": 20,
-     "observed": 18,
-     "on_time": 18,
+     "cell": "6744|early|first",
+     "scheduled": 12,
+     "observed": 11,
+     "on_time": 11,
      "members": [
-      "6744|early|first",
+      "6744|early|first"
+     ]
+    },
+    {
+     "cell": "6744|early|last",
+     "scheduled": 12,
+     "observed": 11,
+     "on_time": 11,
+     "members": [
       "6744|early|last"
      ]
     },
     {
      "cell": "6744|early|middle",
-     "scheduled": 80,
-     "observed": 80,
-     "on_time": 80,
+     "scheduled": 96,
+     "observed": 96,
+     "on_time": 95,
      "members": [
       "6744|early|middle"
      ]
     },
     {
      "cell": "6744|evening|first",
-     "scheduled": 24,
-     "observed": 20,
-     "on_time": 18,
+     "scheduled": 28,
+     "observed": 24,
+     "on_time": 22,
      "members": [
       "6744|evening|first"
      ]
     },
     {
      "cell": "6744|evening|last",
-     "scheduled": 24,
-     "observed": 22,
-     "on_time": 20,
+     "scheduled": 28,
+     "observed": 25,
+     "on_time": 23,
      "members": [
       "6744|evening|last"
      ]
     },
     {
      "cell": "6744|evening|middle",
-     "scheduled": 192,
-     "observed": 192,
-     "on_time": 149,
+     "scheduled": 224,
+     "observed": 224,
+     "on_time": 181,
      "members": [
       "6744|evening|middle"
      ]
     },
     {
      "cell": "6744|midday|first",
-     "scheduled": 75,
-     "observed": 71,
-     "on_time": 65,
+     "scheduled": 87,
+     "observed": 82,
+     "on_time": 76,
      "members": [
       "6744|midday|first"
      ]
     },
     {
      "cell": "6744|midday|last",
-     "scheduled": 76,
-     "observed": 75,
-     "on_time": 72,
+     "scheduled": 88,
+     "observed": 87,
+     "on_time": 84,
      "members": [
       "6744|midday|last"
      ]
     },
     {
      "cell": "6744|midday|middle",
-     "scheduled": 600,
-     "observed": 598,
-     "on_time": 510,
+     "scheduled": 696,
+     "observed": 694,
+     "on_time": 598,
      "members": [
       "6744|midday|middle"
      ]
     },
     {
      "cell": "6744|morning|first",
-     "scheduled": 24,
-     "observed": 23,
-     "on_time": 22,
+     "scheduled": 28,
+     "observed": 27,
+     "on_time": 26,
      "members": [
       "6744|morning|first"
      ]
     },
     {
      "cell": "6744|morning|last",
-     "scheduled": 24,
-     "observed": 24,
-     "on_time": 24,
+     "scheduled": 28,
+     "observed": 28,
+     "on_time": 28,
      "members": [
       "6744|morning|last"
      ]
     },
     {
      "cell": "6744|morning|middle",
-     "scheduled": 192,
-     "observed": 192,
-     "on_time": 171,
+     "scheduled": 224,
+     "observed": 224,
+     "on_time": 203,
      "members": [
       "6744|morning|middle"
      ]
     },
     {
      "cell": "7913|*|*",
-     "scheduled": 13,
-     "observed": 12,
-     "on_time": 12,
+     "scheduled": 16,
+     "observed": 15,
+     "on_time": 15,
      "members": [
       "7913|evening|first",
       "7913|morning|first"
@@ -435,226 +470,225 @@
     },
     {
      "cell": "7913|afternoon|first",
-     "scheduled": 15,
-     "observed": 12,
-     "on_time": 12,
+     "scheduled": 18,
+     "observed": 15,
+     "on_time": 15,
      "members": [
       "7913|afternoon|first"
      ]
     },
     {
      "cell": "7913|afternoon|last",
-     "scheduled": 34,
-     "observed": 30,
-     "on_time": 30,
+     "scheduled": 40,
+     "observed": 35,
+     "on_time": 35,
      "members": [
       "7913|afternoon|last"
      ]
     },
     {
      "cell": "7913|afternoon|middle",
-     "scheduled": 64,
-     "observed": 53,
-     "on_time": 39,
+     "scheduled": 76,
+     "observed": 65,
+     "on_time": 51,
      "members": [
       "7913|afternoon|middle"
      ]
     },
     {
      "cell": "7913|early|first",
-     "scheduled": 12,
-     "observed": 12,
-     "on_time": 12,
+     "scheduled": 15,
+     "observed": 15,
+     "on_time": 15,
      "members": [
       "7913|early|first"
      ]
     },
     {
      "cell": "7913|early|last",
-     "scheduled": 16,
-     "observed": 16,
-     "on_time": 16,
+     "scheduled": 20,
+     "observed": 20,
+     "on_time": 20,
      "members": [
       "7913|early|last"
      ]
     },
     {
      "cell": "7913|early|middle",
-     "scheduled": 40,
-     "observed": 40,
-     "on_time": 40,
+     "scheduled": 50,
+     "observed": 50,
+     "on_time": 48,
      "members": [
       "7913|early|middle"
      ]
     },
     {
      "cell": "7913|evening|last",
-     "scheduled": 20,
-     "observed": 17,
-     "on_time": 17,
+     "scheduled": 24,
+     "observed": 20,
+     "on_time": 20,
      "members": [
       "7913|evening|last"
      ]
     },
     {
      "cell": "7913|evening|middle",
-     "scheduled": 30,
-     "observed": 28,
-     "on_time": 25,
+     "scheduled": 36,
+     "observed": 34,
+     "on_time": 29,
      "members": [
       "7913|evening|middle"
      ]
     },
     {
      "cell": "7913|midday|first",
-     "scheduled": 36,
-     "observed": 33,
-     "on_time": 33,
+     "scheduled": 42,
+     "observed": 39,
+     "on_time": 39,
      "members": [
       "7913|midday|first"
      ]
     },
     {
      "cell": "7913|midday|last",
-     "scheduled": 67,
-     "observed": 59,
-     "on_time": 57,
+     "scheduled": 79,
+     "observed": 70,
+     "on_time": 68,
      "members": [
       "7913|midday|last"
      ]
     },
     {
      "cell": "7913|midday|middle",
-     "scheduled": 138,
-     "observed": 131,
-     "on_time": 103,
+     "scheduled": 162,
+     "observed": 155,
+     "on_time": 125,
      "members": [
       "7913|midday|middle"
      ]
     },
     {
      "cell": "7913|morning|last",
-     "scheduled": 16,
-     "observed": 16,
-     "on_time": 16,
+     "scheduled": 20,
+     "observed": 20,
+     "on_time": 20,
      "members": [
       "7913|morning|last"
      ]
     },
     {
      "cell": "7913|morning|middle",
-     "scheduled": 32,
-     "observed": 32,
-     "on_time": 27,
+     "scheduled": 40,
+     "observed": 40,
+     "on_time": 35,
      "members": [
       "7913|morning|middle"
      ]
     },
     {
-     "cell": "7914|*|*",
-     "scheduled": 23,
-     "observed": 13,
-     "on_time": 12,
-     "members": [
-      "7914|early|last",
-      "7914|evening|last"
-     ]
-    },
-    {
      "cell": "7914|afternoon|first",
-     "scheduled": 17,
-     "observed": 15,
-     "on_time": 15,
+     "scheduled": 20,
+     "observed": 18,
+     "on_time": 18,
      "members": [
       "7914|afternoon|first"
      ]
     },
     {
      "cell": "7914|afternoon|last",
-     "scheduled": 19,
-     "observed": 14,
-     "on_time": 14,
+     "scheduled": 22,
+     "observed": 17,
+     "on_time": 17,
      "members": [
       "7914|afternoon|last"
      ]
     },
     {
      "cell": "7914|afternoon|middle",
-     "scheduled": 148,
-     "observed": 97,
-     "on_time": 60,
+     "scheduled": 172,
+     "observed": 115,
+     "on_time": 75,
      "members": [
       "7914|afternoon|middle"
      ]
     },
     {
      "cell": "7914|early|first",
-     "scheduled": 12,
-     "observed": 11,
-     "on_time": 11,
+     "scheduled": 15,
+     "observed": 14,
+     "on_time": 14,
      "members": [
       "7914|early|first"
      ]
     },
     {
+     "cell": "7914|early|last",
+     "scheduled": 10,
+     "observed": 10,
+     "on_time": 9,
+     "members": [
+      "7914|early|last"
+     ]
+    },
+    {
      "cell": "7914|early|middle",
-     "scheduled": 72,
-     "observed": 57,
-     "on_time": 39,
+     "scheduled": 90,
+     "observed": 72,
+     "on_time": 54,
      "members": [
       "7914|early|middle"
      ]
     },
     {
      "cell": "7914|evening|first",
-     "scheduled": 10,
-     "observed": 10,
-     "on_time": 9,
+     "scheduled": 12,
+     "observed": 11,
+     "on_time": 10,
      "members": [
       "7914|evening|first"
      ]
     },
     {
      "cell": "7914|evening|middle",
-     "scheduled": 110,
-     "observed": 58,
-     "on_time": 39,
+     "scheduled": 132,
+     "observed": 67,
+     "on_time": 48,
      "members": [
       "7914|evening|middle"
      ]
     },
     {
      "cell": "7914|midday|first",
-     "scheduled": 36,
-     "observed": 35,
-     "on_time": 33,
+     "scheduled": 42,
+     "observed": 41,
+     "on_time": 39,
      "members": [
       "7914|midday|first"
      ]
     },
     {
      "cell": "7914|midday|last",
-     "scheduled": 36,
-     "observed": 33,
-     "on_time": 27,
+     "scheduled": 42,
+     "observed": 39,
+     "on_time": 33,
      "members": [
       "7914|midday|last"
      ]
     },
     {
      "cell": "7914|midday|middle",
-     "scheduled": 282,
-     "observed": 209,
-     "on_time": 125,
+     "scheduled": 330,
+     "observed": 245,
+     "on_time": 156,
      "members": [
       "7914|midday|middle"
      ]
     },
     {
      "cell": "7914|morning|*",
-     "scheduled": 18,
-     "observed": 13,
-     "on_time": 11,
+     "scheduled": 22,
+     "observed": 17,
+     "on_time": 15,
      "members": [
       "7914|morning|first",
       "7914|morning|last"
@@ -662,257 +696,273 @@
     },
     {
      "cell": "7914|morning|middle",
-     "scheduled": 68,
-     "observed": 41,
-     "on_time": 28,
+     "scheduled": 84,
+     "observed": 53,
+     "on_time": 40,
      "members": [
       "7914|morning|middle"
      ]
     },
     {
      "cell": "7915|afternoon|first",
-     "scheduled": 19,
-     "observed": 17,
-     "on_time": 16,
+     "scheduled": 22,
+     "observed": 20,
+     "on_time": 19,
      "members": [
       "7915|afternoon|first"
      ]
     },
     {
      "cell": "7915|afternoon|last",
-     "scheduled": 14,
-     "observed": 14,
-     "on_time": 12,
+     "scheduled": 16,
+     "observed": 16,
+     "on_time": 14,
      "members": [
       "7915|afternoon|last"
      ]
     },
     {
      "cell": "7915|afternoon|middle",
-     "scheduled": 77,
-     "observed": 73,
-     "on_time": 61,
+     "scheduled": 88,
+     "observed": 84,
+     "on_time": 72,
      "members": [
       "7915|afternoon|middle"
      ]
     },
     {
-     "cell": "7915|early|*",
-     "scheduled": 16,
-     "observed": 15,
-     "on_time": 15,
+     "cell": "7915|early|last",
+     "scheduled": 10,
+     "observed": 10,
+     "on_time": 10,
      "members": [
-      "7915|early|first",
       "7915|early|last"
      ]
     },
     {
      "cell": "7915|early|middle",
-     "scheduled": 28,
-     "observed": 28,
-     "on_time": 28,
+     "scheduled": 35,
+     "observed": 35,
+     "on_time": 35,
      "members": [
       "7915|early|middle"
      ]
     },
     {
      "cell": "7915|evening|first",
-     "scheduled": 15,
-     "observed": 11,
-     "on_time": 11,
+     "scheduled": 18,
+     "observed": 14,
+     "on_time": 14,
      "members": [
       "7915|evening|first"
      ]
     },
     {
      "cell": "7915|evening|last",
-     "scheduled": 20,
-     "observed": 15,
-     "on_time": 13,
+     "scheduled": 24,
+     "observed": 18,
+     "on_time": 16,
      "members": [
       "7915|evening|last"
      ]
     },
     {
      "cell": "7915|evening|middle",
-     "scheduled": 50,
-     "observed": 36,
-     "on_time": 33,
+     "scheduled": 60,
+     "observed": 46,
+     "on_time": 42,
      "members": [
       "7915|evening|middle"
      ]
     },
     {
      "cell": "7915|midday|first",
-     "scheduled": 24,
-     "observed": 22,
-     "on_time": 20,
+     "scheduled": 28,
+     "observed": 26,
+     "on_time": 24,
      "members": [
       "7915|midday|first"
      ]
     },
     {
      "cell": "7915|midday|last",
-     "scheduled": 26,
-     "observed": 23,
-     "on_time": 19,
+     "scheduled": 30,
+     "observed": 26,
+     "on_time": 22,
      "members": [
       "7915|midday|last"
      ]
     },
     {
      "cell": "7915|midday|middle",
-     "scheduled": 98,
-     "observed": 98,
-     "on_time": 80,
+     "scheduled": 112,
+     "observed": 112,
+     "on_time": 93,
      "members": [
       "7915|midday|middle"
      ]
     },
     {
-     "cell": "7915|morning|*",
-     "scheduled": 18,
-     "observed": 17,
-     "on_time": 16,
+     "cell": "7915|morning|first",
+     "scheduled": 12,
+     "observed": 11,
+     "on_time": 10,
      "members": [
-      "7915|morning|first",
+      "7915|morning|first"
+     ]
+    },
+    {
+     "cell": "7915|morning|last",
+     "scheduled": 10,
+     "observed": 10,
+     "on_time": 10,
+     "members": [
       "7915|morning|last"
      ]
     },
     {
      "cell": "7915|morning|middle",
-     "scheduled": 37,
-     "observed": 37,
-     "on_time": 36,
+     "scheduled": 44,
+     "observed": 44,
+     "on_time": 43,
      "members": [
       "7915|morning|middle"
      ]
     },
     {
-     "cell": "7916|afternoon|first",
-     "scheduled": 20,
-     "observed": 17,
+     "cell": "7916|*|*",
+     "scheduled": 22,
+     "observed": 19,
      "on_time": 16,
+     "members": [
+      "7916|early|last",
+      "7916|evening|last",
+      "7916|midday|last",
+      "7916|morning|first"
+     ]
+    },
+    {
+     "cell": "7916|afternoon|first",
+     "scheduled": 24,
+     "observed": 20,
+     "on_time": 19,
      "members": [
       "7916|afternoon|first"
      ]
     },
     {
      "cell": "7916|afternoon|last",
-     "scheduled": 20,
-     "observed": 17,
-     "on_time": 17,
+     "scheduled": 24,
+     "observed": 20,
+     "on_time": 18,
      "members": [
       "7916|afternoon|last"
      ]
     },
     {
      "cell": "7916|afternoon|middle",
-     "scheduled": 65,
-     "observed": 53,
-     "on_time": 9,
+     "scheduled": 78,
+     "observed": 61,
+     "on_time": 13,
      "members": [
       "7916|afternoon|middle"
      ]
     },
     {
      "cell": "7916|early|first",
-     "scheduled": 12,
-     "observed": 12,
-     "on_time": 7,
+     "scheduled": 15,
+     "observed": 15,
+     "on_time": 10,
      "members": [
       "7916|early|first"
      ]
     },
     {
      "cell": "7916|early|middle",
-     "scheduled": 32,
-     "observed": 28,
-     "on_time": 12,
+     "scheduled": 40,
+     "observed": 35,
+     "on_time": 18,
      "members": [
       "7916|early|middle"
      ]
     },
     {
-     "cell": "7916|evening|*",
-     "scheduled": 20,
+     "cell": "7916|evening|middle",
+     "scheduled": 18,
      "observed": 10,
-     "on_time": 6,
+     "on_time": 3,
      "members": [
-      "7916|evening|last",
       "7916|evening|middle"
      ]
     },
     {
-     "cell": "7916|midday|*",
-     "scheduled": 14,
-     "observed": 13,
-     "on_time": 11,
+     "cell": "7916|midday|first",
+     "scheduled": 11,
+     "observed": 10,
+     "on_time": 7,
      "members": [
-      "7916|midday|first",
-      "7916|midday|last"
+      "7916|midday|first"
      ]
     },
     {
      "cell": "7916|midday|middle",
-     "scheduled": 37,
-     "observed": 26,
+     "scheduled": 45,
+     "observed": 32,
      "on_time": 7,
      "members": [
       "7916|midday|middle"
      ]
     },
     {
-     "cell": "7916|morning|*",
-     "scheduled": 16,
-     "observed": 12,
+     "cell": "7916|morning|last",
+     "scheduled": 15,
+     "observed": 11,
      "on_time": 11,
      "members": [
-      "7916|morning|first",
       "7916|morning|last"
      ]
     },
     {
      "cell": "7916|morning|middle",
-     "scheduled": 32,
-     "observed": 18,
-     "on_time": 12,
+     "scheduled": 40,
+     "observed": 21,
+     "on_time": 13,
      "members": [
       "7916|morning|middle"
      ]
     },
     {
      "cell": "7918|afternoon|first",
-     "scheduled": 28,
-     "observed": 23,
-     "on_time": 13,
+     "scheduled": 32,
+     "observed": 27,
+     "on_time": 15,
      "members": [
       "7918|afternoon|first"
      ]
     },
     {
      "cell": "7918|afternoon|last",
-     "scheduled": 28,
-     "observed": 27,
-     "on_time": 18,
+     "scheduled": 32,
+     "observed": 31,
+     "on_time": 22,
      "members": [
       "7918|afternoon|last"
      ]
     },
     {
      "cell": "7918|afternoon|middle",
-     "scheduled": 154,
-     "observed": 148,
-     "on_time": 94,
+     "scheduled": 176,
+     "observed": 170,
+     "on_time": 112,
      "members": [
       "7918|afternoon|middle"
      ]
     },
     {
      "cell": "7918|early|*",
-     "scheduled": 14,
-     "observed": 13,
-     "on_time": 12,
+     "scheduled": 16,
+     "observed": 15,
+     "on_time": 14,
      "members": [
       "7918|early|first",
       "7918|early|last"
@@ -920,244 +970,253 @@
     },
     {
      "cell": "7918|early|middle",
-     "scheduled": 24,
-     "observed": 23,
-     "on_time": 19,
+     "scheduled": 28,
+     "observed": 27,
+     "on_time": 23,
      "members": [
       "7918|early|middle"
      ]
     },
     {
      "cell": "7918|evening|first",
-     "scheduled": 34,
-     "observed": 14,
-     "on_time": 14,
+     "scheduled": 40,
+     "observed": 17,
+     "on_time": 17,
      "members": [
       "7918|evening|first"
      ]
     },
     {
      "cell": "7918|evening|last",
-     "scheduled": 41,
-     "observed": 21,
-     "on_time": 19,
+     "scheduled": 48,
+     "observed": 25,
+     "on_time": 23,
      "members": [
       "7918|evening|last"
      ]
     },
     {
      "cell": "7918|evening|middle",
-     "scheduled": 151,
-     "observed": 151,
-     "on_time": 136,
+     "scheduled": 176,
+     "observed": 176,
+     "on_time": 161,
      "members": [
       "7918|evening|middle"
      ]
     },
     {
      "cell": "7918|midday|first",
-     "scheduled": 46,
-     "observed": 45,
-     "on_time": 29,
+     "scheduled": 54,
+     "observed": 52,
+     "on_time": 34,
      "members": [
       "7918|midday|first"
      ]
     },
     {
      "cell": "7918|midday|last",
-     "scheduled": 46,
-     "observed": 45,
-     "on_time": 39,
+     "scheduled": 54,
+     "observed": 52,
+     "on_time": 43,
      "members": [
       "7918|midday|last"
      ]
     },
     {
      "cell": "7918|midday|middle",
-     "scheduled": 301,
-     "observed": 300,
-     "on_time": 237,
+     "scheduled": 353,
+     "observed": 352,
+     "on_time": 265,
      "members": [
       "7918|midday|middle"
      ]
     },
     {
      "cell": "7918|morning|first",
-     "scheduled": 22,
-     "observed": 19,
-     "on_time": 7,
+     "scheduled": 26,
+     "observed": 23,
+     "on_time": 9,
      "members": [
       "7918|morning|first"
      ]
     },
     {
      "cell": "7918|morning|last",
-     "scheduled": 18,
-     "observed": 17,
-     "on_time": 15,
+     "scheduled": 21,
+     "observed": 20,
+     "on_time": 18,
      "members": [
       "7918|morning|last"
      ]
     },
     {
      "cell": "7918|morning|middle",
-     "scheduled": 126,
-     "observed": 125,
-     "on_time": 114,
+     "scheduled": 149,
+     "observed": 148,
+     "on_time": 134,
      "members": [
       "7918|morning|middle"
      ]
     },
     {
+     "cell": "7919|*|*",
+     "scheduled": 17,
+     "observed": 14,
+     "on_time": 11,
+     "members": [
+      "7919|early|last",
+      "7919|evening|first"
+     ]
+    },
+    {
      "cell": "7919|afternoon|first",
-     "scheduled": 34,
-     "observed": 30,
-     "on_time": 22,
+     "scheduled": 40,
+     "observed": 36,
+     "on_time": 26,
      "members": [
       "7919|afternoon|first"
      ]
     },
     {
      "cell": "7919|afternoon|last",
-     "scheduled": 34,
-     "observed": 31,
-     "on_time": 21,
+     "scheduled": 40,
+     "observed": 37,
+     "on_time": 27,
      "members": [
       "7919|afternoon|last"
      ]
     },
     {
      "cell": "7919|afternoon|middle",
-     "scheduled": 153,
-     "observed": 123,
-     "on_time": 45,
+     "scheduled": 180,
+     "observed": 146,
+     "on_time": 58,
      "members": [
       "7919|afternoon|middle"
      ]
     },
     {
-     "cell": "7919|early|*",
-     "scheduled": 12,
-     "observed": 12,
-     "on_time": 11,
+     "cell": "7919|early|first",
+     "scheduled": 10,
+     "observed": 10,
+     "on_time": 9,
      "members": [
-      "7919|early|first",
-      "7919|early|last"
+      "7919|early|first"
      ]
     },
     {
      "cell": "7919|early|middle",
-     "scheduled": 32,
-     "observed": 27,
-     "on_time": 16,
+     "scheduled": 40,
+     "observed": 35,
+     "on_time": 23,
      "members": [
       "7919|early|middle"
      ]
     },
     {
      "cell": "7919|evening|last",
-     "scheduled": 16,
-     "observed": 13,
-     "on_time": 12,
+     "scheduled": 19,
+     "observed": 16,
+     "on_time": 15,
      "members": [
       "7919|evening|last"
      ]
     },
     {
      "cell": "7919|evening|middle",
-     "scheduled": 51,
-     "observed": 36,
-     "on_time": 19,
+     "scheduled": 61,
+     "observed": 46,
+     "on_time": 23,
      "members": [
       "7919|evening|middle"
      ]
     },
     {
      "cell": "7919|midday|first",
-     "scheduled": 57,
-     "observed": 55,
-     "on_time": 41,
+     "scheduled": 69,
+     "observed": 66,
+     "on_time": 50,
      "members": [
       "7919|midday|first"
      ]
     },
     {
      "cell": "7919|midday|last",
-     "scheduled": 56,
-     "observed": 55,
-     "on_time": 45,
+     "scheduled": 68,
+     "observed": 67,
+     "on_time": 55,
      "members": [
       "7919|midday|last"
      ]
     },
     {
      "cell": "7919|midday|middle",
-     "scheduled": 254,
-     "observed": 230,
-     "on_time": 114,
+     "scheduled": 308,
+     "observed": 282,
+     "on_time": 141,
      "members": [
       "7919|midday|middle"
      ]
     },
     {
      "cell": "7919|morning|first",
-     "scheduled": 16,
-     "observed": 16,
-     "on_time": 10,
+     "scheduled": 20,
+     "observed": 20,
+     "on_time": 13,
      "members": [
       "7919|morning|first"
      ]
     },
     {
      "cell": "7919|morning|last",
-     "scheduled": 16,
-     "observed": 16,
-     "on_time": 15,
+     "scheduled": 20,
+     "observed": 20,
+     "on_time": 19,
      "members": [
       "7919|morning|last"
      ]
     },
     {
      "cell": "7919|morning|middle",
-     "scheduled": 72,
-     "observed": 63,
-     "on_time": 36,
+     "scheduled": 90,
+     "observed": 77,
+     "on_time": 46,
      "members": [
       "7919|morning|middle"
      ]
     },
     {
      "cell": "7920|afternoon|first",
-     "scheduled": 21,
-     "observed": 18,
-     "on_time": 14,
+     "scheduled": 24,
+     "observed": 21,
+     "on_time": 17,
      "members": [
       "7920|afternoon|first"
      ]
     },
     {
      "cell": "7920|afternoon|last",
-     "scheduled": 21,
-     "observed": 20,
-     "on_time": 16,
+     "scheduled": 24,
+     "observed": 23,
+     "on_time": 19,
      "members": [
       "7920|afternoon|last"
      ]
     },
     {
      "cell": "7920|afternoon|middle",
-     "scheduled": 168,
-     "observed": 160,
-     "on_time": 97,
+     "scheduled": 192,
+     "observed": 184,
+     "on_time": 119,
      "members": [
       "7920|afternoon|middle"
      ]
     },
     {
      "cell": "7920|early|*",
-     "scheduled": 12,
-     "observed": 11,
-     "on_time": 11,
+     "scheduled": 14,
+     "observed": 13,
+     "on_time": 13,
      "members": [
       "7920|early|first",
       "7920|early|last"
@@ -1165,18 +1224,18 @@
     },
     {
      "cell": "7920|early|middle",
-     "scheduled": 48,
-     "observed": 48,
-     "on_time": 48,
+     "scheduled": 56,
+     "observed": 56,
+     "on_time": 56,
      "members": [
       "7920|early|middle"
      ]
     },
     {
      "cell": "7920|evening|*",
-     "scheduled": 14,
-     "observed": 13,
-     "on_time": 13,
+     "scheduled": 16,
+     "observed": 15,
+     "on_time": 15,
      "members": [
       "7920|evening|first",
       "7920|evening|last"
@@ -1184,215 +1243,215 @@
     },
     {
      "cell": "7920|evening|middle",
-     "scheduled": 56,
-     "observed": 56,
-     "on_time": 56,
+     "scheduled": 64,
+     "observed": 64,
+     "on_time": 64,
      "members": [
       "7920|evening|middle"
      ]
     },
     {
      "cell": "7920|midday|first",
-     "scheduled": 38,
-     "observed": 31,
-     "on_time": 28,
+     "scheduled": 44,
+     "observed": 37,
+     "on_time": 34,
      "members": [
       "7920|midday|first"
      ]
     },
     {
      "cell": "7920|midday|last",
-     "scheduled": 38,
-     "observed": 36,
-     "on_time": 35,
+     "scheduled": 44,
+     "observed": 42,
+     "on_time": 41,
      "members": [
       "7920|midday|last"
      ]
     },
     {
      "cell": "7920|midday|middle",
-     "scheduled": 304,
-     "observed": 296,
-     "on_time": 229,
+     "scheduled": 352,
+     "observed": 343,
+     "on_time": 276,
      "members": [
       "7920|midday|middle"
      ]
     },
     {
      "cell": "7920|morning|first",
-     "scheduled": 12,
-     "observed": 10,
-     "on_time": 10,
+     "scheduled": 14,
+     "observed": 12,
+     "on_time": 12,
      "members": [
       "7920|morning|first"
      ]
     },
     {
      "cell": "7920|morning|last",
-     "scheduled": 12,
-     "observed": 12,
-     "on_time": 12,
+     "scheduled": 14,
+     "observed": 14,
+     "on_time": 14,
      "members": [
       "7920|morning|last"
      ]
     },
     {
      "cell": "7920|morning|middle",
-     "scheduled": 96,
-     "observed": 96,
-     "on_time": 76,
+     "scheduled": 112,
+     "observed": 112,
+     "on_time": 92,
      "members": [
       "7920|morning|middle"
      ]
     },
     {
      "cell": "7922|afternoon|first",
-     "scheduled": 70,
-     "observed": 63,
-     "on_time": 38,
+     "scheduled": 82,
+     "observed": 74,
+     "on_time": 47,
      "members": [
       "7922|afternoon|first"
      ]
     },
     {
      "cell": "7922|afternoon|last",
-     "scheduled": 70,
-     "observed": 63,
-     "on_time": 25,
+     "scheduled": 82,
+     "observed": 75,
+     "on_time": 30,
      "members": [
       "7922|afternoon|last"
      ]
     },
     {
      "cell": "7922|afternoon|middle",
-     "scheduled": 420,
-     "observed": 391,
-     "on_time": 149,
+     "scheduled": 492,
+     "observed": 447,
+     "on_time": 180,
      "members": [
       "7922|afternoon|middle"
      ]
     },
     {
      "cell": "7922|early|first",
-     "scheduled": 38,
-     "observed": 35,
-     "on_time": 32,
+     "scheduled": 47,
+     "observed": 44,
+     "on_time": 41,
      "members": [
       "7922|early|first"
      ]
     },
     {
      "cell": "7922|early|last",
-     "scheduled": 28,
-     "observed": 27,
-     "on_time": 22,
+     "scheduled": 35,
+     "observed": 34,
+     "on_time": 29,
      "members": [
       "7922|early|last"
      ]
     },
     {
      "cell": "7922|early|middle",
-     "scheduled": 192,
-     "observed": 178,
-     "on_time": 153,
+     "scheduled": 237,
+     "observed": 221,
+     "on_time": 196,
      "members": [
       "7922|early|middle"
      ]
     },
     {
      "cell": "7922|evening|first",
-     "scheduled": 22,
-     "observed": 15,
-     "on_time": 8,
+     "scheduled": 26,
+     "observed": 19,
+     "on_time": 9,
      "members": [
       "7922|evening|first"
      ]
     },
     {
      "cell": "7922|evening|last",
-     "scheduled": 34,
-     "observed": 22,
-     "on_time": 11,
+     "scheduled": 40,
+     "observed": 27,
+     "on_time": 12,
      "members": [
       "7922|evening|last"
      ]
     },
     {
      "cell": "7922|evening|middle",
-     "scheduled": 177,
-     "observed": 147,
-     "on_time": 60,
+     "scheduled": 210,
+     "observed": 175,
+     "on_time": 64,
      "members": [
       "7922|evening|middle"
      ]
     },
     {
      "cell": "7922|midday|first",
-     "scheduled": 122,
-     "observed": 110,
-     "on_time": 86,
+     "scheduled": 146,
+     "observed": 130,
+     "on_time": 99,
      "members": [
       "7922|midday|first"
      ]
     },
     {
      "cell": "7922|midday|last",
-     "scheduled": 122,
-     "observed": 110,
-     "on_time": 65,
+     "scheduled": 146,
+     "observed": 130,
+     "on_time": 75,
      "members": [
       "7922|midday|last"
      ]
     },
     {
      "cell": "7922|midday|middle",
-     "scheduled": 734,
-     "observed": 689,
-     "on_time": 396,
+     "scheduled": 878,
+     "observed": 813,
+     "on_time": 465,
      "members": [
       "7922|midday|middle"
      ]
     },
     {
      "cell": "7922|morning|first",
-     "scheduled": 38,
-     "observed": 37,
-     "on_time": 35,
+     "scheduled": 46,
+     "observed": 45,
+     "on_time": 42,
      "members": [
       "7922|morning|first"
      ]
     },
     {
      "cell": "7922|morning|last",
-     "scheduled": 38,
-     "observed": 36,
-     "on_time": 27,
+     "scheduled": 46,
+     "observed": 44,
+     "on_time": 34,
      "members": [
       "7922|morning|last"
      ]
     },
     {
      "cell": "7922|morning|middle",
-     "scheduled": 228,
-     "observed": 215,
-     "on_time": 182,
+     "scheduled": 276,
+     "observed": 258,
+     "on_time": 225,
      "members": [
       "7922|morning|middle"
      ]
     },
     {
      "cell": "7923|afternoon|first",
-     "scheduled": 20,
-     "observed": 14,
-     "on_time": 3,
+     "scheduled": 24,
+     "observed": 17,
+     "on_time": 4,
      "members": [
       "7923|afternoon|first"
      ]
     },
     {
      "cell": "7923|afternoon|last",
-     "scheduled": 15,
-     "observed": 11,
+     "scheduled": 18,
+     "observed": 14,
      "on_time": 1,
      "members": [
       "7923|afternoon|last"
@@ -1400,44 +1459,44 @@
     },
     {
      "cell": "7923|afternoon|middle",
-     "scheduled": 75,
-     "observed": 58,
-     "on_time": 29,
+     "scheduled": 90,
+     "observed": 67,
+     "on_time": 32,
      "members": [
       "7923|afternoon|middle"
      ]
     },
     {
      "cell": "7923|early|first",
-     "scheduled": 16,
-     "observed": 14,
-     "on_time": 11,
+     "scheduled": 20,
+     "observed": 18,
+     "on_time": 15,
      "members": [
       "7923|early|first"
      ]
     },
     {
      "cell": "7923|early|last",
-     "scheduled": 16,
-     "observed": 14,
-     "on_time": 8,
+     "scheduled": 20,
+     "observed": 18,
+     "on_time": 12,
      "members": [
       "7923|early|last"
      ]
     },
     {
      "cell": "7923|early|middle",
-     "scheduled": 64,
-     "observed": 60,
-     "on_time": 46,
+     "scheduled": 80,
+     "observed": 76,
+     "on_time": 61,
      "members": [
       "7923|early|middle"
      ]
     },
     {
      "cell": "7923|evening|first",
-     "scheduled": 20,
-     "observed": 16,
+     "scheduled": 24,
+     "observed": 19,
      "on_time": 4,
      "members": [
       "7923|evening|first"
@@ -1445,8 +1504,8 @@
     },
     {
      "cell": "7923|evening|last",
-     "scheduled": 25,
-     "observed": 21,
+     "scheduled": 30,
+     "observed": 24,
      "on_time": 7,
      "members": [
       "7923|evening|last"
@@ -1454,8 +1513,8 @@
     },
     {
      "cell": "7923|evening|middle",
-     "scheduled": 85,
-     "observed": 64,
+     "scheduled": 102,
+     "observed": 74,
      "on_time": 22,
      "members": [
       "7923|evening|middle"
@@ -1463,17 +1522,17 @@
     },
     {
      "cell": "7923|midday|first",
-     "scheduled": 26,
-     "observed": 21,
-     "on_time": 10,
+     "scheduled": 32,
+     "observed": 25,
+     "on_time": 12,
      "members": [
       "7923|midday|first"
      ]
     },
     {
      "cell": "7923|midday|last",
-     "scheduled": 26,
-     "observed": 19,
+     "scheduled": 32,
+     "observed": 22,
      "on_time": 6,
      "members": [
       "7923|midday|last"
@@ -1481,28 +1540,27 @@
     },
     {
      "cell": "7923|midday|middle",
-     "scheduled": 104,
-     "observed": 84,
-     "on_time": 49,
+     "scheduled": 128,
+     "observed": 96,
+     "on_time": 56,
      "members": [
       "7923|midday|middle"
      ]
     },
     {
-     "cell": "7923|morning|*",
-     "scheduled": 16,
-     "observed": 15,
-     "on_time": 14,
+     "cell": "7923|morning|first",
+     "scheduled": 10,
+     "observed": 10,
+     "on_time": 10,
      "members": [
-      "7923|morning|first",
-      "7923|morning|last"
+      "7923|morning|first"
      ]
     },
     {
      "cell": "7923|morning|middle",
-     "scheduled": 32,
-     "observed": 31,
-     "on_time": 30,
+     "scheduled": 40,
+     "observed": 39,
+     "on_time": 36,
      "members": [
       "7923|morning|middle"
      ]
@@ -1537,135 +1595,135 @@
     },
     {
      "cell": "9404|afternoon|first",
-     "scheduled": 72,
-     "observed": 62,
-     "on_time": 58,
+     "scheduled": 84,
+     "observed": 72,
+     "on_time": 68,
      "members": [
       "9404|afternoon|first"
      ]
     },
     {
      "cell": "9404|afternoon|last",
-     "scheduled": 72,
-     "observed": 72,
-     "on_time": 49,
+     "scheduled": 84,
+     "observed": 84,
+     "on_time": 60,
      "members": [
       "9404|afternoon|last"
      ]
     },
     {
      "cell": "9404|afternoon|middle",
-     "scheduled": 553,
-     "observed": 553,
-     "on_time": 342,
+     "scheduled": 646,
+     "observed": 646,
+     "on_time": 405,
      "members": [
       "9404|afternoon|middle"
      ]
     },
     {
      "cell": "9404|early|first",
-     "scheduled": 54,
-     "observed": 53,
-     "on_time": 49,
+     "scheduled": 66,
+     "observed": 63,
+     "on_time": 59,
      "members": [
       "9404|early|first"
      ]
     },
     {
      "cell": "9404|early|last",
-     "scheduled": 38,
-     "observed": 38,
-     "on_time": 32,
+     "scheduled": 46,
+     "observed": 46,
+     "on_time": 38,
      "members": [
       "9404|early|last"
      ]
     },
     {
      "cell": "9404|early|middle",
-     "scheduled": 316,
-     "observed": 314,
-     "on_time": 305,
+     "scheduled": 390,
+     "observed": 388,
+     "on_time": 379,
      "members": [
       "9404|early|middle"
      ]
     },
     {
      "cell": "9404|evening|first",
-     "scheduled": 41,
-     "observed": 35,
-     "on_time": 31,
+     "scheduled": 48,
+     "observed": 41,
+     "on_time": 36,
      "members": [
       "9404|evening|first"
      ]
     },
     {
      "cell": "9404|evening|last",
-     "scheduled": 55,
-     "observed": 49,
-     "on_time": 43,
+     "scheduled": 64,
+     "observed": 57,
+     "on_time": 51,
      "members": [
       "9404|evening|last"
      ]
     },
     {
      "cell": "9404|evening|middle",
-     "scheduled": 288,
-     "observed": 288,
-     "on_time": 223,
+     "scheduled": 340,
+     "observed": 340,
+     "on_time": 264,
      "members": [
       "9404|evening|middle"
      ]
     },
     {
      "cell": "9404|midday|first",
-     "scheduled": 150,
-     "observed": 133,
-     "on_time": 117,
+     "scheduled": 179,
+     "observed": 158,
+     "on_time": 140,
      "members": [
       "9404|midday|first"
      ]
     },
     {
      "cell": "9404|midday|last",
-     "scheduled": 151,
-     "observed": 150,
-     "on_time": 112,
+     "scheduled": 180,
+     "observed": 179,
+     "on_time": 133,
      "members": [
       "9404|midday|last"
      ]
     },
     {
      "cell": "9404|midday|middle",
-     "scheduled": 962,
-     "observed": 961,
-     "on_time": 759,
+     "scheduled": 1144,
+     "observed": 1137,
+     "on_time": 901,
      "members": [
       "9404|midday|middle"
      ]
     },
     {
      "cell": "9404|morning|first",
-     "scheduled": 42,
-     "observed": 35,
-     "on_time": 30,
+     "scheduled": 50,
+     "observed": 42,
+     "on_time": 37,
      "members": [
       "9404|morning|first"
      ]
     },
     {
      "cell": "9404|morning|last",
-     "scheduled": 38,
-     "observed": 38,
-     "on_time": 36,
+     "scheduled": 46,
+     "observed": 46,
+     "on_time": 44,
      "members": [
       "9404|morning|last"
      ]
     },
     {
      "cell": "9404|morning|middle",
-     "scheduled": 304,
-     "observed": 304,
-     "on_time": 285,
+     "scheduled": 366,
+     "observed": 366,
+     "on_time": 347,
      "members": [
       "9404|morning|middle"
      ]
@@ -1736,48 +1794,56 @@
      ]
     },
     {
-     "cell": "9431|*|*",
-     "scheduled": 16,
-     "observed": 16,
-     "on_time": 13,
-     "members": [
-      "9431|early|last",
-      "9431|midday|first",
-      "9431|midday|last"
-     ]
-    },
-    {
      "cell": "9431|early|first",
-     "scheduled": 12,
-     "observed": 12,
-     "on_time": 3,
+     "scheduled": 15,
+     "observed": 15,
+     "on_time": 4,
      "members": [
       "9431|early|first"
      ]
     },
     {
+     "cell": "9431|early|last",
+     "scheduled": 10,
+     "observed": 10,
+     "on_time": 8,
+     "members": [
+      "9431|early|last"
+     ]
+    },
+    {
      "cell": "9431|early|middle",
-     "scheduled": 96,
-     "observed": 87,
-     "on_time": 73,
+     "scheduled": 120,
+     "observed": 108,
+     "on_time": 93,
      "members": [
       "9431|early|middle"
      ]
     },
     {
+     "cell": "9431|midday|*",
+     "scheduled": 10,
+     "observed": 10,
+     "on_time": 9,
+     "members": [
+      "9431|midday|first",
+      "9431|midday|last"
+     ]
+    },
+    {
      "cell": "9431|midday|middle",
-     "scheduled": 32,
-     "observed": 32,
-     "on_time": 30,
+     "scheduled": 40,
+     "observed": 40,
+     "on_time": 38,
      "members": [
       "9431|midday|middle"
      ]
     },
     {
      "cell": "9431|morning|*",
-     "scheduled": 12,
-     "observed": 11,
-     "on_time": 5,
+     "scheduled": 15,
+     "observed": 13,
+     "on_time": 7,
      "members": [
       "9431|morning|first",
       "9431|morning|last"
@@ -1785,66 +1851,74 @@
     },
     {
      "cell": "9431|morning|middle",
-     "scheduled": 32,
-     "observed": 32,
-     "on_time": 24,
+     "scheduled": 40,
+     "observed": 39,
+     "on_time": 31,
      "members": [
       "9431|morning|middle"
      ]
     },
     {
      "cell": "9432|*|*",
-     "scheduled": 14,
-     "observed": 13,
-     "on_time": 8,
+     "scheduled": 12,
+     "observed": 12,
+     "on_time": 9,
      "members": [
-      "9432|evening|first",
-      "9432|midday|first",
-      "9432|midday|last"
+      "9432|afternoon|last",
+      "9432|evening|first"
      ]
     },
     {
-     "cell": "9432|afternoon|*",
-     "scheduled": 15,
-     "observed": 14,
-     "on_time": 9,
+     "cell": "9432|afternoon|first",
+     "scheduled": 12,
+     "observed": 11,
+     "on_time": 5,
      "members": [
-      "9432|afternoon|first",
-      "9432|afternoon|last"
+      "9432|afternoon|first"
      ]
     },
     {
      "cell": "9432|afternoon|middle",
-     "scheduled": 80,
-     "observed": 78,
-     "on_time": 51,
+     "scheduled": 96,
+     "observed": 93,
+     "on_time": 65,
      "members": [
       "9432|afternoon|middle"
      ]
     },
     {
      "cell": "9432|evening|last",
-     "scheduled": 10,
-     "observed": 10,
-     "on_time": 8,
+     "scheduled": 12,
+     "observed": 12,
+     "on_time": 10,
      "members": [
       "9432|evening|last"
      ]
     },
     {
      "cell": "9432|evening|middle",
-     "scheduled": 40,
-     "observed": 36,
-     "on_time": 25,
+     "scheduled": 48,
+     "observed": 44,
+     "on_time": 29,
      "members": [
       "9432|evening|middle"
      ]
     },
     {
+     "cell": "9432|midday|*",
+     "scheduled": 11,
+     "observed": 10,
+     "on_time": 6,
+     "members": [
+      "9432|midday|first",
+      "9432|midday|last"
+     ]
+    },
+    {
      "cell": "9432|midday|middle",
-     "scheduled": 34,
-     "observed": 32,
-     "on_time": 19,
+     "scheduled": 42,
+     "observed": 40,
+     "on_time": 27,
      "members": [
       "9432|midday|middle"
      ]
@@ -1890,6 +1964,11 @@
    "service_date": "2026-11-25",
    "on_time_share_of_observed": 0.701,
    "observed_share": 0.8947
+  },
+  {
+   "service_date": "2026-11-27",
+   "on_time_share_of_observed": 0.805,
+   "observed_share": 0.8789
   }
  ]
 }

@@ -58,232 +58,232 @@
   "hour": {
    "pooled": {
     "first_service_date": "2026-11-19",
-    "last_service_date": "2026-11-25",
+    "last_service_date": "2026-11-27",
     "metrics": {
      "timepoint_coverage": [
       {
        "hour": 3,
-       "value": 0.958333,
-       "numerator": 23,
-       "denominator": 24
+       "value": 0.966667,
+       "numerator": 29,
+       "denominator": 30
       },
       {
        "hour": 4,
-       "value": 0.994186,
-       "numerator": 171,
-       "denominator": 172
+       "value": 0.990698,
+       "numerator": 213,
+       "denominator": 215
       },
       {
        "hour": 5,
-       "value": 0.934322,
-       "numerator": 441,
-       "denominator": 472
+       "value": 0.938983,
+       "numerator": 554,
+       "denominator": 590
       },
       {
        "hour": 6,
-       "value": 0.924745,
-       "numerator": 725,
-       "denominator": 784
+       "value": 0.927749,
+       "numerator": 886,
+       "denominator": 955
       },
       {
        "hour": 7,
-       "value": 0.896018,
-       "numerator": 810,
-       "denominator": 904
+       "value": 0.898723,
+       "numerator": 985,
+       "denominator": 1096
       },
       {
        "hour": 8,
-       "value": 0.915907,
-       "numerator": 904,
-       "denominator": 987
+       "value": 0.916173,
+       "numerator": 1082,
+       "denominator": 1181
       },
       {
        "hour": 9,
-       "value": 0.903537,
-       "numerator": 843,
-       "denominator": 933
-      },
-      {
-       "hour": 10,
-       "value": 0.919604,
-       "numerator": 835,
-       "denominator": 908
-      },
-      {
-       "hour": 11,
-       "value": 0.91858,
-       "numerator": 880,
-       "denominator": 958
-      },
-      {
-       "hour": 12,
-       "value": 0.905163,
-       "numerator": 859,
-       "denominator": 949
-      },
-      {
-       "hour": 13,
-       "value": 0.907981,
-       "numerator": 967,
-       "denominator": 1065
-      },
-      {
-       "hour": 14,
-       "value": 0.895051,
-       "numerator": 1049,
-       "denominator": 1172
-      },
-      {
-       "hour": 15,
-       "value": 0.879964,
-       "numerator": 975,
+       "value": 0.891697,
+       "numerator": 988,
        "denominator": 1108
       },
       {
+       "hour": 10,
+       "value": 0.921803,
+       "numerator": 1002,
+       "denominator": 1087
+      },
+      {
+       "hour": 11,
+       "value": 0.90614,
+       "numerator": 1033,
+       "denominator": 1140
+      },
+      {
+       "hour": 12,
+       "value": 0.901943,
+       "numerator": 1021,
+       "denominator": 1132
+      },
+      {
+       "hour": 13,
+       "value": 0.90008,
+       "numerator": 1126,
+       "denominator": 1251
+      },
+      {
+       "hour": 14,
+       "value": 0.879412,
+       "numerator": 1196,
+       "denominator": 1360
+      },
+      {
+       "hour": 15,
+       "value": 0.878011,
+       "numerator": 1130,
+       "denominator": 1287
+      },
+      {
        "hour": 16,
-       "value": 0.874384,
-       "numerator": 1065,
-       "denominator": 1218
+       "value": 0.878273,
+       "numerator": 1241,
+       "denominator": 1413
       },
       {
        "hour": 17,
-       "value": 0.897872,
-       "numerator": 1055,
-       "denominator": 1175
+       "value": 0.898836,
+       "numerator": 1235,
+       "denominator": 1374
       },
       {
        "hour": 18,
-       "value": 0.874459,
-       "numerator": 1010,
-       "denominator": 1155
+       "value": 0.881268,
+       "numerator": 1195,
+       "denominator": 1356
       },
       {
        "hour": 19,
-       "value": 0.786667,
-       "numerator": 472,
-       "denominator": 600
+       "value": 0.78273,
+       "numerator": 562,
+       "denominator": 718
       },
       {
        "hour": 20,
-       "value": 0.1375,
-       "numerator": 11,
-       "denominator": 80
+       "value": 0.125,
+       "numerator": 12,
+       "denominator": 96
       }
      ],
      "trip_coverage": [
       {
        "hour": 3,
        "value": 1.0,
-       "numerator": 12,
-       "denominator": 12
+       "numerator": 15,
+       "denominator": 15
       },
       {
        "hour": 4,
        "value": 1.0,
-       "numerator": 28,
-       "denominator": 28
+       "numerator": 35,
+       "denominator": 35
       },
       {
        "hour": 5,
-       "value": 0.986111,
-       "numerator": 71,
-       "denominator": 72
+       "value": 0.988889,
+       "numerator": 89,
+       "denominator": 90
       },
       {
        "hour": 6,
        "value": 1.0,
-       "numerator": 104,
-       "denominator": 104
+       "numerator": 126,
+       "denominator": 126
       },
       {
        "hour": 7,
-       "value": 0.966102,
-       "numerator": 114,
-       "denominator": 118
+       "value": 0.971831,
+       "numerator": 138,
+       "denominator": 142
       },
       {
        "hour": 8,
        "value": 1.0,
-       "numerator": 116,
-       "denominator": 116
-      },
-      {
-       "hour": 9,
-       "value": 0.991071,
-       "numerator": 111,
-       "denominator": 112
-      },
-      {
-       "hour": 10,
-       "value": 0.991071,
-       "numerator": 111,
-       "denominator": 112
-      },
-      {
-       "hour": 11,
-       "value": 0.991803,
-       "numerator": 121,
-       "denominator": 122
-      },
-      {
-       "hour": 12,
-       "value": 0.977941,
-       "numerator": 133,
-       "denominator": 136
-      },
-      {
-       "hour": 13,
-       "value": 0.977941,
-       "numerator": 133,
-       "denominator": 136
-      },
-      {
-       "hour": 14,
-       "value": 0.979866,
-       "numerator": 146,
-       "denominator": 149
-      },
-      {
-       "hour": 15,
-       "value": 0.942029,
-       "numerator": 130,
+       "numerator": 138,
        "denominator": 138
       },
       {
+       "hour": 9,
+       "value": 0.992481,
+       "numerator": 132,
+       "denominator": 133
+      },
+      {
+       "hour": 10,
+       "value": 0.992481,
+       "numerator": 132,
+       "denominator": 133
+      },
+      {
+       "hour": 11,
+       "value": 0.993103,
+       "numerator": 144,
+       "denominator": 145
+      },
+      {
+       "hour": 12,
+       "value": 0.975155,
+       "numerator": 157,
+       "denominator": 161
+      },
+      {
+       "hour": 13,
+       "value": 0.981013,
+       "numerator": 155,
+       "denominator": 158
+      },
+      {
+       "hour": 14,
+       "value": 0.976744,
+       "numerator": 168,
+       "denominator": 172
+      },
+      {
+       "hour": 15,
+       "value": 0.95,
+       "numerator": 152,
+       "denominator": 160
+      },
+      {
        "hour": 16,
-       "value": 0.952055,
-       "numerator": 139,
-       "denominator": 146
+       "value": 0.952941,
+       "numerator": 162,
+       "denominator": 170
       },
       {
        "hour": 17,
-       "value": 0.945578,
-       "numerator": 139,
-       "denominator": 147
+       "value": 0.947674,
+       "numerator": 163,
+       "denominator": 172
       },
       {
        "hour": 18,
-       "value": 0.919118,
-       "numerator": 125,
-       "denominator": 136
+       "value": 0.925,
+       "numerator": 148,
+       "denominator": 160
       },
       {
        "hour": 19,
-       "value": 0.902778,
-       "numerator": 65,
-       "denominator": 72
+       "value": 0.906977,
+       "numerator": 78,
+       "denominator": 86
       },
       {
        "hour": 20,
        "value": 1.0,
-       "numerator": 5,
-       "denominator": 5
+       "numerator": 6,
+       "denominator": 6
       }
      ]
     }
    },
    "latest_day": {
-    "service_date": "2026-11-25",
+    "service_date": "2026-11-27",
     "metrics": {
      "timepoint_coverage": [
       {
@@ -294,32 +294,32 @@
       },
       {
        "hour": 4,
-       "value": 1.0,
-       "numerator": 43,
+       "value": 0.976744,
+       "numerator": 42,
        "denominator": 43
       },
       {
        "hour": 5,
-       "value": 0.940678,
-       "numerator": 111,
+       "value": 0.957627,
+       "numerator": 113,
        "denominator": 118
       },
       {
        "hour": 6,
-       "value": 0.935673,
-       "numerator": 160,
+       "value": 0.94152,
+       "numerator": 161,
        "denominator": 171
       },
       {
        "hour": 7,
-       "value": 0.864583,
-       "numerator": 166,
+       "value": 0.911458,
+       "numerator": 175,
        "denominator": 192
       },
       {
        "hour": 8,
-       "value": 0.912371,
-       "numerator": 177,
+       "value": 0.917526,
+       "numerator": 178,
        "denominator": 194
       },
       {
@@ -330,62 +330,62 @@
       },
       {
        "hour": 10,
-       "value": 0.916201,
-       "numerator": 164,
+       "value": 0.932961,
+       "numerator": 167,
        "denominator": 179
       },
       {
        "hour": 11,
-       "value": 0.923077,
-       "numerator": 168,
+       "value": 0.840659,
+       "numerator": 153,
        "denominator": 182
       },
       {
        "hour": 12,
-       "value": 0.939891,
-       "numerator": 172,
+       "value": 0.885246,
+       "numerator": 162,
        "denominator": 183
       },
       {
        "hour": 13,
-       "value": 0.94086,
-       "numerator": 175,
+       "value": 0.854839,
+       "numerator": 159,
        "denominator": 186
       },
       {
        "hour": 14,
-       "value": 0.914894,
-       "numerator": 172,
+       "value": 0.781915,
+       "numerator": 147,
        "denominator": 188
       },
       {
        "hour": 15,
-       "value": 0.849162,
-       "numerator": 152,
+       "value": 0.865922,
+       "numerator": 155,
        "denominator": 179
       },
       {
        "hour": 16,
-       "value": 0.907692,
-       "numerator": 177,
+       "value": 0.902564,
+       "numerator": 176,
        "denominator": 195
       },
       {
        "hour": 17,
-       "value": 0.899497,
-       "numerator": 179,
+       "value": 0.904523,
+       "numerator": 180,
        "denominator": 199
       },
       {
        "hour": 18,
-       "value": 0.875622,
-       "numerator": 176,
+       "value": 0.920398,
+       "numerator": 185,
        "denominator": 201
       },
       {
        "hour": 19,
-       "value": 0.79661,
-       "numerator": 94,
+       "value": 0.762712,
+       "numerator": 90,
        "denominator": 118
       },
       {
@@ -422,8 +422,8 @@
       },
       {
        "hour": 7,
-       "value": 0.958333,
-       "numerator": 23,
+       "value": 1.0,
+       "numerator": 24,
        "denominator": 24
       },
       {
@@ -440,8 +440,8 @@
       },
       {
        "hour": 10,
-       "value": 0.952381,
-       "numerator": 20,
+       "value": 1.0,
+       "numerator": 21,
        "denominator": 21
       },
       {
@@ -452,8 +452,8 @@
       },
       {
        "hour": 12,
-       "value": 1.0,
-       "numerator": 25,
+       "value": 0.96,
+       "numerator": 24,
        "denominator": 25
       },
       {
@@ -464,14 +464,14 @@
       },
       {
        "hour": 14,
-       "value": 1.0,
-       "numerator": 23,
+       "value": 0.956522,
+       "numerator": 22,
        "denominator": 23
       },
       {
        "hour": 15,
-       "value": 0.909091,
-       "numerator": 20,
+       "value": 1.0,
+       "numerator": 22,
        "denominator": 22
       },
       {
@@ -482,8 +482,8 @@
       },
       {
        "hour": 17,
-       "value": 0.92,
-       "numerator": 23,
+       "value": 0.96,
+       "numerator": 24,
        "denominator": 25
       },
       {
@@ -494,8 +494,8 @@
       },
       {
        "hour": 19,
-       "value": 1.0,
-       "numerator": 14,
+       "value": 0.928571,
+       "numerator": 13,
        "denominator": 14
       },
       {
@@ -1161,6 +1161,86 @@
       "days": 1
      }
     }
+   },
+   {
+    "period": "2026-11-27",
+    "service_expected": true,
+    "metrics": {
+     "trip_coverage": {
+      "value": 0.982405,
+      "numerator": 335,
+      "denominator": 341,
+      "days": 1
+     },
+     "timepoint_coverage": {
+      "value": 0.878899,
+      "numerator": 2395,
+      "denominator": 2725,
+      "days": 1
+     },
+     "vehicle_uptime": {
+      "value": 0.997454,
+      "numerator": 4309,
+      "denominator": 4320,
+      "days": 1
+     },
+     "off_shape_share": {
+      "value": 0.044988,
+      "numerator": 1608,
+      "denominator": 35743,
+      "days": 1
+     },
+     "feed_agreement_share": {
+      "value": 0.94337,
+      "numerator": 8046,
+      "denominator": 8529,
+      "days": 1
+     },
+     "impossible_jumps": {
+      "value": 1,
+      "days": 1
+     },
+     "glitch_reports_removed": {
+      "value": 0,
+      "days": 1
+     },
+     "position_age_s_p95": {
+      "value": 8.1,
+      "low": 8.1,
+      "high": 8.1,
+      "days": 1
+     },
+     "untimed_gap": {
+      "value": 0.047706,
+      "numerator": 130,
+      "denominator": 2725,
+      "days": 1
+     },
+     "untimed_skipped": {
+      "value": 0.03633,
+      "numerator": 99,
+      "denominator": 2725,
+      "days": 1
+     },
+     "untimed_not_reached": {
+      "value": 0.010275,
+      "numerator": 28,
+      "denominator": 2725,
+      "days": 1
+     },
+     "untimed_no_reports": {
+      "value": 0.017982,
+      "numerator": 49,
+      "denominator": 2725,
+      "days": 1
+     },
+     "untimed_past_when_first_seen": {
+      "value": 0.008807,
+      "numerator": 24,
+      "denominator": 2725,
+      "days": 1
+     }
+    }
    }
   ],
   "week": [
@@ -1248,81 +1328,81 @@
    {
     "period": "2026-11-23",
     "partial": true,
-    "days": 3,
+    "days": 4,
     "metrics": {
      "trip_coverage": {
-      "value": 0.963832,
-      "numerator": 986,
-      "denominator": 1023,
-      "days": 3
+      "value": 0.968475,
+      "numerator": 1321,
+      "denominator": 1364,
+      "days": 4
      },
      "timepoint_coverage": {
-      "value": 0.889297,
-      "numerator": 7270,
-      "denominator": 8175,
-      "days": 3
+      "value": 0.886697,
+      "numerator": 9665,
+      "denominator": 10900,
+      "days": 4
      },
      "vehicle_uptime": {
-      "value": 0.998457,
-      "numerator": 12940,
-      "denominator": 12960,
-      "days": 3
+      "value": 0.998206,
+      "numerator": 17249,
+      "denominator": 17280,
+      "days": 4
      },
      "off_shape_share": {
-      "value": 0.045272,
-      "numerator": 4987,
-      "denominator": 110156,
-      "days": 3
+      "value": 0.045203,
+      "numerator": 6595,
+      "denominator": 145899,
+      "days": 4
      },
      "feed_agreement_share": {
-      "value": 0.942879,
-      "numerator": 24331,
-      "denominator": 25805,
-      "days": 3
+      "value": 0.943001,
+      "numerator": 32377,
+      "denominator": 34334,
+      "days": 4
      },
      "impossible_jumps": {
-      "value": 68,
-      "days": 3
+      "value": 69,
+      "days": 4
      },
      "glitch_reports_removed": {
       "value": 22,
-      "days": 3
+      "days": 4
      },
      "position_age_s_p95": {
-      "value": 8.2,
+      "value": 8.1,
       "low": 7.8,
       "high": 16.0,
-      "days": 3
+      "days": 4
      },
      "untimed_gap": {
-      "value": 0.032171,
-      "numerator": 263,
-      "denominator": 8175,
-      "days": 3
+      "value": 0.036055,
+      "numerator": 393,
+      "denominator": 10900,
+      "days": 4
      },
      "untimed_skipped": {
-      "value": 0.028379,
-      "numerator": 232,
-      "denominator": 8175,
-      "days": 3
+      "value": 0.030367,
+      "numerator": 331,
+      "denominator": 10900,
+      "days": 4
      },
      "untimed_not_reached": {
-      "value": 0.013945,
-      "numerator": 114,
-      "denominator": 8175,
-      "days": 3
+      "value": 0.013028,
+      "numerator": 142,
+      "denominator": 10900,
+      "days": 4
      },
      "untimed_no_reports": {
-      "value": 0.031682,
-      "numerator": 259,
-      "denominator": 8175,
-      "days": 3
+      "value": 0.028257,
+      "numerator": 308,
+      "denominator": 10900,
+      "days": 4
      },
      "untimed_past_when_first_seen": {
-      "value": 0.004526,
-      "numerator": 37,
-      "denominator": 8175,
-      "days": 3
+      "value": 0.005596,
+      "numerator": 61,
+      "denominator": 10900,
+      "days": 4
      }
     }
    }
@@ -1331,81 +1411,81 @@
    {
     "period": "2026-11",
     "partial": true,
-    "days": 7,
+    "days": 8,
     "metrics": {
      "trip_coverage": {
-      "value": 0.968834,
-      "numerator": 1803,
-      "denominator": 1861,
-      "days": 7
+      "value": 0.970936,
+      "numerator": 2138,
+      "denominator": 2202,
+      "days": 8
      },
      "timepoint_coverage": {
-      "value": 0.893003,
-      "numerator": 13095,
-      "denominator": 14664,
-      "days": 7
+      "value": 0.890793,
+      "numerator": 15490,
+      "denominator": 17389,
+      "days": 8
      },
      "vehicle_uptime": {
-      "value": 0.998562,
-      "numerator": 27786,
-      "denominator": 27826,
-      "days": 7
+      "value": 0.998413,
+      "numerator": 32095,
+      "denominator": 32146,
+      "days": 8
      },
      "off_shape_share": {
-      "value": 0.045281,
-      "numerator": 8961,
-      "denominator": 197896,
-      "days": 7
+      "value": 0.045236,
+      "numerator": 10569,
+      "denominator": 233639,
+      "days": 8
      },
      "feed_agreement_share": {
-      "value": 0.943335,
-      "numerator": 43700,
-      "denominator": 46325,
-      "days": 7
+      "value": 0.943341,
+      "numerator": 51746,
+      "denominator": 54854,
+      "days": 8
      },
      "impossible_jumps": {
-      "value": 71,
-      "days": 7
+      "value": 72,
+      "days": 8
      },
      "glitch_reports_removed": {
       "value": 22,
-      "days": 7
+      "days": 8
      },
      "position_age_s_p95": {
-      "value": 8.0,
+      "value": 8.1,
       "low": 7.7,
       "high": 16.0,
-      "days": 7
+      "days": 8
      },
      "untimed_gap": {
-      "value": 0.034506,
-      "numerator": 506,
-      "denominator": 14664,
-      "days": 7
+      "value": 0.036575,
+      "numerator": 636,
+      "denominator": 17389,
+      "days": 8
      },
      "untimed_skipped": {
-      "value": 0.0268,
-      "numerator": 393,
-      "denominator": 14664,
-      "days": 7
+      "value": 0.028294,
+      "numerator": 492,
+      "denominator": 17389,
+      "days": 8
      },
      "untimed_not_reached": {
-      "value": 0.015276,
-      "numerator": 224,
-      "denominator": 14664,
-      "days": 7
+      "value": 0.014492,
+      "numerator": 252,
+      "denominator": 17389,
+      "days": 8
      },
      "untimed_no_reports": {
-      "value": 0.026255,
-      "numerator": 385,
-      "denominator": 14664,
-      "days": 7
+      "value": 0.024958,
+      "numerator": 434,
+      "denominator": 17389,
+      "days": 8
      },
      "untimed_past_when_first_seen": {
-      "value": 0.00416,
-      "numerator": 61,
-      "denominator": 14664,
-      "days": 7
+      "value": 0.004888,
+      "numerator": 85,
+      "denominator": 17389,
+      "days": 8
      }
     }
    }
