@@ -497,6 +497,72 @@
    "release_tag": "parsed-2026-11",
    "built_at": "2026-11-27T08:40:37+00:00",
    "code_sha": "2e522d686805e1282b2c5525a52330bfc4ff22c3"
+  },
+  "2026-11-27": {
+   "service_date": "2026-11-27",
+   "tables_version": "tables/0.1.0",
+   "rows": {
+    "vehicles": 45384,
+    "trip-updates": 19337,
+    "trip-update-stops": 338987,
+    "alerts": 0
+   },
+   "fetches": {
+    "serviceAlerts": {
+     "attempted": 288,
+     "parsed": 288,
+     "failed": 0,
+     "decode_errors": 0
+    },
+    "tripUpdates": {
+     "attempted": 4311,
+     "parsed": 4311,
+     "failed": 0,
+     "decode_errors": 0
+    },
+    "vehiclePositions": {
+     "attempted": 4311,
+     "parsed": 4310,
+     "failed": 1,
+     "decode_errors": 0
+    }
+   },
+   "duplicate_keys": {
+    "vehicles": 0,
+    "trip-updates": 149,
+    "trip-update-stops": 947,
+    "alerts": 0
+   },
+   "files": [
+    {
+     "name": "vehicles-2026-11-27.parquet",
+     "bytes": 730143,
+     "sha256": "cffef390a1f0642d799674f39895852937e82e6303572edf37a1c198a352f3a5",
+     "asset": "vehicles-2026-11-27-cffef390.parquet"
+    },
+    {
+     "name": "trip-updates-2026-11-27.parquet",
+     "bytes": 137226,
+     "sha256": "2b03cc24d22e0ef48aff47bbcd54811c14c4423f4a2294a5df69dfd7227f9fab",
+     "asset": "trip-updates-2026-11-27-2b03cc24.parquet"
+    },
+    {
+     "name": "trip-update-stops-2026-11-27.parquet",
+     "bytes": 1743016,
+     "sha256": "f12bb577b9f7ea6c10847d268e5a91fb8e2c37d84b77c0ed21dc2bd109c8eae6",
+     "asset": "trip-update-stops-2026-11-27-f12bb577.parquet"
+    },
+    {
+     "name": "alerts-2026-11-27.parquet",
+     "bytes": 3621,
+     "sha256": "e798a95eafabd7f57b471d461c47fce3ec75510c5af5b01af1f8ed3c96c9bcab",
+     "asset": "alerts-2026-11-27-e798a95e.parquet"
+    }
+   ],
+   "raw_sha256": "9da16e3aec8383bf29cd14fc58c643c9e15e79c9febc4e90f267c6d40a2947a7",
+   "release_tag": "parsed-2026-11",
+   "built_at": "2026-11-28T08:41:04+00:00",
+   "code_sha": "a9f84f1361de21e74235dfaa7feccf506add2377"
   }
  }
 }
