@@ -527,3 +527,14 @@ test("a peer sampled with our own method shows its share and range (class A)", a
   await expect(row).toContainText("77% (74% to 80%), November 24, 2026");
   await expect(row).toContainText("R, B, A");
 });
+
+test.describe("the footer", () => {
+  test("says how many checks of the publishing gate the figures passed, and when", async ({page}) => {
+    await open(page, "index");
+    const gate = page.locator("#data-through a");
+    await expect(gate).toHaveText("Every figure here passed 13 automatic checks on November 21, 2026");
+    await gate.click();
+    await expect(page).toHaveURL(/limits\.html#gate$/);
+    await expect(page.locator("#gate")).toBeVisible();
+  });
+});
