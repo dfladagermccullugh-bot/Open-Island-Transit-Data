@@ -11,18 +11,22 @@
   "I6",
   "I7",
   "I8",
+  "I13",
   "I9",
   "I10",
   "I11",
   "I12",
   "frictionless"
  ],
- "rules_count": 13,
+ "rules_count": 14,
  "problems": [],
- "notes": [],
+ "notes": [
+  "I6 ontime: 1 older days still on an older version (first 2026-11-19); the nightly job rebuilds them",
+  "I13 the one-rule difference waits for days rebuilt by ontime/0.8.0"
+ ],
  "latest_service_date": "2026-11-26",
- "checked_commit": "99ce7db1ffac458ad97970e84cff820e5d4b1f96",
- "ran_at": "2026-11-28T03:24:10+00:00",
+ "checked_commit": "c1213aa56c4d987a6a0279e4cfa0caf398830c18",
+ "ran_at": "2026-11-28T04:25:06+00:00",
  "workflow": "Nightly archive",
- "run_url": "https://github.com/dfladagermccullugh-bot/Open-Island-Transit-Data/actions/runs/46102588565"
+ "run_url": "https://github.com/dfladagermccullugh-bot/Open-Island-Transit-Data/actions/runs/46107326430"
 }
