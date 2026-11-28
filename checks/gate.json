@@ -22,8 +22,8 @@
  "problems": [],
  "notes": [],
  "latest_service_date": "2026-11-27",
- "checked_commit": "66732745e8b79f3bcb06c01eebb2d6e77afd414a",
- "ran_at": "2026-11-28T14:40:43+00:00",
+ "checked_commit": "ea1d1d3ad9aafe295b999efa6c019fcef97c3ba3",
+ "ran_at": "2026-11-28T15:39:18+00:00",
  "workflow": "Nightly archive",
- "run_url": "https://github.com/dfladagermccullugh-bot/Open-Island-Transit-Data/actions/runs/46155825310"
+ "run_url": "https://github.com/dfladagermccullugh-bot/Open-Island-Transit-Data/actions/runs/46160957079"
 }
