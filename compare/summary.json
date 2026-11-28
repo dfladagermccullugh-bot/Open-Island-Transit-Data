@@ -12,9 +12,9 @@
   "observed": 13095,
   "on_time": 9719,
   "headline_on_time_share": 0.7422,
-  "last_stop_early_arrivals": null,
-  "recount_on_time": null,
-  "recount_under_our_rule": 0.7009,
+  "last_stop_early_arrivals": 556,
+  "recount_on_time": 9163,
+  "recount_under_our_rule": 0.6997,
   "deviation_s_p25": 52.0,
   "deviation_s_median": 150.0,
   "deviation_s_p75": 292.0
