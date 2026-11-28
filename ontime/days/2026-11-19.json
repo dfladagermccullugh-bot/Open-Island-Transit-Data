@@ -1,5 +1,5 @@
 {
- "ontime_version": "ontime/0.7.0",
+ "ontime_version": "ontime/0.8.0",
  "definition": {
   "window_s": [-60,300],
   "measured": "departure at timepoints; arrival at the last stop",
@@ -13,6 +13,7 @@
  "late": 385,
  "on_time_share_of_observed": 0.614,
  "deviation_s_median": 203.8,
+ "last_stop_early_arrivals": 42,
  "canceled": {
   "trip_ids": [],
   "timepoint_events_left_out": 0
