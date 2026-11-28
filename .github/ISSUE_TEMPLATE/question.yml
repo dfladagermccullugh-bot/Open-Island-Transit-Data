@@ -1,0 +1,15 @@
+name: Question about the data
+description: Ask how something is measured, what a file holds, how to use the data, or ask for something to be removed.
+title: "Question: "
+body:
+  - type: markdown
+    attributes:
+      value: |
+        The [Methods](https://islandtransitdata.org/methods.html), [Limits](https://islandtransitdata.org/limits.html) and [Codebook](https://islandtransitdata.org/codebook.html) pages may already answer it. Everything here is public, so please leave out anything private.
+  - type: textarea
+    id: question
+    attributes:
+      label: Your question or request
+      description: For a removal request, say which files or records and why.
+    validations:
+      required: true

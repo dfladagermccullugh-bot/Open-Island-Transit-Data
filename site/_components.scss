@@ -23,6 +23,17 @@ main :is(p, li, dd, dt, blockquote) { max-width: var(--measure); }
 // Code inside a sentence or a heading, in both themes.
 main :not(pre) > code { background-color: var(--panel); color: var(--text-primary); border-radius: var(--radius-sm); padding: .1em .3em; }
 main a > code { color: inherit; }
+// Overflow guards, at every width: a long file name in code, in a heading, a
+// table or a sentence, breaks where it must instead of widening the page;
+// code blocks and anything else too wide scroll inside their own box.
+main :not(pre) > code { overflow-wrap: anywhere; white-space: normal; }
+main :is(h1, h2, h3, h4, h5, h6, p, li, dd, dt, td, th, figcaption, summary) { overflow-wrap: break-word; min-width: 0; }
+main pre { max-width: 100%; overflow-x: auto; }
+main img { max-width: 100%; height: auto; }
+// The page's content fills at least the screen, so the footer starts below
+// it: while the figures arrive the footer is not in view, and does not count
+// as a jump when they push it down.
+main.content { min-height: 100vh; }
 details > summary { color: var(--text-primary); }
 
 .note { color: var(--text-secondary); font-size: var(--fs-sm); }
@@ -96,7 +107,7 @@ h3 { margin-top: var(--sp-6); }
 .late-callout { max-width: var(--measure); }
 .late-callout .late-list { padding-left: 1.25rem; margin: var(--sp-2) 0; }
 .late-callout .late-list li { margin: var(--sp-1) 0; }
-.slot-late:not(:has(.late-callout, .empty)) { min-height: 9rem; }
+.slot-late:not(:has(.late-callout, .empty)) { min-height: 18rem; }
 
 // The ferry tag on routes that stop at a ferry terminal.
 .ferry-tag { display: inline-flex; align-items: center; gap: .2rem; margin-left: .4rem; padding: 0 .35rem;
@@ -111,13 +122,37 @@ h3 { margin-top: var(--sp-6); }
 // Space held for parts that are drawn after the page loads, so the page
 // does not jump when they arrive. Each hold ends when its part is there (or
 // says it has nothing to show), so nothing is left blank.
-.slot-headline:not(:has(.headline, .empty)) { min-height: 15rem; }
+.slot-headline:not(:has(> .cell .headline, > .cell .empty)) { min-height: 36rem; }
+// The plain copy of the headline that scripts/prerender.py writes, for
+// readers and previews without JavaScript; the cell's own drawing replaces it.
+.slot-headline:has(> .cell .headline-block, > .cell .empty) > .headline-static { display: none; }
 .slot-map:not(:has(.route-map, .empty)) { min-height: calc(var(--map-height) + 6.5rem); }
 .slot-stats:not(:has(.stat-row, .empty)) { min-height: 15rem; }
 .slot-trends:not(:has(.chart-grid, .empty)) { min-height: 122rem; }
 @media (min-width: 1000px) { .slot-trends:not(:has(.chart-grid, .empty)) { min-height: 70rem; } }
 .slot-untimed:not(:has(.chart-grid, .empty, .note)) { min-height: 87rem; }
 @media (min-width: 1000px) { .slot-untimed:not(:has(.chart-grid, .empty, .note)) { min-height: 46rem; } }
+// Pickers and the parts above a page's first chart or map (Stops, Replay,
+// Compare): drawn after the page loads, so their space is held as well.
+.slot-picker:not(:has(select, .empty)) { min-height: 4rem; }
+.slot-controls:not(:has(input, .empty)) { min-height: 4.3rem; }
+.slot-period:not(:has(input, .empty)) { min-height: 4rem; }
+// One trip stop by stop on Stops: a long table, read after its day's file.
+.slot-trip:not(:has(table, .empty)) { min-height: 24rem; }
+.slot-one-rule:not(:has(.one-rule, .empty)) { min-height: 18rem; }
+// The Download page's five blocks, measured on the published data at a desk
+// and on a phone (tables stack their cells there, so they are much taller).
+.slot-tables:not(:has(table, .empty)) { min-height: 170rem; }
+.slot-day-picker:not(:has(select)) { min-height: 6rem; }
+.slot-files:not(:has(table, .empty)) { min-height: 140rem; }
+.slot-days:not(:has(table, .empty)) { min-height: 13rem; }
+.slot-reports:not(:has(table, .empty)) { min-height: 2.5rem; }
+@media (min-width: 1000px) {
+  .slot-tables:not(:has(table, .empty)) { min-height: 50rem; }
+  .slot-day-picker:not(:has(select)) { min-height: 4rem; }
+  .slot-files:not(:has(table, .empty)) { min-height: 32rem; }
+  .slot-days:not(:has(table, .empty)) { min-height: 10rem; }
+}
 .slot-chart:not(:has(figure, .empty)) { min-height: 20rem; }
 
 // --- live collector badge -----------------------------------------------------
@@ -305,7 +340,7 @@ details.as-table > summary:hover { color: var(--text-primary); }
 .hash { font-family: var(--bs-font-monospace); font-size: var(--fs-xs); color: var(--text-secondary); white-space: nowrap; }
 .copy { font: inherit; font-size: var(--fs-xs); font-weight: 600; color: var(--link); background: none; border: none; padding: 0 var(--sp-2); min-height: 1.5rem; min-width: 1.5rem; cursor: pointer; }
 .copy:hover { text-decoration: underline; }
-.download-list { padding-left: 1.2rem; }
+.download-list ul { padding-left: 1.2rem; }
 .download-list li { margin-bottom: var(--sp-2); }
 
 @media (max-width: $bp-narrow) {
@@ -313,10 +348,14 @@ details.as-table > summary:hover { color: var(--text-primary); }
   .stat .value { font-size: var(--fs-xl); }
   .stat-big .value { font-size: var(--fs-2xl); }
   .route-title .route-sub { display: block; margin-left: 0; }
-  .slot-headline:not(:has(.headline, .empty)) { min-height: 20rem; }
-  // Wide tables and long code scroll inside the page instead of widening it.
+  .slot-headline:not(:has(> .cell .headline, > .cell .empty)) { min-height: 50rem; }
+  .slot-picker:not(:has(select, .empty)) { min-height: 6rem; }
+  .slot-controls:not(:has(input, .empty)) { min-height: 9.8rem; }
+  .slot-period:not(:has(input, .empty)) { min-height: 6.6rem; }
+  .slot-one-rule:not(:has(.one-rule, .empty)) { min-height: 47rem; }
+  .slot-late:not(:has(.late-callout, .empty)) { min-height: 30rem; }
+  // Wide tables scroll inside the page instead of widening it.
   main table.table { display: block; overflow-x: auto; }
-  main code { overflow-wrap: anywhere; }
 }
 
 // --- on paper -----------------------------------------------------------------------

@@ -1,0 +1,30 @@
+name: Something looks wrong
+description: A figure, a chart, a file or a page on the site looks wrong or doesn't work.
+title: "Data problem: "
+labels: ["data"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Thank you for taking the time. Everything here is public, so please leave out anything private.
+        Questions about fares, schedules or the buses themselves go to Island Transit; this project is independent of it.
+  - type: input
+    id: where
+    attributes:
+      label: Where did you see it?
+      description: The page address, or the file and column.
+      placeholder: "https://islandtransitdata.org/routes.html#60"
+    validations:
+      required: true
+  - type: input
+    id: when
+    attributes:
+      label: Which day, route or stop?
+      placeholder: "November 20, 2026, route 60, Clinton Ferry"
+  - type: textarea
+    id: what
+    attributes:
+      label: What looks wrong, and what did you expect?
+      description: If you rode or timed the bus yourself, say so and give the times you saw, with seconds if you have them.
+    validations:
+      required: true

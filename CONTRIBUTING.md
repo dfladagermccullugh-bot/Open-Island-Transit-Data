@@ -5,9 +5,10 @@ matters. If you find one, please tell us.
 
 ## Report a wrong number
 
-Open an issue with the "Report a wrong number" form. Say which page or file
-shows the number, which service day and route it is about, and what you
-think it should be and why. If you rode the bus or timed it yourself, say
+Open an issue with the "Something looks wrong" form (the site's footer link
+"Spotted something off? Tell us" leads there; it needs a free GitHub
+account). Say which page or file shows the number, which service day and
+route it is about, and what you think it should be and why. If you rode the bus or timed it yourself, say
 so: timings taken in person are the best check we have.
 
 Every figure is rebuilt from the saved feed by the code in this repository,
@@ -18,7 +19,7 @@ recorded in [`docs/decisions.md`](docs/decisions.md).
 
 ## Ask for data to be removed
 
-Open an issue with the "Data question or removal request" form. The feeds
+Open an issue with the "Question about the data" form. The feeds
 describe vehicles only and hold nothing about riders, but if you believe
 something here should not be published, we want to hear it. The terms are
 in [`LICENSE-DATA.md`](LICENSE-DATA.md).

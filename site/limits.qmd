@@ -268,6 +268,18 @@ agencies do, so that both sides are counted alike. Over November 19 to 25,
 update makes sure the two figures differ by exactly the number of those
 early arrivals.
 
+## Spotted something off? {#feedback}
+
+If a figure looks wrong, a page doesn't work, or you have a question about
+the data, please [tell us on GitHub](https://github.com/dfladagermccullugh-bot/Open-Island-Transit-Data/issues/new/choose).
+You pick a short form, say what you saw, and it goes on the project's public
+list of issues, where anyone can read the answer. Sending one needs a free
+GitHub account. We don't publish an email address, so that every question
+and every fix stays in the open next to the code and the data. Questions
+about the buses themselves, such as fares, schedules or a lost item, go to
+[Island Transit](https://www.islandtransit.org/), since this project is
+independent of it.
+
 ::: {.corrections}
 {{< include ../docs/corrections.md >}}
 :::

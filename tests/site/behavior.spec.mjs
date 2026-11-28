@@ -1,7 +1,7 @@
 // What the pages do when a reader uses them: picking routes, resizing,
 // using only the keyboard, tapping on a phone, and reading days that need
 // special handling.
-import {expect, expectClean, open, settle, test} from "./fixtures.mjs";
+import {PAGES, expect, expectClean, open, settle, test} from "./fixtures.mjs";
 import {useScenario} from "./scenarios.mjs";
 
 const desktopOnly = ({}, info) => test.skip(!info.project.name.startsWith("desktop"), "a desk-sized window");
@@ -309,13 +309,13 @@ test.describe("days that need special handling", () => {
   test("a schedule change is explained where the figures start over", async ({page}) => {
     await useScenario(page, "schedule-change");
     await open(page, "index");
-    await expect(page.locator(".headline")).toContainText("changed its schedule on December 27, 2026");
+    await expect(page.locator(".slot-headline .cell .headline")).toContainText("changed its schedule on December 27, 2026");
   });
 
   test("a schedule change more than a week old moves into the fold", async ({page}) => {
     await useScenario(page, "old-schedule-change");
     await open(page, "index");
-    await expect(page.locator(".headline")).not.toContainText("changed its schedule");
+    await expect(page.locator(".slot-headline .cell .headline")).not.toContainText("changed its schedule");
     await page.locator("details.sure > summary").click();
     await expect(page.locator("details.sure")).toContainText("changed its schedule on November 1, 2026");
   });
@@ -402,17 +402,76 @@ test.describe("loading", () => {
     });
   }
 
-  test("the page does not jump while its figures arrive", async ({page}) => {
-    await page.addInitScript(() => {
-      window.__shift = 0;
-      new PerformanceObserver(list => {
-        for (const e of list.getEntries()) if (!e.hadRecentInput) window.__shift += e.value;
-      }).observe({type: "layout-shift", buffered: true});
-    });
-    for (const name of ["index", "routes", "quality"]) {
+  for (const name of PAGES) {
+    test(`${name} does not jump while its figures arrive`, async ({page}) => {
+      // Layout shift as browsers score it (Lighthouse calls 0.1 good); every
+      // part drawn after loading has its space held (_components.scss).
+      await page.addInitScript(() => {
+        window.__shift = 0;
+        new PerformanceObserver(list => {
+          for (const e of list.getEntries()) if (!e.hadRecentInput) window.__shift += e.value;
+        }).observe({type: "layout-shift", buffered: true});
+      });
       await open(page, name);
-      const shift = await page.evaluate(() => window.__shift);
-      expect(shift, `layout shift on ${name}`).toBeLessThan(0.1);
+      expect(await page.evaluate(() => window.__shift), `layout shift on ${name}`).toBeLessThan(0.05);
+    });
+  }
+});
+
+test.describe("narrow screens", () => {
+  test.beforeEach(phoneOnly);
+  for (const name of PAGES) {
+    test(`${name} never scrolls sideways at 320 or 390 pixels`, async ({page}) => {
+      // Long file names wrap, wide tables and code scroll inside their own
+      // box; the page itself is never wider than the screen.
+      for (const width of [320, 390]) {
+        await page.setViewportSize({width, height: 800});
+        await open(page, name);
+        for (const d of await page.locator("main details").all()) await d.evaluate(n => (n.open = true));
+        await page.waitForTimeout(150);
+        const spill = await page.evaluate(() => document.documentElement.scrollWidth - document.documentElement.clientWidth);
+        expect(spill, `sideways scroll on ${name} at ${width}px`).toBeLessThanOrEqual(0);
+      }
+    });
+  }
+});
+
+test.describe("before the scripts run", () => {
+  test("the home page shows the headline figure without JavaScript", async ({browser, baseURL}) => {
+    const context = await browser.newContext({javaScriptEnabled: false, baseURL});
+    const page = await context.newPage();
+    // Nothing outside the site is needed to read the figure.
+    await page.route(url => url.origin !== new URL(baseURL).origin, route => route.abort());
+    await page.goto("index.html");
+    const plain = page.locator(".slot-headline .headline-static");
+    await expect(plain.locator(".big")).toHaveText("68%");
+    await expect(plain).toContainText("of departures left on time over the last 2 days with service, to November 20, 2026.");
+    await expect(plain).toContainText("That is 2,390 of the 3,492 departures we could time, out of 3,929 scheduled.");
+    await context.close();
+  });
+
+  test("the drawn headline replaces the plain copy", async ({page}) => {
+    await open(page, "index");
+    await expect(page.locator(".headline-static")).toBeHidden();
+    await expect(page.locator(".slot-headline .cell .headline .big")).toHaveText("68%");
+  });
+
+  test("every page's description and link preview carry the figure", async ({page, request}) => {
+    for (const name of PAGES) {
+      await page.goto(`${name}.html`, {waitUntil: "domcontentloaded"});
+      const meta = sel => page.locator(sel).getAttribute("content");
+      const sentence = "68% of Island Transit's bus departures left on time (1 minute early to 5 minutes late) over the last 2 days with service, to November 20, 2026.";
+      for (const sel of ['meta[name="description"]', 'meta[property="og:description"]', 'meta[name="twitter:description"]']) {
+        expect(await meta(sel), `${sel} on ${name}`).toMatch(new RegExp(`^${sentence.replace(/[.()]/g, "\\$&")} \\S`));
+      }
+      expect(await meta('meta[property="og:image:alt"]')).toBe(sentence);
+      const image = await meta('meta[property="og:image"]');
+      expect(image).toMatch(/\/social-card-[0-9a-f]{12}\.png$/);
+      expect(await meta('meta[name="twitter:image"]')).toBe(image);
+      // The card is served by the site under the same name.
+      const card = await request.get(new URL(image).pathname.slice(1));
+      expect(card.ok()).toBe(true);
+      expect(card.headers()["content-type"]).toBe("image/png");
     }
   });
 });
@@ -518,7 +577,7 @@ test.describe("the home page headline", () => {
     await expect(head.locator(".split-words")).toContainText("on time");
     await expect(head.locator(".trust")).toContainText("found nothing wrong");
     await expect(head.locator("a", {hasText: "How we measured this"})).toHaveAttribute("href", "methods.html#on-time-performance");
-    await expect(head.locator(".counts")).toHaveText("That is 2,390 of the 3,492 departures we could time, out of 3,929 scheduled.");
+    await expect(head.locator(".cell .counts")).toHaveText("That is 2,390 of the 3,492 departures we could time, out of 3,929 scheduled.");
   });
 
   test("folds how sure it is: chance, the missed departures, the worst case and why", async ({page}) => {
@@ -713,6 +772,17 @@ test.describe("the footer", () => {
     await expect(page.locator("#gate")).toBeVisible();
     await expect(page.locator("main")).toContainText(
       "Last independent rebuild: 2 days (November 19, 2026, November 20, 2026) rebuilt from raw on November 22, 2026, every file identical.");
+  });
+});
+
+test.describe("telling us about a problem", () => {
+  test("the footer links to the forms, and Limits says a GitHub account is needed", async ({page}) => {
+    await open(page, "routes");
+    const tell = page.locator("footer a", {hasText: "Spotted something off? Tell us"});
+    await expect(tell).toHaveAttribute("href", "https://github.com/dfladagermccullugh-bot/Open-Island-Transit-Data/issues/new/choose");
+    await open(page, "limits", {hash: "#feedback"});
+    await expect(page.locator("#feedback")).toContainText("needs a free GitHub account");
+    expect(await page.locator("main").innerText()).not.toMatch(/@[a-z0-9-]+\.[a-z]{2,}/i);
   });
 });
 

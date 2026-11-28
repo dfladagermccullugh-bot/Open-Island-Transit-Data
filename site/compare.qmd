@@ -43,6 +43,7 @@ skipped = (cmp?.peers ?? []).flatMap(p => pool(p)?.samples_skipped ?? [])
 
 ## One rule, two figures {#one-rule}
 
+::: {.slot-one-rule}
 ```{ojs}
 //| echo: false
 guard(() => {
@@ -56,6 +57,7 @@ guard(() => {
   <p>The two figures cover the same ${count(it.observed)} departures we could time from ${longDate(it.first_service_date)} to ${longDate(it.last_service_date)}. They differ by exactly ${plural(it.last_stop_early_arrivals, "arrival")}: the times a bus reached the last stop of its trip more than a minute early. A rider waiting at the last stop isn't hurt by an early bus, so the home page counts it as on time. Most agencies count it as early, so we use their way whenever we set our buses beside theirs.</p>`;
 }, "The comparison of the two rules")
 ```
+:::
 
 ## Their buses and ours, timed the same way {#same-way}
 

@@ -64,6 +64,7 @@ website:
     center: >-
       Not affiliated with Island Transit ·
       <span id="data-through"></span>
+      [Spotted something off? Tell us](https://github.com/dfladagermccullugh-bot/Open-Island-Transit-Data/issues/new/choose) ·
       [What the data can and can't tell you](limits.qmd) ·
       [Plain words](glossary.qmd) ·
       [Codebook](codebook.qmd) ·

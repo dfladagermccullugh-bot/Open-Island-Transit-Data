@@ -7,7 +7,8 @@
 #                                when new days are published.
 #   scripts/test_site.sh smoke   Only "every page runs clean", on the site
 #                                already rendered in site/_site (the one about
-#                                to be deployed, built from the live data).
+#                                to be deployed, built from the live data, its
+#                                card drawn and scripts/prerender.py run).
 #   scripts/test_site.sh lighthouse
 #                                Lighthouse on every page of the site already
 #                                rendered in site/_site: accessibility score at
@@ -44,18 +45,25 @@ if [ "$what" = "lighthouse" ]; then
   exit
 fi
 
+(
+  cd tests/site
+  npm ci --no-audit --no-fund
+  if [ -n "${PLAYWRIGHT_INSTALL:-}" ]; then
+    npx playwright install --with-deps chromium
+  fi
+)
 if [ "$what" != "smoke" ]; then
   rm -rf site/data
   cp -r tests/site/fixture/data site/data
   quarto render site
+  # As the Pages job does: the card with the figure, then the figure in the
+  # pages' descriptions and in the home page before its script runs.
+  node tests/site/make-icons.mjs --card-from site/_site/data/ontime/headline.json --out site/_site
+  python scripts/prerender.py site/_site
 fi
 python scripts/check_site.py site/_site
 
 cd tests/site
-npm ci --no-audit --no-fund
-if [ -n "${PLAYWRIGHT_INSTALL:-}" ]; then
-  npx playwright install --with-deps chromium
-fi
 if [ "$what" = "smoke" ]; then
   npx playwright test smoke.spec.mjs --project=desktop-light --project=phone-dark
 else

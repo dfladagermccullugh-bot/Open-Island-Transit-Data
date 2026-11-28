@@ -67,10 +67,12 @@ Hover over or tap each term for a plain explanation, or see the
 Each small chart follows one measure. Pick how to group the days; a week
 runs Monday to Sunday, Pacific time.
 
+::: {.slot-period}
 ```{ojs}
 //| echo: false
 viewof period = periodInput()
 ```
+:::
 
 ```{ojs}
 //| echo: false

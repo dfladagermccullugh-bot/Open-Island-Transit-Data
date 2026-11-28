@@ -1,5 +1,10 @@
+# The forms behind the site's "Spotted something off? Tell us" link. A blank
+# issue is still allowed for anything the forms don't fit.
 blank_issues_enabled: true
 contact_links:
   - name: Questions about the bus service
     url: https://www.islandtransit.org/
-    about: This project is independent. Island Transit answers questions about its service.
+    about: This project is independent. Island Transit answers questions about its fares, schedules and buses.
+  - name: How the figures are made
+    url: https://islandtransitdata.org/methods.html
+    about: The methods behind every figure on the site, and what they can't tell you.

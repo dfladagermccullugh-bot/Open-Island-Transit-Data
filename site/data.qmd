@@ -43,16 +43,13 @@ The daily figures are small tables you can open in a spreadsheet. Each link
 opens the latest version of the file; your browser may show it as plain
 text, and you can save it from there.
 
-```{ojs}
-//| echo: false
-html`<ul class="download-list">
-  <li><a href="${DATA_RAW_URL}/ontime/daily.csv"><code>ontime/daily.csv</code></a> has the share of departures on time, one row per day.</li>
-  <li><a href="${DATA_RAW_URL}/ontime/routes.csv"><code>ontime/routes.csv</code></a> has the same figures for each route on each day.</li>
-  <li><a href="${DATA_RAW_URL}/quality/daily.csv"><code>quality/daily.csv</code></a> has the daily grades of the tracking feed.</li>
-  <li><a href="${DATA_RAW_URL}/files.csv"><code>files.csv</code></a> lists every larger file with its address and its SHA-256, a fingerprint for checking a download.</li>
-  <li><a href="${DATA_RAW_URL}/datapackage.json"><code>datapackage.json</code></a> describes every table and column in a form a program can read.</li>
-</ul>`
-```
+::: {.download-list}
+- [`ontime/daily.csv`](https://raw.githubusercontent.com/dfladagermccullugh-bot/Open-Island-Transit-Data/data/ontime/daily.csv) has the share of departures on time, one row per day.
+- [`ontime/routes.csv`](https://raw.githubusercontent.com/dfladagermccullugh-bot/Open-Island-Transit-Data/data/ontime/routes.csv) has the same figures for each route on each day.
+- [`quality/daily.csv`](https://raw.githubusercontent.com/dfladagermccullugh-bot/Open-Island-Transit-Data/data/quality/daily.csv) has the daily grades of the tracking feed.
+- [`files.csv`](https://raw.githubusercontent.com/dfladagermccullugh-bot/Open-Island-Transit-Data/data/files.csv) lists every larger file with its address and its SHA-256, a fingerprint for checking a download.
+- [`datapackage.json`](https://raw.githubusercontent.com/dfladagermccullugh-bot/Open-Island-Transit-Data/data/datapackage.json) describes every table and column in a form a program can read.
+:::
 
 ::: {.link-row}
 [All the larger files (Releases)](https://github.com/dfladagermccullugh-bot/Open-Island-Transit-Data/releases)
@@ -71,6 +68,7 @@ The larger tables have one file for each service day and live in monthly
 Releases on GitHub: the raw archive in `raw-YYYY-MM` and everything parsed
 from it in `parsed-YYYY-MM`.
 
+::: {.slot-tables}
 ```{ojs}
 //| echo: false
 guard(() => {
@@ -91,9 +89,11 @@ guard(() => {
   });
 }, "The list of tables")
 ```
+:::
 
 ## Files for one day
 
+::: {.slot-day-picker}
 ```{ojs}
 //| echo: false
 // The days that have files, newest first, for the picker.
@@ -106,7 +106,9 @@ viewof fileDay = {
   return picker;
 }
 ```
+:::
 
+::: {.slot-files}
 ```{ojs}
 //| echo: false
 guard(() => {
@@ -125,6 +127,7 @@ guard(() => {
   });
 }, "The list of files")
 ```
+:::
 
 To check a download, compute its SHA-256 and compare it with the one listed
 here or in `files.csv`. On macOS and Linux that is
@@ -166,6 +169,7 @@ step.
 
 ## Archived days
 
+::: {.slot-days}
 ```{ojs}
 //| echo: false
 guard(() => {
@@ -186,6 +190,7 @@ guard(() => {
   });
 }, "The list of archived days")
 ```
+:::
 
 ## Monthly reports
 
@@ -193,6 +198,7 @@ Once a month is over, we write up a summary of it and add a checksum
 verification file to its downloads, so you can confirm that your copies
 match ours exactly.
 
+::: {.slot-reports}
 ```{ojs}
 //| echo: false
 guard(() => {
@@ -215,6 +221,7 @@ guard(() => {
   });
 }, "The list of monthly reports")
 ```
+:::
 
 ## Using and citing the data
 

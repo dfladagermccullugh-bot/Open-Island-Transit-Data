@@ -6,7 +6,8 @@ Exits 1 if a page or a file a page loads is missing, if a page lacks what a
 search engine or a link preview reads (description, canonical address, title
 and image for previews), if the page language is not set, if a link to
 another page of the site points nowhere, or if the map library copied into
-the site is not byte for byte the published one.
+the site is not byte for byte the published one, or if a page's description
+and preview do not carry the headline figure (scripts/prerender.py).
 
 This reads the files only. Whether the pages run is checked in a browser by
 the tests in tests/site/.
@@ -21,6 +22,9 @@ import re
 import sys
 from html import unescape
 from pathlib import Path
+
+sys.path.insert(0, str(Path(__file__).resolve().parent))
+import prerender
 
 # Headings of the Methods page that figures link to ("How we measured this").
 # Quarto makes each id from the heading's words, so renaming a heading breaks
@@ -211,6 +215,39 @@ def data_problems(site: Path) -> list[str]:
     return out
 
 
+def prerender_problems(site: Path) -> list[str]:
+    """Every page's description, and its preview's, opens with the figure
+    of ``data/ontime/headline.json`` (scripts/prerender.py); the home page
+    holds a plain copy of it; the preview image is a file of the site."""
+    path = site / prerender.HEADLINE
+    fig = prerender.figure(json.loads(path.read_text(encoding="utf-8"))) if path.exists() else None
+    if fig is None:
+        return []
+    out = []
+    for page in PAGES:
+        file = site / f"{page}.html"
+        if not file.exists():
+            continue
+        html = file.read_text(encoding="utf-8")
+        for attr, name in (
+            ("name", "description"),
+            ("property", "og:description"),
+            ("name", "twitter:description"),
+        ):
+            got = prerender.content(html, attr, name)
+            if got is None or not unescape(got).startswith(fig["sentence"]):
+                out.append(f"{page}.html: {name} does not open with the figure {fig['share']}")
+        image = prerender.content(html, "property", "og:image")
+        if image and not (site / image.rsplit("/", 1)[-1]).exists():
+            out.append(f"{page}.html: preview image {image} is not in the site")
+    home = site / "index.html"
+    if home.exists():
+        html = home.read_text(encoding="utf-8")
+        if prerender.static_block(fig) not in html:
+            out.append("index.html: no plain copy of the headline in .slot-headline")
+    return out
+
+
 def problems(site: Path) -> list[str]:
     out = [f"missing {f}" for f in (*FILES, *VENDORED) if not (site / f).exists()]
     for name, sha in VENDORED.items():
@@ -228,7 +265,13 @@ def problems(site: Path) -> list[str]:
         for a in METHOD_ANCHORS:
             if f'id="{a}"' not in text and f'data-anchor-id="{a}"' not in text:
                 out.append(f"methods.html: no heading #{a}, which the Methods links point to")
-    return out + chart_problems(site) + data_problems(site) + navbar_problems(site)
+    return (
+        out
+        + chart_problems(site)
+        + data_problems(site)
+        + navbar_problems(site)
+        + prerender_problems(site)
+    )
 
 
 def main() -> int:

@@ -29,10 +29,12 @@ noDetail = () => days.length === 0 ? emptyNote("no-days") : emptyNote("unavailab
 
 ## Over time
 
+::: {.slot-period}
 ```{ojs}
 //| echo: false
 viewof period = periodInput()
 ```
+:::
 
 ```{ojs}
 //| echo: false

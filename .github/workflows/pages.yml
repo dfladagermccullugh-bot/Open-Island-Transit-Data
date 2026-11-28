@@ -13,6 +13,7 @@ on:
       - "scripts/site_data.py"
       - "scripts/check_site.py"
       - "scripts/site_views.py"
+      - "scripts/prerender.py"
       - "pipeline/invariants.py"
       - "scripts/test_site.sh"
       - "tests/site/**"
@@ -71,13 +72,26 @@ jobs:
           node-version: "22"
           cache: npm
           cache-dependency-path: tests/site/package-lock.json
+      - name: Install the browser
+        working-directory: tests/site
+        run: |
+          npm ci --no-audit --no-fund
+          npx playwright install --with-deps chromium
+      # The link-preview card with the latest figure (make-icons.mjs). If it
+      # cannot be drawn, the fixed card without a figure stays the preview.
+      - name: Draw the link-preview card
+        continue-on-error: true
+        run: node tests/site/make-icons.mjs --card-from site/_site/data/ontime/headline.json --out site/_site
+      # The headline figure in every page's description and preview, and a
+      # plain copy of it on the home page for readers without JavaScript
+      # (scripts/prerender.py); check_site.py checks they match headline.json.
+      - name: Write the headline into the pages
+        run: python scripts/prerender.py site/_site
       # Checks the files, then opens every page in a browser. A page that
       # fails to run stops the deploy here, so the site that is live stays up
       # instead of being replaced by one with an error on it.
       - name: Check the rendered site and open every page
         run: scripts/test_site.sh smoke
-        env:
-          PLAYWRIGHT_INSTALL: "1"
       - uses: actions/upload-pages-artifact@fc324d3547104276b827a68afc52ff2a11cc49c9 # v5.0.0
         with:
           path: site/_site

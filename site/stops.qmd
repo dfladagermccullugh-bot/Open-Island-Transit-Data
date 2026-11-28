@@ -33,6 +33,7 @@ RESULTS = ({on_time: "on time", early: "early", late: "late", gap: "no time: a g
   unplaced: "no time: the stop is off the route's line"})
 ```
 
+::: {.slot-picker}
 ```{ojs}
 //| echo: false
 viewof stopId = {
@@ -66,6 +67,7 @@ viewof stopId = {
   return box;
 }
 ```
+:::
 
 ```{ojs}
 //| echo: false
@@ -135,6 +137,7 @@ guard(() => {
 ```
 :::
 
+::: {.slot-picker}
 ```{ojs}
 //| echo: false
 viewof tripKey = {
@@ -150,7 +153,9 @@ viewof tripKey = {
   return box;
 }
 ```
+:::
 
+::: {.slot-trip}
 ```{ojs}
 //| echo: false
 guard(() => {
@@ -175,6 +180,7 @@ guard(() => {
   })();
 }, "The trip view")
 ```
+:::
 
 <details class="more"><summary>Every departure from this stop</summary>
 

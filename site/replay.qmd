@@ -44,6 +44,7 @@ clockOf = s => {
 }
 ```
 
+::: {.slot-picker}
 ```{ojs}
 //| echo: false
 viewof day = {
@@ -62,6 +63,7 @@ viewof day = {
   return box;
 }
 ```
+:::
 
 ```{ojs}
 //| echo: false
@@ -93,7 +95,7 @@ buses = {
 span = buses.length ? [Math.min(...buses.map(b => b.t[0])), Math.max(...buses.map(b => b.t.at(-1)))] : [0, 0]
 ```
 
-::: {.replay-controls}
+::: {.replay-controls .slot-controls}
 ```{ojs}
 //| echo: false
 viewof clock = {
