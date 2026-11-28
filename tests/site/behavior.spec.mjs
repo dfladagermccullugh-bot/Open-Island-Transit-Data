@@ -536,5 +536,7 @@ test.describe("the footer", () => {
     await gate.click();
     await expect(page).toHaveURL(/limits\.html#gate$/);
     await expect(page.locator("#gate")).toBeVisible();
+    await expect(page.locator("main")).toContainText(
+      "Last independent rebuild: 2 days (November 19, 2026, November 20, 2026) rebuilt from raw on November 22, 2026, every file identical.");
   });
 });

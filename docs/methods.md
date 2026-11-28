@@ -475,7 +475,10 @@ rule passes. If any rule fails, the `data` branch and the site keep the last
 figures that passed until the problem is fixed, and the watchdog names the
 failed rule. The daily tables and stop times are saved under names that
 include a short fingerprint of their contents, so a rebuilt file never
-replaces one the `data` branch still points to. These rules check our arithmetic, not the buses: they catch a
+replaces one the `data` branch still points to. Once a week, a fresh
+computer rebuilds three past days from their raw files and checks that every
+file it makes is the same, byte for byte, as the published one; anyone can
+run the same check on any day with one command. These rules check our arithmetic, not the buses: they catch a
 number that was added up or copied wrong, but not a stop time that was
 inferred wrong. Checks 1, 2 and 3 are there for that.
 
@@ -491,9 +494,11 @@ validator jobs run the first eight (`scripts/light_gate_promote.sh`,
 `checks/gate-light.json`), and the site job runs them again before it copies
 the data in. Parsed and stop-event files are named by `pipeline/release.py`
 (`stop-events-<date>-<first 8 characters of the SHA-256>.parquet`, recorded
-as `asset` in the manifests; raw files keep plain names), and `python -m pipeline.release prune` deletes
-a file only once neither the new `data` commit nor the one before it names
-it, never in a `raw-*` release.
+as `asset` in the manifests; raw files keep plain names), and
+`python -m pipeline.release prune` deletes a file only once neither the new
+`data` commit nor the one before it names it, never in a `raw-*` release.
+The weekly rebuild is `scripts/reproduce.py`, run by
+`.github/workflows/reproduce.yml`, with its result in `checks/reproduce.json`.
 `scripts/check_versions.py` makes sure a change to the code behind a number
 comes with a new version, so every day is rebuilt with it.)
 

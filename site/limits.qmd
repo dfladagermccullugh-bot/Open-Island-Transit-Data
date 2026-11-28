@@ -136,6 +136,37 @@ build = json("data/build.json")
 build?.gate?.rules ? html`<p>The figures on this site passed all ${count(build.gate.rules)} rules on ${longDate(build.gate.ran_at.slice(0, 10))}.</p>` : html``
 ```
 
+### Anyone can rebuild a day {#rebuild}
+
+Every figure here comes from the saved feed and the code in our repository,
+so anyone can make it again. Once a week, a fresh computer at GitHub picks
+three past days at random, rebuilds each one from its raw files with the
+current code, and compares every file it makes with the published one. The
+same code on the same raw files should give the same bytes, down to the last
+digit, on any machine.
+
+```{ojs}
+//| echo: false
+rb = build?.reproduce
+```
+
+```{ojs}
+//| echo: false
+rb ? html`<p>Last independent rebuild: ${plural(rb.days.length, "day")} (${rb.days.map(d => longDate(d)).join(", ")}) rebuilt from raw on ${longDate(rb.ran_at.slice(0, 10))}, ${rb.all_identical ? "every file identical" : "and some files differed; we are looking into it"}.</p>` : html`<p>The first weekly rebuild has not run yet.</p>`
+```
+
+To rebuild a day yourself, install Python, download our repository, and run
+one command with any day you like:
+
+```bash
+pip install -e .
+python scripts/reproduce.py --date 2026-11-20
+```
+
+It downloads that day's raw files, checks each one against its published
+fingerprint, rebuilds the day, and prints whether every file came out the
+same, with the day's main figures side by side.
+
 We also checked the schedule itself. On November 27, 2026, we compared
 3,015 times printed in Island Transit's September 27, 2026 guide with the
 schedule the feed follows: 96.7% matched exactly and 99.3% within a minute,

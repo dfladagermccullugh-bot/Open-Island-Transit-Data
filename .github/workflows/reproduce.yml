@@ -1,0 +1,70 @@
+name: Reproduce
+
+# Once a week, on a fresh runner, three published service days are rebuilt
+# from their raw files with the code on main (scripts/reproduce.py) and every
+# rebuilt file is compared with the published one by SHA-256. The days are
+# drawn at random among those the current code can compare, seeded by the ISO
+# week, so anyone can tell which days a run chose. The result,
+# checks/reproduce.json, goes through data-staging and the light gate like
+# any other file; a difference fails this run and is a "look" for the
+# watchdog (scripts/anomaly.py). A run that could compare nothing (just after
+# a version bump, before the nightly job rebuilt the days) keeps the last
+# report.
+on:
+  schedule:
+    - cron: "29 13 * * 0" # Sundays, between the nightly attempts
+  workflow_dispatch:
+
+permissions:
+  contents: write
+  actions: write # redeploy the site after publishing
+
+jobs:
+  reproduce:
+    # One writer of the data branches at a time (with nightly.yml,
+    # compare.yml and validators.yml).
+    concurrency:
+      group: data-writer
+      cancel-in-progress: false
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    env:
+      GH_TOKEN: ${{ github.token }}
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+      - uses: actions/setup-python@6d4fd22b20465ccc0f7354476588e8df7c9ca0e0 # v7.1.0
+        with:
+          python-version: "3.13"
+          cache: pip
+          cache-dependency-path: |
+            pyproject.toml
+            constraints.txt
+      - run: pip install -e . -c constraints.txt
+      - name: Get the staging data branch
+        run: scripts/get_data_branch.sh
+      - name: Rebuild three published days from raw
+        id: reproduce
+        run: |
+          set +e
+          python scripts/reproduce.py --pick 3 --seed "$(date -u +%G-W%V)" \
+            --work "$RUNNER_TEMP/reproduce" --report "$RUNNER_TEMP/reproduce.json"
+          code=$?
+          echo "code=$code" >> "$GITHUB_OUTPUT"
+          if [ "$code" = "0" ] || [ "$code" = "1" ]; then
+            mkdir -p data-branch/checks
+            cp "$RUNNER_TEMP/reproduce.json" data-branch/checks/reproduce.json
+          fi
+      - name: Publish to data-staging
+        run: scripts/publish_data.sh data-staging "Reproduce:"
+      - name: Check the figures and move data
+        if: env.STAGING_BASE == env.DATA_BASE
+        run: scripts/light_gate_promote.sh
+      - name: Leave the promotion to the nightly job
+        if: env.STAGING_BASE != env.DATA_BASE
+        run: echo "data-staging holds commits the nightly gate has not passed; the nightly job promotes this report with them"
+      - name: Redeploy the site with the new report
+        if: env.PROMOTED == '1'
+        run: gh workflow run pages.yml --repo "$GITHUB_REPOSITORY" --ref main
+      - name: Fail if a rebuilt file differs
+        if: steps.reproduce.outputs.code == '1'
+        run: exit 1

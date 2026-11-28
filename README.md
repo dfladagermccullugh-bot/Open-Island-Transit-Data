@@ -85,7 +85,10 @@ rules they passed and when. Each parsed table and stop-event file in the
 Releases gets a name that ends in the first 8 characters of its SHA-256, so
 a rebuilt file is added beside the old one instead of replacing a file the
 `data` branch still points to. The raw files keep plain names, since they
-are never rebuilt.
+are never rebuilt. Once a week a fresh GitHub computer rebuilds three past
+days from raw and checks that every file comes out the same
+(`checks/reproduce.json`); `python scripts/reproduce.py --date 2026-11-20`
+runs the same check on your own machine.
 
 ## Data
 

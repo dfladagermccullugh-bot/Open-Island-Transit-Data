@@ -28,7 +28,8 @@ limits are used instead.
   days; an error code from the official validators that the schedule
   version or the week before did not have (``pipeline/feed_validation.py``);
   the publishing gate failed on ``data-staging`` (its failed rules are
-  named).
+  named); the weekly rebuild from raw (``scripts/reproduce.py``,
+  ``checks/reproduce.json``) found a file that differs from the published one.
 - Tier 3, information (exit 3; nothing fails): a new Passio schedule
   version (and the validator's errors in it), schedule downloads that
   disagreed, canceled trips, the holiday list running out, the first
@@ -288,6 +289,23 @@ def check_staging(
         )
 
 
+def check_reproduce(f: Findings, data: Path) -> None:
+    """The last weekly rebuild of published days from raw, on a fresh runner:
+    every rebuilt file should equal the published one."""
+    r = _gate(data, "checks/reproduce.json")
+    if not r or not r.get("days_compared") or r.get("all_identical"):
+        return
+    bad = []
+    for day in r.get("days", []):
+        names = [x["name"] for x in day.get("files", []) + day.get("day_files", [])
+                 if not x.get("same")]  # fmt: skip
+        if names:
+            bad.append(f"{day['service_date']} ({', '.join(names)})")
+    f.add("look", f"the rebuild from raw on {r.get('ran_at')} ({r.get('machine')}) found files "
+          f"that differ from the published ones: {'; '.join(bad)}; the same code should make "
+          "the same bytes on any machine")  # fmt: skip
+
+
 def _when(text: Any) -> datetime | None:
     try:
         return datetime.fromisoformat(str(text)) if text else None
@@ -426,6 +444,7 @@ def evaluate(data: Path, now: datetime, last_holiday: date | None = None,
     check_workflows(f, workflows or {})
     check_holidays(f, last_holiday, now.astimezone(PACIFIC).date())
     check_validation(f, data, quality, now)
+    check_reproduce(f, data)
     if staging is not None:
         check_staging(f, data, staging, heads, now)
     return f

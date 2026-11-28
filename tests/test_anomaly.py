@@ -243,3 +243,31 @@ def test_a_failed_gate_on_staging_is_named_and_a_long_hold_is_a_problem(tmp_path
     f = anomaly.Findings()
     anomaly.check_staging(f, data, staging, ("a", "b"), NOW)
     assert f.problems == []
+
+
+def test_a_rebuild_that_differs_is_something_to_look_at(tmp_path):
+    import json
+
+    (tmp_path / "checks").mkdir()
+    report = {
+        "ran_at": "2026-11-29T13:31:00+00:00",
+        "machine": "Linux x86_64",
+        "days_compared": 1,
+        "all_identical": True,
+        "days": [
+            {
+                "service_date": "2026-11-24",
+                "files": [{"name": "stop-events-2026-11-24.parquet", "same": True}],
+                "day_files": [],
+            }
+        ],
+    }
+    (tmp_path / "checks" / "reproduce.json").write_text(json.dumps(report))
+    f = anomaly.Findings()
+    anomaly.check_reproduce(f, tmp_path)
+    assert f.looks == []
+    report["all_identical"] = False
+    report["days"][0]["files"][0]["same"] = False
+    (tmp_path / "checks" / "reproduce.json").write_text(json.dumps(report))
+    anomaly.check_reproduce(f, tmp_path)
+    assert len(f.looks) == 1 and "2026-11-24 (stop-events-2026-11-24.parquet)" in f.looks[0]

@@ -40,7 +40,15 @@ passed: `passed` (always true on `data`), `mode` (`full`), `rules` and
 `workflow` and its `run_url`. `checks/gate-light.json` is the same for the
 light gate (rules I1 to I8) that the comparison and validator jobs run when
 they add files during the day. On `data-staging`, either file can also hold a
-failed run, with its problems listed. `datapackage.json` is this codebook in a form a
+failed run, with its problems listed.
+
+`checks/reproduce.json` is the last weekly rebuild of published days from
+their raw files (`scripts/reproduce.py`): `ran_at`, the `machine`, the
+`code_commit`, `days_compared`, `all_identical`, and for each day every
+Release file with its published and rebuilt SHA-256 (`same`), the day files
+compared without their time stamps, and the day's main figures, published
+and rebuilt. `skipped` lists days made by an older version of a stage, which
+cannot be compared; `command` is how to run the same check. `datapackage.json` is this codebook in a form a
 program can read: every table with its columns, their types and units, in
 the Data Package format. Both are written by `pipeline/datapackage.py`.
 

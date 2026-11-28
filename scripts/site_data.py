@@ -6,7 +6,8 @@ Only the files the pages load are copied (the data branch also holds one
 file per day and per schedule version, which the site does not need), and a
 small ``build.json`` says which service day the figures run through and, from
 ``checks/gate.json``, how many rules of the publishing gate they passed and
-when (shown in every page's footer). Exits 1
+when (shown in every page's footer), and from ``checks/reproduce.json`` the
+last weekly rebuild from raw (shown on the Limits page). Exits 1
 if a file the home page depends on is missing, so a broken checkout cannot
 replace the live site with an empty one.
 """
@@ -81,6 +82,24 @@ def gate_summary(src: Path) -> dict[str, object] | None:
             "latest_service_date": gate.get("latest_service_date")}  # fmt: skip
 
 
+def reproduce_summary(src: Path) -> dict[str, object] | None:
+    """The last weekly rebuild from raw (``checks/reproduce.json``), as the
+    Limits page shows it."""
+    path = src / "checks" / "reproduce.json"
+    try:
+        r = json.loads(path.read_text(encoding="utf-8")) if path.exists() else None
+    except ValueError:
+        return None
+    if not r or not r.get("days_compared"):
+        return None
+    return {
+        "ran_at": r.get("ran_at"),
+        "days": [d["service_date"] for d in r.get("days", [])],
+        "all_identical": r.get("all_identical") is True,
+        "command": r.get("command"),
+    }
+
+
 def main() -> int:
     src, dst = Path(sys.argv[1]), Path(sys.argv[2])
     files, missing = wanted(src)
@@ -101,6 +120,7 @@ def main() -> int:
         "built_at": datetime.now(UTC).isoformat(timespec="seconds"),
         "data_through": recent.get("last_service_date"),
         "gate": gate_summary(src),
+        "reproduce": reproduce_summary(src),
     }
     (dst / "build.json").write_text(json.dumps(build) + "\n", encoding="utf-8")
     size = sum((dst / f).stat().st_size for f in files)
