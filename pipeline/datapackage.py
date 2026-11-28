@@ -93,7 +93,7 @@ INTEGERS = {
 }  # fmt: skip
 STRINGS = {
     "passio_version", "passio_basis", "quality_version", "ontime_version", "route_id",
-    "route_name", "table", "release_tag", "name", "sha256", "url", "route_short_name",
+    "route_name", "table", "release_tag", "name", "asset", "sha256", "url", "route_short_name",
     "day_type", "direction", "printed_stop", "match", "method", "passio_time",
 }  # fmt: skip
 

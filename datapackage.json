@@ -473,7 +473,7 @@
      },
      {
       "name": "asset",
-      "type": "number",
+      "type": "string",
       "description": "Its name in the Release: since November 28, 2026 the plain name with the first 8 characters of its SHA-256 added, so a rebuilt file never replaces one that is still published; for older files, the plain name"
      },
      {

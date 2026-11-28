@@ -109,6 +109,7 @@ CSV_FILES = [
     ("quality-daily", GOLDEN / "quality" / "daily.csv"),
     ("ontime-daily", GOLDEN / "ontime" / "daily.csv"),
     ("ontime-routes", GOLDEN / "ontime" / "routes.csv"),
+    ("files", GOLDEN / "files.csv"),
     ("timepoints", next(GOLDEN.glob("timepoints/*/timepoints.csv"))),
     *((f"crosswalk-{n.replace('_', '-')}", next(GOLDEN.glob(f"crosswalk/*/{n}.csv")))
       for n in datapackage.CROSSWALK_COLUMNS),

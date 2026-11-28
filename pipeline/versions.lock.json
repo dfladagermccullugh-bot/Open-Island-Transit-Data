@@ -156,7 +156,7 @@
    "sources": [
     "pipeline/datapackage.py"
    ],
-   "hash": "c8f1fd88d55a135f61356be60788d4a5b53e82346c8aba8b1781baece2e145d2"
+   "hash": "29bb8f3f6509dd6e34e6eeed9fb8ad73d1244e9ab1dd3671826d922826eeb493"
   },
   "periods": {
    "version": "periods/0.2.0",
