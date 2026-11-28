@@ -134,12 +134,15 @@ export const SCENARIOS = {
   "compare-before-samples": (rel, text) => {
     if (rel !== "compare/summary.json") return text;
     const c = JSON.parse(text);
+    c.peers = c.peers ?? [];
     for (const p of c.peers) {
       const pool = p.our_method_on_their_feed;
       if (!pool) continue;
-      const skipped = [...pool.samples_skipped, ...pool.samples.map(s => ({service_date: s.service_date, sample_start: s.sample_start, reason: "the day after Thanksgiving Day"}))];
+      // Older summaries (before compare/0.3.0) hold one sample, not a pool.
+      const samples = pool.samples ?? (pool.service_date ? [pool] : []);
+      const skipped = [...(pool.samples_skipped ?? []), ...samples.map(s => ({service_date: s.service_date, sample_start: s.sample_start, reason: "the day after Thanksgiving Day"}))];
       p.our_method_on_their_feed = {...pool, samples_pooled: 0, samples: [], service_dates: [], hours: {}, moments_measured: 0, on_time_share: null, on_time_interval_95: [null, null], samples_skipped: skipped};
-      p.classes = p.classes.filter(k => k !== "A");
+      p.classes = (p.classes ?? []).filter(k => k !== "A");
       delete p.island_same_hours;
     }
     c.peers.push({agency: "Nothing Found Transit", region: "Washington", window: null, measured: "", published_share: null, sources: [], classes: []});
