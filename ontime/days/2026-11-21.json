@@ -1,5 +1,5 @@
 {
- "ontime_version": "ontime/0.6.0",
+ "ontime_version": "ontime/0.7.0",
  "definition": {
   "window_s": [-60,300],
   "measured": "departure at timepoints; arrival at the last stop",
@@ -315,6 +315,1002 @@
    "late": 20,
    "on_time_share_of_observed": 0.8675,
    "deviation_s_median": 0.3
+  }
+ },
+ "untimed": {
+  "departures": 104,
+  "by_reason": {
+   "gap": 38,
+   "skipped": 20,
+   "not_reached": 21,
+   "no_reports": 21,
+   "past_when_first_seen": 4
+  },
+  "by_position": {
+   "first": {
+    "gap": 5,
+    "skipped": 0,
+    "not_reached": 0,
+    "no_reports": 3,
+    "past_when_first_seen": 4
+   },
+   "middle": {
+    "gap": 27,
+    "skipped": 20,
+    "not_reached": 13,
+    "no_reports": 15,
+    "past_when_first_seen": 0
+   },
+   "last": {
+    "gap": 6,
+    "skipped": 0,
+    "not_reached": 8,
+    "no_reports": 3,
+    "past_when_first_seen": 0
+   }
+  }
+ },
+ "by_cell": {
+  "6737|afternoon|first": [2,2,2],
+  "6737|afternoon|last": [3,0,0],
+  "6737|afternoon|middle": [20,5,5],
+  "6737|midday|first": [5,5,5],
+  "6737|midday|last": [5,1,1],
+  "6737|midday|middle": [35,15,15],
+  "6737|morning|first": [2,1,1],
+  "6737|morning|last": [1,0,0],
+  "6737|morning|middle": [8,1,1],
+  "6744|afternoon|first": [6,6,6],
+  "6744|afternoon|last": [6,6,6],
+  "6744|afternoon|middle": [48,48,48],
+  "6744|early|first": [1,1,1],
+  "6744|early|last": [1,1,1],
+  "6744|early|middle": [8,8,8],
+  "6744|evening|first": [2,2,2],
+  "6744|evening|last": [2,2,2],
+  "6744|evening|middle": [16,16,14],
+  "6744|midday|first": [12,12,12],
+  "6744|midday|last": [12,12,12],
+  "6744|midday|middle": [96,96,95],
+  "6744|morning|first": [4,4,3],
+  "6744|morning|last": [4,4,4],
+  "6744|morning|middle": [32,32,24],
+  "7913|afternoon|last": [2,2,2],
+  "7913|afternoon|middle": [2,2,2],
+  "7913|midday|first": [5,5,5],
+  "7913|midday|last": [8,6,6],
+  "7913|midday|middle": [18,18,13],
+  "7914|afternoon|first": [1,1,1],
+  "7914|afternoon|last": [2,1,1],
+  "7914|afternoon|middle": [14,9,5],
+  "7914|midday|first": [5,4,4],
+  "7914|midday|last": [5,4,3],
+  "7914|midday|middle": [40,24,20],
+  "7914|morning|first": [1,1,1],
+  "7914|morning|middle": [2,2,2],
+  "7915|afternoon|first": [2,1,1],
+  "7915|afternoon|last": [2,2,2],
+  "7915|afternoon|middle": [10,10,9],
+  "7915|midday|first": [3,3,3],
+  "7915|midday|last": [4,4,4],
+  "7915|midday|middle": [16,16,14],
+  "7915|morning|first": [1,1,1],
+  "7915|morning|middle": [4,4,4],
+  "7918|afternoon|first": [4,4,2],
+  "7918|afternoon|last": [4,4,3],
+  "7918|afternoon|middle": [22,22,19],
+  "7918|early|first": [2,1,1],
+  "7918|early|last": [1,1,0],
+  "7918|early|middle": [4,3,0],
+  "7918|evening|first": [2,1,1],
+  "7918|evening|last": [3,1,1],
+  "7918|evening|middle": [13,13,13],
+  "7918|midday|first": [6,6,6],
+  "7918|midday|last": [6,6,5],
+  "7918|midday|middle": [39,39,26],
+  "7918|morning|first": [3,2,0],
+  "7918|morning|last": [3,2,2],
+  "7918|morning|middle": [17,16,16],
+  "7919|afternoon|first": [4,4,3],
+  "7919|afternoon|last": [4,4,4],
+  "7919|afternoon|middle": [18,14,7],
+  "7919|evening|last": [1,1,1],
+  "7919|evening|middle": [1,1,1],
+  "7919|midday|first": [6,6,5],
+  "7919|midday|last": [5,5,4],
+  "7919|midday|middle": [26,26,13],
+  "7920|afternoon|first": [3,3,3],
+  "7920|afternoon|last": [3,3,3],
+  "7920|afternoon|middle": [24,24,24],
+  "7920|early|first": [1,1,1],
+  "7920|early|last": [1,1,1],
+  "7920|early|middle": [8,8,8],
+  "7920|evening|first": [1,1,1],
+  "7920|evening|last": [1,1,1],
+  "7920|evening|middle": [8,8,8],
+  "7920|midday|first": [6,5,4],
+  "7920|midday|last": [6,6,6],
+  "7920|midday|middle": [48,48,40],
+  "7920|morning|first": [2,2,2],
+  "7920|morning|last": [2,2,2],
+  "7920|morning|middle": [16,16,16],
+  "7922|afternoon|first": [5,5,3],
+  "7922|afternoon|last": [5,4,2],
+  "7922|afternoon|middle": [30,29,10],
+  "7922|early|first": [1,1,1],
+  "7922|early|middle": [6,6,6],
+  "7922|evening|first": [1,1,1],
+  "7922|evening|last": [2,2,1],
+  "7922|evening|middle": [6,6,2],
+  "7922|midday|first": [10,10,9],
+  "7922|midday|last": [10,9,8],
+  "7922|midday|middle": [60,56,49],
+  "7922|morning|first": [3,3,3],
+  "7922|morning|last": [3,3,3],
+  "7922|morning|middle": [18,17,17],
+  "9404|afternoon|first": [6,5,5],
+  "9404|afternoon|last": [6,6,3],
+  "9404|afternoon|middle": [44,44,14],
+  "9404|early|first": [3,3,2],
+  "9404|early|last": [3,3,2],
+  "9404|early|middle": [10,10,4],
+  "9404|evening|first": [3,2,2],
+  "9404|evening|last": [5,5,4],
+  "9404|evening|middle": [14,14,6],
+  "9404|midday|first": [14,13,12],
+  "9404|midday|last": [14,14,10],
+  "9404|midday|middle": [92,92,69],
+  "9404|morning|first": [5,4,4],
+  "9404|morning|last": [3,3,3],
+  "9404|morning|middle": [28,28,25],
+  "9430|afternoon|first": [2,2,2],
+  "9430|afternoon|last": [5,5,3],
+  "9430|afternoon|middle": [10,10,9],
+  "9430|midday|first": [6,5,1],
+  "9430|midday|last": [12,12,12],
+  "9430|midday|middle": [24,24,16],
+  "9430|morning|first": [2,2,2],
+  "9430|morning|last": [3,3,3],
+  "9430|morning|middle": [6,6,6]
+ },
+ "by_trip_cell": {
+  "1154973": {
+   "6737|morning|first": [1,0,0],
+   "6737|morning|last": [1,0,0],
+   "6737|morning|middle": [7,0,0]
+  },
+  "1154974": {
+   "6737|midday|first": [1,1,1],
+   "6737|midday|last": [1,1,1],
+   "6737|midday|middle": [7,3,3]
+  },
+  "1154975": {
+   "6737|midday|first": [1,1,1],
+   "6737|midday|last": [1,0,0],
+   "6737|midday|middle": [7,3,3]
+  },
+  "1154976": {
+   "6737|afternoon|first": [1,1,1],
+   "6737|afternoon|last": [1,0,0],
+   "6737|afternoon|middle": [7,3,3]
+  },
+  "1154981": {
+   "6737|midday|last": [1,0,0],
+   "6737|midday|middle": [6,2,2],
+   "6737|morning|first": [1,1,1],
+   "6737|morning|middle": [1,1,1]
+  },
+  "1154982": {
+   "6737|midday|first": [1,1,1],
+   "6737|midday|last": [1,0,0],
+   "6737|midday|middle": [7,3,3]
+  },
+  "1154983": {
+   "6737|midday|first": [1,1,1],
+   "6737|midday|last": [1,0,0],
+   "6737|midday|middle": [7,3,3]
+  },
+  "1154984": {
+   "6737|afternoon|last": [1,0,0],
+   "6737|afternoon|middle": [6,2,2],
+   "6737|midday|first": [1,1,1],
+   "6737|midday|middle": [1,1,1]
+  },
+  "1154989": {
+   "6737|afternoon|first": [1,1,1],
+   "6737|afternoon|last": [1,0,0],
+   "6737|afternoon|middle": [7,0,0]
+  },
+  "1155019": {
+   "7913|midday|first": [1,1,1],
+   "7913|midday|last": [1,1,1],
+   "7913|midday|middle": [2,2,2]
+  },
+  "1155020": {
+   "7913|midday|first": [1,1,1],
+   "7913|midday|last": [1,1,1],
+   "7913|midday|middle": [2,2,2]
+  },
+  "1155023": {
+   "7913|midday|first": [1,1,1],
+   "7913|midday|last": [1,1,1],
+   "7913|midday|middle": [2,2,1]
+  },
+  "1155024": {
+   "7913|midday|first": [1,1,1],
+   "7913|midday|last": [1,1,1],
+   "7913|midday|middle": [2,2,2]
+  },
+  "1155025": {
+   "7913|afternoon|last": [1,1,1],
+   "7913|midday|first": [1,1,1],
+   "7913|midday|middle": [2,2,2]
+  },
+  "1155044": {
+   "7913|midday|last": [1,0,0],
+   "7913|midday|middle": [2,2,0]
+  },
+  "1155045": {
+   "7913|midday|last": [1,0,0],
+   "7913|midday|middle": [2,2,0]
+  },
+  "1155048": {
+   "7913|midday|last": [1,1,1],
+   "7913|midday|middle": [2,2,2]
+  },
+  "1155049": {
+   "7913|midday|last": [1,1,1],
+   "7913|midday|middle": [2,2,2]
+  },
+  "1155050": {
+   "7913|afternoon|last": [1,1,1],
+   "7913|afternoon|middle": [2,2,2]
+  },
+  "1155068": {
+   "7914|midday|last": [1,1,1],
+   "7914|midday|middle": [6,4,4],
+   "7914|morning|first": [1,1,1],
+   "7914|morning|middle": [2,2,2]
+  },
+  "1155069": {
+   "7914|midday|first": [1,0,0],
+   "7914|midday|last": [1,0,0],
+   "7914|midday|middle": [8,0,0]
+  },
+  "1155072": {
+   "7914|midday|first": [1,1,1],
+   "7914|midday|last": [1,1,0],
+   "7914|midday|middle": [8,6,4]
+  },
+  "1155073": {
+   "7914|midday|first": [1,1,1],
+   "7914|midday|last": [1,1,1],
+   "7914|midday|middle": [8,6,6]
+  },
+  "1155074": {
+   "7914|afternoon|last": [1,1,1],
+   "7914|afternoon|middle": [6,4,1],
+   "7914|midday|first": [1,1,1],
+   "7914|midday|middle": [2,2,2]
+  },
+  "1155078": {
+   "7914|midday|first": [1,1,1],
+   "7914|midday|last": [1,1,1],
+   "7914|midday|middle": [8,6,4]
+  },
+  "1155079": {
+   "7914|afternoon|first": [1,1,1],
+   "7914|afternoon|last": [1,0,0],
+   "7914|afternoon|middle": [8,5,4]
+  },
+  "1155087": {
+   "7915|midday|last": [1,1,1],
+   "7915|midday|middle": [1,1,1],
+   "7915|morning|first": [1,1,1],
+   "7915|morning|middle": [4,4,4]
+  },
+  "1155089": {
+   "7915|midday|first": [1,1,1],
+   "7915|midday|last": [1,1,1],
+   "7915|midday|middle": [5,5,4]
+  },
+  "1155090": {
+   "7915|afternoon|first": [1,1,1],
+   "7915|afternoon|last": [1,1,1],
+   "7915|afternoon|middle": [5,5,4]
+  },
+  "1155093": {
+   "7915|midday|first": [1,1,1],
+   "7915|midday|last": [1,1,1],
+   "7915|midday|middle": [5,5,5]
+  },
+  "1155095": {
+   "7915|midday|first": [1,1,1],
+   "7915|midday|last": [1,1,1],
+   "7915|midday|middle": [5,5,4]
+  },
+  "1155096": {
+   "7915|afternoon|first": [1,0,0],
+   "7915|afternoon|last": [1,1,1],
+   "7915|afternoon|middle": [5,5,5]
+  },
+  "1155115": {
+   "9404|early|first": [1,1,0],
+   "9404|early|last": [1,1,1],
+   "9404|early|middle": [6,6,2]
+  },
+  "1155118": {
+   "9404|morning|first": [1,1,1],
+   "9404|morning|last": [1,1,1],
+   "9404|morning|middle": [8,8,7]
+  },
+  "1155119": {
+   "9404|midday|first": [1,1,1],
+   "9404|midday|last": [1,1,1],
+   "9404|midday|middle": [8,8,5]
+  },
+  "1155120": {
+   "9404|afternoon|first": [1,1,1],
+   "9404|afternoon|last": [1,1,0],
+   "9404|afternoon|middle": [8,8,1]
+  },
+  "1155129": {
+   "9404|afternoon|last": [1,1,1],
+   "9404|afternoon|middle": [3,3,3],
+   "9404|midday|first": [1,1,1],
+   "9404|midday|middle": [5,5,5]
+  },
+  "1155138": {
+   "9404|midday|last": [1,1,1],
+   "9404|midday|middle": [2,2,2],
+   "9404|morning|first": [1,0,0],
+   "9404|morning|middle": [6,6,6]
+  },
+  "1155139": {
+   "9404|midday|first": [1,1,1],
+   "9404|midday|last": [1,1,0],
+   "9404|midday|middle": [8,8,4]
+  },
+  "1155140": {
+   "9404|afternoon|last": [1,1,1],
+   "9404|afternoon|middle": [2,2,0],
+   "9404|midday|first": [1,1,1],
+   "9404|midday|middle": [6,6,5]
+  },
+  "1155144": {
+   "9404|midday|first": [1,1,1],
+   "9404|midday|last": [1,1,1],
+   "9404|midday|middle": [8,8,8]
+  },
+  "1155146": {
+   "9404|midday|first": [1,1,1],
+   "9404|midday|last": [1,1,1],
+   "9404|midday|middle": [8,8,8]
+  },
+  "1155147": {
+   "9404|afternoon|first": [1,1,1],
+   "9404|afternoon|last": [1,1,1],
+   "9404|afternoon|middle": [8,8,4]
+  },
+  "1155158": {
+   "9404|midday|first": [1,1,1],
+   "9404|midday|last": [1,1,1],
+   "9404|midday|middle": [1,1,1]
+  },
+  "1155159": {
+   "9404|evening|first": [1,1,1],
+   "9404|evening|last": [1,1,1],
+   "9404|evening|middle": [1,1,1]
+  },
+  "1155163": {
+   "9404|evening|first": [1,1,1],
+   "9404|evening|last": [1,1,1],
+   "9404|evening|middle": [1,1,1]
+  },
+  "1155166": {
+   "9404|midday|first": [1,1,1],
+   "9404|midday|last": [1,1,1],
+   "9404|midday|middle": [5,5,1]
+  },
+  "1155173": {
+   "9404|midday|last": [1,1,1],
+   "9404|midday|middle": [3,3,3],
+   "9404|morning|first": [1,1,1],
+   "9404|morning|middle": [5,5,5]
+  },
+  "1155174": {
+   "9404|midday|first": [1,1,1],
+   "9404|midday|last": [1,1,1],
+   "9404|midday|middle": [8,8,7]
+  },
+  "1155175": {
+   "9404|afternoon|first": [1,1,1],
+   "9404|afternoon|middle": [5,5,5],
+   "9404|evening|last": [1,1,1],
+   "9404|evening|middle": [3,3,3]
+  },
+  "1155182": {
+   "9404|midday|first": [1,0,0],
+   "9404|midday|last": [1,1,1],
+   "9404|midday|middle": [8,8,7]
+  },
+  "1155183": {
+   "9404|afternoon|first": [1,1,1],
+   "9404|afternoon|last": [1,1,0],
+   "9404|afternoon|middle": [8,8,0]
+  },
+  "1155192": {
+   "9404|midday|first": [1,1,1],
+   "9404|midday|last": [1,1,0],
+   "9404|midday|middle": [8,8,2]
+  },
+  "1155198": {
+   "9404|morning|first": [1,1,1],
+   "9404|morning|last": [1,1,1],
+   "9404|morning|middle": [7,7,7]
+  },
+  "1155199": {
+   "9404|midday|first": [1,1,1],
+   "9404|midday|last": [1,1,1],
+   "9404|midday|middle": [7,7,7]
+  },
+  "1155211": {
+   "9404|afternoon|first": [1,1,1],
+   "9404|afternoon|last": [1,1,0],
+   "9404|afternoon|middle": [7,7,1]
+  },
+  "1155213": {
+   "9404|afternoon|first": [1,0,0],
+   "9404|afternoon|middle": [3,3,0],
+   "9404|evening|last": [1,1,1],
+   "9404|evening|middle": [4,4,0]
+  },
+  "1155215": {
+   "9404|early|first": [1,1,1],
+   "9404|early|last": [1,1,0],
+   "9404|early|middle": [2,2,0]
+  },
+  "1155217": {
+   "9404|early|first": [1,1,1],
+   "9404|early|last": [1,1,1],
+   "9404|early|middle": [2,2,2]
+  },
+  "1155219": {
+   "9404|morning|first": [1,1,1],
+   "9404|morning|last": [1,1,1],
+   "9404|morning|middle": [2,2,0]
+  },
+  "1155220": {
+   "9404|midday|first": [1,1,0],
+   "9404|midday|last": [1,1,0],
+   "9404|midday|middle": [2,2,0]
+  },
+  "1155225": {
+   "9404|midday|first": [1,1,1],
+   "9404|midday|last": [1,1,0],
+   "9404|midday|middle": [5,5,4]
+  },
+  "1155230": {
+   "9404|evening|first": [1,0,0],
+   "9404|evening|last": [1,1,0],
+   "9404|evening|middle": [5,5,1]
+  },
+  "1155243": {
+   "7920|early|first": [1,1,1],
+   "7920|early|last": [1,1,1],
+   "7920|early|middle": [8,8,8]
+  },
+  "1155244": {
+   "7920|morning|first": [1,1,1],
+   "7920|morning|last": [1,1,1],
+   "7920|morning|middle": [8,8,8]
+  },
+  "1155245": {
+   "7920|midday|first": [1,1,1],
+   "7920|midday|last": [1,1,1],
+   "7920|midday|middle": [8,8,8]
+  },
+  "1155246": {
+   "7920|midday|first": [1,0,0],
+   "7920|midday|last": [1,1,1],
+   "7920|midday|middle": [8,8,8]
+  },
+  "1155257": {
+   "7920|morning|first": [1,1,1],
+   "7920|morning|last": [1,1,1],
+   "7920|morning|middle": [8,8,8]
+  },
+  "1155258": {
+   "7920|midday|first": [1,1,1],
+   "7920|midday|last": [1,1,1],
+   "7920|midday|middle": [8,8,8]
+  },
+  "1155259": {
+   "7920|afternoon|first": [1,1,1],
+   "7920|afternoon|last": [1,1,1],
+   "7920|afternoon|middle": [8,8,8]
+  },
+  "1155260": {
+   "7920|afternoon|first": [1,1,1],
+   "7920|afternoon|last": [1,1,1],
+   "7920|afternoon|middle": [8,8,8]
+  },
+  "1155267": {
+   "7920|midday|first": [1,1,1],
+   "7920|midday|last": [1,1,1],
+   "7920|midday|middle": [8,8,8]
+  },
+  "1155268": {
+   "7920|midday|first": [1,1,0],
+   "7920|midday|last": [1,1,1],
+   "7920|midday|middle": [8,8,0]
+  },
+  "1155269": {
+   "7920|midday|first": [1,1,1],
+   "7920|midday|last": [1,1,1],
+   "7920|midday|middle": [8,8,8]
+  },
+  "1155278": {
+   "7920|afternoon|first": [1,1,1],
+   "7920|afternoon|last": [1,1,1],
+   "7920|afternoon|middle": [8,8,8]
+  },
+  "1155279": {
+   "7920|evening|first": [1,1,1],
+   "7920|evening|last": [1,1,1],
+   "7920|evening|middle": [8,8,8]
+  },
+  "1155291": {
+   "6744|early|first": [1,1,1],
+   "6744|early|last": [1,1,1],
+   "6744|early|middle": [8,8,8]
+  },
+  "1155292": {
+   "6744|morning|first": [1,1,1],
+   "6744|morning|last": [1,1,1],
+   "6744|morning|middle": [8,8,8]
+  },
+  "1155293": {
+   "6744|midday|first": [1,1,1],
+   "6744|midday|last": [1,1,1],
+   "6744|midday|middle": [8,8,8]
+  },
+  "1155294": {
+   "6744|midday|first": [1,1,1],
+   "6744|midday|last": [1,1,1],
+   "6744|midday|middle": [8,8,8]
+  },
+  "1155295": {
+   "6744|afternoon|first": [1,1,1],
+   "6744|afternoon|last": [1,1,1],
+   "6744|afternoon|middle": [8,8,8]
+  },
+  "1155296": {
+   "6744|evening|first": [1,1,1],
+   "6744|evening|last": [1,1,1],
+   "6744|evening|middle": [8,8,6]
+  },
+  "1155307": {
+   "6744|morning|first": [1,1,0],
+   "6744|morning|last": [1,1,1],
+   "6744|morning|middle": [8,8,0]
+  },
+  "1155308": {
+   "6744|midday|first": [1,1,1],
+   "6744|midday|last": [1,1,1],
+   "6744|midday|middle": [8,8,7]
+  },
+  "1155311": {
+   "6744|morning|first": [1,1,1],
+   "6744|morning|last": [1,1,1],
+   "6744|morning|middle": [8,8,8]
+  },
+  "1155312": {
+   "6744|midday|first": [1,1,1],
+   "6744|midday|last": [1,1,1],
+   "6744|midday|middle": [8,8,8]
+  },
+  "1155313": {
+   "6744|midday|first": [1,1,1],
+   "6744|midday|last": [1,1,1],
+   "6744|midday|middle": [8,8,8]
+  },
+  "1155314": {
+   "6744|midday|first": [1,1,1],
+   "6744|midday|last": [1,1,1],
+   "6744|midday|middle": [8,8,8]
+  },
+  "1155315": {
+   "6744|afternoon|first": [1,1,1],
+   "6744|afternoon|last": [1,1,1],
+   "6744|afternoon|middle": [8,8,8]
+  },
+  "1155316": {
+   "6744|afternoon|first": [1,1,1],
+   "6744|afternoon|last": [1,1,1],
+   "6744|afternoon|middle": [8,8,8]
+  },
+  "1155317": {
+   "6744|afternoon|first": [1,1,1],
+   "6744|afternoon|last": [1,1,1],
+   "6744|afternoon|middle": [8,8,8]
+  },
+  "1155329": {
+   "6744|morning|first": [1,1,1],
+   "6744|morning|last": [1,1,1],
+   "6744|morning|middle": [8,8,8]
+  },
+  "1155330": {
+   "6744|midday|first": [1,1,1],
+   "6744|midday|last": [1,1,1],
+   "6744|midday|middle": [8,8,8]
+  },
+  "1155331": {
+   "6744|midday|first": [1,1,1],
+   "6744|midday|last": [1,1,1],
+   "6744|midday|middle": [8,8,8]
+  },
+  "1155332": {
+   "6744|midday|first": [1,1,1],
+   "6744|midday|last": [1,1,1],
+   "6744|midday|middle": [8,8,8]
+  },
+  "1155333": {
+   "6744|midday|first": [1,1,1],
+   "6744|midday|last": [1,1,1],
+   "6744|midday|middle": [8,8,8]
+  },
+  "1155334": {
+   "6744|afternoon|first": [1,1,1],
+   "6744|afternoon|last": [1,1,1],
+   "6744|afternoon|middle": [8,8,8]
+  },
+  "1155346": {
+   "6744|midday|first": [1,1,1],
+   "6744|midday|last": [1,1,1],
+   "6744|midday|middle": [8,8,8]
+  },
+  "1155347": {
+   "6744|midday|first": [1,1,1],
+   "6744|midday|last": [1,1,1],
+   "6744|midday|middle": [8,8,8]
+  },
+  "1155348": {
+   "6744|afternoon|first": [1,1,1],
+   "6744|afternoon|last": [1,1,1],
+   "6744|afternoon|middle": [8,8,8]
+  },
+  "1155349": {
+   "6744|evening|first": [1,1,1],
+   "6744|evening|last": [1,1,1],
+   "6744|evening|middle": [8,8,8]
+  },
+  "1155360": {
+   "9430|morning|first": [1,1,1],
+   "9430|morning|last": [1,1,1],
+   "9430|morning|middle": [2,2,2]
+  },
+  "1155361": {
+   "9430|midday|first": [1,1,0],
+   "9430|midday|last": [1,1,1],
+   "9430|midday|middle": [2,2,2]
+  },
+  "1155362": {
+   "9430|afternoon|first": [1,1,1],
+   "9430|afternoon|last": [1,1,1],
+   "9430|afternoon|middle": [2,2,2]
+  },
+  "1155366": {
+   "9430|morning|first": [1,1,1],
+   "9430|morning|last": [1,1,1],
+   "9430|morning|middle": [2,2,2]
+  },
+  "1155367": {
+   "9430|midday|first": [1,1,1],
+   "9430|midday|last": [1,1,1],
+   "9430|midday|middle": [2,2,2]
+  },
+  "1155368": {
+   "9430|midday|first": [1,1,0],
+   "9430|midday|last": [1,1,1],
+   "9430|midday|middle": [2,2,1]
+  },
+  "1155369": {
+   "9430|afternoon|first": [1,1,1],
+   "9430|afternoon|last": [1,1,0],
+   "9430|afternoon|middle": [2,2,2]
+  },
+  "1155374": {
+   "9430|midday|first": [1,0,0],
+   "9430|midday|last": [1,1,1],
+   "9430|midday|middle": [2,2,1]
+  },
+  "1155376": {
+   "9430|midday|first": [1,1,0],
+   "9430|midday|last": [1,1,1],
+   "9430|midday|middle": [2,2,1]
+  },
+  "1155378": {
+   "9430|midday|first": [1,1,0],
+   "9430|midday|last": [1,1,1],
+   "9430|midday|middle": [2,2,1]
+  },
+  "1155380": {
+   "9430|morning|last": [1,1,1],
+   "9430|morning|middle": [2,2,2]
+  },
+  "1155381": {
+   "9430|midday|last": [1,1,1],
+   "9430|midday|middle": [2,2,2]
+  },
+  "1155382": {
+   "9430|afternoon|last": [1,1,1],
+   "9430|afternoon|middle": [2,2,2]
+  },
+  "1155386": {
+   "9430|midday|last": [1,1,1],
+   "9430|midday|middle": [2,2,0]
+  },
+  "1155387": {
+   "9430|midday|last": [1,1,1],
+   "9430|midday|middle": [2,2,0]
+  },
+  "1155388": {
+   "9430|afternoon|last": [1,1,0],
+   "9430|afternoon|middle": [2,2,1]
+  },
+  "1155389": {
+   "9430|afternoon|last": [1,1,1],
+   "9430|afternoon|middle": [2,2,2]
+  },
+  "1155394": {
+   "9430|midday|last": [1,1,1],
+   "9430|midday|middle": [2,2,2]
+  },
+  "1155396": {
+   "9430|midday|last": [1,1,1],
+   "9430|midday|middle": [2,2,2]
+  },
+  "1155398": {
+   "9430|midday|last": [1,1,1],
+   "9430|midday|middle": [2,2,2]
+  },
+  "1155408": {
+   "7919|midday|first": [1,1,1],
+   "7919|midday|last": [1,1,1],
+   "7919|midday|middle": [5,5,2]
+  },
+  "1155409": {
+   "7919|midday|first": [1,1,0],
+   "7919|midday|last": [1,1,1],
+   "7919|midday|middle": [5,5,5]
+  },
+  "1155410": {
+   "7919|afternoon|first": [1,1,1],
+   "7919|afternoon|last": [1,1,1],
+   "7919|afternoon|middle": [5,3,2]
+  },
+  "1155415": {
+   "7919|midday|first": [1,1,1],
+   "7919|midday|last": [1,1,0],
+   "7919|midday|middle": [5,5,2]
+  },
+  "1155416": {
+   "7919|afternoon|first": [1,1,1],
+   "7919|afternoon|last": [1,1,1],
+   "7919|afternoon|middle": [5,3,2]
+  },
+  "1155426": {
+   "7919|midday|first": [1,1,1],
+   "7919|midday|last": [1,1,1],
+   "7919|midday|middle": [4,4,4]
+  },
+  "1155427": {
+   "7919|midday|first": [1,1,1],
+   "7919|midday|last": [1,1,1],
+   "7919|midday|middle": [4,4,0]
+  },
+  "1155428": {
+   "7919|afternoon|first": [1,1,0],
+   "7919|afternoon|last": [1,1,1],
+   "7919|afternoon|middle": [4,4,0]
+  },
+  "1155433": {
+   "7919|afternoon|last": [1,1,1],
+   "7919|afternoon|middle": [1,1,0],
+   "7919|midday|first": [1,1,1],
+   "7919|midday|middle": [3,3,0]
+  },
+  "1155434": {
+   "7919|afternoon|first": [1,1,1],
+   "7919|afternoon|middle": [3,3,3],
+   "7919|evening|last": [1,1,1],
+   "7919|evening|middle": [1,1,1]
+  },
+  "1155436": {
+   "7918|early|first": [1,1,1],
+   "7918|morning|last": [1,1,1]
+  },
+  "1155438": {
+   "7918|morning|first": [1,1,0],
+   "7918|morning|last": [1,1,1],
+   "7918|morning|middle": [7,7,7]
+  },
+  "1155439": {
+   "7918|midday|first": [1,1,1],
+   "7918|midday|last": [1,1,0],
+   "7918|midday|middle": [7,7,2]
+  },
+  "1155443": {
+   "7918|midday|last": [1,1,1],
+   "7918|midday|middle": [3,3,2],
+   "7918|morning|first": [1,1,0],
+   "7918|morning|middle": [4,4,4]
+  },
+  "1155444": {
+   "7918|afternoon|last": [1,1,0],
+   "7918|afternoon|middle": [3,3,0],
+   "7918|midday|first": [1,1,1],
+   "7918|midday|middle": [4,4,2]
+  },
+  "1155445": {
+   "7918|afternoon|first": [1,1,0],
+   "7918|afternoon|last": [1,1,1],
+   "7918|afternoon|middle": [7,7,7]
+  },
+  "1155446": {
+   "7918|afternoon|first": [1,1,0],
+   "7918|evening|last": [1,0,0],
+   "7918|evening|middle": [7,7,7]
+  },
+  "1155457": {
+   "7918|midday|first": [1,1,1],
+   "7918|midday|last": [1,1,1],
+   "7918|midday|middle": [7,7,7]
+  },
+  "1155462": {
+   "7918|morning|first": [1,0,0],
+   "7918|morning|last": [1,0,0],
+   "7918|morning|middle": [6,5,5]
+  },
+  "1155463": {
+   "7918|midday|first": [1,1,1],
+   "7918|midday|last": [1,1,1],
+   "7918|midday|middle": [6,6,4]
+  },
+  "1155464": {
+   "7918|afternoon|first": [1,1,1],
+   "7918|afternoon|last": [1,1,1],
+   "7918|afternoon|middle": [6,6,6]
+  },
+  "1155465": {
+   "7918|afternoon|first": [1,1,1],
+   "7918|afternoon|last": [1,1,1],
+   "7918|afternoon|middle": [6,6,6]
+  },
+  "1155477": {
+   "7918|midday|first": [1,1,1],
+   "7918|midday|last": [1,1,1],
+   "7918|midday|middle": [6,6,6]
+  },
+  "1155479": {
+   "7918|midday|first": [1,1,1],
+   "7918|midday|last": [1,1,1],
+   "7918|midday|middle": [6,6,3]
+  },
+  "1155480": {
+   "7918|evening|first": [1,1,1],
+   "7918|evening|last": [1,1,1],
+   "7918|evening|middle": [6,6,6]
+  },
+  "1155485": {
+   "7918|evening|first": [1,0,0],
+   "7918|evening|last": [1,0,0]
+  },
+  "1155491": {
+   "7918|early|first": [1,0,0],
+   "7918|early|last": [1,1,0],
+   "7918|early|middle": [4,3,0]
+  },
+  "1155512": {
+   "7922|early|first": [1,1,1],
+   "7922|early|middle": [6,6,6],
+   "7922|morning|last": [1,1,1]
+  },
+  "1155513": {
+   "7922|morning|first": [1,1,1],
+   "7922|morning|last": [1,1,1],
+   "7922|morning|middle": [6,6,6]
+  },
+  "1155514": {
+   "7922|midday|first": [1,1,1],
+   "7922|midday|last": [1,1,1],
+   "7922|midday|middle": [6,6,6]
+  },
+  "1155515": {
+   "7922|midday|first": [1,1,1],
+   "7922|midday|last": [1,1,1],
+   "7922|midday|middle": [6,6,6]
+  },
+  "1155516": {
+   "7922|midday|first": [1,1,1],
+   "7922|midday|last": [1,1,1],
+   "7922|midday|middle": [6,6,6]
+  },
+  "1155517": {
+   "7922|midday|first": [1,1,0],
+   "7922|midday|last": [1,1,1],
+   "7922|midday|middle": [6,6,0]
+  },
+  "1155518": {
+   "7922|midday|first": [1,1,1],
+   "7922|midday|last": [1,1,1],
+   "7922|midday|middle": [6,5,5]
+  },
+  "1155519": {
+   "7922|afternoon|first": [1,1,1],
+   "7922|afternoon|last": [1,1,1],
+   "7922|afternoon|middle": [6,6,6]
+  },
+  "1155520": {
+   "7922|afternoon|first": [1,1,0],
+   "7922|afternoon|last": [1,1,0],
+   "7922|afternoon|middle": [6,6,0]
+  },
+  "1155521": {
+   "7922|afternoon|first": [1,1,1],
+   "7922|afternoon|middle": [6,6,0],
+   "7922|evening|last": [1,1,1]
+  },
+  "1155541": {
+   "7922|morning|first": [1,1,1],
+   "7922|morning|last": [1,1,1],
+   "7922|morning|middle": [6,5,5]
+  },
+  "1155542": {
+   "7922|midday|last": [1,1,1],
+   "7922|morning|first": [1,1,1],
+   "7922|morning|middle": [6,6,6]
+  },
+  "1155543": {
+   "7922|midday|first": [1,1,1],
+   "7922|midday|last": [1,1,1],
+   "7922|midday|middle": [6,5,5]
+  },
+  "1155544": {
+   "7922|midday|first": [1,1,1],
+   "7922|midday|last": [1,1,1],
+   "7922|midday|middle": [6,6,6]
+  },
+  "1155545": {
+   "7922|midday|first": [1,1,1],
+   "7922|midday|last": [1,1,0],
+   "7922|midday|middle": [6,5,5]
+  },
+  "1155546": {
+   "7922|midday|first": [1,1,1],
+   "7922|midday|last": [1,0,0],
+   "7922|midday|middle": [6,6,5]
+  },
+  "1155547": {
+   "7922|afternoon|last": [1,1,1],
+   "7922|midday|first": [1,1,1],
+   "7922|midday|middle": [6,5,5]
+  },
+  "1155548": {
+   "7922|afternoon|first": [1,1,1],
+   "7922|afternoon|last": [1,1,0],
+   "7922|afternoon|middle": [6,6,4]
+  },
+  "1155549": {
+   "7922|afternoon|first": [1,1,0],
+   "7922|afternoon|last": [1,0,0],
+   "7922|afternoon|middle": [6,5,0]
+  },
+  "1155550": {
+   "7922|evening|first": [1,1,1],
+   "7922|evening|last": [1,1,0],
+   "7922|evening|middle": [6,6,2]
   }
  },
  "by_route_stop": {
