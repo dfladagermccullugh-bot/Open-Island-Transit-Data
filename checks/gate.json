@@ -19,13 +19,10 @@
  ],
  "rules_count": 13,
  "problems": [],
- "notes": [
-  "I6 ontime: 1 older days still on an older version (first 2026-11-19); the nightly job rebuilds them",
-  "I6 quality: 1 older days still on an older version (first 2026-11-19); the nightly job rebuilds them"
- ],
+ "notes": [],
  "latest_service_date": "2026-11-26",
- "checked_commit": "368b04732267c74b1e3f7f45af4b1b133f8faaa9",
- "ran_at": "2026-11-28T03:20:19+00:00",
+ "checked_commit": "99ce7db1ffac458ad97970e84cff820e5d4b1f96",
+ "ran_at": "2026-11-28T03:24:10+00:00",
  "workflow": "Nightly archive",
- "run_url": "https://github.com/dfladagermccullugh-bot/Open-Island-Transit-Data/actions/runs/46102142649"
+ "run_url": "https://github.com/dfladagermccullugh-bot/Open-Island-Transit-Data/actions/runs/46102588565"
 }
