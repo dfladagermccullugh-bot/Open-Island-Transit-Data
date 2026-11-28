@@ -43,20 +43,20 @@
    ],
    "our_method_on_their_feed": {
     "service_date": "2026-11-27",
-    "sample_start": "2026-11-27T15:29:52+00:00",
-    "sample_end": "2026-11-27T17:29:56+00:00",
+    "sample_start": "2026-11-28T00:54:55+00:00",
+    "sample_end": "2026-11-28T02:55:03+00:00",
     "timepoints": "marked in the schedule",
-    "trips_measured": 83,
-    "moments_measured": 218,
-    "on_time_share": 0.7385,
+    "trips_measured": 86,
+    "moments_measured": 204,
+    "on_time_share": 0.6912,
     "on_time_interval_95": [
-     0.6803,
-     0.7982
+     0.6073,
+     0.7624
     ],
     "by_stop_radius_m": {
-     "30": 0.7302,
-     "40": 0.7385,
-     "50": 0.7364
+     "30": 0.685,
+     "40": 0.6912,
+     "50": 0.6682
     }
    }
   },
@@ -84,20 +84,20 @@
    "island_under_their_rule": 0.6654,
    "our_method_on_their_feed": {
     "service_date": "2026-11-27",
-    "sample_start": "2026-11-27T15:29:44+00:00",
-    "sample_end": "2026-11-27T17:29:53+00:00",
+    "sample_start": "2026-11-28T00:55:04+00:00",
+    "sample_end": "2026-11-28T02:55:11+00:00",
     "timepoints": "marked in the schedule",
-    "trips_measured": 262,
-    "moments_measured": 1047,
-    "on_time_share": 0.8271,
+    "trips_measured": 264,
+    "moments_measured": 1052,
+    "on_time_share": 0.8356,
     "on_time_interval_95": [
-     0.8056,
-     0.8484
+     0.8079,
+     0.8612
     ],
     "by_stop_radius_m": {
-     "30": 0.8242,
-     "40": 0.8271,
-     "50": 0.826
+     "30": 0.8359,
+     "40": 0.8356,
+     "50": 0.8371
     }
    }
   },
@@ -185,20 +185,20 @@
    },
    "our_method_on_their_feed": {
     "service_date": "2026-11-27",
-    "sample_start": "2026-11-27T15:30:32+00:00",
-    "sample_end": "2026-11-27T17:30:53+00:00",
+    "sample_start": "2026-11-28T00:55:03+00:00",
+    "sample_end": "2026-11-28T02:55:14+00:00",
     "timepoints": "marked in the schedule",
-    "trips_measured": 423,
-    "moments_measured": 1688,
-    "on_time_share": 0.7464,
+    "trips_measured": 402,
+    "moments_measured": 1645,
+    "on_time_share": 0.7228,
     "on_time_interval_95": [
-     0.7152,
-     0.7764
+     0.6877,
+     0.7551
     ],
     "by_stop_radius_m": {
-     "30": 0.7402,
-     "40": 0.7464,
-     "50": 0.7494
+     "30": 0.7215,
+     "40": 0.7228,
+     "50": 0.7253
     }
    }
   },

@@ -1,0 +1,27 @@
+{
+ "sample_version": "compare-sample/0.2.0",
+ "agency": "skagit",
+ "service_date": "2026-11-27",
+ "sample_start": "2026-11-28T00:54:55+00:00",
+ "sample_end": "2026-11-28T02:55:03+00:00",
+ "timepoints": "marked in the schedule",
+ "agency_timezone": "America/Los_Angeles",
+ "vehicles_seen": 23,
+ "trips_reported": 94,
+ "trips_in_schedule": 94,
+ "position_reports": 5034,
+ "trips_measured": 86,
+ "moments_measured": 204,
+ "on_time_share": 0.6912,
+ "on_time_interval_95": [
+  0.6073,
+  0.7624
+ ],
+ "deviation_s_median": 72.14971,
+ "by_stop_radius_m": {
+  "30": 0.685,
+  "40": 0.6912,
+  "50": 0.6682
+ },
+ "fetches": 357
+}

@@ -1,0 +1,27 @@
+{
+ "sample_version": "compare-sample/0.2.0",
+ "agency": "halifax",
+ "service_date": "2026-11-27",
+ "sample_start": "2026-11-28T00:54:55+00:00",
+ "sample_end": "2026-11-28T02:55:11+00:00",
+ "timepoints": "marked in the schedule",
+ "agency_timezone": "America/Halifax",
+ "vehicles_seen": 113,
+ "trips_reported": 389,
+ "trips_in_schedule": 0,
+ "position_reports": 22149,
+ "trips_measured": 0,
+ "moments_measured": 0,
+ "on_time_share": null,
+ "on_time_interval_95": [
+  null,
+  null
+ ],
+ "deviation_s_median": null,
+ "by_stop_radius_m": {
+  "30": null,
+  "40": null,
+  "50": null
+ },
+ "fetches": 359
+}

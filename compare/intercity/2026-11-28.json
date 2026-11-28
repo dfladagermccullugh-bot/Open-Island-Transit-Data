@@ -1,0 +1,27 @@
+{
+ "sample_version": "compare-sample/0.2.0",
+ "agency": "intercity",
+ "service_date": "2026-11-27",
+ "sample_start": "2026-11-28T00:55:04+00:00",
+ "sample_end": "2026-11-28T02:55:11+00:00",
+ "timepoints": "marked in the schedule",
+ "agency_timezone": "America/Los_Angeles",
+ "vehicles_seen": 66,
+ "trips_reported": 296,
+ "trips_in_schedule": 296,
+ "position_reports": 22993,
+ "trips_measured": 264,
+ "moments_measured": 1052,
+ "on_time_share": 0.8356,
+ "on_time_interval_95": [
+  0.8079,
+  0.8612
+ ],
+ "deviation_s_median": 63.871761,
+ "by_stop_radius_m": {
+  "30": 0.8359,
+  "40": 0.8356,
+  "50": 0.8371
+ },
+ "fetches": 357
+}
