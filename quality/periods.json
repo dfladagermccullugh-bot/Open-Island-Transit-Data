@@ -1,5 +1,5 @@
 {
- "periods_version": "periods/0.2.0",
+ "periods_version": "periods/0.3.0",
  "metrics": {
   "trip_coverage": {
    "pooled_as": "ratio of sums",
@@ -32,6 +32,26 @@
   "position_age_s_p95": {
    "pooled_as": "median of daily values",
    "definition": "95th percentile of position age, seconds"
+  },
+  "untimed_gap": {
+   "pooled_as": "ratio of sums",
+   "definition": "timepoint departures with no time because the feed went quiet, over scheduled ones"
+  },
+  "untimed_skipped": {
+   "pooled_as": "ratio of sums",
+   "definition": "timepoint departures with no time because the bus left out that part of the route, over scheduled ones"
+  },
+  "untimed_not_reached": {
+   "pooled_as": "ratio of sums",
+   "definition": "timepoint departures with no time because the bus stopped reporting before it got there, over scheduled ones"
+  },
+  "untimed_no_reports": {
+   "pooled_as": "ratio of sums",
+   "definition": "timepoint departures with no time because the trip sent nothing, over scheduled ones"
+  },
+  "untimed_past_when_first_seen": {
+   "pooled_as": "ratio of sums",
+   "definition": "timepoint departures with no time because the bus was already past when it first reported, over scheduled ones"
   }
  },
  "grains": {
@@ -493,6 +513,11 @@
     "impossible_jumps",
     "off_shape_share",
     "position_age_s_p95",
+    "untimed_gap",
+    "untimed_no_reports",
+    "untimed_not_reached",
+    "untimed_past_when_first_seen",
+    "untimed_skipped",
     "vehicle_uptime"
    ]
   },
@@ -544,6 +569,36 @@
       "low": 8.0,
       "high": 8.0,
       "days": 1
+     },
+     "untimed_gap": {
+      "value": null,
+      "numerator": 0,
+      "denominator": 0,
+      "days": 0
+     },
+     "untimed_skipped": {
+      "value": null,
+      "numerator": 0,
+      "denominator": 0,
+      "days": 0
+     },
+     "untimed_not_reached": {
+      "value": null,
+      "numerator": 0,
+      "denominator": 0,
+      "days": 0
+     },
+     "untimed_no_reports": {
+      "value": null,
+      "numerator": 0,
+      "denominator": 0,
+      "days": 0
+     },
+     "untimed_past_when_first_seen": {
+      "value": null,
+      "numerator": 0,
+      "denominator": 0,
+      "days": 0
      }
     }
    },
@@ -593,6 +648,36 @@
       "value": 8.1,
       "low": 8.1,
       "high": 8.1,
+      "days": 1
+     },
+     "untimed_gap": {
+      "value": 0.038165,
+      "numerator": 104,
+      "denominator": 2725,
+      "days": 1
+     },
+     "untimed_skipped": {
+      "value": 0.028991,
+      "numerator": 79,
+      "denominator": 2725,
+      "days": 1
+     },
+     "untimed_not_reached": {
+      "value": 0.01211,
+      "numerator": 33,
+      "denominator": 2725,
+      "days": 1
+     },
+     "untimed_no_reports": {
+      "value": 0.022385,
+      "numerator": 61,
+      "denominator": 2725,
+      "days": 1
+     },
+     "untimed_past_when_first_seen": {
+      "value": 0.004771,
+      "numerator": 13,
+      "denominator": 2725,
       "days": 1
      }
     }
@@ -644,6 +729,36 @@
       "low": 8.0,
       "high": 8.0,
       "days": 1
+     },
+     "untimed_gap": {
+      "value": 0.029641,
+      "numerator": 38,
+      "denominator": 1282,
+      "days": 1
+     },
+     "untimed_skipped": {
+      "value": 0.015601,
+      "numerator": 20,
+      "denominator": 1282,
+      "days": 1
+     },
+     "untimed_not_reached": {
+      "value": 0.016381,
+      "numerator": 21,
+      "denominator": 1282,
+      "days": 1
+     },
+     "untimed_no_reports": {
+      "value": 0.016381,
+      "numerator": 21,
+      "denominator": 1282,
+      "days": 1
+     },
+     "untimed_past_when_first_seen": {
+      "value": 0.00312,
+      "numerator": 4,
+      "denominator": 1282,
+      "days": 1
      }
     }
    },
@@ -693,6 +808,36 @@
       "value": 7.7,
       "low": 7.7,
       "high": 7.7,
+      "days": 1
+     },
+     "untimed_gap": {
+      "value": 0.038341,
+      "numerator": 49,
+      "denominator": 1278,
+      "days": 1
+     },
+     "untimed_skipped": {
+      "value": 0.021127,
+      "numerator": 27,
+      "denominator": 1278,
+      "days": 1
+     },
+     "untimed_not_reached": {
+      "value": 0.019562,
+      "numerator": 25,
+      "denominator": 1278,
+      "days": 1
+     },
+     "untimed_no_reports": {
+      "value": 0.014085,
+      "numerator": 18,
+      "denominator": 1278,
+      "days": 1
+     },
+     "untimed_past_when_first_seen": {
+      "value": 0.00313,
+      "numerator": 4,
+      "denominator": 1278,
       "days": 1
      }
     }
@@ -744,6 +889,36 @@
       "low": 7.8,
       "high": 7.8,
       "days": 1
+     },
+     "untimed_gap": {
+      "value": 0.030826,
+      "numerator": 84,
+      "denominator": 2725,
+      "days": 1
+     },
+     "untimed_skipped": {
+      "value": 0.024954,
+      "numerator": 68,
+      "denominator": 2725,
+      "days": 1
+     },
+     "untimed_not_reached": {
+      "value": 0.011743,
+      "numerator": 32,
+      "denominator": 2725,
+      "days": 1
+     },
+     "untimed_no_reports": {
+      "value": 0.030826,
+      "numerator": 84,
+      "denominator": 2725,
+      "days": 1
+     },
+     "untimed_past_when_first_seen": {
+      "value": 0.006606,
+      "numerator": 18,
+      "denominator": 2725,
+      "days": 1
      }
     }
    },
@@ -793,6 +968,36 @@
       "value": 16.0,
       "low": 16.0,
       "high": 16.0,
+      "days": 1
+     },
+     "untimed_gap": {
+      "value": 0.034862,
+      "numerator": 95,
+      "denominator": 2725,
+      "days": 1
+     },
+     "untimed_skipped": {
+      "value": 0.027523,
+      "numerator": 75,
+      "denominator": 2725,
+      "days": 1
+     },
+     "untimed_not_reached": {
+      "value": 0.012844,
+      "numerator": 35,
+      "denominator": 2725,
+      "days": 1
+     },
+     "untimed_no_reports": {
+      "value": 0.042202,
+      "numerator": 115,
+      "denominator": 2725,
+      "days": 1
+     },
+     "untimed_past_when_first_seen": {
+      "value": 0.004404,
+      "numerator": 12,
+      "denominator": 2725,
       "days": 1
      }
     }
@@ -844,6 +1049,36 @@
       "low": 8.2,
       "high": 8.2,
       "days": 1
+     },
+     "untimed_gap": {
+      "value": 0.030826,
+      "numerator": 84,
+      "denominator": 2725,
+      "days": 1
+     },
+     "untimed_skipped": {
+      "value": 0.032661,
+      "numerator": 89,
+      "denominator": 2725,
+      "days": 1
+     },
+     "untimed_not_reached": {
+      "value": 0.017248,
+      "numerator": 47,
+      "denominator": 2725,
+      "days": 1
+     },
+     "untimed_no_reports": {
+      "value": 0.022018,
+      "numerator": 60,
+      "denominator": 2725,
+      "days": 1
+     },
+     "untimed_past_when_first_seen": {
+      "value": 0.002569,
+      "numerator": 7,
+      "denominator": 2725,
+      "days": 1
      }
     }
    },
@@ -894,6 +1129,36 @@
       "low": null,
       "high": null,
       "days": 0
+     },
+     "untimed_gap": {
+      "value": 0.0,
+      "numerator": 0,
+      "denominator": 2725,
+      "days": 1
+     },
+     "untimed_skipped": {
+      "value": 0.0,
+      "numerator": 0,
+      "denominator": 2725,
+      "days": 1
+     },
+     "untimed_not_reached": {
+      "value": 0.0,
+      "numerator": 0,
+      "denominator": 2725,
+      "days": 1
+     },
+     "untimed_no_reports": {
+      "value": 1.0,
+      "numerator": 2725,
+      "denominator": 2725,
+      "days": 1
+     },
+     "untimed_past_when_first_seen": {
+      "value": 0.0,
+      "numerator": 0,
+      "denominator": 2725,
+      "days": 1
      }
     }
    }
@@ -947,6 +1212,36 @@
       "low": 7.7,
       "high": 8.1,
       "days": 4
+     },
+     "untimed_gap": {
+      "value": 0.03614,
+      "numerator": 191,
+      "denominator": 5285,
+      "days": 3
+     },
+     "untimed_skipped": {
+      "value": 0.023841,
+      "numerator": 126,
+      "denominator": 5285,
+      "days": 3
+     },
+     "untimed_not_reached": {
+      "value": 0.014948,
+      "numerator": 79,
+      "denominator": 5285,
+      "days": 3
+     },
+     "untimed_no_reports": {
+      "value": 0.018921,
+      "numerator": 100,
+      "denominator": 5285,
+      "days": 3
+     },
+     "untimed_past_when_first_seen": {
+      "value": 0.003974,
+      "numerator": 21,
+      "denominator": 5285,
+      "days": 3
      }
     }
    },
@@ -997,6 +1292,36 @@
       "value": 8.2,
       "low": 7.8,
       "high": 16.0,
+      "days": 3
+     },
+     "untimed_gap": {
+      "value": 0.032171,
+      "numerator": 263,
+      "denominator": 8175,
+      "days": 3
+     },
+     "untimed_skipped": {
+      "value": 0.028379,
+      "numerator": 232,
+      "denominator": 8175,
+      "days": 3
+     },
+     "untimed_not_reached": {
+      "value": 0.013945,
+      "numerator": 114,
+      "denominator": 8175,
+      "days": 3
+     },
+     "untimed_no_reports": {
+      "value": 0.031682,
+      "numerator": 259,
+      "denominator": 8175,
+      "days": 3
+     },
+     "untimed_past_when_first_seen": {
+      "value": 0.004526,
+      "numerator": 37,
+      "denominator": 8175,
       "days": 3
      }
     }
@@ -1051,6 +1376,36 @@
       "low": 7.7,
       "high": 16.0,
       "days": 7
+     },
+     "untimed_gap": {
+      "value": 0.03373,
+      "numerator": 454,
+      "denominator": 13460,
+      "days": 6
+     },
+     "untimed_skipped": {
+      "value": 0.026597,
+      "numerator": 358,
+      "denominator": 13460,
+      "days": 6
+     },
+     "untimed_not_reached": {
+      "value": 0.014339,
+      "numerator": 193,
+      "denominator": 13460,
+      "days": 6
+     },
+     "untimed_no_reports": {
+      "value": 0.026672,
+      "numerator": 359,
+      "denominator": 13460,
+      "days": 6
+     },
+     "untimed_past_when_first_seen": {
+      "value": 0.004309,
+      "numerator": 58,
+      "denominator": 13460,
+      "days": 6
      }
     }
    }
